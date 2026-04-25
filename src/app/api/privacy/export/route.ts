@@ -43,8 +43,7 @@ export async function GET() {
       "SELECT created_at, expires_at FROM sessions WHERE user_id = $1 ORDER BY created_at DESC LIMIT 20",
       [user.id]
     );
-    const sessions = sessionsRes.rows
-      .map((r) => r as { created_at?: string; expires_at?: string })
+    const sessions = (sessionsRes.rows as Array<{ created_at?: string; expires_at?: string }>)
       .filter((r) => typeof r.created_at === "string" && typeof r.expires_at === "string")
       .map((r) => ({ createdAt: r.created_at as string, expiresAt: r.expires_at as string }));
 
@@ -66,4 +65,3 @@ export async function GET() {
     return NextResponse.json({ error: e instanceof Error ? e.message : "Sunucu hatası." }, { status: 500 });
   }
 }
-
