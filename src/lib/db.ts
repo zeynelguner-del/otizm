@@ -9,7 +9,11 @@ export const getPool = () => {
   if (!connectionString) {
     throw new Error("DATABASE_URL ortam değişkeni tanımlı değil.");
   }
-  pool = new Pool({ connectionString });
+  const sslRequired =
+    connectionString.includes("sslmode=require") ||
+    connectionString.includes("ssl=true") ||
+    process.env.PGSSLMODE === "require";
+  pool = new Pool({ connectionString, ssl: sslRequired ? { rejectUnauthorized: false } : undefined });
   return pool;
 };
 
@@ -47,4 +51,3 @@ export const ensureSchema = async () => {
 
   schemaReady = true;
 };
-
