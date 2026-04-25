@@ -1,0 +1,925 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { Phone, ArrowLeft, User, PhoneCall, Save, Download, Upload, Shield, Volume2, Settings2, Users } from "lucide-react";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+
+const cleanPhone = (phone: string) => {
+  return phone.replace(/\D/g, "");
+};
+
+const getLocalStorageValue = (key: string, fallback: string) => {
+  if (typeof window === "undefined") return fallback;
+  try {
+    return localStorage.getItem(key) || fallback;
+  } catch {
+    return fallback;
+  }
+};
+
+type Profile = {
+  id: string;
+  name: string;
+  age: string;
+  familyNotes: string;
+  educationNotes: string;
+};
+
+type SpeechSettings = {
+  voiceURI: string | null;
+  rate: number;
+  pitch: number;
+  volume: number;
+};
+
+type UiSettings = {
+  largeButtons: boolean;
+  highContrast: boolean;
+  reduceMotion: boolean;
+};
+
+const readJson = <T,>(key: string, fallback: T): T => {
+  if (typeof window === "undefined") return fallback;
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return fallback;
+    return JSON.parse(raw) as T;
+  } catch {
+    return fallback;
+  }
+};
+
+const writeJson = (key: string, value: unknown) => {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {}
+};
+
+const PROFILES_KEY = "profilesV1";
+const ACTIVE_PROFILE_KEY = "activeProfileV1";
+const UI_SETTINGS_KEY = "uiSettingsV1";
+const SPEECH_SETTINGS_KEY = "speechSettingsV1";
+const PARENT_LOCK_PIN_KEY = "parentLockPinV1";
+const PARENT_LOCKED_KEY = "parentLockEnabledV1";
+
+export default function FamilyPage() {
+  const [tab, setTab] = useState<"bilgiler" | "ayarlar" | "yedek">("bilgiler");
+
+  const [profiles, setProfiles] = useState<Profile[]>(() => {
+    const fromStorage = readJson<Profile[]>(PROFILES_KEY, []);
+    if (fromStorage.length > 0) return fromStorage;
+    const name = getLocalStorageValue("studentName", "Zeynel");
+    const age = getLocalStorageValue("studentAge", "6");
+    const familyNotes = getLocalStorageValue("familyNotes", "Bugün çok iyi bir gün geçirdik.");
+    const educationNotes = getLocalStorageValue("educationNotes", "Göz teması kurma çalışmaları yapıldı.");
+    return [{ id: "p1", name, age, familyNotes, educationNotes }];
+  });
+
+  const [activeProfileId, setActiveProfileId] = useState(() => getLocalStorageValue(ACTIVE_PROFILE_KEY, "p1"));
+
+  const activeProfile = useMemo(() => {
+    return profiles.find((p) => p.id === activeProfileId) ?? profiles[0] ?? null;
+  }, [profiles, activeProfileId]);
+
+  const [studentName, setStudentName] = useState(() => activeProfile?.name ?? getLocalStorageValue("studentName", "Zeynel"));
+  const [studentAge, setStudentAge] = useState(() => activeProfile?.age ?? getLocalStorageValue("studentAge", "6"));
+  const [familyNotes, setFamilyNotes] = useState(() => activeProfile?.familyNotes ?? getLocalStorageValue("familyNotes", "Bugün çok iyi bir gün geçirdik."));
+  const [educationNotes, setEducationNotes] = useState(() => activeProfile?.educationNotes ?? getLocalStorageValue("educationNotes", "Göz teması kurma çalışmaları yapıldı."));
+
+  const [instructorPhone, setInstructorPhone] = useState(() => getLocalStorageValue("instructorPhone", ""));
+  const [doctorPhone, setDoctorPhone] = useState(() => getLocalStorageValue("doctorPhone", ""));
+  const [isEditing, setIsEditing] = useState(false);
+
+  const [uiSettings, setUiSettings] = useState<UiSettings>(() =>
+    readJson<UiSettings>(UI_SETTINGS_KEY, { largeButtons: false, highContrast: false, reduceMotion: false })
+  );
+  const [speechSettings, setSpeechSettings] = useState<SpeechSettings>(() =>
+    readJson<SpeechSettings>(SPEECH_SETTINGS_KEY, { voiceURI: null, rate: 1, pitch: 1, volume: 1 })
+  );
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+
+  const [parentPin, setParentPin] = useState(() => getLocalStorageValue(PARENT_LOCK_PIN_KEY, ""));
+  const [parentLockEnabled, setParentLockEnabled] = useState(() => getLocalStorageValue(PARENT_LOCKED_KEY, "0") === "1");
+  const [unlockPin, setUnlockPin] = useState("");
+  const [unlockError, setUnlockError] = useState<string | null>(null);
+  const [privacyBusy, setPrivacyBusy] = useState(false);
+  const [privacyError, setPrivacyError] = useState<string | null>(null);
+  const [privacyOk, setPrivacyOk] = useState<string | null>(null);
+
+  const canEdit = !parentLockEnabled || unlockPin === parentPin || !parentPin;
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!("speechSynthesis" in window)) return;
+
+    const loadVoices = () => {
+      const v = window.speechSynthesis.getVoices();
+      setVoices(v);
+    };
+
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    return () => {
+      window.speechSynthesis.onvoiceschanged = null;
+    };
+  }, []);
+
+  const selectProfile = (id: string) => {
+    const profile = profiles.find((p) => p.id === id);
+    if (!profile) return;
+    setActiveProfileId(id);
+    setStudentName(profile.name);
+    setStudentAge(profile.age);
+    setFamilyNotes(profile.familyNotes);
+    setEducationNotes(profile.educationNotes);
+    try {
+      localStorage.setItem(ACTIVE_PROFILE_KEY, id);
+    } catch {}
+  };
+
+  const saveAll = () => {
+    if (!canEdit) return;
+
+    localStorage.setItem("studentName", studentName);
+    localStorage.setItem("studentAge", studentAge);
+    localStorage.setItem("familyNotes", familyNotes);
+    localStorage.setItem("educationNotes", educationNotes);
+    localStorage.setItem("instructorPhone", instructorPhone);
+    localStorage.setItem("doctorPhone", doctorPhone);
+
+    const nextProfiles = profiles.map((p) =>
+      p.id === activeProfileId ? { ...p, name: studentName, age: studentAge, familyNotes, educationNotes } : p
+    );
+    setProfiles(nextProfiles);
+    writeJson(PROFILES_KEY, nextProfiles);
+    localStorage.setItem(ACTIVE_PROFILE_KEY, activeProfileId);
+
+    writeJson(UI_SETTINGS_KEY, uiSettings);
+    writeJson(SPEECH_SETTINGS_KEY, speechSettings);
+
+    localStorage.setItem(PARENT_LOCK_PIN_KEY, parentPin);
+    localStorage.setItem(PARENT_LOCKED_KEY, parentLockEnabled ? "1" : "0");
+
+    setIsEditing(false);
+  };
+
+  const addProfile = () => {
+    if (!canEdit) return;
+    const id = `p${Math.floor(Date.now() / 1000)}`;
+    const next: Profile = { id, name: "Yeni Çocuk", age: "0", familyNotes: "", educationNotes: "" };
+    const nextProfiles = [next, ...profiles];
+    setProfiles(nextProfiles);
+    setActiveProfileId(id);
+    setStudentName(next.name);
+    setStudentAge(next.age);
+    setFamilyNotes(next.familyNotes);
+    setEducationNotes(next.educationNotes);
+    writeJson(PROFILES_KEY, nextProfiles);
+    localStorage.setItem(ACTIVE_PROFILE_KEY, id);
+    setIsEditing(true);
+  };
+
+  const tryUnlock = () => {
+    setUnlockError(null);
+    if (!parentLockEnabled || !parentPin) return;
+    if (unlockPin !== parentPin) {
+      setUnlockError("PIN hatalı.");
+      return;
+    }
+    setUnlockError(null);
+  };
+
+  const buildBackup = () => {
+    const keys = [
+      "studentName",
+      "studentAge",
+      "familyNotes",
+      "educationNotes",
+      "instructorPhone",
+      "doctorPhone",
+      PROFILES_KEY,
+      ACTIVE_PROFILE_KEY,
+      UI_SETTINGS_KEY,
+      SPEECH_SETTINGS_KEY,
+      PARENT_LOCK_PIN_KEY,
+      PARENT_LOCKED_KEY,
+      "authUsersV1",
+      "authSessionV1",
+      "dailyScheduleRecordsV1",
+      "dailyScheduleFirstDateV1",
+      "firstThenV1",
+      "emotionLogV1",
+      "accCustomCardsV1",
+      "accFavoritesV1",
+      "tokenBalanceV1",
+    ];
+    const data: Record<string, string | null> = {};
+    for (const key of keys) {
+      try {
+        data[key] = localStorage.getItem(key);
+      } catch {
+        data[key] = null;
+      }
+    }
+    return JSON.stringify({ version: 1, exportedAt: new Date().toISOString(), data }, null, 2);
+  };
+
+  const [backupText, setBackupText] = useState("");
+  const [importText, setImportText] = useState("");
+  const [importError, setImportError] = useState<string | null>(null);
+  const [importOk, setImportOk] = useState<string | null>(null);
+
+  const downloadBackup = () => {
+    const text = buildBackup();
+    const blob = new Blob([text], { type: "application/json;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `otizm-yedek-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const restoreBackup = () => {
+    if (!canEdit) return;
+    setImportError(null);
+    setImportOk(null);
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(importText);
+    } catch {
+      setImportError("Yedek JSON okunamadı.");
+      return;
+    }
+    if (!parsed || typeof parsed !== "object") {
+      setImportError("Yedek formatı geçersiz.");
+      return;
+    }
+    const obj = parsed as { data?: Record<string, string | null> };
+    if (!obj.data || typeof obj.data !== "object") {
+      setImportError("Yedek formatı geçersiz.");
+      return;
+    }
+    for (const [key, value] of Object.entries(obj.data)) {
+      try {
+        if (value === null) localStorage.removeItem(key);
+        else localStorage.setItem(key, value);
+      } catch {}
+    }
+    const nextProfiles = readJson<Profile[]>(PROFILES_KEY, profiles);
+    const nextActiveProfileId = getLocalStorageValue(ACTIVE_PROFILE_KEY, activeProfileId);
+    setProfiles(nextProfiles);
+    setActiveProfileId(nextActiveProfileId);
+    const nextActiveProfile = nextProfiles.find((p) => p.id === nextActiveProfileId) ?? nextProfiles[0] ?? null;
+    if (nextActiveProfile) {
+      setStudentName(nextActiveProfile.name);
+      setStudentAge(nextActiveProfile.age);
+      setFamilyNotes(nextActiveProfile.familyNotes);
+      setEducationNotes(nextActiveProfile.educationNotes);
+    }
+
+    setUiSettings(readJson<UiSettings>(UI_SETTINGS_KEY, uiSettings));
+    setSpeechSettings(readJson<SpeechSettings>(SPEECH_SETTINGS_KEY, speechSettings));
+    setParentPin(getLocalStorageValue(PARENT_LOCK_PIN_KEY, parentPin));
+    setParentLockEnabled(getLocalStorageValue(PARENT_LOCKED_KEY, parentLockEnabled ? "1" : "0") === "1");
+    setImportOk("Yedek geri yüklendi.");
+  };
+
+  return (
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-6 md:p-12">
+      <header className="max-w-3xl mx-auto mb-12 flex items-center justify-between">
+        <div className="flex items-center gap-6">
+          <Link
+            href="/"
+            className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 shadow-sm hover:bg-zinc-50 transition-all"
+          >
+            <ArrowLeft size={28} />
+          </Link>
+          <div>
+            <h1 className="text-3xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">Aile Paneli</h1>
+            <p className="text-zinc-500 font-medium">Bilgileri Güncelle</p>
+          </div>
+        </div>
+        
+        <button
+          onClick={() => (isEditing ? saveAll() : canEdit ? setIsEditing(true) : undefined)}
+          className={cn(
+            "flex items-center gap-2 px-8 py-4 rounded-2xl font-black transition-all shadow-lg active:scale-95",
+            isEditing
+              ? "bg-emerald-500 text-white hover:bg-emerald-600" 
+              : "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 hover:opacity-90"
+          )}
+          disabled={!canEdit && !isEditing}
+        >
+          {isEditing ? (
+            <>
+              <Save size={24} /> Kaydet
+            </>
+          ) : (
+            "Düzenle"
+          )}
+        </button>
+      </header>
+
+      <main className="max-w-3xl mx-auto space-y-8">
+        <section className="bg-white dark:bg-zinc-900 p-3 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-sm flex gap-2">
+          <button
+            onClick={() => setTab("bilgiler")}
+            className={cn(
+              "flex-1 py-3 rounded-2xl font-black transition-all",
+              tab === "bilgiler" ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900" : "text-zinc-500"
+            )}
+          >
+            Bilgiler
+          </button>
+          <button
+            onClick={() => setTab("ayarlar")}
+            className={cn(
+              "flex-1 py-3 rounded-2xl font-black transition-all flex items-center justify-center gap-2",
+              tab === "ayarlar" ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900" : "text-zinc-500"
+            )}
+          >
+            <Settings2 size={18} /> Ayarlar
+          </button>
+          <button
+            onClick={() => {
+              setTab("yedek");
+              try {
+                setBackupText(buildBackup());
+              } catch {}
+            }}
+            className={cn(
+              "flex-1 py-3 rounded-2xl font-black transition-all flex items-center justify-center gap-2",
+              tab === "yedek" ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900" : "text-zinc-500"
+            )}
+          >
+            <Download size={18} /> Yedek
+          </button>
+        </section>
+
+        {parentLockEnabled && parentPin && !canEdit && (
+          <section className="bg-amber-50 dark:bg-amber-900/20 p-6 rounded-[2rem] border border-amber-100 dark:border-amber-900/30 shadow-sm">
+            <div className="flex items-center justify-between gap-6">
+              <div className="flex items-center gap-3">
+                <Shield className="text-amber-600" />
+                <div>
+                  <div className="font-black text-amber-900 dark:text-amber-100">Ebeveyn Kilidi Açık</div>
+                  <div className="text-amber-700 dark:text-amber-200 font-bold text-sm">Düzenleme için PIN girin.</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <input
+                  value={unlockPin}
+                  onChange={(e) => setUnlockPin(e.target.value)}
+                  className="w-32 p-3 rounded-2xl border border-amber-200 dark:border-amber-900/40 bg-white/70 dark:bg-zinc-950 font-black text-center tracking-widest"
+                  inputMode="numeric"
+                  placeholder="PIN"
+                />
+                <button
+                  onClick={tryUnlock}
+                  className="px-6 py-3 rounded-2xl bg-amber-600 text-white font-black hover:bg-amber-700 transition-all"
+                >
+                  Aç
+                </button>
+              </div>
+            </div>
+            {unlockError && <div className="mt-3 font-bold text-rose-700 dark:text-rose-200">{unlockError}</div>}
+          </section>
+        )}
+
+        {tab === "bilgiler" && (
+          <>
+            <section className="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-xl">
+          <div className="space-y-8">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <Users className="text-zinc-400" />
+                <div className="font-black text-zinc-700 dark:text-zinc-200">Çocuk Profili</div>
+              </div>
+              <button
+                onClick={addProfile}
+                className={cn(
+                  "px-5 py-3 rounded-2xl font-black uppercase tracking-widest text-xs transition-all active:scale-95",
+                  canEdit ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900" : "bg-zinc-200 text-zinc-500 cursor-not-allowed"
+                )}
+                disabled={!canEdit}
+              >
+                Profil Ekle
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {profiles.map((p) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => selectProfile(p.id)}
+                  className={cn(
+                    "p-4 rounded-2xl border-2 text-left transition-all active:scale-95",
+                    p.id === activeProfileId
+                      ? "bg-emerald-50 border-emerald-200 dark:bg-emerald-900/10 dark:border-emerald-900/30"
+                      : "bg-zinc-50 border-zinc-100 dark:bg-zinc-800/40 dark:border-zinc-700 hover:border-zinc-200"
+                  )}
+                >
+                  <div className="font-black text-zinc-800 dark:text-zinc-100">{p.name || "İsimsiz"}</div>
+                  <div className="text-zinc-500 dark:text-zinc-400 font-bold text-sm">{p.age ? `${p.age} yaş` : "Yaş yok"}</div>
+                </button>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-2">
+                <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Çocuğun Adı</label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={studentName}
+                    onChange={(e) => setStudentName(e.target.value)}
+                    className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-zinc-900 transition-all outline-none"
+                  />
+                ) : (
+                  <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">{studentName || "..."}</p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Yaşı</label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={studentAge}
+                    onChange={(e) => setStudentAge(e.target.value)}
+                    className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-zinc-900 transition-all outline-none"
+                  />
+                ) : (
+                  <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">{studentAge ? `${studentAge} Yaşında` : "..."}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Aile Notları</label>
+              {isEditing ? (
+                <textarea
+                  value={familyNotes}
+                  onChange={(e) => setFamilyNotes(e.target.value)}
+                  className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-zinc-900 transition-all outline-none min-h-[120px]"
+                />
+              ) : (
+                <div className="p-6 bg-amber-50 dark:bg-amber-900/10 rounded-2xl border border-amber-100 dark:border-amber-900/20">
+                  <p className="text-amber-900 dark:text-amber-100 italic font-medium leading-relaxed">
+                    &quot;{familyNotes || "Henüz not eklenmemiş."}&quot;
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Eğitim Notları</label>
+              {isEditing ? (
+                <textarea
+                  value={educationNotes}
+                  onChange={(e) => setEducationNotes(e.target.value)}
+                  className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-zinc-900 transition-all outline-none min-h-[120px]"
+                />
+              ) : (
+                <div className="p-6 bg-sky-50 dark:bg-sky-900/10 rounded-2xl border border-sky-100 dark:border-sky-900/20">
+                  <p className="text-sky-900 dark:text-sky-100 italic font-medium leading-relaxed">
+                    &quot;{educationNotes || "Henüz eğitim notu eklenmemiş."}&quot;
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* Emergency Contacts Section */}
+        <section className="bg-white dark:bg-zinc-900 p-6 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+          <h2 className="text-xl font-bold flex items-center gap-2 text-red-600 mb-6">
+            <PhoneCall size={24} />
+            Acil Durum Rehberi
+          </h2>
+
+          <div className="space-y-4">
+            {/* Instructor Call */}
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-zinc-400 uppercase">
+                Eğitmen
+              </label>
+              {isEditing ? (
+                <input
+                  type="tel"
+                  value={instructorPhone}
+                  onChange={(e) => setInstructorPhone(e.target.value)}
+                  className="w-full p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950"
+                />
+              ) : (
+                <a
+                  href={instructorPhone ? `tel:${cleanPhone(instructorPhone)}` : "#"}
+                  className={cn(
+                    "w-full p-4 rounded-2xl border flex items-center justify-between font-bold transition-all active:scale-95",
+                    instructorPhone
+                      ? "bg-rose-50 border-rose-100 text-rose-700"
+                      : "bg-zinc-50 border-zinc-100 text-zinc-400"
+                  )}
+                >
+                  <div className="flex items-center gap-3">
+                    <User size={20} />
+                    <span>{instructorPhone || "Numara Eklenmemiş"}</span>
+                  </div>
+                  <Phone size={20} />
+                </a>
+              )}
+            </div>
+
+            {/* Doctor Call */}
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-zinc-400 uppercase">
+                Doktor
+              </label>
+              {isEditing ? (
+                <input
+                  type="tel"
+                  value={doctorPhone}
+                  onChange={(e) => setDoctorPhone(e.target.value)}
+                  className="w-full p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950"
+                />
+              ) : (
+                <a
+                  href={doctorPhone ? `tel:${cleanPhone(doctorPhone)}` : "#"}
+                  className={cn(
+                    "w-full p-4 rounded-2xl border flex items-center justify-between font-bold transition-all active:scale-95",
+                    doctorPhone
+                      ? "bg-blue-50 border-blue-100 text-blue-700"
+                      : "bg-zinc-50 border-zinc-100 text-zinc-400"
+                  )}
+                >
+                  <div className="flex items-center gap-3">
+                    <User size={20} />
+                    <span>{doctorPhone || "Numara Eklenmemiş"}</span>
+                  </div>
+                  <Phone size={20} />
+                </a>
+              )}
+            </div>
+          </div>
+            </section>
+          </>
+        )}
+
+        {tab === "ayarlar" && (
+          <section className="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-xl space-y-8">
+            <div className="flex items-center gap-3">
+              <Volume2 className="text-zinc-400" />
+              <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">Ses Ayarları</h2>
+            </div>
+
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Ses</label>
+                <select
+                  value={speechSettings.voiceURI ?? ""}
+                  onChange={(e) => setSpeechSettings((prev) => ({ ...prev, voiceURI: e.target.value || null }))}
+                  className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-zinc-900 transition-all outline-none"
+                  disabled={!canEdit}
+                >
+                  <option value="">Varsayılan</option>
+                  {voices.map((v) => (
+                    <option key={v.voiceURI} value={v.voiceURI}>
+                      {v.name} ({v.lang})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Hız</label>
+                  <input
+                    type="range"
+                    min="0.6"
+                    max="1.4"
+                    step="0.05"
+                    value={speechSettings.rate}
+                    onChange={(e) => setSpeechSettings((prev) => ({ ...prev, rate: Number(e.target.value) }))}
+                    className="w-full"
+                    disabled={!canEdit}
+                  />
+                  <div className="font-black text-zinc-600 dark:text-zinc-300 text-sm">{speechSettings.rate.toFixed(2)}</div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Perde</label>
+                  <input
+                    type="range"
+                    min="0.6"
+                    max="1.4"
+                    step="0.05"
+                    value={speechSettings.pitch}
+                    onChange={(e) => setSpeechSettings((prev) => ({ ...prev, pitch: Number(e.target.value) }))}
+                    className="w-full"
+                    disabled={!canEdit}
+                  />
+                  <div className="font-black text-zinc-600 dark:text-zinc-300 text-sm">{speechSettings.pitch.toFixed(2)}</div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Ses</label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.05"
+                    value={speechSettings.volume}
+                    onChange={(e) => setSpeechSettings((prev) => ({ ...prev, volume: Number(e.target.value) }))}
+                    className="w-full"
+                    disabled={!canEdit}
+                  />
+                  <div className="font-black text-zinc-600 dark:text-zinc-300 text-sm">{speechSettings.volume.toFixed(2)}</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="h-px bg-zinc-100 dark:bg-zinc-800" />
+
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <Settings2 className="text-zinc-400" />
+                <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">Erişilebilirlik</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button
+                  type="button"
+                  onClick={() => setUiSettings((p) => ({ ...p, largeButtons: !p.largeButtons }))}
+                  className={cn(
+                    "p-5 rounded-2xl border-2 font-black transition-all active:scale-95",
+                    uiSettings.largeButtons
+                      ? "bg-emerald-50 border-emerald-200 text-emerald-700"
+                      : "bg-zinc-50 border-zinc-100 dark:bg-zinc-800/40 dark:border-zinc-700 text-zinc-700 dark:text-zinc-200",
+                    !canEdit && "opacity-60 cursor-not-allowed"
+                  )}
+                  disabled={!canEdit}
+                >
+                  Büyük Buton
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setUiSettings((p) => ({ ...p, highContrast: !p.highContrast }))}
+                  className={cn(
+                    "p-5 rounded-2xl border-2 font-black transition-all active:scale-95",
+                    uiSettings.highContrast
+                      ? "bg-emerald-50 border-emerald-200 text-emerald-700"
+                      : "bg-zinc-50 border-zinc-100 dark:bg-zinc-800/40 dark:border-zinc-700 text-zinc-700 dark:text-zinc-200",
+                    !canEdit && "opacity-60 cursor-not-allowed"
+                  )}
+                  disabled={!canEdit}
+                >
+                  Yüksek Kontrast
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setUiSettings((p) => ({ ...p, reduceMotion: !p.reduceMotion }))}
+                  className={cn(
+                    "p-5 rounded-2xl border-2 font-black transition-all active:scale-95",
+                    uiSettings.reduceMotion
+                      ? "bg-emerald-50 border-emerald-200 text-emerald-700"
+                      : "bg-zinc-50 border-zinc-100 dark:bg-zinc-800/40 dark:border-zinc-700 text-zinc-700 dark:text-zinc-200",
+                    !canEdit && "opacity-60 cursor-not-allowed"
+                  )}
+                  disabled={!canEdit}
+                >
+                  Animasyon Azalt
+                </button>
+              </div>
+              <div className="text-zinc-500 dark:text-zinc-400 font-bold text-sm">
+                Bu ayarlar kaydedildikten sonra diğer sayfalarda da kullanılacaktır.
+              </div>
+            </div>
+
+            <div className="h-px bg-zinc-100 dark:bg-zinc-800" />
+
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <Shield className="text-zinc-400" />
+                <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">Ebeveyn Kilidi</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">PIN</label>
+                  <input
+                    value={parentPin}
+                    onChange={(e) => setParentPin(e.target.value)}
+                    className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-zinc-900 transition-all outline-none"
+                    inputMode="numeric"
+                    placeholder="örn: 1234"
+                    disabled={!canEdit && parentLockEnabled}
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setParentLockEnabled((v) => !v)}
+                  className={cn(
+                    "p-5 rounded-2xl border-2 font-black transition-all active:scale-95",
+                    parentLockEnabled
+                      ? "bg-rose-50 border-rose-200 text-rose-700"
+                      : "bg-emerald-50 border-emerald-200 text-emerald-700",
+                    !canEdit && parentLockEnabled && "opacity-60 cursor-not-allowed"
+                  )}
+                  disabled={!canEdit && parentLockEnabled}
+                >
+                  {parentLockEnabled ? "Kilidi Kapat" : "Kilidi Aç"}
+                </button>
+              </div>
+            </div>
+
+            <div className="h-px bg-zinc-100 dark:bg-zinc-800" />
+
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <Shield className="text-zinc-400" />
+                <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">Gizlilik</h2>
+              </div>
+
+              {(privacyError || privacyOk) && (
+                <div
+                  className={cn(
+                    "p-4 rounded-2xl border font-bold",
+                    privacyError
+                      ? "bg-rose-50 border-rose-100 text-rose-700"
+                      : "bg-emerald-50 border-emerald-100 text-emerald-700"
+                  )}
+                >
+                  {privacyError ?? privacyOk}
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button
+                  type="button"
+                  disabled={privacyBusy}
+                  onClick={async () => {
+                    setPrivacyError(null);
+                    setPrivacyOk(null);
+                    setPrivacyBusy(true);
+                    try {
+                      const res = await fetch("/api/privacy/consent", {
+                        method: "POST",
+                        headers: { "content-type": "application/json" },
+                        body: JSON.stringify({ version: 1 }),
+                      });
+                      const data = (await res.json().catch(() => ({}))) as { error?: string };
+                      if (!res.ok) {
+                        setPrivacyError(typeof data.error === "string" ? data.error : "KVKK kaydedilemedi.");
+                        return;
+                      }
+                      setPrivacyOk("KVKK onayı kaydedildi.");
+                    } catch (e) {
+                      setPrivacyError(e instanceof Error ? e.message : "KVKK kaydedilemedi.");
+                    } finally {
+                      setPrivacyBusy(false);
+                    }
+                  }}
+                  className={cn(
+                    "p-5 rounded-2xl border-2 font-black transition-all active:scale-95",
+                    privacyBusy
+                      ? "bg-zinc-100 border-zinc-100 text-zinc-400 cursor-not-allowed"
+                      : "bg-emerald-50 border-emerald-200 text-emerald-700"
+                  )}
+                >
+                  KVKK Kaydet
+                </button>
+
+                <button
+                  type="button"
+                  disabled={privacyBusy}
+                  onClick={async () => {
+                    setPrivacyError(null);
+                    setPrivacyOk(null);
+                    setPrivacyBusy(true);
+                    try {
+                      const res = await fetch("/api/privacy/export", { method: "GET" });
+                      if (!res.ok) {
+                        const data = (await res.json().catch(() => ({}))) as { error?: string };
+                        setPrivacyError(typeof data.error === "string" ? data.error : "Veri indirilemedi.");
+                        return;
+                      }
+                      const blob = await res.blob();
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement("a");
+                      a.href = url;
+                      a.download = `otizm-veri-${new Date().toISOString().slice(0, 10)}.json`;
+                      a.click();
+                      URL.revokeObjectURL(url);
+                      setPrivacyOk("Veri indirildi.");
+                    } catch (e) {
+                      setPrivacyError(e instanceof Error ? e.message : "Veri indirilemedi.");
+                    } finally {
+                      setPrivacyBusy(false);
+                    }
+                  }}
+                  className={cn(
+                    "p-5 rounded-2xl border-2 font-black transition-all active:scale-95",
+                    privacyBusy
+                      ? "bg-zinc-100 border-zinc-100 text-zinc-400 cursor-not-allowed"
+                      : "bg-blue-50 border-blue-200 text-blue-700"
+                  )}
+                >
+                  Veriyi İndir
+                </button>
+
+                <button
+                  type="button"
+                  disabled={privacyBusy}
+                  onClick={async () => {
+                    setPrivacyError(null);
+                    setPrivacyOk(null);
+                    const confirm = window.prompt('Hesabı silmek için "SIL" yazın:');
+                    if (confirm !== "SIL") return;
+                    const password = window.prompt("Şifrenizi girin (hesap silme için):");
+                    if (!password) return;
+
+                    setPrivacyBusy(true);
+                    try {
+                      const res = await fetch("/api/privacy/delete", {
+                        method: "POST",
+                        headers: { "content-type": "application/json" },
+                        body: JSON.stringify({ confirm: "SIL", password }),
+                      });
+                      const data = (await res.json().catch(() => ({}))) as { error?: string };
+                      if (!res.ok) {
+                        setPrivacyError(typeof data.error === "string" ? data.error : "Hesap silinemedi.");
+                        return;
+                      }
+                      window.location.href = "/";
+                    } catch (e) {
+                      setPrivacyError(e instanceof Error ? e.message : "Hesap silinemedi.");
+                    } finally {
+                      setPrivacyBusy(false);
+                    }
+                  }}
+                  className={cn(
+                    "p-5 rounded-2xl border-2 font-black transition-all active:scale-95",
+                    privacyBusy
+                      ? "bg-zinc-100 border-zinc-100 text-zinc-400 cursor-not-allowed"
+                      : "bg-rose-50 border-rose-200 text-rose-700"
+                  )}
+                >
+                  Hesabı Sil
+                </button>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {tab === "yedek" && (
+          <section className="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-xl space-y-6">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">Yedek / Geri Yükle</h2>
+                <p className="text-zinc-500 font-bold text-sm">Verilerini JSON olarak indir veya geri yükle.</p>
+              </div>
+              <button
+                onClick={downloadBackup}
+                className="px-6 py-4 rounded-2xl bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-black uppercase tracking-widest text-xs flex items-center gap-2"
+              >
+                <Download size={18} /> İndir
+              </button>
+            </div>
+
+            <textarea
+              value={backupText}
+              readOnly
+              className="w-full min-h-[220px] p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-mono text-xs"
+            />
+
+            <div className="h-px bg-zinc-100 dark:bg-zinc-800" />
+
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-zinc-700 dark:text-zinc-200 font-black">
+                <Upload size={18} /> Geri Yükle
+              </div>
+              <textarea
+                value={importText}
+                onChange={(e) => setImportText(e.target.value)}
+                className="w-full min-h-[180px] p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-mono text-xs"
+                placeholder="Yedek JSON'u buraya yapıştırın"
+                disabled={!canEdit}
+              />
+              {importError && <div className="font-bold text-rose-700 dark:text-rose-200">{importError}</div>}
+              {importOk && <div className="font-bold text-emerald-700 dark:text-emerald-200">{importOk}</div>}
+              <button
+                onClick={restoreBackup}
+                className={cn(
+                  "px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs transition-all active:scale-95",
+                  canEdit ? "bg-emerald-500 text-white hover:bg-emerald-600" : "bg-zinc-200 text-zinc-500 cursor-not-allowed"
+                )}
+                disabled={!canEdit}
+              >
+                Geri Yükle
+              </button>
+            </div>
+          </section>
+        )}
+      </main>
+    </div>
+  );
+}
