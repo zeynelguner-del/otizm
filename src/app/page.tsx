@@ -419,8 +419,8 @@ export default function Home() {
             <Users size={120} />
           </div>
           
-          <div className="flex justify-between items-start mb-8 relative z-10">
-            <div>
+          <div className="flex flex-col gap-6 sm:flex-row sm:justify-between sm:items-start mb-8 relative z-10">
+            <div className="min-w-0">
               <div className="flex items-center gap-2 mb-1">
                 <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
                 <h2 className="text-xs font-bold text-zinc-400 uppercase tracking-[0.2em]">Sistem Aktif</h2>
@@ -431,16 +431,16 @@ export default function Home() {
                 Giriş: <span className="lowercase">{session.email}</span>
               </p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 self-start sm:self-auto shrink-0">
               <Link
                 href="/family"
-                className="p-4 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all text-zinc-600 dark:text-zinc-400 shadow-sm"
+                className="p-3 sm:p-4 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all text-zinc-600 dark:text-zinc-400 shadow-sm"
               >
                 <Settings size={28} />
               </Link>
               <button
                 onClick={handleLogout}
-                className="px-5 py-4 rounded-2xl bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-black uppercase tracking-widest text-xs hover:opacity-90 transition-all shadow-sm"
+                className="px-4 py-3 sm:px-5 sm:py-4 rounded-2xl bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-black uppercase tracking-widest text-[11px] sm:text-xs hover:opacity-90 transition-all shadow-sm whitespace-nowrap"
               >
                 Çıkış
               </button>
