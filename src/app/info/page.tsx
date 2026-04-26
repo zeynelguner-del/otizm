@@ -31,29 +31,37 @@ export default function InfoPage() {
       title: "Otizm Nedir?", 
       icon: HelpCircle, 
       color: "bg-blue-100 text-blue-600",
-      description: "Otizm spektrum bozukluğu (OSB) hakkında temel bilgiler.",
-      content: "Otizm Spektrum Bozukluğu (OSB), doğuştan gelen ya da yaşamın ilk yıllarında ortaya çıkan karmaşık bir nöro-gelişimsel farklılıktır. Beynin yapısını veya işleyişini etkileyen sinir sistemi sorunlarından kaynaklandığı düşünülmektedir. \n\nTemel özellikleri arasında sosyal etkileşimde zorluklar, sınırlı ve tekrarlayıcı ilgi alanları ile iletişim sorunları yer alır. Her çocukta farklı belirtiler ve şiddet düzeylerinde görüldüğü için 'spektrum' (yelpaze) olarak adlandırılır. Otizm bir hastalık değil, bir gelişimsel farklılıktır ve doğru eğitimle bireyler toplumda aktif roller üstlenebilirler."
+      description:
+        "Otizm Spektrum Bozukluğu’nun ne olduğu, nasıl göründüğü ve neden “spektrum” dendiğine dair anlaşılır bir özet.",
+      content:
+        "Otizm Spektrum Bozukluğu (OSB), gelişimin erken dönemlerinden itibaren sosyal iletişim, davranış ve öğrenme biçiminde farklılıklarla kendini gösterebilen bir nöro-gelişimsel durumdur.\n\nNeden “spektrum” denir?\n- Çünkü belirtiler ve destek ihtiyaçları kişiden kişiye çok değişebilir.\n- Bazı bireyler günlük yaşamda daha az destekle bağımsız olabilirken, bazıları daha yoğun yapılandırılmış destek gerektirebilir.\n\nSık görülen alanlar\n- Sosyal iletişim: karşılıklı sohbet başlatma/sürdürme, jest-mimikleri anlama, ortak dikkat kurma.\n- Davranış örüntüleri: rutin ihtiyacı, tekrar eden davranışlar, sınırlı ilgi alanları.\n- Duyusal farklılıklar: ses, ışık, dokunma, koku gibi uyaranlara aşırı/az duyarlılık.\n\nÖnemli notlar\n- Otizm tek bir “kalıp” değildir; aynı tanıyı alan iki çocuğun güçlü yönleri ve zorlandığı alanlar farklı olabilir.\n- Erken ve düzenli destek (özel eğitim, dil-konuşma, ergoterapi/duyu bütünleme gibi) çocuğun gelişimini ve günlük yaşam becerilerini güçlendirebilir.\n- Amaç “otizmi yok etmek” değil; iletişimi artırmak, bağımsızlığı desteklemek, zorlanmaları azaltmak ve aile yaşamını sürdürülebilir hale getirmektir."
     },
     { 
       title: "Sosyal İletişim", 
       icon: Heart, 
       color: "bg-rose-100 text-rose-600",
-      description: "Göz teması ve sosyal etkileşim destekleri.",
-      content: "Otizmli bireyler için sosyal iletişim, en çok desteklenmesi gereken alanlardan biridir. \n\n- Göz Teması: Zorlamadan, ilgisini çeken nesneler üzerinden doğal yollarla teşvik edilmelidir.\n- Duygu Paylaşımı: Kartlar veya oyunlar aracılığıyla temel duyguların (mutlu, üzgün, kızgın) tanınması çalışılmalıdır.\n- Sıra Bekleme: Oyunlar sırasında 'sıra bende, sıra sende' çalışmaları sosyal etkileşimin temelini atar.\n- Sosyal Öyküler: Karmaşık sosyal durumları basitleştirerek anlatan öyküler, çocuğun ne yapması gerektiğini anlamasına yardımcı olur."
+      description:
+        "Göz teması, ortak dikkat, sırayla oynama ve duygu ifade etme gibi becerileri günlük hayatta desteklemek için pratik öneriler.",
+      content:
+        "Sosyal iletişim; yalnızca konuşmak değil, karşılıklı etkileşim kurmak, sıra almak, ipuçlarını okumak ve duygu paylaşmak gibi birçok becerinin birleşimidir. Otizmli çocuklarda bu beceriler farklı hızlarda gelişebilir.\n\nGünlük hayatta işe yarayan yaklaşımlar\n- Ortak dikkat: Çocuğun ilgisini çeken şeyi birlikte “paylaşma” hedeflenir (ör. oyuncağa bak → sen de bak → kısa bir kelime/işaret). Bu, iletişimin temelidir.\n- Göz teması: Zorlamadan; oyun, şarkı, baloncuk, sevdiği nesne gibi motivasyon veren anlarda çok kısa ve doğal temaslar hedeflenir.\n- İstek belirtme: “İstemek” iletişimi artırır. Çocuğun bir şeyi istemesi için küçük fırsatlar oluştur (ör. bisküviyi kutuda tut, yardım istemesi için bekle).\n- Duygu farkındalığı: Resimler, aynada mimik çalışmaları, kısa videolar ve basit duygu kartları ile “mutlu/üzgün/kızgın/şaşkın” gibi kavramlar pekiştirilebilir.\n- Sıra alma ve paylaşma: “Sıra bende / sıra sende” oyunları (top atma, blok dizme, kart çekme) sosyal etkileşimi güçlendirir.\n\nİletişimi kolaylaştıran destekler\n- Görsel destek: Resimli rutin, adım adım yönerge kartları, “önce-sonra” panosu.\n- Basit ve tutarlı dil: Kısa cümle, net yönerge, aynı kelimeleri tekrar eden rutin ifadeler.\n- Sosyal öyküler: Zor sosyal durumları (market, misafir, oyun parkı) kısa ve somut cümlelerle anlatır; beklenen davranışı netleştirir.\n\nHedef: Çocuğun kendi ihtiyacını anlatabilmesi, zorlandığında destek isteyebilmesi ve küçük ama sürdürülebilir sosyal etkileşimler kurabilmesidir."
     },
     { 
       title: "Duyu Bütünleme", 
       icon: Star, 
       color: "bg-amber-100 text-amber-600",
-      description: "Duyusal hassasiyetler için öneriler.",
-      content: "Duyu bütünleme, çevremizden gelen duyusal bilgileri (ses, ışık, dokunma) beynimizde organize etme sürecidir. Otizmli çocuklarda bu süreç bazen aşırı hassasiyet veya düşük tepki şeklinde görülebilir.\n\n- Ses Hassasiyeti: Kalabalık veya gürültülü ortamlarda gürültü engelleyici kulaklıklar kullanılabilir.\n- Dokunma: Bazı dokular (kum, çamur, kıyafet etiketleri) rahatsız edici olabilir. Çocuğun toleransına göre kademeli alışma çalışmaları yapılabilir.\n- Hareket: Sallanma, zıplama gibi aktiviteler çocuğun kendini sakinleştirmesine yardımcı olabilir.\n- Beslenme: Tat ve doku hassasiyeti nedeniyle yaşanan seçiciliklerde uzman eşliğinde tadım çalışmaları yapılmalıdır."
+      description:
+        "Ses, ışık, dokunma ve hareket gibi duyularda hassasiyet olduğunda evde ve dışarıda uygulanabilecek basit düzenlemeler.",
+      content:
+        "Duyu bütünleme, çevreden gelen duyusal bilgilerin (ses, ışık, dokunma, koku, hareket, denge) beyin tarafından organize edilmesidir. Otizmli çocuklarda duyular bazen “fazla” (aşırı hassas) bazen “az” (az duyarlı) çalışabilir.\n\nSık görülen örnekler\n- Ses: Süpürge, kalabalık, zil gibi seslere aşırı tepki veya tam tersi çok yüksek ses arama.\n- Dokunma: Etiket, dikiş, saç kesimi, tırnak kesimi gibi temaslara hassasiyet.\n- Görsel: Parlak ışıklar, kalabalık görüntü, ekran hassasiyeti.\n- Hareket/denge: Sürekli sallanma/zıplama ihtiyacı veya bazı hareketlerden kaçınma.\n\nEvde uygulanabilecek küçük düzenlemeler\n- “Sakin köşe”: Gürültüyü azaltan, loş ışıklı, yumuşak minderli bir alan.\n- Önceden hazırlık: Yeni bir ortama gitmeden önce kısa açıklama + görsel (nereye, ne kadar, ne olacak).\n- Kademeli alıştırma: Rahatsız eden uyaranla kısa süre + ödül, süreyi yavaş yavaş artırma.\n\nDışarıda pratik çözümler\n- Gürültü engelleyici kulaklık veya kulak tıkacı.\n- Kalabalık saatlerden kaçınma (market/AVM için sakin saatleri seçme).\n- Kıyafet seçiminde etiketsiz/rahat kumaş tercih etme.\n\nBeslenme ve doku seçiciliği\n- “Tek seferde büyük değişim” yerine çok küçük adımlarla ilerlemek daha sürdürülebilirdir (dokunma-koklama-yalama-tatma gibi basamaklar).\n\nDuyusal destekler bireyseldir. En iyi yaklaşım; çocuğun hangi uyaranlarda zorlandığını gözlemlemek, tetikleyicileri azaltmak ve düzenli bir rutinle güvenli alanlar oluşturmaktır."
     },
     { 
       title: "Yasal Haklar", 
       icon: Shield, 
       color: "bg-emerald-100 text-emerald-600",
-      description: "Eğitim ve sağlık hakları hakkında rehber.",
-      content: "Türkiye'de otizmli bireyler ve aileleri için tanımlanmış çeşitli yasal haklar bulunmaktadır:\n\n1. Eğitim Hakları: RAM raporu ile devlet okullarında kaynaştırma eğitimi veya özel eğitim alt sınıflarında eğitim alma hakkı.\n2. Destek Eğitimi: Rehabilitasyon merkezlerinden ücretsiz seans desteği (belirli saatlerde).\n3. Vergi Muafiyetleri: ÖTV indirimi, Emlak vergisi muafiyeti gibi ekonomik destekler.\n4. Sağlık Hizmetleri: Hastanelerde öncelik hakkı ve ücretsiz ilaç/tedavi imkanları.\n5. Bakım Aylığı: Belirli gelir kriterlerini karşılayan aileler için evde bakım desteği ödemeleri.\n\nBu haklardan yararlanmak için 'ÇÖZGER' (Çocuklar İçin Özel Gereksinim Raporu) alınması şarttır."
+      description:
+        "RAM, ÇÖZGER ve rehabilitasyon süreçlerinde hangi haklara başvurulabileceğini ve hangi adımlarla ilerlenebileceğini anlatan pratik rehber.",
+      content:
+        "Türkiye’de otizmli çocuklar ve aileleri için eğitim, sağlık ve sosyal destek alanlarında çeşitli haklar bulunur. Başvuru süreçleri şehirden şehire değişebilse de temel yol haritası benzerdir.\n\nSık kullanılan rapor ve kurumlar\n- ÇÖZGER: Çocuklar için özel gereksinim raporu; birçok başvuruda temel belgedir.\n- RAM (Rehberlik ve Araştırma Merkezi): Eğitim değerlendirmesi ve yönlendirme süreçlerini yürütür.\n\nEğitimle ilgili haklar (genel çerçeve)\n- Kaynaştırma/bütünleştirme uygulamaları ve uygun destekler.\n- Özel eğitim hizmetlerinden yararlanma ve uygun planlamalar.\n- Okulda uyarlama: sınıf içi düzenlemeler, görsel destekler, bireyselleştirilmiş hedefler.\n\nDestek eğitim (rehabilitasyon)\n- Raporlara bağlı olarak belirli süre/saatlerde destek eğitim hizmeti.\n- Eğitim programının çocuğun ihtiyacına göre şekillenmesi (iletişim, sosyal beceri, davranış, akademik öncül beceriler).\n\nSağlık ve sosyal destekler\n- Bazı durumlarda hastanelerde öncelik uygulamaları.\n- Sosyal destekler/yardımlar (gelir kriterlerine göre değişebilir).\n\nPratik öneri\n- Belgeleri tek bir klasörde topla (rapor, sevk, randevu çıktıları, okul yazışmaları).\n- Süreçte en çok ihtiyaç duyulan şey “takip”tir: randevu, rapor yenileme, okul/merkez görüşmeleri.\n\nNot: Hakların kapsamı ve koşulları zamanla değişebilir; en güncel bilgi için bulunduğun il/ilçedeki RAM ve ilgili kamu kurumlarından doğrulama yapmak en güvenlisidir."
     }
   ];
 
@@ -85,7 +93,8 @@ export default function InfoPage() {
             </span>
             <h2 className="text-4xl font-black text-zinc-900 dark:text-zinc-50 mb-6 tracking-tight">{featuredGuide.title}</h2>
             <p className="text-xl text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed mb-8">
-              Tanı sonrası süreçte yapılması gerekenler, eğitim planlaması ve aile desteği hakkında kapsamlı başlangıç kılavuzu.
+              Tanı sonrası süreçte “nereden başlamalıyım?” sorusuna adım adım yanıt verir: duygusal destek, özel eğitim planlaması,
+              rapor ve başvuru süreçleri, ev rutini ve yakın çevreyle iletişim gibi konularda anlaşılır bir başlangıç kılavuzu.
             </p>
             <button 
               onClick={() => setSelectedContent({ ...featuredGuide, color: "bg-blue-100 text-blue-600" })}
