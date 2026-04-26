@@ -374,7 +374,10 @@ export default function CalendarPage() {
       </header>
 
       <main className="max-w-3xl mx-auto space-y-8">
-        <section className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-xl space-y-6">
+        <section
+          id="rewards"
+          className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-xl space-y-6 scroll-mt-6"
+        >
           <div className="flex items-center justify-between gap-6">
             <h2 className="text-2xl font-black tracking-tight flex items-center gap-3">
               <Star className="text-amber-500" /> Ödül Yıldızı

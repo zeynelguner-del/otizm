@@ -122,7 +122,7 @@ export default function GamesPage() {
           </div>
         </div>
         <Link
-          href="/calendar"
+          href="/calendar#rewards"
           className="px-6 py-3 bg-white text-zinc-900 rounded-xl font-black text-sm uppercase tracking-widest hover:bg-zinc-100 transition-all"
         >
           Ödülleri Gör
