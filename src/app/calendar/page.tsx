@@ -1,5 +1,5 @@
 "use client";
-import { ArrowLeft, Clock, CheckCircle2, ChevronRight, ChevronLeft, Play, Pause, RotateCcw, AlarmClock, Star } from "lucide-react";
+import { ArrowLeft, Clock, CheckCircle2, ChevronRight, ChevronLeft, Play, Pause, RotateCcw, AlarmClock } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { cn } from "@/lib/utils";
@@ -325,31 +325,6 @@ export default function CalendarPage() {
     return `${m}:${s < 10 ? `0${s}` : s}`;
   };
 
-  const rewardOptions = useMemo(
-    () => [
-      { label: "Çıkartma", cost: 5, emoji: "⭐" },
-      { label: "5 dk oyun", cost: 10, emoji: "🎮" },
-      { label: "Sevdiğin şarkı", cost: 10, emoji: "🎵" },
-      { label: "Park", cost: 20, emoji: "🛝" },
-    ],
-    []
-  );
-
-  const redeemReward = (label: string, cost: number) => {
-    if (tokenBalance < cost) {
-      setRewardToast("Yeterli yıldız yok");
-      window.setTimeout(() => setRewardToast(null), 1200);
-      speak("Yeterli yıldız yok.");
-      return;
-    }
-    const nextTokens = tokenBalance - cost;
-    setTokenBalance(nextTokens);
-    setNumber(TOKENS_KEY, nextTokens);
-    setRewardToast(`Ödül seçildi: ${label}`);
-    window.setTimeout(() => setRewardToast(null), 1400);
-    speak(`Ödül: ${label}.`);
-  };
-
   const setFirstThenValue = (key: "first" | "then", value: string) => {
     setFirstThen((prev) => {
       const next = { ...prev, [key]: value };
@@ -374,43 +349,11 @@ export default function CalendarPage() {
       </header>
 
       <main className="max-w-3xl mx-auto space-y-8">
-        <section
-          id="rewards"
-          className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-xl space-y-6 scroll-mt-6"
-        >
-          <div className="flex items-center justify-between gap-6">
-            <h2 className="text-2xl font-black tracking-tight flex items-center gap-3">
-              <Star className="text-amber-500" /> Ödül Yıldızı
-            </h2>
-            <div className="px-5 py-3 rounded-2xl bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-200 font-black">
-              {tokenBalance}
-            </div>
+        {rewardToast && (
+          <div className="bg-white dark:bg-zinc-900 p-5 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-xl">
+            <div className="font-black text-emerald-600 dark:text-emerald-300">{rewardToast}</div>
           </div>
-          {rewardToast && <div className="font-black text-emerald-600 dark:text-emerald-300">{rewardToast}</div>}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {rewardOptions.map((r) => (
-              <button
-                key={r.label}
-                type="button"
-                onClick={() => redeemReward(r.label, r.cost)}
-                className={cn(
-                  "p-5 rounded-2xl border-2 font-black transition-all active:scale-95 text-left flex items-center justify-between",
-                  tokenBalance >= r.cost
-                    ? "bg-zinc-50 dark:bg-zinc-950 border-zinc-100 dark:border-zinc-800 text-zinc-900 dark:text-zinc-50"
-                    : "bg-zinc-50/70 dark:bg-zinc-950/50 border-zinc-100 dark:border-zinc-800 text-zinc-400"
-                )}
-              >
-                <span className="flex items-center gap-3">
-                  <span className="text-2xl">{r.emoji}</span>
-                  <span>{r.label}</span>
-                </span>
-                <span className="px-3 py-2 rounded-xl bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-200">
-                  {r.cost}
-                </span>
-              </button>
-            ))}
-          </div>
-        </section>
+        )}
 
         <section className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-xl space-y-6">
           <h2 className="text-2xl font-black tracking-tight flex items-center gap-3">

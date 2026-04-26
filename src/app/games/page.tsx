@@ -3,7 +3,7 @@
 import { ArrowLeft, Layers, Palette, Hash, Star } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { useEffect, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 
 const TOKENS_KEY = "tokenBalanceV1";
 const TOKENS_EVENT = "token-storage";
@@ -36,8 +36,17 @@ const getTokensSnapshot = () => {
   return cachedTokenParsed;
 };
 
+const setNumber = (key: string, value: number) => {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(key, String(value));
+    if (key === TOKENS_KEY) window.dispatchEvent(new Event(TOKENS_EVENT));
+  } catch {}
+};
+
 export default function GamesPage() {
   const tokens = useSyncExternalStore(subscribeToTokens, getTokensSnapshot, () => 0);
+  const [rewardToast, setRewardToast] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -74,6 +83,25 @@ export default function GamesPage() {
       color: "bg-purple-100 text-purple-600 border-purple-200 hover:bg-purple-200",
     },
   ];
+
+  const rewardOptions = [
+    { label: "Çıkartma", cost: 5, emoji: "⭐" },
+    { label: "5 dk oyun", cost: 10, emoji: "🎮" },
+    { label: "Sevdiğin şarkı", cost: 10, emoji: "🎵" },
+    { label: "Park", cost: 20, emoji: "🛝" },
+  ];
+
+  const redeemReward = (label: string, cost: number) => {
+    if (tokens < cost) {
+      setRewardToast("Yeterli yıldız yok");
+      window.setTimeout(() => setRewardToast(null), 1200);
+      return;
+    }
+    const nextTokens = tokens - cost;
+    setNumber(TOKENS_KEY, nextTokens);
+    setRewardToast(`Ödül seçildi: ${label}`);
+    window.setTimeout(() => setRewardToast(null), 1400);
+  };
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-6 md:p-12">
@@ -113,20 +141,41 @@ export default function GamesPage() {
       </main>
 
       {/* Reward Section */}
-      <section className="max-w-4xl mx-auto mt-12 bg-zinc-900 dark:bg-zinc-800 p-8 rounded-[2.5rem] text-white flex items-center justify-between shadow-2xl">
-        <div className="flex items-center gap-6">
-          <div className="text-4xl">🏆</div>
-          <div>
-            <h3 className="text-xl font-black tracking-tight">Günün Başarısı</h3>
-            <p className="text-zinc-400 font-bold">Toplam yıldız: {tokens}</p>
+      <section className="max-w-4xl mx-auto mt-12 bg-zinc-900 dark:bg-zinc-800 p-8 rounded-[2.5rem] text-white shadow-2xl space-y-6">
+        <div className="flex items-center justify-between gap-6">
+          <div className="flex items-center gap-6">
+            <div className="text-4xl">🏆</div>
+            <div>
+              <h3 className="text-xl font-black tracking-tight">Ödüller</h3>
+              <p className="text-zinc-400 font-bold">Toplam yıldız: {tokens}</p>
+            </div>
           </div>
+          <div className="px-5 py-3 rounded-2xl bg-white/10 font-black">{tokens}</div>
         </div>
-        <Link
-          href="/calendar#rewards"
-          className="px-6 py-3 bg-white text-zinc-900 rounded-xl font-black text-sm uppercase tracking-widest hover:bg-zinc-100 transition-all"
-        >
-          Ödülleri Gör
-        </Link>
+
+        {rewardToast && <div className="font-black text-emerald-300">{rewardToast}</div>}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {rewardOptions.map((r) => (
+            <button
+              key={r.label}
+              type="button"
+              onClick={() => redeemReward(r.label, r.cost)}
+              className={cn(
+                "p-5 rounded-2xl border-2 font-black transition-all active:scale-95 text-left flex items-center justify-between",
+                tokens >= r.cost
+                  ? "bg-white/10 border-white/10 text-white hover:bg-white/15"
+                  : "bg-white/5 border-white/10 text-white/40"
+              )}
+            >
+              <span className="flex items-center gap-3">
+                <span className="text-2xl">{r.emoji}</span>
+                <span>{r.label}</span>
+              </span>
+              <span className="px-3 py-2 rounded-xl bg-black/20">{r.cost}</span>
+            </button>
+          ))}
+        </div>
       </section>
     </div>
   );
