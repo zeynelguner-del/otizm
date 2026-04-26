@@ -3,28 +3,60 @@ import { ArrowLeft, Music, Play, Pause, Volume2, SkipForward } from "lucide-reac
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 
+type AmbientKind = "ocean" | "rain" | "wind" | "white" | "pink" | "brown";
+
+type MelodyKind = "calm" | "focus" | "happy";
+
+type AmbientTrack = { title: string; duration: string; category: string; mode: "ambient"; kind: AmbientKind };
+
+type MelodyTrack = { title: string; duration: string; category: string; mode: "melody"; kind: MelodyKind };
+
+type Track = AmbientTrack | MelodyTrack;
+
+const parseDurationSeconds = (value: string) => {
+  const [mRaw, sRaw] = value.trim().split(":");
+  const minutes = Number(mRaw);
+  const seconds = Number(sRaw);
+  if (!Number.isFinite(minutes) || !Number.isFinite(seconds)) return 0;
+  return Math.max(0, Math.round(minutes * 60 + seconds));
+};
+
+const formatSeconds = (totalSeconds: number) => {
+  const s = Math.max(0, Math.floor(totalSeconds));
+  const mm = Math.floor(s / 60);
+  const ss = s % 60;
+  return `${mm}:${String(ss).padStart(2, "0")}`;
+};
+
 export default function MusicPage() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [volume, setVolume] = useState(0.35);
+  const [playbackTotalSeconds, setPlaybackTotalSeconds] = useState<number | null>(null);
+  const [playbackRemainingSeconds, setPlaybackRemainingSeconds] = useState<number | null>(null);
+  const [playbackIndex, setPlaybackIndex] = useState<number | null>(null);
 
   const tracks = useMemo(
-    () => [
-      { title: "Sakinleştirici Doğa", duration: "3:45", category: "Ritim", mode: "beep" as const },
-      { title: "Odaklanma Müziği", duration: "5:20", category: "Terapi", mode: "beep" as const },
-      { title: "Neşeli Çocuk Şarkısı", duration: "2:15", category: "Eğlence", mode: "beep" as const },
-      { title: "Deniz Sesi", duration: "10:00", category: "Uyku", mode: "noise" as const },
+    (): Track[] => [
+      { title: "Sakinleştirici Melodi", duration: "3:45", category: "Müzik", mode: "melody", kind: "calm" },
+      { title: "Odak Ritmi", duration: "5:20", category: "Müzik", mode: "melody", kind: "focus" },
+      { title: "Neşeli Çocuk Melodisi", duration: "2:15", category: "Müzik", mode: "melody", kind: "happy" },
+      { title: "Deniz Sesi", duration: "10:00", category: "Uyku", mode: "ambient", kind: "ocean" },
+      { title: "Yağmur Sesi", duration: "10:00", category: "Sakinleşme", mode: "ambient", kind: "rain" },
+      { title: "Rüzgar Sesi", duration: "10:00", category: "Sakinleşme", mode: "ambient", kind: "wind" },
+      { title: "Beyaz Gürültü", duration: "10:00", category: "Odak", mode: "ambient", kind: "white" },
+      { title: "Pembe Gürültü", duration: "10:00", category: "Odak", mode: "ambient", kind: "pink" },
+      { title: "Kahverengi Gürültü", duration: "10:00", category: "Uyku", mode: "ambient", kind: "brown" },
     ],
     []
   );
 
   const audioCtxRef = useRef<AudioContext | null>(null);
   const masterGainRef = useRef<GainNode | null>(null);
-  const noiseSourceRef = useRef<AudioBufferSourceNode | null>(null);
-  const lfoRef = useRef<OscillatorNode | null>(null);
-  const lfoGainRef = useRef<GainNode | null>(null);
-  const tickTimerRef = useRef<number | null>(null);
-  const stepRef = useRef(0);
+  const cleanupRef = useRef<(() => void)[]>([]);
+  const countdownEndAtMsRef = useRef<number | null>(null);
+  const countdownTotalSecondsRef = useRef<number>(0);
+  const countdownIndexRef = useRef<number>(0);
 
   const nowPlaying = useMemo(() => tracks[selectedIndex] ?? tracks[0], [selectedIndex, tracks]);
 
@@ -42,40 +74,84 @@ export default function MusicPage() {
   };
 
   const stopPlayback = () => {
-    if (tickTimerRef.current) {
-      window.clearInterval(tickTimerRef.current);
-      tickTimerRef.current = null;
-    }
-
-    if (noiseSourceRef.current) {
+    const fns = cleanupRef.current.splice(0, cleanupRef.current.length);
+    for (const fn of fns.reverse()) {
       try {
-        noiseSourceRef.current.stop();
+        fn();
       } catch {}
-      try {
-        noiseSourceRef.current.disconnect();
-      } catch {}
-      noiseSourceRef.current = null;
-    }
-
-    if (lfoRef.current) {
-      try {
-        lfoRef.current.stop();
-      } catch {}
-      try {
-        lfoRef.current.disconnect();
-      } catch {}
-      lfoRef.current = null;
-    }
-
-    if (lfoGainRef.current) {
-      try {
-        lfoGainRef.current.disconnect();
-      } catch {}
-      lfoGainRef.current = null;
     }
   };
 
-  const startNoise = async () => {
+  const startCountdown = (idx: number, totalSeconds: number, remainingSeconds: number) => {
+    countdownIndexRef.current = idx;
+    countdownTotalSecondsRef.current = totalSeconds;
+    countdownEndAtMsRef.current = Date.now() + remainingSeconds * 1000;
+    setPlaybackTotalSeconds(totalSeconds);
+    setPlaybackRemainingSeconds(remainingSeconds);
+    setPlaybackIndex(idx);
+
+    const timer = window.setInterval(() => {
+      const endAt = countdownEndAtMsRef.current;
+      const total = countdownTotalSecondsRef.current;
+      if (!endAt || total <= 0) return;
+
+      const remaining = Math.max(0, Math.ceil((endAt - Date.now()) / 1000));
+      setPlaybackRemainingSeconds(remaining);
+
+      if (remaining <= 0) {
+        stopPlayback();
+        setIsPlaying(false);
+        setPlaybackRemainingSeconds(total);
+        setPlaybackIndex(idx);
+        countdownEndAtMsRef.current = null;
+      }
+    }, 250);
+
+    cleanupRef.current.push(() => window.clearInterval(timer));
+  };
+
+  const createNoiseBuffer = (ctx: AudioContext, seconds: number, kind: AmbientKind) => {
+    const buffer = ctx.createBuffer(1, ctx.sampleRate * seconds, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+
+    if (kind === "brown") {
+      let last = 0;
+      for (let i = 0; i < data.length; i += 1) {
+        const white = Math.random() * 2 - 1;
+        last = (last + 0.02 * white) / 1.02;
+        data[i] = last * 3.2;
+      }
+      return buffer;
+    }
+
+    if (kind === "pink") {
+      let b0 = 0;
+      let b1 = 0;
+      let b2 = 0;
+      let b3 = 0;
+      let b4 = 0;
+      let b5 = 0;
+      let b6 = 0;
+      for (let i = 0; i < data.length; i += 1) {
+        const white = Math.random() * 2 - 1;
+        b0 = 0.99886 * b0 + white * 0.0555179;
+        b1 = 0.99332 * b1 + white * 0.0750759;
+        b2 = 0.969 * b2 + white * 0.153852;
+        b3 = 0.8665 * b3 + white * 0.3104856;
+        b4 = 0.55 * b4 + white * 0.5329522;
+        b5 = -0.7616 * b5 - white * 0.016898;
+        const pink = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+        b6 = white * 0.115926;
+        data[i] = pink * 0.15;
+      }
+      return buffer;
+    }
+
+    for (let i = 0; i < data.length; i += 1) data[i] = (Math.random() * 2 - 1) * 0.7;
+    return buffer;
+  };
+
+  const startAmbient = async (kind: AmbientKind) => {
     const ctx = ensureAudio();
     const masterGain = masterGainRef.current;
     if (!ctx || !masterGain) return;
@@ -83,100 +159,286 @@ export default function MusicPage() {
     stopPlayback();
 
     const bufferSeconds = 2;
-    const buffer = ctx.createBuffer(1, ctx.sampleRate * bufferSeconds, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < data.length; i += 1) data[i] = (Math.random() * 2 - 1) * 0.7;
-
+    const buffer = createNoiseBuffer(ctx, bufferSeconds, kind);
     const source = ctx.createBufferSource();
     source.buffer = buffer;
     source.loop = true;
 
+    const preGain = ctx.createGain();
+    preGain.gain.value = 0.9;
+
     const filter = ctx.createBiquadFilter();
-    filter.type = "lowpass";
-    filter.frequency.value = 900;
     filter.Q.value = 0.6;
+
+    const shapeGain = ctx.createGain();
+    shapeGain.gain.value = 0.9;
 
     const lfo = ctx.createOscillator();
     lfo.type = "sine";
-    lfo.frequency.value = 0.12;
 
     const lfoGain = ctx.createGain();
-    lfoGain.gain.value = 550;
+
+    if (kind === "ocean") {
+      filter.type = "lowpass";
+      filter.frequency.value = 900;
+      lfo.frequency.value = 0.11;
+      lfoGain.gain.value = 520;
+      shapeGain.gain.value = 0.9;
+    } else if (kind === "rain") {
+      filter.type = "highpass";
+      filter.frequency.value = 1400;
+      lfo.frequency.value = 0.18;
+      lfoGain.gain.value = 900;
+      shapeGain.gain.value = 0.75;
+    } else if (kind === "wind") {
+      filter.type = "lowpass";
+      filter.frequency.value = 650;
+      lfo.frequency.value = 0.06;
+      lfoGain.gain.value = 380;
+      shapeGain.gain.value = 0.8;
+    } else if (kind === "white") {
+      filter.type = "lowpass";
+      filter.frequency.value = 14000;
+      lfo.frequency.value = 0.0;
+      lfoGain.gain.value = 0;
+      shapeGain.gain.value = 0.55;
+    } else if (kind === "pink") {
+      filter.type = "lowpass";
+      filter.frequency.value = 11000;
+      lfo.frequency.value = 0.0;
+      lfoGain.gain.value = 0;
+      shapeGain.gain.value = 0.7;
+    } else {
+      filter.type = "lowpass";
+      filter.frequency.value = 3000;
+      lfo.frequency.value = 0.0;
+      lfoGain.gain.value = 0;
+      shapeGain.gain.value = 0.75;
+    }
+
+    source.connect(preGain);
+    preGain.connect(filter);
+    filter.connect(shapeGain);
+    shapeGain.connect(masterGain);
 
     lfo.connect(lfoGain);
-    lfoGain.connect(filter.frequency);
+    if (lfoGain.gain.value > 0) lfoGain.connect(filter.frequency);
 
-    source.connect(filter);
-    filter.connect(masterGain);
+    cleanupRef.current.push(() => {
+      try {
+        source.stop();
+      } catch {}
+      try {
+        source.disconnect();
+      } catch {}
+    });
+    cleanupRef.current.push(() => {
+      try {
+        lfo.stop();
+      } catch {}
+      try {
+        lfo.disconnect();
+      } catch {}
+    });
+    cleanupRef.current.push(() => {
+      try {
+        lfoGain.disconnect();
+      } catch {}
+    });
+    cleanupRef.current.push(() => {
+      try {
+        shapeGain.disconnect();
+      } catch {}
+    });
+    cleanupRef.current.push(() => {
+      try {
+        filter.disconnect();
+      } catch {}
+    });
+    cleanupRef.current.push(() => {
+      try {
+        preGain.disconnect();
+      } catch {}
+    });
 
-    noiseSourceRef.current = source;
-    lfoRef.current = lfo;
-    lfoGainRef.current = lfoGain;
-
-    lfo.start();
+    if (lfoGain.gain.value > 0) lfo.start();
     source.start();
   };
 
-  const startBeeps = async (idx: number) => {
+  const midiToHz = (midi: number) => 440 * Math.pow(2, (midi - 69) / 12);
+
+  const startMelody = async (kind: MelodyKind) => {
     const ctx = ensureAudio();
     const masterGain = masterGainRef.current;
     if (!ctx || !masterGain) return;
     await ctx.resume();
     stopPlayback();
-    stepRef.current = 0;
 
-    const patterns: Record<number, number[]> = {
-      0: [261.63, 293.66, 329.63, 293.66, 261.63, 220.0, 246.94, 261.63],
-      1: [220.0, 220.0, 246.94, 220.0, 196.0, 220.0, 246.94, 261.63],
-      2: [329.63, 392.0, 440.0, 392.0, 349.23, 392.0, 440.0, 523.25],
+    const cfg: Record<
+      MelodyKind,
+      {
+        bpm: number;
+        osc: OscillatorType;
+        filterHz: number;
+        gain: number;
+        steps: Array<number | null>;
+      }
+    > = {
+      calm: {
+        bpm: 76,
+        osc: "sine",
+        filterHz: 2200,
+        gain: 0.5,
+        steps: [
+          60,
+          null,
+          64,
+          null,
+          67,
+          null,
+          64,
+          null,
+          62,
+          null,
+          65,
+          null,
+          69,
+          null,
+          65,
+          null,
+        ],
+      },
+      focus: {
+        bpm: 92,
+        osc: "triangle",
+        filterHz: 1800,
+        gain: 0.45,
+        steps: [
+          57,
+          null,
+          60,
+          null,
+          64,
+          null,
+          60,
+          null,
+          57,
+          null,
+          60,
+          null,
+          65,
+          null,
+          60,
+          null,
+        ],
+      },
+      happy: {
+        bpm: 108,
+        osc: "triangle",
+        filterHz: 2600,
+        gain: 0.5,
+        steps: [
+          60,
+          64,
+          67,
+          null,
+          67,
+          69,
+          71,
+          null,
+          72,
+          71,
+          69,
+          null,
+          67,
+          64,
+          62,
+          null,
+        ],
+      },
     };
 
-    const waveform: Record<number, OscillatorType> = {
-      0: "sine",
-      1: "triangle",
-      2: "square",
-    };
+    const { bpm, osc, filterHz, gain, steps } = cfg[kind];
+    const stepSeconds = (60 / bpm) / 2;
+    let step = 0;
 
-    const sequence = patterns[idx] ?? patterns[0];
-    const oscType = waveform[idx] ?? "sine";
+    const filter = ctx.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.frequency.value = filterHz;
+    filter.Q.value = 0.7;
+
+    const musicGain = ctx.createGain();
+    musicGain.gain.value = gain;
+
+    musicGain.connect(filter);
+    filter.connect(masterGain);
 
     const tick = () => {
-      const i = stepRef.current % sequence.length;
-      stepRef.current += 1;
-      const freq = sequence[i];
+      const note = steps[step % steps.length];
+      step += 1;
+      if (!note) return;
 
-      const osc = ctx.createOscillator();
-      osc.type = oscType;
-      osc.frequency.value = freq;
+      const t0 = ctx.currentTime + 0.02;
+      const dur = stepSeconds * 0.85;
+
+      const oscNode = ctx.createOscillator();
+      oscNode.type = osc;
+      oscNode.frequency.value = midiToHz(note);
 
       const env = ctx.createGain();
       env.gain.value = 0;
 
-      osc.connect(env);
-      env.connect(masterGain);
+      oscNode.connect(env);
+      env.connect(musicGain);
 
-      const t0 = ctx.currentTime;
-      env.gain.setValueAtTime(0, t0);
-      env.gain.linearRampToValueAtTime(0.8, t0 + 0.02);
-      env.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.18);
+      env.gain.setValueAtTime(0.0001, t0);
+      env.gain.exponentialRampToValueAtTime(0.7, t0 + 0.02);
+      env.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
 
-      osc.start(t0);
-      osc.stop(t0 + 0.2);
+      oscNode.start(t0);
+      oscNode.stop(t0 + dur + 0.02);
+
+      cleanupRef.current.push(() => {
+        try {
+          oscNode.disconnect();
+        } catch {}
+        try {
+          env.disconnect();
+        } catch {}
+      });
     };
 
     tick();
-    tickTimerRef.current = window.setInterval(tick, 430);
+    const timer = window.setInterval(tick, stepSeconds * 1000);
+
+    cleanupRef.current.push(() => window.clearInterval(timer));
+    cleanupRef.current.push(() => {
+      try {
+        filter.disconnect();
+      } catch {}
+    });
+    cleanupRef.current.push(() => {
+      try {
+        musicGain.disconnect();
+      } catch {}
+    });
   };
 
-  const startPlayback = async (idx: number) => {
+  const startPlayback = async (idx: number, opts?: { resume?: boolean }) => {
+    const track = tracks[idx] ?? tracks[0];
+    const totalSeconds = parseDurationSeconds(track.duration);
+    const remainingSeconds = opts?.resume
+      ? Math.min(playbackRemainingSeconds ?? totalSeconds, totalSeconds)
+      : totalSeconds;
+
     setSelectedIndex(idx);
     setIsPlaying(true);
-    const track = tracks[idx] ?? tracks[0];
-    if (track.mode === "noise") {
-      await startNoise();
-    } else {
-      await startBeeps(idx);
-    }
+    stopPlayback();
+
+    if (track.mode === "ambient") await startAmbient(track.kind);
+    else await startMelody(track.kind);
+
+    if (totalSeconds > 0) startCountdown(idx, totalSeconds, remainingSeconds);
   };
 
   const togglePlay = async () => {
@@ -185,7 +447,7 @@ export default function MusicPage() {
       setIsPlaying(false);
       return;
     }
-    await startPlayback(selectedIndex);
+    await startPlayback(selectedIndex, { resume: true });
   };
 
   useEffect(() => {
@@ -205,6 +467,24 @@ export default function MusicPage() {
       }
     };
   }, []);
+
+  const totalSecondsForSelected = useMemo(() => {
+    const t = tracks[selectedIndex] ?? tracks[0];
+    return parseDurationSeconds(t.duration);
+  }, [selectedIndex, tracks]);
+
+  const effectiveRemainingSeconds =
+    playbackRemainingSeconds !== null && playbackIndex === selectedIndex
+      ? playbackRemainingSeconds
+      : totalSecondsForSelected;
+
+  const effectiveTotalSeconds =
+    playbackTotalSeconds !== null && playbackIndex === selectedIndex
+      ? playbackTotalSeconds
+      : totalSecondsForSelected;
+
+  const progressPercent =
+    effectiveTotalSeconds > 0 ? Math.min(100, Math.max(0, ((effectiveTotalSeconds - effectiveRemainingSeconds) / effectiveTotalSeconds) * 100)) : 0;
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-6 md:p-12">
@@ -237,7 +517,11 @@ export default function MusicPage() {
             <p className="text-indigo-100 font-bold mb-8">{nowPlaying.category} Çalışması</p>
             
             <div className="w-full bg-white/20 h-2 rounded-full mb-8 overflow-hidden">
-              <div className="bg-white h-full w-1/3 rounded-full" />
+              <div className="bg-white h-full rounded-full transition-all" style={{ width: `${progressPercent}%` }} />
+            </div>
+
+            <div className="mb-6 text-indigo-100 font-black tabular-nums tracking-widest">
+              {formatSeconds(effectiveRemainingSeconds)} / {formatSeconds(effectiveTotalSeconds)}
             </div>
             
             <div className="flex items-center gap-8">
@@ -245,7 +529,10 @@ export default function MusicPage() {
                 onClick={() => startPlayback((selectedIndex - 1 + tracks.length) % tracks.length)}
                 className="p-3 hover:bg-white/10 rounded-full transition-colors"
               >
-                <SkipForward size={32} className="rotate-180" />
+                <span className="flex items-center gap-3 font-black">
+                  <SkipForward size={28} className="rotate-180" />
+                  <span>Geri</span>
+                </span>
               </button>
               <button 
                 onClick={togglePlay}
@@ -257,7 +544,10 @@ export default function MusicPage() {
                 onClick={() => startPlayback((selectedIndex + 1) % tracks.length)}
                 className="p-3 hover:bg-white/10 rounded-full transition-colors"
               >
-                <SkipForward size={32} />
+                <span className="flex items-center gap-3 font-black">
+                  <span>İleri</span>
+                  <SkipForward size={28} />
+                </span>
               </button>
             </div>
           </div>
@@ -275,7 +565,18 @@ export default function MusicPage() {
             {tracks.map((track, i) => (
               <button 
                 key={i}
-                onClick={() => startPlayback(i)}
+                onClick={() => {
+                  if (i === selectedIndex) {
+                    if (isPlaying) {
+                      stopPlayback();
+                      setIsPlaying(false);
+                      return;
+                    }
+                    void startPlayback(i, { resume: true });
+                    return;
+                  }
+                  void startPlayback(i);
+                }}
                 className="w-full flex items-center justify-between p-5 rounded-2xl hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all group border border-transparent hover:border-zinc-100 dark:hover:border-zinc-700"
               >
                 <div className="flex items-center gap-5">
@@ -288,7 +589,11 @@ export default function MusicPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className="text-zinc-400 font-bold tabular-nums">{track.duration}</span>
+                  <span className="text-zinc-400 font-bold tabular-nums">
+                    {i === selectedIndex && playbackRemainingSeconds !== null && playbackIndex === i
+                      ? formatSeconds(playbackRemainingSeconds)
+                      : track.duration}
+                  </span>
                   {isPlaying && i === selectedIndex ? (
                     <Pause size={20} className="text-indigo-500 transition-colors" />
                   ) : (

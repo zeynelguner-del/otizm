@@ -135,16 +135,18 @@ export default function ACCPage() {
   const [favorites, setFavorites] = useState<string[]>(() => readJson<string[]>(FAVORITES_KEY, []));
   const [customCards, setCustomCards] = useState<Card[]>(() => readJson<Card[]>(CUSTOM_CARDS_KEY, []));
 
+  const customCardIdSet = useMemo(() => new Set(customCards.map((c) => c.id)), [customCards]);
+
   const [customLabel, setCustomLabel] = useState("");
   const [customEmoji, setCustomEmoji] = useState("");
   const [customColor, setCustomColor] = useState("bg-zinc-100 text-zinc-700 border-zinc-200");
   const [customImageDataUrl, setCustomImageDataUrl] = useState<string | null>(null);
 
-  const [sentenceWho, setSentenceWho] = useState("Ben");
+  const [sentenceWho, setSentenceWho] = useState<string | null>("Ben");
   const [sentenceWhat, setSentenceWhat] = useState<string | null>(null);
   const [sentenceWhere, setSentenceWhere] = useState<string | null>(null);
   const [sentenceWhen, setSentenceWhen] = useState<string | null>(null);
-  const [sentenceVerb, setSentenceVerb] = useState("istiyorum");
+  const [sentenceVerb, setSentenceVerb] = useState<string | null>("istiyorum");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -210,11 +212,13 @@ export default function ACCPage() {
   }, [favoritesCategory, customCategory]);
 
   const sentenceText = useMemo(() => {
-    const parts = [sentenceWho];
+    const parts: string[] = [];
+    if (sentenceWho) parts.push(sentenceWho);
     if (sentenceWhat) parts.push(sentenceWhat);
     if (sentenceWhere) parts.push(sentenceWhere);
     if (sentenceWhen) parts.push(sentenceWhen);
-    parts.push(sentenceVerb);
+    if (sentenceVerb) parts.push(sentenceVerb);
+    if (parts.length === 0) return "";
     return `${parts.join(" ")}.`;
   }, [sentenceWho, sentenceWhat, sentenceWhere, sentenceWhen, sentenceVerb]);
 
@@ -232,6 +236,20 @@ export default function ACCPage() {
     setCustomLabel("");
     setCustomEmoji("");
     setCustomImageDataUrl(null);
+  };
+
+  const deleteCustomCard = (cardId: string) => {
+    setCustomCards((prev) => {
+      const next = prev.filter((c) => c.id !== cardId);
+      writeJson(CUSTOM_CARDS_KEY, next);
+      return next;
+    });
+    setFavorites((prev) => {
+      if (!prev.includes(cardId)) return prev;
+      const next = prev.filter((x) => x !== cardId);
+      writeJson(FAVORITES_KEY, next);
+      return next;
+    });
   };
 
   const onPickCustomImage = (file: File | null) => {
@@ -276,7 +294,7 @@ export default function ACCPage() {
           <h2 className="text-xl font-black text-zinc-400 uppercase tracking-widest px-2">Cümle Kur</h2>
 
           <div className="p-6 rounded-3xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-black text-2xl text-zinc-900 dark:text-zinc-50">
-            {sentenceText}
+            {sentenceText || "…"}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -287,7 +305,7 @@ export default function ACCPage() {
                   <button
                     key={v}
                     type="button"
-                    onClick={() => setSentenceWho(v)}
+                    onClick={() => setSentenceWho((prev) => (prev === v ? null : v))}
                     className={cn(
                       "px-5 py-3 rounded-2xl border-2 font-black transition-all active:scale-95",
                       sentenceWho === v
@@ -304,11 +322,11 @@ export default function ACCPage() {
             <div className="space-y-3">
               <div className="text-xs font-black text-zinc-400 uppercase tracking-widest">Ne yapıyorum?</div>
               <div className="flex flex-wrap gap-2">
-                {["istiyorum", "istemiyorum", "yardım istiyorum", "ara vermek istiyorum"].map((v) => (
+                {["istiyorum", "istemiyorum", "istiyor", "istemiyor", "ara vermek istiyorum"].map((v) => (
                   <button
                     key={v}
                     type="button"
-                    onClick={() => setSentenceVerb(v)}
+                    onClick={() => setSentenceVerb((prev) => (prev === v ? null : v))}
                     className={cn(
                       "px-5 py-3 rounded-2xl border-2 font-black transition-all active:scale-95",
                       sentenceVerb === v
@@ -368,10 +386,32 @@ export default function ACCPage() {
             </div>
           </div>
 
+          <div className="space-y-3">
+            <div className="text-xs font-black text-zinc-400 uppercase tracking-widest">Hızlı</div>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => setSentenceVerb((prev) => (prev === "yardım istiyorum" ? null : "yardım istiyorum"))}
+                className={cn(
+                  "px-5 py-3 rounded-2xl border-2 font-black transition-all active:scale-95",
+                  sentenceVerb === "yardım istiyorum"
+                    ? "bg-emerald-50 border-emerald-200 text-emerald-700"
+                    : "bg-white dark:bg-zinc-900 border-zinc-100 dark:border-zinc-800 text-zinc-700 dark:text-zinc-200"
+                )}
+              >
+                yardım istiyorum
+              </button>
+            </div>
+          </div>
+
           <div className="flex flex-wrap gap-3">
             <button
               type="button"
-              onClick={() => speak(sentenceText)}
+              onClick={() => {
+                const text = sentenceText.trim();
+                if (!text) return;
+                speak(text);
+              }}
               className="px-8 py-4 rounded-2xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-black uppercase tracking-widest text-xs transition-all active:scale-95"
             >
               Konuş
@@ -382,8 +422,8 @@ export default function ACCPage() {
                 setSentenceWhat(null);
                 setSentenceWhere(null);
                 setSentenceWhen(null);
-                setSentenceVerb("istiyorum");
-                setSentenceWho("Ben");
+                setSentenceVerb(null);
+                setSentenceWho(null);
               }}
               className="px-8 py-4 rounded-2xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-100 font-black uppercase tracking-widest text-xs transition-all active:scale-95"
             >
@@ -472,6 +512,27 @@ export default function ACCPage() {
                     favorites.includes(card.id) && "ring-4 ring-amber-400/30"
                   )}
                 >
+                  {customCardIdSet.has(card.id) && (
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (!window.confirm("Bu kartı silmek istiyor musun?")) return;
+                        deleteCustomCard(card.id);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key !== "Enter" && e.key !== " ") return;
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (!window.confirm("Bu kartı silmek istiyor musun?")) return;
+                        deleteCustomCard(card.id);
+                      }}
+                      className="absolute top-5 left-5 text-xs font-black tracking-widest opacity-70 bg-white/70 dark:bg-black/20 px-3 py-1.5 rounded-full border border-white/50 dark:border-zinc-700/60 hover:opacity-100"
+                    >
+                      Sil
+                    </div>
+                  )}
                   <div className="absolute top-5 right-5 text-xs font-black tracking-widest opacity-60">
                     {favorites.includes(card.id) ? "★" : "☆"}
                   </div>
