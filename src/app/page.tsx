@@ -14,6 +14,8 @@ let cachedSession: Session | null = null;
 const sessionListeners = new Set<() => void>();
 let refreshPromise: Promise<void> | null = null;
 
+if (typeof window !== "undefined") isHydrated = true;
+
 const getLocalStorageValue = (key: string, fallback: string) => {
   if (typeof window === "undefined") return fallback;
   try {
@@ -73,17 +75,13 @@ export default function Home() {
   const [authPassword2, setAuthPassword2] = useState("");
   const [authBusy, setAuthBusy] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
-  const [hydrated, setHydrated] = useState(false);
-  const [kvkkAccepted, setKvkkAccepted] = useState(false);
+  const [kvkkAccepted, setKvkkAccepted] = useState(() => getLocalStorageValue("kvkkAcceptedV1", "0") === "1");
   const [serverError, setServerError] = useState<string | null>(null);
 
   const session = useSyncExternalStore(subscribeToSession, getSessionSnapshot, () => null);
   const kvkkSyncedForEmailRef = useRef<string | null>(null);
 
   useEffect(() => {
-    isHydrated = true;
-    setHydrated(true);
-    setKvkkAccepted(getLocalStorageValue("kvkkAcceptedV1", "0") === "1");
     refreshSession();
     (async () => {
       try {
@@ -101,7 +99,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (!hydrated) return;
+    if (typeof window === "undefined") return;
     if (!kvkkAccepted) return;
     if (!session?.email) return;
     if (kvkkSyncedForEmailRef.current === session.email) return;
@@ -112,16 +110,10 @@ export default function Home() {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ version: 1 }),
     }).catch(() => {});
-  }, [hydrated, kvkkAccepted, session?.email]);
+  }, [kvkkAccepted, session?.email]);
 
-  const [studentName, setStudentName] = useState("Zeynel");
-  const [studentAge, setStudentAge] = useState("6");
-
-  useEffect(() => {
-    if (!hydrated) return;
-    setStudentName(getLocalStorageValue("studentName", "Zeynel"));
-    setStudentAge(getLocalStorageValue("studentAge", "6"));
-  }, [hydrated]);
+  const [studentName] = useState(() => getLocalStorageValue("studentName", ""));
+  const [studentAge] = useState(() => getLocalStorageValue("studentAge", ""));
 
   const modules = [
     {
@@ -272,9 +264,10 @@ export default function Home() {
   };
 
   if (!session) {
+    const showKvkkOverlay = typeof window !== "undefined" && !kvkkAccepted;
     return (
       <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-6 md:p-12" suppressHydrationWarning>
-        {hydrated && !kvkkAccepted && (
+        {showKvkkOverlay && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-zinc-950/80 backdrop-blur-md">
             <div className="bg-white dark:bg-zinc-900 w-full max-w-xl rounded-[2.5rem] shadow-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800">
               <div className="p-8 border-b border-zinc-100 dark:border-zinc-800">
@@ -432,7 +425,7 @@ export default function Home() {
                 <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
                 <h2 className="text-xs font-bold text-zinc-400 uppercase tracking-[0.2em]">Sistem Aktif</h2>
               </div>
-              <h1 className="text-4xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">Zeynel Güner</h1>
+              <h1 className="text-4xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">Aile Paneli</h1>
               <p className="text-zinc-500 font-medium mt-1 text-lg">Aile Yönetim Paneli</p>
               <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mt-3">
                 Giriş: <span className="lowercase">{session.email}</span>
@@ -459,11 +452,13 @@ export default function Home() {
               <div className="flex gap-10">
                 <div>
                   <p className="text-xs font-bold text-zinc-400 uppercase mb-2">Çocuğun Adı</p>
-                  <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">{studentName || "Zeynel"}</p>
+                  <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">{studentName || "Belirtilmedi"}</p>
                 </div>
                 <div>
                   <p className="text-xs font-bold text-zinc-400 uppercase mb-2">Yaşı</p>
-                  <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">{studentAge ? `${studentAge} Yaşında` : "6 Yaşında"}</p>
+                  <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">
+                    {studentAge ? `${studentAge} Yaşında` : "Belirtilmedi"}
+                  </p>
                 </div>
               </div>
             </div>

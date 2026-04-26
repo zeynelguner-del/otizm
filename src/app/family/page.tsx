@@ -70,10 +70,10 @@ export default function FamilyPage() {
   const [profiles, setProfiles] = useState<Profile[]>(() => {
     const fromStorage = readJson<Profile[]>(PROFILES_KEY, []);
     if (fromStorage.length > 0) return fromStorage;
-    const name = getLocalStorageValue("studentName", "Zeynel");
-    const age = getLocalStorageValue("studentAge", "6");
-    const familyNotes = getLocalStorageValue("familyNotes", "Bugün çok iyi bir gün geçirdik.");
-    const educationNotes = getLocalStorageValue("educationNotes", "Göz teması kurma çalışmaları yapıldı.");
+    const name = getLocalStorageValue("studentName", "");
+    const age = getLocalStorageValue("studentAge", "");
+    const familyNotes = getLocalStorageValue("familyNotes", "");
+    const educationNotes = getLocalStorageValue("educationNotes", "");
     return [{ id: "p1", name, age, familyNotes, educationNotes }];
   });
 
@@ -83,10 +83,10 @@ export default function FamilyPage() {
     return profiles.find((p) => p.id === activeProfileId) ?? profiles[0] ?? null;
   }, [profiles, activeProfileId]);
 
-  const [studentName, setStudentName] = useState(() => activeProfile?.name ?? getLocalStorageValue("studentName", "Zeynel"));
-  const [studentAge, setStudentAge] = useState(() => activeProfile?.age ?? getLocalStorageValue("studentAge", "6"));
-  const [familyNotes, setFamilyNotes] = useState(() => activeProfile?.familyNotes ?? getLocalStorageValue("familyNotes", "Bugün çok iyi bir gün geçirdik."));
-  const [educationNotes, setEducationNotes] = useState(() => activeProfile?.educationNotes ?? getLocalStorageValue("educationNotes", "Göz teması kurma çalışmaları yapıldı."));
+  const [studentName, setStudentName] = useState(() => activeProfile?.name ?? getLocalStorageValue("studentName", ""));
+  const [studentAge, setStudentAge] = useState(() => activeProfile?.age ?? getLocalStorageValue("studentAge", ""));
+  const [familyNotes, setFamilyNotes] = useState(() => activeProfile?.familyNotes ?? getLocalStorageValue("familyNotes", ""));
+  const [educationNotes, setEducationNotes] = useState(() => activeProfile?.educationNotes ?? getLocalStorageValue("educationNotes", ""));
 
   const [instructorPhone, setInstructorPhone] = useState(() => getLocalStorageValue("instructorPhone", ""));
   const [doctorPhone, setDoctorPhone] = useState(() => getLocalStorageValue("doctorPhone", ""));
@@ -168,7 +168,7 @@ export default function FamilyPage() {
   const addProfile = () => {
     if (!canEdit) return;
     const id = `p${Math.floor(Date.now() / 1000)}`;
-    const next: Profile = { id, name: "Yeni Çocuk", age: "0", familyNotes: "", educationNotes: "" };
+    const next: Profile = { id, name: "", age: "", familyNotes: "", educationNotes: "" };
     const nextProfiles = [next, ...profiles];
     setProfiles(nextProfiles);
     setActiveProfileId(id);
