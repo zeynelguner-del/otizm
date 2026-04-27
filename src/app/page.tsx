@@ -25,6 +25,46 @@ const getLocalStorageValue = (key: string, fallback: string) => {
   }
 };
 
+const PROFILE_SYNC_EVENT = "profile-sync-v1";
+const STUDENT_BIRTHDATE_KEY = "studentBirthDate";
+
+const toDateInputValue = (isoOrEmpty: string) => {
+  if (!isoOrEmpty) return "";
+  const m = isoOrEmpty.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return "";
+  return `${m[1]}-${m[2]}-${m[3]}`;
+};
+
+const computeAgeYears = (birthDate: string) => {
+  const m = birthDate.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return null;
+  const y = Number(m[1]);
+  const mo = Number(m[2]);
+  const d = Number(m[3]);
+  if (!Number.isFinite(y) || !Number.isFinite(mo) || !Number.isFinite(d)) return null;
+  if (mo < 1 || mo > 12) return null;
+  if (d < 1 || d > 31) return null;
+  const today = new Date();
+  const birth = new Date(y, mo - 1, d);
+  if (Number.isNaN(birth.getTime())) return null;
+  if (birth > today) return null;
+  let age = today.getFullYear() - birth.getFullYear();
+  const mDiff = today.getMonth() - birth.getMonth();
+  if (mDiff < 0 || (mDiff === 0 && today.getDate() < birth.getDate())) age -= 1;
+  return age >= 0 ? age : null;
+};
+
+const formatBirthDate = (birthDate: string) => {
+  const m = birthDate.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return null;
+  const y = Number(m[1]);
+  const mo = Number(m[2]);
+  const d = Number(m[3]);
+  const date = new Date(y, mo - 1, d);
+  if (Number.isNaN(date.getTime())) return null;
+  return new Intl.DateTimeFormat("tr-TR", { day: "2-digit", month: "long", year: "numeric" }).format(date);
+};
+
 const notifySession = () => {
   for (const cb of sessionListeners) cb();
 };
@@ -112,8 +152,68 @@ export default function Home() {
     }).catch(() => {});
   }, [kvkkAccepted, session?.email]);
 
-  const [studentName] = useState(() => getLocalStorageValue("studentName", ""));
-  const [studentAge] = useState(() => getLocalStorageValue("studentAge", ""));
+  const [studentName, setStudentName] = useState(() => getLocalStorageValue("studentName", ""));
+  const [studentBirthDate, setStudentBirthDate] = useState(() => getLocalStorageValue(STUDENT_BIRTHDATE_KEY, ""));
+  const [legacyAge, setLegacyAge] = useState(() => getLocalStorageValue("studentAge", ""));
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const read = () => {
+      setStudentName(getLocalStorageValue("studentName", ""));
+      setStudentBirthDate(getLocalStorageValue(STUDENT_BIRTHDATE_KEY, ""));
+      setLegacyAge(getLocalStorageValue("studentAge", ""));
+    };
+    read();
+    window.addEventListener("storage", read);
+    window.addEventListener(PROFILE_SYNC_EVENT, read);
+    return () => {
+      window.removeEventListener("storage", read);
+      window.removeEventListener(PROFILE_SYNC_EVENT, read);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!session?.email) return;
+    (async () => {
+      try {
+        const localName = getLocalStorageValue("studentName", "");
+        const localBirthDate = getLocalStorageValue(STUDENT_BIRTHDATE_KEY, "");
+        const localHasData = Boolean(localName || localBirthDate);
+
+        const remoteRes = await fetch("/api/profile", { method: "GET", cache: "no-store" });
+        if (!remoteRes.ok) return;
+        const remote = (await remoteRes.json().catch(() => ({}))) as {
+          profile?: { profiles?: Array<{ id?: string; name?: string; birthDate?: string; age?: string; legacyAge?: string }>; activeProfileId?: string } | null;
+        };
+        const remoteProfiles = remote.profile?.profiles;
+        const remoteActiveId = remote.profile?.activeProfileId;
+        if (!Array.isArray(remoteProfiles) || remoteProfiles.length === 0 || typeof remoteActiveId !== "string" || !remoteActiveId) return;
+        if (localHasData) return;
+
+        const active = remoteProfiles.find((p) => p?.id === remoteActiveId) ?? remoteProfiles[0] ?? null;
+        const nextName = typeof active?.name === "string" ? active.name : "";
+        const nextBirthDate =
+          typeof active?.birthDate === "string"
+            ? toDateInputValue(active.birthDate)
+            : typeof active?.age === "string"
+              ? ""
+              : "";
+        const nextLegacyAge = typeof active?.legacyAge === "string" ? active.legacyAge : typeof active?.age === "string" ? active.age : "";
+        try {
+          localStorage.setItem("studentName", nextName);
+          localStorage.setItem(STUDENT_BIRTHDATE_KEY, nextBirthDate);
+          localStorage.setItem("profilesV1", JSON.stringify(remoteProfiles));
+          localStorage.setItem("activeProfileV1", remoteActiveId);
+          if (nextLegacyAge) localStorage.setItem("studentAge", nextLegacyAge);
+          else localStorage.removeItem("studentAge");
+        } catch {}
+        setStudentName(nextName);
+        setStudentBirthDate(nextBirthDate);
+        setLegacyAge(nextLegacyAge);
+        if (typeof window !== "undefined") window.dispatchEvent(new Event(PROFILE_SYNC_EVENT));
+      } catch {}
+    })();
+  }, [session?.email]);
 
   const modules = [
     {
@@ -455,10 +555,19 @@ export default function Home() {
                   <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">{studentName || "Belirtilmedi"}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-zinc-400 uppercase mb-2">Yaşı</p>
-                  <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">
-                    {studentAge ? `${studentAge} Yaşında` : "Belirtilmedi"}
-                  </p>
+                  <p className="text-xs font-bold text-zinc-400 uppercase mb-2">Doğum Tarihi</p>
+                  <div className="space-y-1">
+                    <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">
+                      {formatBirthDate(studentBirthDate) || "Belirtilmedi"}
+                    </p>
+                    <div className="text-sm font-bold text-zinc-500 dark:text-zinc-400">
+                      {(() => {
+                        const age = computeAgeYears(studentBirthDate);
+                        if (age !== null) return `${age} Yaşında`;
+                        return legacyAge ? `${legacyAge} Yaşında` : "";
+                      })()}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

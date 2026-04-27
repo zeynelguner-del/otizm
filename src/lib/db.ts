@@ -49,5 +49,14 @@ export const ensureSchema = async () => {
     );
   `);
 
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS user_profiles (
+      user_id TEXT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+      profiles_json JSONB NOT NULL,
+      active_profile_id TEXT NOT NULL,
+      updated_at TIMESTAMPTZ NOT NULL
+    );
+  `);
+
   schemaReady = true;
 };

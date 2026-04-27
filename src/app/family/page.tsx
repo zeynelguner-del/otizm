@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Phone, ArrowLeft, User, PhoneCall, Save, Download, Upload, Shield, Volume2, Settings2, Users } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -21,9 +21,10 @@ const getLocalStorageValue = (key: string, fallback: string) => {
 type Profile = {
   id: string;
   name: string;
-  age: string;
+  birthDate: string;
   familyNotes: string;
   educationNotes: string;
+  legacyAge: string;
 };
 
 type SpeechSettings = {
@@ -63,18 +64,83 @@ const UI_SETTINGS_KEY = "uiSettingsV1";
 const SPEECH_SETTINGS_KEY = "speechSettingsV1";
 const PARENT_LOCK_PIN_KEY = "parentLockPinV1";
 const PARENT_LOCKED_KEY = "parentLockEnabledV1";
+const PROFILE_SYNC_EVENT = "profile-sync-v1";
+const STUDENT_BIRTHDATE_KEY = "studentBirthDate";
+
+const toDateInputValue = (isoOrEmpty: string) => {
+  if (!isoOrEmpty) return "";
+  const m = isoOrEmpty.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return "";
+  return `${m[1]}-${m[2]}-${m[3]}`;
+};
+
+const computeAgeYears = (birthDate: string) => {
+  const m = birthDate.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return null;
+  const y = Number(m[1]);
+  const mo = Number(m[2]);
+  const d = Number(m[3]);
+  if (!Number.isFinite(y) || !Number.isFinite(mo) || !Number.isFinite(d)) return null;
+  if (mo < 1 || mo > 12) return null;
+  if (d < 1 || d > 31) return null;
+  const today = new Date();
+  const birth = new Date(y, mo - 1, d);
+  if (Number.isNaN(birth.getTime())) return null;
+  if (birth > today) return null;
+  let age = today.getFullYear() - birth.getFullYear();
+  const mDiff = today.getMonth() - birth.getMonth();
+  if (mDiff < 0 || (mDiff === 0 && today.getDate() < birth.getDate())) age -= 1;
+  return age >= 0 ? age : null;
+};
+
+const formatBirthDate = (birthDate: string) => {
+  const m = birthDate.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return null;
+  const y = Number(m[1]);
+  const mo = Number(m[2]);
+  const d = Number(m[3]);
+  const date = new Date(y, mo - 1, d);
+  if (Number.isNaN(date.getTime())) return null;
+  return new Intl.DateTimeFormat("tr-TR", { day: "2-digit", month: "long", year: "numeric" }).format(date);
+};
+
+const normalizeProfiles = (raw: unknown): Profile[] => {
+  if (!Array.isArray(raw)) return [];
+  const out: Profile[] = [];
+  for (const item of raw) {
+    if (!item || typeof item !== "object") continue;
+    const o = item as Record<string, unknown>;
+    const id = typeof o.id === "string" ? o.id : "";
+    if (!id) continue;
+    const name = typeof o.name === "string" ? o.name : "";
+    const familyNotes = typeof o.familyNotes === "string" ? o.familyNotes : "";
+    const educationNotes = typeof o.educationNotes === "string" ? o.educationNotes : "";
+    const birthDate = typeof o.birthDate === "string" ? toDateInputValue(o.birthDate) : "";
+    const legacyAge = typeof o.legacyAge === "string" ? o.legacyAge : typeof o.age === "string" ? o.age : "";
+    out.push({ id, name, birthDate, familyNotes, educationNotes, legacyAge });
+  }
+  return out;
+};
+
+const notifyProfileSync = () => {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new Event(PROFILE_SYNC_EVENT));
+};
 
 export default function FamilyPage() {
   const [tab, setTab] = useState<"bilgiler" | "ayarlar" | "yedek">("bilgiler");
+  const syncOnceRef = useRef(false);
 
   const [profiles, setProfiles] = useState<Profile[]>(() => {
-    const fromStorage = readJson<Profile[]>(PROFILES_KEY, []);
+    const fromStorageRaw = readJson<unknown>(PROFILES_KEY, []);
+    const fromStorage = normalizeProfiles(fromStorageRaw);
     if (fromStorage.length > 0) return fromStorage;
     const name = getLocalStorageValue("studentName", "");
-    const age = getLocalStorageValue("studentAge", "");
+    const birthDate = getLocalStorageValue(STUDENT_BIRTHDATE_KEY, "");
+    const legacyAge = getLocalStorageValue("studentAge", "");
     const familyNotes = getLocalStorageValue("familyNotes", "");
     const educationNotes = getLocalStorageValue("educationNotes", "");
-    return [{ id: "p1", name, age, familyNotes, educationNotes }];
+    return [{ id: "p1", name, birthDate: toDateInputValue(birthDate), familyNotes, educationNotes, legacyAge }];
   });
 
   const [activeProfileId, setActiveProfileId] = useState(() => getLocalStorageValue(ACTIVE_PROFILE_KEY, "p1"));
@@ -84,7 +150,7 @@ export default function FamilyPage() {
   }, [profiles, activeProfileId]);
 
   const [studentName, setStudentName] = useState(() => activeProfile?.name ?? getLocalStorageValue("studentName", ""));
-  const [studentAge, setStudentAge] = useState(() => activeProfile?.age ?? getLocalStorageValue("studentAge", ""));
+  const [studentBirthDate, setStudentBirthDate] = useState(() => activeProfile?.birthDate ?? getLocalStorageValue(STUDENT_BIRTHDATE_KEY, ""));
   const [familyNotes, setFamilyNotes] = useState(() => activeProfile?.familyNotes ?? getLocalStorageValue("familyNotes", ""));
   const [educationNotes, setEducationNotes] = useState(() => activeProfile?.educationNotes ?? getLocalStorageValue("educationNotes", ""));
 
@@ -126,35 +192,103 @@ export default function FamilyPage() {
     };
   }, []);
 
+  useEffect(() => {
+    if (syncOnceRef.current) return;
+    syncOnceRef.current = true;
+    let cancelled = false;
+    (async () => {
+      try {
+        const meRes = await fetch("/api/auth/me", { method: "GET", cache: "no-store" });
+        const me = (await meRes.json().catch(() => ({}))) as { session?: { email?: string } | null };
+        if (!me.session?.email) return;
+
+        const localHasData =
+          Boolean(studentName || studentBirthDate || familyNotes || educationNotes) ||
+          profiles.some((p) => Boolean(p.name || p.birthDate || p.familyNotes || p.educationNotes));
+
+        const remoteRes = await fetch("/api/profile", { method: "GET", cache: "no-store" });
+        const remote = (await remoteRes.json().catch(() => ({}))) as {
+          profile?: { profiles?: unknown; activeProfileId?: string } | null;
+        };
+        const remoteProfiles = normalizeProfiles(remote.profile?.profiles);
+        const remoteActiveId = remote.profile?.activeProfileId;
+
+        const applyRemote = (nextProfiles: Profile[], nextActiveId: string) => {
+          const active = nextProfiles.find((p) => p.id === nextActiveId) ?? nextProfiles[0] ?? null;
+          setProfiles(nextProfiles);
+          setActiveProfileId(nextActiveId);
+          setStudentName(active?.name ?? "");
+          setStudentBirthDate(active?.birthDate ?? "");
+          setFamilyNotes(active?.familyNotes ?? "");
+          setEducationNotes(active?.educationNotes ?? "");
+          writeJson(PROFILES_KEY, nextProfiles);
+          try {
+            localStorage.setItem(ACTIVE_PROFILE_KEY, nextActiveId);
+            localStorage.setItem("studentName", active?.name ?? "");
+            localStorage.setItem(STUDENT_BIRTHDATE_KEY, active?.birthDate ?? "");
+            localStorage.setItem("familyNotes", active?.familyNotes ?? "");
+            localStorage.setItem("educationNotes", active?.educationNotes ?? "");
+            localStorage.removeItem("studentAge");
+          } catch {}
+          notifyProfileSync();
+        };
+
+        if (remoteProfiles.length > 0 && typeof remoteActiveId === "string" && remoteActiveId) {
+          if (!localHasData && !cancelled) applyRemote(remoteProfiles, remoteActiveId);
+          return;
+        }
+
+        if (!localHasData) return;
+        await fetch("/api/profile", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ profiles, activeProfileId }),
+        }).catch(() => {});
+      } catch {}
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [activeProfileId, educationNotes, familyNotes, profiles, studentBirthDate, studentName]);
+
   const selectProfile = (id: string) => {
     const profile = profiles.find((p) => p.id === id);
     if (!profile) return;
     setActiveProfileId(id);
     setStudentName(profile.name);
-    setStudentAge(profile.age);
+    setStudentBirthDate(profile.birthDate);
     setFamilyNotes(profile.familyNotes);
     setEducationNotes(profile.educationNotes);
     try {
       localStorage.setItem(ACTIVE_PROFILE_KEY, id);
     } catch {}
+    notifyProfileSync();
   };
 
   const saveAll = () => {
     if (!canEdit) return;
 
     localStorage.setItem("studentName", studentName);
-    localStorage.setItem("studentAge", studentAge);
+    localStorage.setItem(STUDENT_BIRTHDATE_KEY, studentBirthDate);
     localStorage.setItem("familyNotes", familyNotes);
     localStorage.setItem("educationNotes", educationNotes);
     localStorage.setItem("instructorPhone", instructorPhone);
     localStorage.setItem("doctorPhone", doctorPhone);
+    localStorage.removeItem("studentAge");
 
     const nextProfiles = profiles.map((p) =>
-      p.id === activeProfileId ? { ...p, name: studentName, age: studentAge, familyNotes, educationNotes } : p
+      p.id === activeProfileId
+        ? { ...p, name: studentName, birthDate: studentBirthDate, familyNotes, educationNotes, legacyAge: "" }
+        : p
     );
     setProfiles(nextProfiles);
     writeJson(PROFILES_KEY, nextProfiles);
     localStorage.setItem(ACTIVE_PROFILE_KEY, activeProfileId);
+    void fetch("/api/profile", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ profiles: nextProfiles, activeProfileId }),
+    }).catch(() => {});
 
     writeJson(UI_SETTINGS_KEY, uiSettings);
     writeJson(SPEECH_SETTINGS_KEY, speechSettings);
@@ -163,17 +297,18 @@ export default function FamilyPage() {
     localStorage.setItem(PARENT_LOCKED_KEY, parentLockEnabled ? "1" : "0");
 
     setIsEditing(false);
+    notifyProfileSync();
   };
 
   const addProfile = () => {
     if (!canEdit) return;
     const id = `p${Math.floor(Date.now() / 1000)}`;
-    const next: Profile = { id, name: "", age: "", familyNotes: "", educationNotes: "" };
+    const next: Profile = { id, name: "", birthDate: "", familyNotes: "", educationNotes: "", legacyAge: "" };
     const nextProfiles = [next, ...profiles];
     setProfiles(nextProfiles);
     setActiveProfileId(id);
     setStudentName(next.name);
-    setStudentAge(next.age);
+    setStudentBirthDate(next.birthDate);
     setFamilyNotes(next.familyNotes);
     setEducationNotes(next.educationNotes);
     writeJson(PROFILES_KEY, nextProfiles);
@@ -195,6 +330,7 @@ export default function FamilyPage() {
     const keys = [
       "studentName",
       "studentAge",
+      STUDENT_BIRTHDATE_KEY,
       "familyNotes",
       "educationNotes",
       "instructorPhone",
@@ -268,14 +404,14 @@ export default function FamilyPage() {
         else localStorage.setItem(key, value);
       } catch {}
     }
-    const nextProfiles = readJson<Profile[]>(PROFILES_KEY, profiles);
+    const nextProfiles = normalizeProfiles(readJson<unknown>(PROFILES_KEY, profiles));
     const nextActiveProfileId = getLocalStorageValue(ACTIVE_PROFILE_KEY, activeProfileId);
     setProfiles(nextProfiles);
     setActiveProfileId(nextActiveProfileId);
     const nextActiveProfile = nextProfiles.find((p) => p.id === nextActiveProfileId) ?? nextProfiles[0] ?? null;
     if (nextActiveProfile) {
       setStudentName(nextActiveProfile.name);
-      setStudentAge(nextActiveProfile.age);
+      setStudentBirthDate(nextActiveProfile.birthDate);
       setFamilyNotes(nextActiveProfile.familyNotes);
       setEducationNotes(nextActiveProfile.educationNotes);
     }
@@ -424,7 +560,14 @@ export default function FamilyPage() {
                   )}
                 >
                   <div className="font-black text-zinc-800 dark:text-zinc-100">{p.name || "İsimsiz"}</div>
-                  <div className="text-zinc-500 dark:text-zinc-400 font-bold text-sm">{p.age ? `${p.age} yaş` : "Yaş yok"}</div>
+                  <div className="text-zinc-500 dark:text-zinc-400 font-bold text-sm">
+                    {(() => {
+                      const age = computeAgeYears(p.birthDate);
+                      if (age !== null) return `${age} yaş`;
+                      if (p.legacyAge) return `${p.legacyAge} yaş`;
+                      return "Yaş yok";
+                    })()}
+                  </div>
                 </button>
               ))}
             </div>
@@ -444,16 +587,36 @@ export default function FamilyPage() {
                 )}
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Yaşı</label>
+                <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Doğum Tarihi</label>
                 {isEditing ? (
-                  <input
-                    type="text"
-                    value={studentAge}
-                    onChange={(e) => setStudentAge(e.target.value)}
-                    className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-zinc-900 transition-all outline-none"
-                  />
+                  <div className="space-y-2">
+                    <input
+                      type="date"
+                      value={toDateInputValue(studentBirthDate)}
+                      onChange={(e) => setStudentBirthDate(toDateInputValue(e.target.value))}
+                      className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-zinc-900 transition-all outline-none"
+                    />
+                    <div className="text-sm font-bold text-zinc-500 dark:text-zinc-400">
+                      {(() => {
+                        const age = computeAgeYears(studentBirthDate);
+                        return age !== null ? `${age} Yaşında` : "";
+                      })()}
+                    </div>
+                  </div>
                 ) : (
-                  <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">{studentAge ? `${studentAge} Yaşında` : "..."}</p>
+                  <div className="space-y-1">
+                    <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">
+                      {formatBirthDate(studentBirthDate) || "..."}
+                    </p>
+                    <div className="text-sm font-bold text-zinc-500 dark:text-zinc-400">
+                      {(() => {
+                        const age = computeAgeYears(studentBirthDate);
+                        if (age !== null) return `${age} Yaşında`;
+                        const legacy = activeProfile?.legacyAge ?? "";
+                        return legacy ? `${legacy} Yaşında` : "";
+                      })()}
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
