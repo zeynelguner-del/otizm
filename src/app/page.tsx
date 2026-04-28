@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { Heart, BookOpen, Gamepad2, Users, Settings, Music, Calendar, Info, MessageSquare } from "lucide-react";
+import { Heart, BookOpen, Gamepad2, Users, Settings, Music, Calendar, Info, MessageSquare, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Session = {
@@ -222,6 +222,13 @@ export default function Home() {
       icon: Info,
       href: "/info",
       color: "bg-blue-100 text-blue-600 border-blue-200 hover:bg-blue-200",
+    },
+    {
+      title: "Otizm Spektrum Bozukluğu",
+      description: "OSB hakkında temel bilgiler",
+      icon: HelpCircle,
+      href: "/osb",
+      color: "bg-cyan-100 text-cyan-700 border-cyan-200 hover:bg-cyan-200",
     },
     {
       title: "Duygularım",
