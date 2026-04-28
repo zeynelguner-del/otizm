@@ -649,12 +649,14 @@ export default function Home() {
               >
                 Profil
               </button>
-              <Link
-                href="/admin"
-                className="w-full px-4 py-3 sm:px-5 sm:py-4 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all text-zinc-700 dark:text-zinc-200 shadow-sm font-black uppercase tracking-widest text-[11px] sm:text-xs text-center"
-              >
-                Yönetim
-              </Link>
+              {session.email.trim().toLowerCase() === "zeynelguner@gmail.com" && (
+                <Link
+                  href="/admin"
+                  className="w-full px-4 py-3 sm:px-5 sm:py-4 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all text-zinc-700 dark:text-zinc-200 shadow-sm font-black uppercase tracking-widest text-[11px] sm:text-xs text-center"
+                >
+                  Yönetim
+                </Link>
+              )}
             </div>
           </div>
           
