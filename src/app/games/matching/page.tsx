@@ -33,66 +33,68 @@ const addTokens = (amount: number) => {
   } catch {}
 };
 
-const CARDS = [
-  { id: 1, content: "🍎", type: "apple" },
-  { id: 2, content: "🍎", type: "apple" },
-  { id: 3, content: "🍌", type: "banana" },
-  { id: 4, content: "🍌", type: "banana" },
-  { id: 5, content: "🍇", type: "grape" },
-  { id: 6, content: "🍇", type: "grape" },
-  { id: 7, content: "🍓", type: "strawberry" },
-  { id: 8, content: "🍓", type: "strawberry" },
-  { id: 9, content: "🍊", type: "orange" },
-  { id: 10, content: "🍊", type: "orange" },
-  { id: 11, content: "🍉", type: "watermelon" },
-  { id: 12, content: "🍉", type: "watermelon" },
+type MatchItem = { id: string; content: string; type: string };
+
+const ITEMS: MatchItem[] = [
+  { id: "apple", content: "🍎", type: "apple" },
+  { id: "banana", content: "🍌", type: "banana" },
+  { id: "grape", content: "🍇", type: "grape" },
+  { id: "strawberry", content: "🍓", type: "strawberry" },
+  { id: "orange", content: "🍊", type: "orange" },
+  { id: "watermelon", content: "🍉", type: "watermelon" },
 ];
 
+const shuffle = <T,>(arr: T[]) => [...arr].sort(() => Math.random() - 0.5);
+
 export default function MatchingGamePage() {
-  const [cards, setCards] = useState(() => [...CARDS].sort(() => Math.random() - 0.5));
-  const [flipped, setFlipped] = useState<number[]>([]);
-  const [solved, setSolved] = useState<number[]>([]);
+  const [left, setLeft] = useState<MatchItem[]>(() => shuffle(ITEMS));
+  const [right, setRight] = useState<MatchItem[]>(() => shuffle(ITEMS));
+  const [selectedLeft, setSelectedLeft] = useState<string | null>(null);
+  const [selectedRight, setSelectedRight] = useState<string | null>(null);
+  const [matched, setMatched] = useState<string[]>([]);
   const [disabled, setDisabled] = useState(false);
   const [uiSettings] = useState<UiSettings>(() => readJson<UiSettings>(UI_SETTINGS_KEY, { reduceMotion: false }));
   const rewardedRef = useRef(false);
 
-  const handleCardClick = (id: number) => {
-    if (disabled || solved.includes(id) || flipped.includes(id)) return;
-    if (flipped.length === 1) {
-      const first = flipped[0];
-      const second = id;
-      setFlipped([first, second]);
-      setDisabled(true);
+  const handlePick = (side: "left" | "right", type: string) => {
+    if (disabled) return;
+    if (matched.includes(type)) return;
 
-      const firstType = cards.find((c) => c.id === first)?.type;
-      const secondType = cards.find((c) => c.id === second)?.type;
-      const isMatch = firstType && secondType && firstType === secondType;
+    const nextLeft = side === "left" ? type : selectedLeft;
+    const nextRight = side === "right" ? type : selectedRight;
 
-      if (isMatch) {
-        setSolved((prev) => [...prev, first, second]);
-        setFlipped([]);
-        setDisabled(false);
-      } else {
-        setTimeout(() => {
-          setFlipped([]);
-          setDisabled(false);
-        }, 1000);
-      }
+    if (side === "left") setSelectedLeft(type);
+    else setSelectedRight(type);
+
+    if (!nextLeft || !nextRight) return;
+
+    const isMatch = nextLeft === nextRight;
+    if (isMatch) {
+      setMatched((prev) => (prev.includes(nextLeft) ? prev : [...prev, nextLeft]));
+      setSelectedLeft(null);
+      setSelectedRight(null);
       return;
     }
 
-    setFlipped([id]);
+    setDisabled(true);
+    window.setTimeout(() => {
+      setSelectedLeft(null);
+      setSelectedRight(null);
+      setDisabled(false);
+    }, 700);
   };
 
   const resetGame = () => {
-    setCards([...CARDS].sort(() => Math.random() - 0.5));
-    setFlipped([]);
-    setSolved([]);
+    setLeft(shuffle(ITEMS));
+    setRight(shuffle(ITEMS));
+    setSelectedLeft(null);
+    setSelectedRight(null);
+    setMatched([]);
     setDisabled(false);
     rewardedRef.current = false;
   };
 
-  const isWon = solved.length === cards.length;
+  const isWon = matched.length === ITEMS.length;
 
   useEffect(() => {
     if (!isWon) return;
@@ -122,25 +124,54 @@ export default function MatchingGamePage() {
       </header>
 
       <main className="max-w-2xl mx-auto">
-        <div className="grid grid-cols-3 md:grid-cols-4 gap-4">
-          {cards.map((card) => (
-            <motion.button
-              key={card.id}
-              whileHover={uiSettings.reduceMotion ? undefined : { scale: 1.05 }}
-              whileTap={uiSettings.reduceMotion ? undefined : { scale: 0.95 }}
-              onClick={() => handleCardClick(card.id)}
-              className={cn(
-                "aspect-square rounded-2xl text-4xl flex items-center justify-center transition-all shadow-sm border-4",
-                solved.includes(card.id)
-                  ? "bg-emerald-100 border-emerald-200 opacity-60 cursor-default"
-                  : flipped.includes(card.id)
-                  ? "bg-white border-sky-300"
-                  : "bg-sky-200 border-sky-300 hover:bg-sky-300 text-transparent"
-              )}
-            >
-              {(flipped.includes(card.id) || solved.includes(card.id)) && card.content}
-            </motion.button>
-          ))}
+        <div className="grid grid-cols-2 gap-6">
+          <div className="space-y-3">
+            {left.map((item) => (
+              <motion.button
+                key={`left-${item.id}`}
+                whileHover={uiSettings.reduceMotion ? undefined : { scale: 1.03 }}
+                whileTap={uiSettings.reduceMotion ? undefined : { scale: 0.98 }}
+                onClick={() => handlePick("left", item.type)}
+                disabled={disabled || matched.includes(item.type)}
+                className={cn(
+                  "w-full h-16 rounded-2xl text-3xl flex items-center justify-center transition-all shadow-sm border-4 font-black",
+                  matched.includes(item.type)
+                    ? "bg-emerald-100 border-emerald-200 opacity-60 cursor-default"
+                    : selectedLeft === item.type
+                    ? selectedRight && selectedRight !== selectedLeft
+                      ? "bg-white border-rose-300"
+                      : "bg-white border-sky-400"
+                    : "bg-sky-200 border-sky-300 hover:bg-sky-300"
+                )}
+              >
+                {item.content}
+              </motion.button>
+            ))}
+          </div>
+
+          <div className="space-y-3">
+            {right.map((item) => (
+              <motion.button
+                key={`right-${item.id}`}
+                whileHover={uiSettings.reduceMotion ? undefined : { scale: 1.03 }}
+                whileTap={uiSettings.reduceMotion ? undefined : { scale: 0.98 }}
+                onClick={() => handlePick("right", item.type)}
+                disabled={disabled || matched.includes(item.type)}
+                className={cn(
+                  "w-full h-16 rounded-2xl text-3xl flex items-center justify-center transition-all shadow-sm border-4 font-black",
+                  matched.includes(item.type)
+                    ? "bg-emerald-100 border-emerald-200 opacity-60 cursor-default"
+                    : selectedRight === item.type
+                    ? selectedLeft && selectedLeft !== selectedRight
+                      ? "bg-white border-rose-300"
+                      : "bg-white border-sky-400"
+                    : "bg-sky-200 border-sky-300 hover:bg-sky-300"
+                )}
+              >
+                {item.content}
+              </motion.button>
+            ))}
+          </div>
         </div>
 
         <AnimatePresence>
