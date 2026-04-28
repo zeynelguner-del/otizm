@@ -40,6 +40,12 @@ const getAuthedEmail = async () => {
   return typeof row?.email === "string" ? row.email : null;
 };
 
+const toIsoOrNull = (value: unknown) => {
+  if (typeof value === "string") return value;
+  if (value instanceof Date && !Number.isNaN(value.getTime())) return value.toISOString();
+  return null;
+};
+
 export async function GET() {
   try {
     const email = await getAuthedEmail();
@@ -61,7 +67,7 @@ export async function GET() {
       [nowIso]
     );
 
-    const usersRow = usersRes.rows[0] as { count?: number; last_created_at?: string | null } | undefined;
+    const usersRow = usersRes.rows[0] as { count?: number; last_created_at?: unknown } | undefined;
     const sessionsRow = sessionsRes.rows[0] as { count?: number } | undefined;
     const kvkkRow = kvkkRes.rows[0] as { count?: number } | undefined;
     const profilesRow = profilesRes.rows[0] as { count?: number } | undefined;
@@ -70,7 +76,7 @@ export async function GET() {
     return NextResponse.json({
       now: nowIso,
       usersTotal: typeof usersRow?.count === "number" ? usersRow.count : 0,
-      usersLastCreatedAt: typeof usersRow?.last_created_at === "string" ? usersRow.last_created_at : null,
+      usersLastCreatedAt: toIsoOrNull(usersRow?.last_created_at),
       usersLast7Days: typeof last7dRow?.count === "number" ? last7dRow.count : 0,
       sessionsActive: typeof sessionsRow?.count === "number" ? sessionsRow.count : 0,
       kvkkAccepted: typeof kvkkRow?.count === "number" ? kvkkRow.count : 0,

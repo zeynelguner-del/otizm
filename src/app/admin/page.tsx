@@ -41,7 +41,31 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
-    load();
+    let cancelled = false;
+    fetch("/api/admin/stats", { method: "GET", cache: "no-store" })
+      .then(async (res) => {
+        const data = (await res.json().catch(() => ({}))) as { error?: string };
+        if (cancelled) return;
+        if (!res.ok) {
+          setError(typeof data.error === "string" ? data.error : "Veri alınamadı.");
+          setStats(null);
+          return;
+        }
+        setError(null);
+        setStats(data as AdminStats);
+      })
+      .catch((e) => {
+        if (cancelled) return;
+        setError(e instanceof Error ? e.message : "Veri alınamadı.");
+        setStats(null);
+      })
+      .finally(() => {
+        if (cancelled) return;
+        setBusy(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
@@ -130,4 +154,3 @@ export default function AdminPage() {
     </div>
   );
 }
-
