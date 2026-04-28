@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, ChevronRight, CheckCircle2, Volume2, VolumeX } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 
 type SpeechSettings = {
   voiceURI: string | null;
@@ -226,12 +227,21 @@ export default function StoriesPage() {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-6">
       <header className="max-w-2xl mx-auto mb-8 flex items-center gap-4">
-        <button
-          onClick={handleBack}
-          className="p-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400"
-        >
-          <ArrowLeft size={24} />
-        </button>
+        {selectedStory ? (
+          <button
+            onClick={handleBack}
+            className="p-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400"
+          >
+            <ArrowLeft size={24} />
+          </button>
+        ) : (
+          <Link
+            href="/"
+            className="p-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400"
+          >
+            <ArrowLeft size={24} />
+          </Link>
+        )}
         <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">
           {selectedStory ? selectedStory.title : "Sosyal Öyküler"}
         </h1>
