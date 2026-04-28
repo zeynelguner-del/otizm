@@ -37,6 +37,15 @@ export default function InfoPage() {
         "Otizm Spektrum Bozukluğu (OSB), gelişimin erken dönemlerinden itibaren sosyal iletişim, davranış ve öğrenme biçiminde farklılıklarla kendini gösterebilen bir nöro-gelişimsel durumdur.\n\nNeden “spektrum” denir?\n- Çünkü belirtiler ve destek ihtiyaçları kişiden kişiye çok değişebilir.\n- Bazı bireyler günlük yaşamda daha az destekle bağımsız olabilirken, bazıları daha yoğun yapılandırılmış destek gerektirebilir.\n\nSık görülen alanlar\n- Sosyal iletişim: karşılıklı sohbet başlatma/sürdürme, jest-mimikleri anlama, ortak dikkat kurma.\n- Davranış örüntüleri: rutin ihtiyacı, tekrar eden davranışlar, sınırlı ilgi alanları.\n- Duyusal farklılıklar: ses, ışık, dokunma, koku gibi uyaranlara aşırı/az duyarlılık.\n\nÖnemli notlar\n- Otizm tek bir “kalıp” değildir; aynı tanıyı alan iki çocuğun güçlü yönleri ve zorlandığı alanlar farklı olabilir.\n- Erken ve düzenli destek (özel eğitim, dil-konuşma, ergoterapi/duyu bütünleme gibi) çocuğun gelişimini ve günlük yaşam becerilerini güçlendirebilir.\n- Amaç “otizmi yok etmek” değil; iletişimi artırmak, bağımsızlığı desteklemek, zorlanmaları azaltmak ve aile yaşamını sürdürülebilir hale getirmektir."
     },
     { 
+      title: "Otizmde Eğitim", 
+      icon: BookOpen, 
+      color: "bg-indigo-100 text-indigo-600",
+      description:
+        "Erken müdahale, sınıf içi uyarlamalar ve bireyselleştirilmiş hedeflerle eğitim planlaması.",
+      content:
+        "Otizmde eğitim; çocuğun iletişim, sosyal etkileşim, oyun/öğrenme ve günlük yaşam becerilerini desteklemek için yapılandırılmış ve bireyselleştirilmiş bir planla yürütülür.\n\nTemel ilkeler\n- Bireyselleştirme: Hedefler çocuğun gelişim düzeyi, güçlü yönleri ve ihtiyaçlarına göre belirlenir.\n- Tutarlılık: Ev-okul-özel eğitim arasında ortak hedef dili ve benzer yöntemler.\n- Görsel destekler: Günlük rutin çizelgeleri, adım adım yönerge kartları, “önce-sonra” panosu.\n- Yapılandırılmış öğrenme: Net başlangıç/bitiş, kısa ve anlaşılır yönergeler, tekrar ve genelleme.\n\nSık kullanılan eğitim yaklaşımları (genel çerçeve)\n- Davranışsal yaklaşımlar: İstenilen becerileri öğretme ve problem davranışları azaltma (örn. ABA temelli teknikler).\n- Gelişimsel yaklaşımlar: Oyun ve etkileşim üzerinden sosyal-iletişim becerilerini güçlendirme.\n- Sınıf temelli düzenlemeler: Görsel ipuçları, görevleri küçük adımlara bölme, duyusal düzenleme, geçişleri kolaylaştırma.\n\nPratik kontrol listesi\n- Ölçülebilir hedef belirle (örn. “istek bildirme”, “sıra alma”, “tuvalet rutini”).\n- Hedefleri günlük rutine yerleştir (evde ve okulda kısa tekrarlar).\n- İlerlemeyi basit kayıtla takip et (hangi ipucu ile başardı?).\n\nKaynaklar\n- CDC: https://www.cdc.gov/autism/treatment/\n- WHO: https://www.who.int/news-room/fact-sheets/detail/autism-spectrum-disorders"
+    },
+    { 
       title: "Sosyal İletişim", 
       icon: Heart, 
       color: "bg-rose-100 text-rose-600",
@@ -46,6 +55,15 @@ export default function InfoPage() {
         "Sosyal iletişim; yalnızca konuşmak değil, karşılıklı etkileşim kurmak, sıra almak, ipuçlarını okumak ve duygu paylaşmak gibi birçok becerinin birleşimidir. Otizmli çocuklarda bu beceriler farklı hızlarda gelişebilir.\n\nGünlük hayatta işe yarayan yaklaşımlar\n- Ortak dikkat: Çocuğun ilgisini çeken şeyi birlikte “paylaşma” hedeflenir (ör. oyuncağa bak → sen de bak → kısa bir kelime/işaret). Bu, iletişimin temelidir.\n- Göz teması: Zorlamadan; oyun, şarkı, baloncuk, sevdiği nesne gibi motivasyon veren anlarda çok kısa ve doğal temaslar hedeflenir.\n- İstek belirtme: “İstemek” iletişimi artırır. Çocuğun bir şeyi istemesi için küçük fırsatlar oluştur (ör. bisküviyi kutuda tut, yardım istemesi için bekle).\n- Duygu farkındalığı: Resimler, aynada mimik çalışmaları, kısa videolar ve basit duygu kartları ile “mutlu/üzgün/kızgın/şaşkın” gibi kavramlar pekiştirilebilir.\n- Sıra alma ve paylaşma: “Sıra bende / sıra sende” oyunları (top atma, blok dizme, kart çekme) sosyal etkileşimi güçlendirir.\n\nİletişimi kolaylaştıran destekler\n- Görsel destek: Resimli rutin, adım adım yönerge kartları, “önce-sonra” panosu.\n- Basit ve tutarlı dil: Kısa cümle, net yönerge, aynı kelimeleri tekrar eden rutin ifadeler.\n- Sosyal öyküler: Zor sosyal durumları (market, misafir, oyun parkı) kısa ve somut cümlelerle anlatır; beklenen davranışı netleştirir.\n\nHedef: Çocuğun kendi ihtiyacını anlatabilmesi, zorlandığında destek isteyebilmesi ve küçük ama sürdürülebilir sosyal etkileşimler kurabilmesidir."
     },
     { 
+      title: "Otizmde Terapi", 
+      icon: Star, 
+      color: "bg-fuchsia-100 text-fuchsia-700",
+      description:
+        "Dil-konuşma, ergoterapi, davranışsal ve gelişimsel müdahalelerle beceri geliştirme.",
+      content:
+        "Otizmde terapi; “tek bir yöntem” değil, çocuğun ihtiyaçlarına göre seçilen birden fazla desteğin (iletişim, duyusal düzenleme, davranış, günlük yaşam becerileri) birlikte planlanmasıdır.\n\nSık kullanılan terapi alanları\n- Dil ve konuşma terapisi: Anlama/ifade, karşılıklı iletişim, alternatif iletişim yöntemleri (işaret, resim, cihaz) dahil.\n- Ergoterapi: Günlük yaşam becerileri (giyinme, yemek, öz bakım) ve duyusal düzenleme ihtiyaçları.\n- Davranışsal ve gelişimsel müdahaleler: Beceri öğretimi, problem davranışların işlevine göre desteklenmesi, oyun ve sosyal etkileşimin güçlendirilmesi.\n- Sosyal beceri çalışmaları: Yapılandırılmış grup veya bireysel çalışmalar.\n- Psikolojik destek: Kaygı, duygu düzenleme gibi eşlik eden alanlarda (özellikle daha büyük çocuk/ergenlerde) uyarlanmış terapi yaklaşımları.\n\nİyi bir terapi planı nasıl görünür?\n- Hedefler nettir ve günlük yaşama bağlanır (örn. “istek bildirme”, “geçişlerde zorlanmayı azaltma”).\n- Aileye ev uygulaması verilir (kısa, sürdürülebilir).\n- İlerleme veriyle takip edilir ve hedefler güncellenir.\n\nKaynaklar\n- CDC: https://www.cdc.gov/autism/treatment/\n- WHO: https://www.who.int/news-room/fact-sheets/detail/autism-spectrum-disorders"
+    },
+    { 
       title: "Duyu Bütünleme", 
       icon: Star, 
       color: "bg-amber-100 text-amber-600",
@@ -53,6 +71,15 @@ export default function InfoPage() {
         "Ses, ışık, dokunma ve hareket gibi duyularda hassasiyet olduğunda evde ve dışarıda uygulanabilecek basit düzenlemeler.",
       content:
         "Duyu bütünleme, çevreden gelen duyusal bilgilerin (ses, ışık, dokunma, koku, hareket, denge) beyin tarafından organize edilmesidir. Otizmli çocuklarda duyular bazen “fazla” (aşırı hassas) bazen “az” (az duyarlı) çalışabilir.\n\nSık görülen örnekler\n- Ses: Süpürge, kalabalık, zil gibi seslere aşırı tepki veya tam tersi çok yüksek ses arama.\n- Dokunma: Etiket, dikiş, saç kesimi, tırnak kesimi gibi temaslara hassasiyet.\n- Görsel: Parlak ışıklar, kalabalık görüntü, ekran hassasiyeti.\n- Hareket/denge: Sürekli sallanma/zıplama ihtiyacı veya bazı hareketlerden kaçınma.\n\nEvde uygulanabilecek küçük düzenlemeler\n- “Sakin köşe”: Gürültüyü azaltan, loş ışıklı, yumuşak minderli bir alan.\n- Önceden hazırlık: Yeni bir ortama gitmeden önce kısa açıklama + görsel (nereye, ne kadar, ne olacak).\n- Kademeli alıştırma: Rahatsız eden uyaranla kısa süre + ödül, süreyi yavaş yavaş artırma.\n\nDışarıda pratik çözümler\n- Gürültü engelleyici kulaklık veya kulak tıkacı.\n- Kalabalık saatlerden kaçınma (market/AVM için sakin saatleri seçme).\n- Kıyafet seçiminde etiketsiz/rahat kumaş tercih etme.\n\nBeslenme ve doku seçiciliği\n- “Tek seferde büyük değişim” yerine çok küçük adımlarla ilerlemek daha sürdürülebilirdir (dokunma-koklama-yalama-tatma gibi basamaklar).\n\nDuyusal destekler bireyseldir. En iyi yaklaşım; çocuğun hangi uyaranlarda zorlandığını gözlemlemek, tetikleyicileri azaltmak ve düzenli bir rutinle güvenli alanlar oluşturmaktır."
+    },
+    { 
+      title: "Otizmde Tedavi", 
+      icon: Shield, 
+      color: "bg-emerald-100 text-emerald-600",
+      description:
+        "Otizmde “tedavi” yaklaşımı: çekirdek özellikler için eğitim/terapi, eşlik eden durumlar için tıbbi destek.",
+      content:
+        "Otizm yaşam boyu sürebilen bir nörogelişimsel durumdur. Bu nedenle “tek bir tedaviyle tamamen ortadan kaldırma” şeklinde bir yaklaşım bilimsel olarak doğru değildir.\n\nGüncel, bilimsel yaklaşım\n- Çekirdek alanlarda destek: İletişim, sosyal etkileşim, uyum becerileri ve günlük yaşam için eğitim ve terapiler (davranışsal, gelişimsel, eğitimsel ve sosyal-ilişkisel yaklaşımlar).\n- Eşlik eden durumların değerlendirilmesi: Uyku sorunları, anksiyete, DEHB belirtileri, epilepsi, gastrointestinal sorunlar gibi alanlarda hekim değerlendirmesi.\n- İlaçlar hakkında önemli bilgi: Otizmin çekirdek özelliklerini “tedavi eden” bir ilaç yoktur; ancak bazı ilaçlar eşlik eden belirtileri azaltıp işlevselliği artırmaya yardımcı olabilir. İlaç kararı mutlaka hekim tarafından, yarar-zarar dengesiyle verilir.\n\nDikkat edilmesi gerekenler\n- “Mucize tedavi” iddialarına temkinli yaklaşın.\n- Kanıtı zayıf veya riskli uygulamalar için (yüksek maliyetli, zarar potansiyeli olan) mutlaka uzman görüşü alın.\n\nKaynaklar\n- CDC: https://www.cdc.gov/autism/treatment/\n- WHO: https://www.who.int/news-room/fact-sheets/detail/autism-spectrum-disorders"
     },
     { 
       title: "Yasal Haklar", 
