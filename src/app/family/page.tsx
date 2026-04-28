@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Phone, ArrowLeft, User, PhoneCall, Save, Download, Upload, Shield, Volume2, Settings2, Users } from "lucide-react";
+import { Phone, ArrowLeft, User, PhoneCall, Save, Shield, Volume2, Settings2, Users } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -128,7 +128,7 @@ const notifyProfileSync = () => {
 };
 
 export default function FamilyPage() {
-  const [tab, setTab] = useState<"bilgiler" | "ayarlar" | "yedek">("bilgiler");
+  const [tab, setTab] = useState<"bilgiler" | "ayarlar">("bilgiler");
   const syncOnceRef = useRef(false);
 
   const [profiles, setProfiles] = useState<Profile[]>(() => {
@@ -326,103 +326,6 @@ export default function FamilyPage() {
     setUnlockError(null);
   };
 
-  const buildBackup = () => {
-    const keys = [
-      "studentName",
-      "studentAge",
-      STUDENT_BIRTHDATE_KEY,
-      "familyNotes",
-      "educationNotes",
-      "instructorPhone",
-      "doctorPhone",
-      PROFILES_KEY,
-      ACTIVE_PROFILE_KEY,
-      UI_SETTINGS_KEY,
-      SPEECH_SETTINGS_KEY,
-      PARENT_LOCK_PIN_KEY,
-      PARENT_LOCKED_KEY,
-      "authUsersV1",
-      "authSessionV1",
-      "dailyScheduleRecordsV1",
-      "dailyScheduleFirstDateV1",
-      "firstThenV1",
-      "emotionLogV1",
-      "accCustomCardsV1",
-      "accFavoritesV1",
-      "tokenBalanceV1",
-    ];
-    const data: Record<string, string | null> = {};
-    for (const key of keys) {
-      try {
-        data[key] = localStorage.getItem(key);
-      } catch {
-        data[key] = null;
-      }
-    }
-    return JSON.stringify({ version: 1, exportedAt: new Date().toISOString(), data }, null, 2);
-  };
-
-  const [backupText, setBackupText] = useState("");
-  const [importText, setImportText] = useState("");
-  const [importError, setImportError] = useState<string | null>(null);
-  const [importOk, setImportOk] = useState<string | null>(null);
-
-  const downloadBackup = () => {
-    const text = buildBackup();
-    const blob = new Blob([text], { type: "application/json;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `otizm-yedek-${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const restoreBackup = () => {
-    if (!canEdit) return;
-    setImportError(null);
-    setImportOk(null);
-    let parsed: unknown;
-    try {
-      parsed = JSON.parse(importText);
-    } catch {
-      setImportError("Yedek JSON okunamadı.");
-      return;
-    }
-    if (!parsed || typeof parsed !== "object") {
-      setImportError("Yedek formatı geçersiz.");
-      return;
-    }
-    const obj = parsed as { data?: Record<string, string | null> };
-    if (!obj.data || typeof obj.data !== "object") {
-      setImportError("Yedek formatı geçersiz.");
-      return;
-    }
-    for (const [key, value] of Object.entries(obj.data)) {
-      try {
-        if (value === null) localStorage.removeItem(key);
-        else localStorage.setItem(key, value);
-      } catch {}
-    }
-    const nextProfiles = normalizeProfiles(readJson<unknown>(PROFILES_KEY, profiles));
-    const nextActiveProfileId = getLocalStorageValue(ACTIVE_PROFILE_KEY, activeProfileId);
-    setProfiles(nextProfiles);
-    setActiveProfileId(nextActiveProfileId);
-    const nextActiveProfile = nextProfiles.find((p) => p.id === nextActiveProfileId) ?? nextProfiles[0] ?? null;
-    if (nextActiveProfile) {
-      setStudentName(nextActiveProfile.name);
-      setStudentBirthDate(nextActiveProfile.birthDate);
-      setFamilyNotes(nextActiveProfile.familyNotes);
-      setEducationNotes(nextActiveProfile.educationNotes);
-    }
-
-    setUiSettings(readJson<UiSettings>(UI_SETTINGS_KEY, uiSettings));
-    setSpeechSettings(readJson<SpeechSettings>(SPEECH_SETTINGS_KEY, speechSettings));
-    setParentPin(getLocalStorageValue(PARENT_LOCK_PIN_KEY, parentPin));
-    setParentLockEnabled(getLocalStorageValue(PARENT_LOCKED_KEY, parentLockEnabled ? "1" : "0") === "1");
-    setImportOk("Yedek geri yüklendi.");
-  };
-
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-6 md:p-12">
       <header className="max-w-3xl mx-auto mb-12 flex items-center justify-between">
@@ -478,20 +381,6 @@ export default function FamilyPage() {
             )}
           >
             <Settings2 size={18} /> Ayarlar
-          </button>
-          <button
-            onClick={() => {
-              setTab("yedek");
-              try {
-                setBackupText(buildBackup());
-              } catch {}
-            }}
-            className={cn(
-              "flex-1 py-3 rounded-2xl font-black transition-all flex items-center justify-center gap-2",
-              tab === "yedek" ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900" : "text-zinc-500"
-            )}
-          >
-            <Download size={18} /> Yedek
           </button>
         </section>
 
@@ -1033,55 +922,6 @@ export default function FamilyPage() {
           </section>
         )}
 
-        {tab === "yedek" && (
-          <section className="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-xl space-y-6">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">Yedek / Geri Yükle</h2>
-                <p className="text-zinc-500 font-bold text-sm">Verilerini JSON olarak indir veya geri yükle.</p>
-              </div>
-              <button
-                onClick={downloadBackup}
-                className="px-6 py-4 rounded-2xl bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-black uppercase tracking-widest text-xs flex items-center gap-2"
-              >
-                <Download size={18} /> İndir
-              </button>
-            </div>
-
-            <textarea
-              value={backupText}
-              readOnly
-              className="w-full min-h-[220px] p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-mono text-xs"
-            />
-
-            <div className="h-px bg-zinc-100 dark:bg-zinc-800" />
-
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 text-zinc-700 dark:text-zinc-200 font-black">
-                <Upload size={18} /> Geri Yükle
-              </div>
-              <textarea
-                value={importText}
-                onChange={(e) => setImportText(e.target.value)}
-                className="w-full min-h-[180px] p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-mono text-xs"
-                placeholder="Yedek JSON'u buraya yapıştırın"
-                disabled={!canEdit}
-              />
-              {importError && <div className="font-bold text-rose-700 dark:text-rose-200">{importError}</div>}
-              {importOk && <div className="font-bold text-emerald-700 dark:text-emerald-200">{importOk}</div>}
-              <button
-                onClick={restoreBackup}
-                className={cn(
-                  "px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs transition-all active:scale-95",
-                  canEdit ? "bg-emerald-500 text-white hover:bg-emerald-600" : "bg-zinc-200 text-zinc-500 cursor-not-allowed"
-                )}
-                disabled={!canEdit}
-              >
-                Geri Yükle
-              </button>
-            </div>
-          </section>
-        )}
       </main>
     </div>
   );

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { Heart, BookOpen, Gamepad2, Users, Settings, Music, Calendar, Info, MessageSquare, HelpCircle } from "lucide-react";
+import { Heart, BookOpen, Gamepad2, Users, Settings, Music, Calendar, Info, MessageSquare, HelpCircle, User, Phone, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Session = {
@@ -27,6 +27,8 @@ const getLocalStorageValue = (key: string, fallback: string) => {
 
 const PROFILE_SYNC_EVENT = "profile-sync-v1";
 const STUDENT_BIRTHDATE_KEY = "studentBirthDate";
+const USER_FULL_NAME_KEY = "userFullNameV1";
+const USER_PHONE_KEY = "userPhoneV1";
 
 const toDateInputValue = (isoOrEmpty: string) => {
   if (!isoOrEmpty) return "";
@@ -155,6 +157,10 @@ export default function Home() {
   const [studentName, setStudentName] = useState(() => getLocalStorageValue("studentName", ""));
   const [studentBirthDate, setStudentBirthDate] = useState(() => getLocalStorageValue(STUDENT_BIRTHDATE_KEY, ""));
   const [legacyAge, setLegacyAge] = useState(() => getLocalStorageValue("studentAge", ""));
+  const [userProfileOpen, setUserProfileOpen] = useState(false);
+  const [userFullName, setUserFullName] = useState(() => getLocalStorageValue(USER_FULL_NAME_KEY, ""));
+  const [userPhone, setUserPhone] = useState(() => getLocalStorageValue(USER_PHONE_KEY, ""));
+  const [userProfileOk, setUserProfileOk] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -520,6 +526,89 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-6 md:p-12" suppressHydrationWarning>
+      {userProfileOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-zinc-950/80 backdrop-blur-md">
+          <div className="bg-white dark:bg-zinc-900 w-full max-w-xl rounded-[2.5rem] shadow-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800">
+            <div className="p-8 border-b border-zinc-100 dark:border-zinc-800 flex items-start justify-between gap-6">
+              <div>
+                <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">Profil</h2>
+                <p className="text-zinc-500 font-bold text-sm mt-2">Kullanıcı bilgileri</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setUserProfileOpen(false)}
+                className="px-5 py-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 font-black uppercase tracking-widest text-xs hover:opacity-90 transition-all"
+              >
+                Kapat
+              </button>
+            </div>
+
+            <div className="p-8 space-y-6">
+              <div className="space-y-2">
+                <label className="text-xs font-black text-zinc-400 uppercase tracking-widest flex items-center gap-2">
+                  <User size={16} /> Ad Soyad
+                </label>
+                <input
+                  type="text"
+                  value={userFullName}
+                  onChange={(e) => setUserFullName(e.target.value)}
+                  className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-zinc-900 transition-all outline-none"
+                  placeholder="Ad Soyad"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-black text-zinc-400 uppercase tracking-widest flex items-center gap-2">
+                  <Phone size={16} /> Telefon
+                </label>
+                <input
+                  type="tel"
+                  inputMode="tel"
+                  value={userPhone}
+                  onChange={(e) => setUserPhone(e.target.value)}
+                  className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-zinc-900 transition-all outline-none"
+                  placeholder="05xx xxx xx xx"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-black text-zinc-400 uppercase tracking-widest flex items-center gap-2">
+                  <Mail size={16} /> E-Posta
+                </label>
+                <input
+                  type="email"
+                  value={session.email}
+                  readOnly
+                  className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-100/70 dark:bg-zinc-950 font-bold text-zinc-700 dark:text-zinc-200"
+                />
+              </div>
+
+              {userProfileOk && (
+                <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-900/30 text-emerald-700 dark:text-emerald-200 font-bold">
+                  {userProfileOk}
+                </div>
+              )}
+
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => {
+                    try {
+                      localStorage.setItem(USER_FULL_NAME_KEY, userFullName.trim());
+                      localStorage.setItem(USER_PHONE_KEY, userPhone.trim());
+                    } catch {}
+                    setUserProfileOk("Kaydedildi.");
+                    window.setTimeout(() => setUserProfileOk(null), 1500);
+                  }}
+                  className="px-8 py-4 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-2xl font-black uppercase tracking-widest text-sm hover:opacity-90 transition-all"
+                >
+                  Kaydet
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <header className="max-w-5xl mx-auto mb-12">
         <div className="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden relative">
           <div className="absolute top-0 right-0 p-8 opacity-5">
@@ -538,18 +627,27 @@ export default function Home() {
                 Giriş: <span className="lowercase">{session.email}</span>
               </p>
             </div>
-            <div className="flex items-center gap-2 sm:gap-3 self-start sm:self-auto shrink-0">
-              <Link
-                href="/family"
-                className="p-3 sm:p-4 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all text-zinc-600 dark:text-zinc-400 shadow-sm"
-              >
-                <Settings size={28} />
-              </Link>
+            <div className="flex flex-col gap-2 sm:gap-3 self-start sm:self-auto shrink-0">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <Link
+                  href="/family"
+                  className="p-3 sm:p-4 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all text-zinc-600 dark:text-zinc-400 shadow-sm"
+                >
+                  <Settings size={28} />
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-3 sm:px-5 sm:py-4 rounded-2xl bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-black uppercase tracking-widest text-[11px] sm:text-xs hover:opacity-90 transition-all shadow-sm whitespace-nowrap"
+                >
+                  Çıkış
+                </button>
+              </div>
               <button
-                onClick={handleLogout}
-                className="px-4 py-3 sm:px-5 sm:py-4 rounded-2xl bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-black uppercase tracking-widest text-[11px] sm:text-xs hover:opacity-90 transition-all shadow-sm whitespace-nowrap"
+                type="button"
+                onClick={() => setUserProfileOpen(true)}
+                className="w-full px-4 py-3 sm:px-5 sm:py-4 rounded-2xl bg-emerald-500 text-white font-black uppercase tracking-widest text-[11px] sm:text-xs hover:bg-emerald-600 transition-all shadow-sm whitespace-nowrap"
               >
-                Çıkış
+                Profil
               </button>
             </div>
           </div>
