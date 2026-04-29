@@ -419,7 +419,10 @@ export default function Home() {
         </header>
 
         <main className="max-w-xl mx-auto">
-          <section className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-xl">
+          <section className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden relative">
+            <div className="absolute inset-0 z-0 pointer-events-none">
+              <img src="/loogo.png" alt="" className="w-full h-full object-cover opacity-[0.08] dark:opacity-[0.06]" />
+            </div>
             <div className="grid grid-cols-2 gap-2 bg-zinc-100 dark:bg-zinc-800 p-2 rounded-2xl mb-8">
               <button
                 onClick={() => {
@@ -712,14 +715,17 @@ export default function Home() {
             key={module.href}
             href={module.href}
             className={cn(
-              "group p-8 rounded-[2rem] border-2 transition-all active:scale-[0.98] flex flex-col items-start gap-6 shadow-sm hover:shadow-xl",
+              "group p-8 rounded-[2rem] border-2 transition-all active:scale-[0.98] flex flex-col items-start gap-6 shadow-sm hover:shadow-xl overflow-hidden relative",
               module.color
             )}
           >
-            <div className="p-5 rounded-2xl bg-white/90 dark:bg-black/20 shadow-md group-hover:scale-110 transition-transform group-hover:rotate-3">
+            <div className="absolute inset-0 z-0 pointer-events-none">
+              <img src="/loogo.png" alt="" className="w-full h-full object-cover opacity-[0.12] dark:opacity-[0.08]" />
+            </div>
+            <div className="p-5 rounded-2xl bg-white/90 dark:bg-black/20 shadow-md group-hover:scale-110 transition-transform group-hover:rotate-3 relative z-10">
               <module.icon size={36} />
             </div>
-            <div>
+            <div className="relative z-10">
               <h2 className="text-2xl font-black mb-2 tracking-tight">{module.title}</h2>
               <p className="opacity-90 font-bold text-sm leading-snug">{module.description}</p>
             </div>
