@@ -90,7 +90,7 @@ export default function OsbPage() {
               className="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-lg hover:shadow-xl transition-all group"
             >
               <div className={cn("w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform", s.color)}>
-                <s.icon size={32} />
+                <img src="/loogo.png" alt="" className="w-9 h-9 object-contain opacity-90" />
               </div>
               <h3 className="text-2xl font-black text-zinc-800 dark:text-zinc-100 mb-4 tracking-tight">{s.title}</h3>
               <p className="text-zinc-500 dark:text-zinc-400 font-bold leading-relaxed">{s.description}</p>
@@ -159,7 +159,7 @@ export default function OsbPage() {
             <div className="p-8 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center", selected.color)}>
-                  <selected.icon size={24} />
+                  <img src="/loogo.png" alt="" className="w-7 h-7 object-contain opacity-90" />
                 </div>
                 <h2 className="text-2xl font-black tracking-tight">{selected.title}</h2>
               </div>

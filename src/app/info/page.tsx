@@ -110,8 +110,8 @@ export default function InfoPage() {
       <main className="max-w-4xl mx-auto space-y-8">
         {/* Featured Guide */}
         <section className="bg-white dark:bg-zinc-900 p-10 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none">
-            <BookOpen size={160} />
+          <div className="absolute top-0 right-0 p-10 opacity-10 pointer-events-none">
+            <img src="/loogo.png" alt="" className="w-40 h-40 object-contain opacity-20" />
           </div>
           
           <div className="relative z-10 max-w-2xl">
@@ -137,7 +137,7 @@ export default function InfoPage() {
           {categories.map((cat, i) => (
             <section key={i} className="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-lg hover:shadow-xl transition-all group">
               <div className={cn("w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform", cat.color)}>
-                <cat.icon size={32} />
+                <img src="/loogo.png" alt="" className="w-9 h-9 object-contain opacity-90" />
               </div>
               <h3 className="text-2xl font-black text-zinc-800 dark:text-zinc-100 mb-4 tracking-tight">{cat.title}</h3>
               <p className="text-zinc-500 dark:text-zinc-400 font-bold leading-relaxed">
@@ -172,7 +172,7 @@ export default function InfoPage() {
             <div className="p-8 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center", selectedContent.color)}>
-                  <selectedContent.icon size={24} />
+                  <img src="/loogo.png" alt="" className="w-7 h-7 object-contain opacity-90" />
                 </div>
                 <h2 className="text-2xl font-black tracking-tight">{selectedContent.title}</h2>
               </div>
