@@ -624,7 +624,7 @@ export default function Home() {
         <div className="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden relative">
           <div className="absolute inset-0 z-0 pointer-events-none">
             <img
-              src="/otizm-farkindalik.png"
+              src="/loogo.png"
               alt=""
               className="w-full h-full object-cover opacity-[0.12] dark:opacity-[0.08]"
             />
