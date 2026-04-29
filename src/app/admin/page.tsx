@@ -13,12 +13,20 @@ type AdminStats = {
   sessionsActive: number;
   kvkkAccepted: number;
   profilesSaved: number;
+  profilesList: Array<{
+    email: string;
+    updatedAt: string | null;
+    activeProfileId: string | null;
+    profileNames: string[];
+    profileCount: number;
+  }>;
 };
 
 export default function AdminPage() {
   const [busy, setBusy] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [stats, setStats] = useState<AdminStats | null>(null);
+  const [profilesOpen, setProfilesOpen] = useState(false);
 
   const load = async () => {
     setBusy(true);
@@ -70,6 +78,52 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-6 md:p-12">
+      {profilesOpen && stats && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-zinc-950/80 backdrop-blur-md">
+          <div className="bg-white dark:bg-zinc-900 w-full max-w-3xl rounded-[2.5rem] shadow-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800">
+            <div className="p-8 border-b border-zinc-100 dark:border-zinc-800 flex items-start justify-between gap-6">
+              <div>
+                <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">Kayıtlı Profiller</h2>
+                <p className="text-zinc-500 font-bold text-sm mt-2">Son güncellenen 50 kullanıcı</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setProfilesOpen(false)}
+                className="px-5 py-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 font-black uppercase tracking-widest text-xs hover:opacity-90 transition-all"
+              >
+                Kapat
+              </button>
+            </div>
+
+            <div className="p-8 max-h-[70vh] overflow-auto">
+              {stats.profilesList.length === 0 ? (
+                <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 text-zinc-500 dark:text-zinc-400 font-bold">
+                  Henüz kayıtlı profil yok.
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {stats.profilesList.map((p) => (
+                    <div
+                      key={p.email}
+                      className="p-5 rounded-2xl border border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <div className="font-black text-zinc-900 dark:text-zinc-50">{p.email}</div>
+                        <div className="text-xs font-black text-zinc-400 uppercase tracking-widest">
+                          {p.updatedAt ? new Date(p.updatedAt).toLocaleString("tr-TR") : "—"}
+                        </div>
+                      </div>
+                      <div className="mt-2 text-sm font-bold text-zinc-600 dark:text-zinc-300">
+                        {p.profileCount} profil: {p.profileNames.join(", ")}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
       <header className="max-w-3xl mx-auto mb-10 flex items-center justify-between">
         <div className="flex items-center gap-6">
           <Link
@@ -137,12 +191,17 @@ export default function AdminPage() {
                 <div className="mt-2 text-4xl font-black text-zinc-900 dark:text-zinc-50">{stats.kvkkAccepted}</div>
               </div>
 
-              <div className="p-6 rounded-[1.5rem] border border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950">
+              <button
+                type="button"
+                onClick={() => setProfilesOpen(true)}
+                className="p-6 rounded-[1.5rem] border border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-left hover:border-zinc-200 dark:hover:border-zinc-700 transition-all active:scale-[0.99]"
+              >
                 <div className="flex items-center gap-3 text-zinc-500 dark:text-zinc-400 font-black text-sm">
                   <FileText size={18} /> Kayıtlı Profil
                 </div>
                 <div className="mt-2 text-4xl font-black text-zinc-900 dark:text-zinc-50">{stats.profilesSaved}</div>
-              </div>
+                <div className="mt-2 text-xs font-black text-zinc-400 uppercase tracking-widest">Detay</div>
+              </button>
             </div>
 
             <div className="mt-6 text-xs font-bold text-zinc-400 uppercase tracking-widest">

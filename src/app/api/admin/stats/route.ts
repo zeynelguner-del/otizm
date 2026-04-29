@@ -46,6 +46,22 @@ const toIsoOrNull = (value: unknown) => {
   return null;
 };
 
+type ProfileMini = { email: string; updatedAt: string | null; activeProfileId: string | null; profileNames: string[]; profileCount: number };
+
+const extractProfileNames = (raw: unknown) => {
+  if (!Array.isArray(raw)) return [];
+  const out: string[] = [];
+  for (const item of raw) {
+    if (!item || typeof item !== "object") continue;
+    const o = item as Record<string, unknown>;
+    const id = typeof o.id === "string" ? o.id : "";
+    if (!id) continue;
+    const name = typeof o.name === "string" ? o.name.trim() : "";
+    out.push(name || "İsimsiz");
+  }
+  return out;
+};
+
 export async function GET() {
   try {
     const email = await getAuthedEmail();
@@ -66,12 +82,34 @@ export async function GET() {
       "SELECT COUNT(*)::int AS count FROM users WHERE created_at >= ($1::timestamptz - interval '7 days')",
       [nowIso]
     );
+    const profilesListRes = await db.query(
+      `
+        SELECT u.email, up.profiles_json, up.active_profile_id, up.updated_at
+        FROM user_profiles up
+        JOIN users u ON u.id = up.user_id
+        ORDER BY up.updated_at DESC
+        LIMIT 50
+      `
+    );
 
     const usersRow = usersRes.rows[0] as { count?: number; last_created_at?: unknown } | undefined;
     const sessionsRow = sessionsRes.rows[0] as { count?: number } | undefined;
     const kvkkRow = kvkkRes.rows[0] as { count?: number } | undefined;
     const profilesRow = profilesRes.rows[0] as { count?: number } | undefined;
     const last7dRow = last7dRes.rows[0] as { count?: number } | undefined;
+    const profilesList: ProfileMini[] = profilesListRes.rows
+      .map((r) => {
+        const email = typeof r.email === "string" ? r.email : "";
+        const profileNames = extractProfileNames(r.profiles_json);
+        return {
+          email,
+          updatedAt: toIsoOrNull(r.updated_at),
+          activeProfileId: typeof r.active_profile_id === "string" ? r.active_profile_id : null,
+          profileNames,
+          profileCount: profileNames.length,
+        };
+      })
+      .filter((x) => x.email);
 
     return NextResponse.json({
       now: nowIso,
@@ -81,6 +119,7 @@ export async function GET() {
       sessionsActive: typeof sessionsRow?.count === "number" ? sessionsRow.count : 0,
       kvkkAccepted: typeof kvkkRow?.count === "number" ? kvkkRow.count : 0,
       profilesSaved: typeof profilesRow?.count === "number" ? profilesRow.count : 0,
+      profilesList,
     });
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : "Sunucu hatası." }, { status: 500 });
