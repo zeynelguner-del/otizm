@@ -658,7 +658,7 @@ export default function Home() {
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="px-4 py-3 sm:px-5 sm:py-4 rounded-2xl bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-black uppercase tracking-widest text-[11px] sm:text-xs hover:opacity-90 transition-all shadow-sm whitespace-nowrap"
+                  className="px-4 py-3 sm:px-5 sm:py-4 rounded-2xl bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-black uppercase tracking-widest text-[11px] sm:text-xs hover:opacity-90 transition-all whitespace-nowrap"
                 >
                   Çıkış
                 </button>
