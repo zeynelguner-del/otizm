@@ -622,7 +622,14 @@ export default function Home() {
       )}
       <header className="max-w-5xl mx-auto mb-12">
         <div className="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden relative">
-          <div className="absolute top-0 right-0 p-8 opacity-5">
+          <div className="absolute inset-0 z-0 pointer-events-none">
+            <img
+              src="/otizm-farkindalik.png"
+              alt=""
+              className="w-full h-full object-cover opacity-[0.12] dark:opacity-[0.08]"
+            />
+          </div>
+          <div className="absolute top-0 right-0 p-8 opacity-5 z-0 pointer-events-none">
             <Users size={120} />
           </div>
           
