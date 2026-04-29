@@ -289,10 +289,16 @@ export default function Home() {
 
   const handleLogout = async () => {
     setAuthError(null);
+    setAuthBusy(true);
     try {
       await fetch("/api/auth/logout", { method: "POST" });
     } catch {}
     setCachedSession(null);
+    kvkkSyncedForEmailRef.current = null;
+    setAuthEmail("");
+    setAuthPassword("");
+    setAuthPassword2("");
+    setAuthBusy(false);
   };
 
   const handleRegister = async () => {
@@ -515,8 +521,13 @@ export default function Home() {
                     : "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:opacity-90"
                 )}
               >
-                {authMode === "login" ? "Giriş Yap" : "Kayıt Ol"}
+                {!kvkkAccepted ? "KVKK Onayı Gerekli" : authMode === "login" ? "Giriş Yap" : "Kayıt Ol"}
               </button>
+              {!kvkkAccepted && (
+                <div className="text-xs font-bold text-zinc-500">
+                  Devam etmek için KVKK Açık Rıza ekranında “Kabul Ediyorum” butonuna basın.
+                </div>
+              )}
             </div>
           </section>
         </main>
