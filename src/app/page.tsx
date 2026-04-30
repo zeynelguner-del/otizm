@@ -748,7 +748,12 @@ export default function Home() {
 
                 <div className="order-1 md:order-2 w-full md:w-64 rounded-3xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 self-start">
                   {studentPhotoDataUrl ? (
-                    <img src={studentPhotoDataUrl} alt="" className="w-full h-56 md:h-64 object-cover" />
+                    <img
+                      src={studentPhotoDataUrl}
+                      alt=""
+                      className="block w-full h-56 md:h-64 object-cover object-center"
+                      style={{ objectPosition: "50% 50%" }}
+                    />
                   ) : (
                     <div className="w-full h-56 md:h-64 flex items-center justify-center text-zinc-400 font-black text-xs uppercase tracking-widest">
                       Fotoğraf Yok
