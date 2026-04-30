@@ -996,44 +996,6 @@ export default function FamilyPage() {
                   onClick={async () => {
                     setPrivacyError(null);
                     setPrivacyOk(null);
-                    setPrivacyBusy(true);
-                    try {
-                      const res = await fetch("/api/privacy/export", { method: "GET" });
-                      if (!res.ok) {
-                        const data = (await res.json().catch(() => ({}))) as { error?: string };
-                        setPrivacyError(typeof data.error === "string" ? data.error : "Veri indirilemedi.");
-                        return;
-                      }
-                      const blob = await res.blob();
-                      const url = URL.createObjectURL(blob);
-                      const a = document.createElement("a");
-                      a.href = url;
-                      a.download = `otizm-veri-${new Date().toISOString().slice(0, 10)}.json`;
-                      a.click();
-                      URL.revokeObjectURL(url);
-                      setPrivacyOk("Veri indirildi.");
-                    } catch (e) {
-                      setPrivacyError(e instanceof Error ? e.message : "Veri indirilemedi.");
-                    } finally {
-                      setPrivacyBusy(false);
-                    }
-                  }}
-                  className={cn(
-                    "p-5 rounded-2xl border-2 font-black transition-all active:scale-95",
-                    privacyBusy
-                      ? "bg-zinc-100 border-zinc-100 text-zinc-400 cursor-not-allowed"
-                      : "bg-blue-50 border-blue-200 text-blue-700"
-                  )}
-                >
-                  Veriyi İndir
-                </button>
-
-                <button
-                  type="button"
-                  disabled={privacyBusy}
-                  onClick={async () => {
-                    setPrivacyError(null);
-                    setPrivacyOk(null);
                     const confirm = window.prompt('Hesabı silmek için "SIL" yazın:');
                     if (confirm !== "SIL") return;
                     const password = window.prompt("Şifrenizi girin (hesap silme için):");

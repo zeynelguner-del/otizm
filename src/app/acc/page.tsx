@@ -557,7 +557,7 @@ export default function ACCPage() {
         ))}
       </main>
 
-      <footer className="max-w-5xl mx-auto mt-20 p-8 bg-zinc-100 dark:bg-zinc-900 rounded-[2rem] text-center">
+      <footer className="max-w-5xl mx-auto mt-20 p-8 bg-zinc-100 dark:bg-white rounded-[2rem] text-center">
         <p className="text-zinc-500 font-bold flex items-center justify-center gap-2">
           <MessageSquare size={20} className="text-zinc-400" />
           Kartlara dokunarak sesli iletişim kurabilirsiniz.
