@@ -462,13 +462,14 @@ export default function FamilyPage() {
               : "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 hover:opacity-90"
           )}
           disabled={!canEdit && !isEditing}
+          translate="no"
         >
           {isEditing ? (
             <>
-              <Save size={24} /> Kaydet
+              <Save size={24} /> <span translate="no" className="notranslate">Kaydet</span>
             </>
           ) : (
-            "Düzenle"
+            <span translate="no" className="notranslate">Düzenle</span>
           )}
         </button>
       </header>
@@ -490,8 +491,9 @@ export default function FamilyPage() {
               "flex-1 py-3 rounded-2xl font-black transition-all flex items-center justify-center gap-2 text-center whitespace-nowrap",
               tab === "ayarlar" ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900" : "text-zinc-500"
             )}
+            translate="no"
           >
-            <Settings2 size={18} /> Ayarlar
+            <Settings2 size={18} /> <span translate="no" className="notranslate">Ayarlar</span>
           </button>
         </section>
 
@@ -649,8 +651,9 @@ export default function FamilyPage() {
                     <label
                       htmlFor="student-photo-input"
                       className="w-full inline-flex items-center justify-center px-6 py-4 rounded-2xl bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-black uppercase tracking-widest text-xs hover:opacity-90 transition-all cursor-pointer"
+                      translate="no"
                     >
-                      Fotoğraf Yükle
+                      <span translate="no" className="notranslate">Fotoğraf Yükle</span>
                     </label>
                   </>
                 )}
