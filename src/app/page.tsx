@@ -614,22 +614,18 @@ export default function Home() {
       {userProfileOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-zinc-950/80 backdrop-blur-md">
           <div className="bg-white dark:bg-zinc-900 w-full max-w-xl rounded-[2.5rem] shadow-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800">
-            <div className="p-8 border-b border-zinc-100 dark:border-zinc-800 flex items-start justify-between gap-6">
-              <div>
+            <div className="p-8 border-b border-zinc-100 dark:border-zinc-800 flex items-start justify-between gap-6 relative overflow-hidden">
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <img src="/loogo.png" alt="" className="w-40 sm:w-48 h-auto opacity-20 dark:opacity-15" />
+              </div>
+              <div className="relative z-10">
                 <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">Profil</h2>
-                <div className="mt-4 w-full max-w-[180px]">
-                  <img
-                    src="/loogo.png"
-                    alt=""
-                    className="w-full h-auto opacity-30 dark:opacity-20"
-                  />
-                </div>
-                <p className="text-zinc-500 font-bold text-sm mt-4">Kullanıcı bilgileri</p>
+                <p className="text-zinc-500 font-bold text-sm mt-2">Kullanıcı bilgileri</p>
               </div>
               <button
                 type="button"
                 onClick={() => setUserProfileOpen(false)}
-                className="px-5 py-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 font-black uppercase tracking-widest text-xs hover:opacity-90 transition-all"
+                className="relative z-10 px-5 py-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 font-black uppercase tracking-widest text-xs hover:opacity-90 transition-all"
               >
                 Kapat
               </button>
