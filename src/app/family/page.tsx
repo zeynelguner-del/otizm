@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Phone, ArrowLeft, User, PhoneCall, Save, Shield, Volume2, Settings2, Users } from "lucide-react";
+import { Phone, ArrowLeft, User, PhoneCall, Save, Shield, Volume2, Settings2, Users, Moon, Sun } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -138,6 +138,7 @@ const notifyProfileSync = () => {
 };
 
 export default function FamilyPage() {
+  const [themeMode, setThemeMode] = useState<"light" | "dark" | "system">("system");
   const [tab, setTab] = useState<"bilgiler" | "ayarlar">("bilgiler");
   const syncOnceRef = useRef(false);
   const metaSyncOnceRef = useRef(false);
@@ -435,6 +436,28 @@ export default function FamilyPage() {
       return;
     }
     setUnlockError(null);
+  };
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("themeV1");
+      if (raw === "dark") setThemeMode("dark");
+      else if (raw === "light") setThemeMode("light");
+      else setThemeMode("system");
+    } catch {
+      setThemeMode("system");
+    }
+  }, []);
+
+  const applyThemeMode = (next: "light" | "dark") => {
+    const root = document.documentElement;
+    root.classList.remove("dark", "light");
+    if (next === "dark") root.classList.add("dark");
+    else root.classList.add("light");
+    try {
+      localStorage.setItem("themeV1", next);
+    } catch {}
+    setThemeMode(next);
   };
 
   return (
@@ -1028,6 +1051,21 @@ export default function FamilyPage() {
                   )}
                 >
                   Hesabı Sil
+                </button>
+
+                <button
+                  type="button"
+                  disabled={privacyBusy}
+                  onClick={() => applyThemeMode(themeMode === "dark" ? "light" : "dark")}
+                  className={cn(
+                    "p-5 rounded-2xl border-2 font-black transition-all active:scale-95 flex items-center justify-center gap-2",
+                    privacyBusy
+                      ? "bg-zinc-100 border-zinc-100 text-zinc-400 cursor-not-allowed"
+                      : "bg-zinc-100 border-zinc-200 text-zinc-800 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100"
+                  )}
+                >
+                  {themeMode === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+                  {themeMode === "dark" ? "Beyaz Mod" : "Siyah Mod"}
                 </button>
               </div>
             </div>
