@@ -700,20 +700,16 @@ export default function Home() {
         </div>
       )}
       <header className="max-w-5xl mx-auto mb-12">
-        <div className="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden relative">
-          <div className="absolute inset-0 z-0 pointer-events-none">
-            <img
-              src="/loogo.png"
-              alt=""
-              className="w-full h-full object-cover opacity-[0.12] dark:opacity-[0.08]"
-            />
-          </div>
-          <div className="absolute top-0 right-0 p-8 opacity-5 z-0 pointer-events-none">
-            <Users size={120} />
-          </div>
-          
-          <div className="flex flex-col gap-6 sm:flex-row sm:justify-between sm:items-start mb-8 relative z-10">
-            <div className="min-w-0">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden relative lg:col-span-2">
+            <div className="absolute inset-0 z-0 pointer-events-none">
+              <img src="/loogo.png" alt="" className="w-full h-full object-cover opacity-[0.12] dark:opacity-[0.08]" />
+            </div>
+            <div className="absolute top-0 right-0 p-8 opacity-5 z-0 pointer-events-none">
+              <Users size={120} />
+            </div>
+
+            <div className="relative z-10">
               <div className="flex items-center gap-2 mb-1">
                 <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
                 <h2 className="text-xs font-bold text-zinc-400 uppercase tracking-[0.2em]">Sistem Aktif</h2>
@@ -723,76 +719,76 @@ export default function Home() {
               <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mt-3">
                 Kullanıcı: <span className="lowercase">{userFullName || session.email}</span>
               </p>
-            </div>
-            <div className="flex flex-col gap-2 sm:gap-3 self-start sm:self-auto shrink-0">
-              <div className="flex items-center gap-2 sm:gap-3">
-                <Link
-                  href="/family"
-                  className="p-3 sm:p-4 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all text-zinc-600 dark:text-zinc-400 shadow-sm"
-                >
-                  <Settings size={28} />
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="px-4 py-3 sm:px-5 sm:py-4 rounded-2xl bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-black uppercase tracking-widest text-[11px] sm:text-xs hover:opacity-90 transition-all whitespace-nowrap"
-                >
-                  Çıkış
-                </button>
+
+              <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <p className="text-xs font-bold text-zinc-400 uppercase mb-2">Çocuğun Adı</p>
+                    <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">{studentName || "Belirtilmedi"}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-zinc-400 uppercase mb-2">Doğum Tarihi</p>
+                    <div className="space-y-1">
+                      <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">
+                        {formatBirthDate(studentBirthDate) || "Belirtilmedi"}
+                      </p>
+                      <div className="text-sm font-bold text-zinc-500 dark:text-zinc-400">
+                        {(() => {
+                          const age = computeAgeYears(studentBirthDate);
+                          if (age !== null) return `${age} Yaşında`;
+                          return legacyAge ? `${legacyAge} Yaşında` : "";
+                        })()}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950">
+                  {studentPhotoDataUrl ? (
+                    <img src={studentPhotoDataUrl} alt="" className="w-full h-40 md:h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-40 md:h-full flex items-center justify-center text-zinc-400 font-black text-xs uppercase tracking-widest">
+                      Fotoğraf Yok
+                    </div>
+                  )}
+                </div>
               </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-zinc-900 p-6 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden relative">
+            <div className="absolute inset-0 z-0 pointer-events-none">
+              <img src="/loogo.png" alt="" className="w-full h-full object-cover opacity-[0.10] dark:opacity-[0.06]" />
+            </div>
+            <div className="relative z-10 space-y-3">
+              <Link
+                href="/family"
+                className="w-full px-5 py-4 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all text-zinc-700 dark:text-zinc-200 shadow-sm font-black uppercase tracking-widest text-[11px] sm:text-xs text-center flex items-center justify-center gap-2"
+              >
+                <Settings size={18} /> Ayarlar
+              </Link>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="w-full px-5 py-4 rounded-2xl bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-black uppercase tracking-widest text-[11px] sm:text-xs hover:opacity-90 transition-all shadow-sm whitespace-nowrap"
+              >
+                Çıkış
+              </button>
               <button
                 type="button"
                 onClick={() => setUserProfileOpen(true)}
-                className="w-full px-4 py-3 sm:px-5 sm:py-4 rounded-2xl bg-emerald-500 text-white font-black uppercase tracking-widest text-[11px] sm:text-xs hover:bg-emerald-600 transition-all shadow-sm whitespace-nowrap"
+                className="w-full px-5 py-4 rounded-2xl bg-emerald-500 text-white font-black uppercase tracking-widest text-[11px] sm:text-xs hover:bg-emerald-600 transition-all shadow-sm whitespace-nowrap"
               >
                 Profil
               </button>
-              {session.email.trim().toLowerCase() === "zeynelguner@gmail.com" ? (
-                <>
-                  <Link
-                    href="/admin"
-                    className="w-full px-4 py-3 sm:px-5 sm:py-4 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all text-zinc-700 dark:text-zinc-200 shadow-sm font-black uppercase tracking-widest text-[11px] sm:text-xs text-center"
-                  >
-                    Yönetim
-                  </Link>
-                  {studentPhotoDataUrl && (
-                    <div className="w-full rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950">
-                      <img src={studentPhotoDataUrl} alt="" className="w-full h-28 object-cover" />
-                    </div>
-                  )}
-                </>
-              ) : (
-                studentPhotoDataUrl && (
-                  <div className="w-full rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950">
-                    <img src={studentPhotoDataUrl} alt="" className="w-full h-28 object-cover" />
-                  </div>
-                )
+              {session.email.trim().toLowerCase() === "zeynelguner@gmail.com" && (
+                <Link
+                  href="/admin"
+                  className="w-full px-5 py-4 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all text-zinc-700 dark:text-zinc-200 shadow-sm font-black uppercase tracking-widest text-[11px] sm:text-xs text-center"
+                >
+                  Yönetim
+                </Link>
               )}
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 gap-8 relative z-10">
-            <div className="space-y-6">
-              <div className="flex gap-10">
-                <div>
-                  <p className="text-xs font-bold text-zinc-400 uppercase mb-2">Çocuğun Adı</p>
-                  <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">{studentName || "Belirtilmedi"}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-zinc-400 uppercase mb-2">Doğum Tarihi</p>
-                  <div className="space-y-1">
-                    <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">
-                      {formatBirthDate(studentBirthDate) || "Belirtilmedi"}
-                    </p>
-                    <div className="text-sm font-bold text-zinc-500 dark:text-zinc-400">
-                      {(() => {
-                        const age = computeAgeYears(studentBirthDate);
-                        if (age !== null) return `${age} Yaşında`;
-                        return legacyAge ? `${legacyAge} Yaşında` : "";
-                      })()}
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
