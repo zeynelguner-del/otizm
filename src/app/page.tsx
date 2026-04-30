@@ -700,7 +700,7 @@ export default function Home() {
         </div>
       )}
       <header className="max-w-5xl mx-auto mb-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
           <div className="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden relative lg:col-span-2">
             <div className="absolute inset-0 z-0 pointer-events-none">
               <img src="/loogo.png" alt="" className="w-full h-full object-cover opacity-[0.12] dark:opacity-[0.08]" />
@@ -753,14 +753,38 @@ export default function Home() {
                   )}
                 </div>
               </div>
+
+              <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {modules.map((module) => (
+                  <Link
+                    key={module.href}
+                    href={module.href}
+                    className={cn(
+                      "group p-8 rounded-[2rem] border-2 transition-all active:scale-[0.98] flex flex-col items-start gap-6 shadow-sm hover:shadow-xl overflow-hidden relative",
+                      module.color
+                    )}
+                  >
+                    <div className="absolute inset-0 z-0 pointer-events-none">
+                      <img src="/loogo.png" alt="" className="w-full h-full object-cover opacity-[0.12] dark:opacity-[0.08]" />
+                    </div>
+                    <div className="p-5 rounded-2xl bg-white/90 dark:bg-black/20 shadow-md group-hover:scale-110 transition-transform group-hover:rotate-3 relative z-10">
+                      <module.icon size={36} />
+                    </div>
+                    <div className="relative z-10">
+                      <h2 className="text-2xl font-black mb-2 tracking-tight">{module.title}</h2>
+                      <p className="opacity-90 font-bold text-sm leading-snug">{module.description}</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
 
-          <div className="bg-white dark:bg-zinc-900 p-6 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden relative">
+          <div className="bg-white dark:bg-zinc-900 p-6 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden relative h-full">
             <div className="absolute inset-0 z-0 pointer-events-none">
               <img src="/loogo.png" alt="" className="w-full h-full object-cover opacity-[0.10] dark:opacity-[0.06]" />
             </div>
-            <div className="relative z-10 space-y-3">
+            <div className="relative z-10 space-y-3 h-full flex flex-col">
               <Link
                 href="/family"
                 className="w-full px-5 py-4 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all text-zinc-700 dark:text-zinc-200 shadow-sm font-black uppercase tracking-widest text-[11px] sm:text-xs text-center flex items-center justify-center gap-2"
@@ -789,34 +813,11 @@ export default function Home() {
                   Yönetim
                 </Link>
               )}
+              <div className="flex-1" />
             </div>
           </div>
         </div>
       </header>
-
-      <main className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {modules.map((module) => (
-          <Link
-            key={module.href}
-            href={module.href}
-            className={cn(
-              "group p-8 rounded-[2rem] border-2 transition-all active:scale-[0.98] flex flex-col items-start gap-6 shadow-sm hover:shadow-xl overflow-hidden relative",
-              module.color
-            )}
-          >
-            <div className="absolute inset-0 z-0 pointer-events-none">
-              <img src="/loogo.png" alt="" className="w-full h-full object-cover opacity-[0.12] dark:opacity-[0.08]" />
-            </div>
-            <div className="p-5 rounded-2xl bg-white/90 dark:bg-black/20 shadow-md group-hover:scale-110 transition-transform group-hover:rotate-3 relative z-10">
-              <module.icon size={36} />
-            </div>
-            <div className="relative z-10">
-              <h2 className="text-2xl font-black mb-2 tracking-tight">{module.title}</h2>
-              <p className="opacity-90 font-bold text-sm leading-snug">{module.description}</p>
-            </div>
-          </Link>
-        ))}
-      </main>
 
       <footer className="max-w-5xl mx-auto mt-20 text-center text-zinc-400 text-sm font-bold uppercase tracking-widest">
         <p>© 2026 Otizm Destek Uygulaması - Tüm Hakları Saklıdır</p>
