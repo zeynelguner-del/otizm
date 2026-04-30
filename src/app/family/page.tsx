@@ -18,6 +18,13 @@ const getLocalStorageValue = (key: string, fallback: string) => {
   }
 };
 
+const setLocalStorageValue = (key: string, value: string) => {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(key, value);
+  } catch {}
+};
+
 type Profile = {
   id: string;
   name: string;
@@ -362,14 +369,16 @@ export default function FamilyPage() {
   const saveAll = () => {
     if (!canEdit) return;
 
-    localStorage.setItem("studentName", studentName);
-    localStorage.setItem(STUDENT_BIRTHDATE_KEY, studentBirthDate);
-    localStorage.setItem(STUDENT_PHOTO_KEY, studentPhotoDataUrl);
-    localStorage.setItem("familyNotes", familyNotes);
-    localStorage.setItem("educationNotes", educationNotes);
-    localStorage.setItem("instructorPhone", instructorPhone);
-    localStorage.setItem("doctorPhone", doctorPhone);
-    localStorage.removeItem("studentAge");
+    setLocalStorageValue("studentName", studentName);
+    setLocalStorageValue(STUDENT_BIRTHDATE_KEY, studentBirthDate);
+    setLocalStorageValue(STUDENT_PHOTO_KEY, studentPhotoDataUrl);
+    setLocalStorageValue("familyNotes", familyNotes);
+    setLocalStorageValue("educationNotes", educationNotes);
+    setLocalStorageValue("instructorPhone", instructorPhone);
+    setLocalStorageValue("doctorPhone", doctorPhone);
+    try {
+      localStorage.removeItem("studentAge");
+    } catch {}
 
     const nextProfiles = profiles.map((p) =>
       p.id === activeProfileId
@@ -378,7 +387,7 @@ export default function FamilyPage() {
     );
     setProfiles(nextProfiles);
     writeJson(PROFILES_KEY, nextProfiles);
-    localStorage.setItem(ACTIVE_PROFILE_KEY, activeProfileId);
+    setLocalStorageValue(ACTIVE_PROFILE_KEY, activeProfileId);
     void fetch("/api/profile", {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -413,8 +422,8 @@ export default function FamilyPage() {
     setEducationNotes(next.educationNotes);
     setStudentPhotoDataUrl(next.photoDataUrl);
     writeJson(PROFILES_KEY, nextProfiles);
-    localStorage.setItem(ACTIVE_PROFILE_KEY, id);
-    localStorage.setItem(STUDENT_PHOTO_KEY, "");
+    setLocalStorageValue(ACTIVE_PROFILE_KEY, id);
+    setLocalStorageValue(STUDENT_PHOTO_KEY, "");
     setIsEditing(true);
   };
 
@@ -624,16 +633,25 @@ export default function FamilyPage() {
                   )}
                 </div>
                 {isEditing && canEdit && (
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      const f = e.target.files?.[0];
-                      if (f) void setPhotoFromFile(f);
-                      e.currentTarget.value = "";
-                    }}
-                    className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 font-bold"
-                  />
+                  <>
+                    <input
+                      id="student-photo-input"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        if (f) void setPhotoFromFile(f);
+                        e.currentTarget.value = "";
+                      }}
+                      className="hidden"
+                    />
+                    <label
+                      htmlFor="student-photo-input"
+                      className="w-full inline-flex items-center justify-center px-6 py-4 rounded-2xl bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-black uppercase tracking-widest text-xs hover:opacity-90 transition-all cursor-pointer"
+                    >
+                      Fotoğraf Yükle
+                    </label>
+                  </>
                 )}
               </div>
             </div>
