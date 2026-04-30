@@ -709,7 +709,7 @@ export default function Home() {
               <Users size={120} />
             </div>
 
-            <div className="relative z-10">
+            <div className="relative z-10 h-full flex flex-col">
               <div className="flex items-center gap-2 mb-1">
                 <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
                 <h2 className="text-xs font-bold text-zinc-400 uppercase tracking-[0.2em]">Sistem Aktif</h2>
@@ -720,37 +720,35 @@ export default function Home() {
                 Kullanıcı: <span className="lowercase">{userFullName || session.email}</span>
               </p>
 
-              <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div>
-                    <p className="text-xs font-bold text-zinc-400 uppercase mb-2">Çocuğun Adı</p>
-                    <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">{studentName || "Belirtilmedi"}</p>
+              <div className="mt-8 rounded-3xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950">
+                {studentPhotoDataUrl ? (
+                  <img src={studentPhotoDataUrl} alt="" className="w-full h-56 sm:h-64 object-cover" />
+                ) : (
+                  <div className="w-full h-56 sm:h-64 flex items-center justify-center text-zinc-400 font-black text-xs uppercase tracking-widest">
+                    Fotoğraf Yok
                   </div>
-                  <div>
-                    <p className="text-xs font-bold text-zinc-400 uppercase mb-2">Doğum Tarihi</p>
-                    <div className="space-y-1">
-                      <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">
-                        {formatBirthDate(studentBirthDate) || "Belirtilmedi"}
-                      </p>
-                      <div className="text-sm font-bold text-zinc-500 dark:text-zinc-400">
-                        {(() => {
-                          const age = computeAgeYears(studentBirthDate);
-                          if (age !== null) return `${age} Yaşında`;
-                          return legacyAge ? `${legacyAge} Yaşında` : "";
-                        })()}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                )}
+              </div>
 
-                <div className="rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950">
-                  {studentPhotoDataUrl ? (
-                    <img src={studentPhotoDataUrl} alt="" className="w-full h-40 md:h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-40 md:h-full flex items-center justify-center text-zinc-400 font-black text-xs uppercase tracking-widest">
-                      Fotoğraf Yok
+              <div className="mt-auto pt-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <p className="text-xs font-bold text-zinc-400 uppercase mb-2">Çocuğun Adı</p>
+                  <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">{studentName || "Belirtilmedi"}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-zinc-400 uppercase mb-2">Doğum Tarihi</p>
+                  <div className="space-y-1">
+                    <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">
+                      {formatBirthDate(studentBirthDate) || "Belirtilmedi"}
+                    </p>
+                    <div className="text-sm font-bold text-zinc-500 dark:text-zinc-400">
+                      {(() => {
+                        const age = computeAgeYears(studentBirthDate);
+                        if (age !== null) return `${age} Yaşında`;
+                        return legacyAge ? `${legacyAge} Yaşında` : "";
+                      })()}
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
 
