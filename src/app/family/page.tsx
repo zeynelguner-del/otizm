@@ -478,7 +478,7 @@ export default function FamilyPage() {
           <button
             onClick={() => setTab("bilgiler")}
             className={cn(
-              "flex-1 py-3 rounded-2xl font-black transition-all",
+              "flex-1 py-3 rounded-2xl font-black transition-all flex items-center justify-center text-center whitespace-nowrap",
               tab === "bilgiler" ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900" : "text-zinc-500"
             )}
           >
@@ -487,7 +487,7 @@ export default function FamilyPage() {
           <button
             onClick={() => setTab("ayarlar")}
             className={cn(
-              "flex-1 py-3 rounded-2xl font-black transition-all flex items-center justify-center gap-2",
+              "flex-1 py-3 rounded-2xl font-black transition-all flex items-center justify-center gap-2 text-center whitespace-nowrap",
               tab === "ayarlar" ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900" : "text-zinc-500"
             )}
           >
@@ -644,6 +644,7 @@ export default function FamilyPage() {
                         e.currentTarget.value = "";
                       }}
                       className="hidden"
+                      style={{ display: "none" }}
                     />
                     <label
                       htmlFor="student-photo-input"
