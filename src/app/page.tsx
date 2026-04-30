@@ -770,19 +770,6 @@ export default function Home() {
               <img src="/loogo.png" alt="" className="w-full h-full object-cover opacity-[0.10] dark:opacity-[0.06]" />
             </div>
             <div className="relative z-10 space-y-3 h-full flex flex-col">
-              <Link
-                href="/family"
-                className="w-full px-5 py-4 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all text-zinc-700 dark:text-zinc-200 shadow-sm font-black uppercase tracking-widest text-[11px] sm:text-xs text-center flex items-center justify-center gap-2"
-              >
-                <Settings size={18} /> Ayarlar
-              </Link>
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="w-full px-5 py-4 rounded-2xl bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-black uppercase tracking-widest text-[11px] sm:text-xs hover:opacity-90 transition-all shadow-sm whitespace-nowrap"
-              >
-                Çıkış
-              </button>
               <button
                 type="button"
                 onClick={() => setUserProfileOpen(true)}
@@ -790,6 +777,12 @@ export default function Home() {
               >
                 Profil
               </button>
+              <Link
+                href="/family"
+                className="w-full px-5 py-4 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all text-zinc-700 dark:text-zinc-200 shadow-sm font-black uppercase tracking-widest text-[11px] sm:text-xs text-center flex items-center justify-center gap-2"
+              >
+                <Settings size={18} /> Ayarlar
+              </Link>
               {session.email.trim().toLowerCase() === "zeynelguner@gmail.com" && (
                 <Link
                   href="/admin"
@@ -799,6 +792,13 @@ export default function Home() {
                 </Link>
               )}
               <div className="flex-1" />
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="w-full px-5 py-4 rounded-2xl bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-black uppercase tracking-widest text-[11px] sm:text-xs hover:opacity-90 transition-all shadow-sm whitespace-nowrap"
+              >
+                Çıkış
+              </button>
             </div>
           </div>
         </div>
