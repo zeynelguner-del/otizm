@@ -698,7 +698,7 @@ export default function Home() {
               <h1 className="text-4xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">Aile Paneli</h1>
               <p className="text-zinc-500 font-medium mt-1 text-lg">Aile Yönetim Paneli</p>
               <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mt-3">
-                Giriş: <span className="lowercase">{session.email}</span>
+                Kullanıcı: <span className="lowercase">{userFullName || session.email}</span>
               </p>
             </div>
             <div className="flex flex-col gap-2 sm:gap-3 self-start sm:self-auto shrink-0">
