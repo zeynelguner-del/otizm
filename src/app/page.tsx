@@ -720,35 +720,40 @@ export default function Home() {
                 Kullanıcı: <span className="lowercase">{userFullName || session.email}</span>
               </p>
 
-              <div className="mt-8 rounded-3xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950">
-                {studentPhotoDataUrl ? (
-                  <img src={studentPhotoDataUrl} alt="" className="w-full h-56 sm:h-64 object-cover" />
-                ) : (
-                  <div className="w-full h-56 sm:h-64 flex items-center justify-center text-zinc-400 font-black text-xs uppercase tracking-widest">
-                    Fotoğraf Yok
-                  </div>
-                )}
-              </div>
-
-              <div className="mt-auto pt-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                  <p className="text-xs font-bold text-zinc-400 uppercase mb-2">Çocuğun Adı</p>
-                  <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">{studentName || "Belirtilmedi"}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-zinc-400 uppercase mb-2">Doğum Tarihi</p>
-                  <div className="space-y-1">
-                    <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">
-                      {formatBirthDate(studentBirthDate) || "Belirtilmedi"}
-                    </p>
-                    <div className="text-sm font-bold text-zinc-500 dark:text-zinc-400">
-                      {(() => {
-                        const age = computeAgeYears(studentBirthDate);
-                        if (age !== null) return `${age} Yaşında`;
-                        return legacyAge ? `${legacyAge} Yaşında` : "";
-                      })()}
+              <div className="mt-6 flex-1 flex flex-col md:flex-row gap-6">
+                <div className="order-2 md:order-1 flex-1 flex flex-col">
+                  <div className="flex-1" />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
+                      <p className="text-xs font-bold text-zinc-400 uppercase mb-2">Çocuğun Adı</p>
+                      <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">{studentName || "Belirtilmedi"}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-zinc-400 uppercase mb-2">Doğum Tarihi</p>
+                      <div className="space-y-1">
+                        <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">
+                          {formatBirthDate(studentBirthDate) || "Belirtilmedi"}
+                        </p>
+                        <div className="text-sm font-bold text-zinc-500 dark:text-zinc-400">
+                          {(() => {
+                            const age = computeAgeYears(studentBirthDate);
+                            if (age !== null) return `${age} Yaşında`;
+                            return legacyAge ? `${legacyAge} Yaşında` : "";
+                          })()}
+                        </div>
+                      </div>
                     </div>
                   </div>
+                </div>
+
+                <div className="order-1 md:order-2 w-full md:w-64 rounded-3xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 self-start">
+                  {studentPhotoDataUrl ? (
+                    <img src={studentPhotoDataUrl} alt="" className="w-full h-56 md:h-64 object-cover" />
+                  ) : (
+                    <div className="w-full h-56 md:h-64 flex items-center justify-center text-zinc-400 font-black text-xs uppercase tracking-widest">
+                      Fotoğraf Yok
+                    </div>
+                  )}
                 </div>
               </div>
 
