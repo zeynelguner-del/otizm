@@ -25,6 +25,7 @@ type Profile = {
   familyNotes: string;
   educationNotes: string;
   legacyAge: string;
+  photoDataUrl: string;
 };
 
 type SpeechSettings = {
@@ -66,6 +67,7 @@ const PARENT_LOCK_PIN_KEY = "parentLockPinV1";
 const PARENT_LOCKED_KEY = "parentLockEnabledV1";
 const PROFILE_SYNC_EVENT = "profile-sync-v1";
 const STUDENT_BIRTHDATE_KEY = "studentBirthDate";
+const STUDENT_PHOTO_KEY = "studentPhotoV1";
 
 const toDateInputValue = (isoOrEmpty: string) => {
   if (!isoOrEmpty) return "";
@@ -117,7 +119,8 @@ const normalizeProfiles = (raw: unknown): Profile[] => {
     const educationNotes = typeof o.educationNotes === "string" ? o.educationNotes : "";
     const birthDate = typeof o.birthDate === "string" ? toDateInputValue(o.birthDate) : "";
     const legacyAge = typeof o.legacyAge === "string" ? o.legacyAge : typeof o.age === "string" ? o.age : "";
-    out.push({ id, name, birthDate, familyNotes, educationNotes, legacyAge });
+    const photoDataUrl = typeof o.photoDataUrl === "string" ? o.photoDataUrl.slice(0, 200_000) : "";
+    out.push({ id, name, birthDate, familyNotes, educationNotes, legacyAge, photoDataUrl });
   }
   return out;
 };
@@ -141,7 +144,8 @@ export default function FamilyPage() {
     const legacyAge = getLocalStorageValue("studentAge", "");
     const familyNotes = getLocalStorageValue("familyNotes", "");
     const educationNotes = getLocalStorageValue("educationNotes", "");
-    return [{ id: "p1", name, birthDate: toDateInputValue(birthDate), familyNotes, educationNotes, legacyAge }];
+    const photoDataUrl = getLocalStorageValue(STUDENT_PHOTO_KEY, "");
+    return [{ id: "p1", name, birthDate: toDateInputValue(birthDate), familyNotes, educationNotes, legacyAge, photoDataUrl }];
   });
 
   const [activeProfileId, setActiveProfileId] = useState(() => getLocalStorageValue(ACTIVE_PROFILE_KEY, "p1"));
@@ -154,6 +158,7 @@ export default function FamilyPage() {
   const [studentBirthDate, setStudentBirthDate] = useState(() => activeProfile?.birthDate ?? getLocalStorageValue(STUDENT_BIRTHDATE_KEY, ""));
   const [familyNotes, setFamilyNotes] = useState(() => activeProfile?.familyNotes ?? getLocalStorageValue("familyNotes", ""));
   const [educationNotes, setEducationNotes] = useState(() => activeProfile?.educationNotes ?? getLocalStorageValue("educationNotes", ""));
+  const [studentPhotoDataUrl, setStudentPhotoDataUrl] = useState(() => activeProfile?.photoDataUrl ?? getLocalStorageValue(STUDENT_PHOTO_KEY, ""));
 
   const [instructorPhone, setInstructorPhone] = useState(() => getLocalStorageValue("instructorPhone", ""));
   const [doctorPhone, setDoctorPhone] = useState(() => getLocalStorageValue("doctorPhone", ""));
@@ -176,6 +181,41 @@ export default function FamilyPage() {
   const [privacyOk, setPrivacyOk] = useState<string | null>(null);
 
   const canEdit = !parentLockEnabled || unlockPin === parentPin || !parentPin;
+
+  const setPhotoFromFile = async (file: File) => {
+    if (typeof window === "undefined") return;
+    if (!file.type.startsWith("image/")) return;
+    const dataUrl = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error("Dosya okunamadı."));
+      reader.onload = () => resolve(typeof reader.result === "string" ? reader.result : "");
+      reader.readAsDataURL(file);
+    });
+    if (!dataUrl) return;
+
+    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const i = new Image();
+      i.onload = () => resolve(i);
+      i.onerror = () => reject(new Error("Görsel açılamadı."));
+      i.src = dataUrl;
+    });
+
+    const max = 512;
+    const w = img.naturalWidth || img.width;
+    const h = img.naturalHeight || img.height;
+    if (!w || !h) return;
+    const scale = Math.min(1, max / Math.max(w, h));
+    const outW = Math.max(1, Math.round(w * scale));
+    const outH = Math.max(1, Math.round(h * scale));
+    const canvas = document.createElement("canvas");
+    canvas.width = outW;
+    canvas.height = outH;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.drawImage(img, 0, 0, outW, outH);
+    const compressed = canvas.toDataURL("image/jpeg", 0.75).slice(0, 200_000);
+    setStudentPhotoDataUrl(compressed);
+  };
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -222,11 +262,13 @@ export default function FamilyPage() {
           setStudentBirthDate(active?.birthDate ?? "");
           setFamilyNotes(active?.familyNotes ?? "");
           setEducationNotes(active?.educationNotes ?? "");
+          setStudentPhotoDataUrl(active?.photoDataUrl ?? "");
           writeJson(PROFILES_KEY, nextProfiles);
           try {
             localStorage.setItem(ACTIVE_PROFILE_KEY, nextActiveId);
             localStorage.setItem("studentName", active?.name ?? "");
             localStorage.setItem(STUDENT_BIRTHDATE_KEY, active?.birthDate ?? "");
+            localStorage.setItem(STUDENT_PHOTO_KEY, active?.photoDataUrl ?? "");
             localStorage.setItem("familyNotes", active?.familyNotes ?? "");
             localStorage.setItem("educationNotes", active?.educationNotes ?? "");
             localStorage.removeItem("studentAge");
@@ -309,8 +351,10 @@ export default function FamilyPage() {
     setStudentBirthDate(profile.birthDate);
     setFamilyNotes(profile.familyNotes);
     setEducationNotes(profile.educationNotes);
+    setStudentPhotoDataUrl(profile.photoDataUrl);
     try {
       localStorage.setItem(ACTIVE_PROFILE_KEY, id);
+      localStorage.setItem(STUDENT_PHOTO_KEY, profile.photoDataUrl);
     } catch {}
     notifyProfileSync();
   };
@@ -320,6 +364,7 @@ export default function FamilyPage() {
 
     localStorage.setItem("studentName", studentName);
     localStorage.setItem(STUDENT_BIRTHDATE_KEY, studentBirthDate);
+    localStorage.setItem(STUDENT_PHOTO_KEY, studentPhotoDataUrl);
     localStorage.setItem("familyNotes", familyNotes);
     localStorage.setItem("educationNotes", educationNotes);
     localStorage.setItem("instructorPhone", instructorPhone);
@@ -328,7 +373,7 @@ export default function FamilyPage() {
 
     const nextProfiles = profiles.map((p) =>
       p.id === activeProfileId
-        ? { ...p, name: studentName, birthDate: studentBirthDate, familyNotes, educationNotes, legacyAge: "" }
+        ? { ...p, name: studentName, birthDate: studentBirthDate, familyNotes, educationNotes, legacyAge: "", photoDataUrl: studentPhotoDataUrl }
         : p
     );
     setProfiles(nextProfiles);
@@ -358,7 +403,7 @@ export default function FamilyPage() {
   const addProfile = () => {
     if (!canEdit) return;
     const id = `p${Math.floor(Date.now() / 1000)}`;
-    const next: Profile = { id, name: "", birthDate: "", familyNotes: "", educationNotes: "", legacyAge: "" };
+    const next: Profile = { id, name: "", birthDate: "", familyNotes: "", educationNotes: "", legacyAge: "", photoDataUrl: "" };
     const nextProfiles = [next, ...profiles];
     setProfiles(nextProfiles);
     setActiveProfileId(id);
@@ -366,8 +411,10 @@ export default function FamilyPage() {
     setStudentBirthDate(next.birthDate);
     setFamilyNotes(next.familyNotes);
     setEducationNotes(next.educationNotes);
+    setStudentPhotoDataUrl(next.photoDataUrl);
     writeJson(PROFILES_KEY, nextProfiles);
     localStorage.setItem(ACTIVE_PROFILE_KEY, id);
+    localStorage.setItem(STUDENT_PHOTO_KEY, "");
     setIsEditing(true);
   };
 
@@ -517,50 +564,76 @@ export default function FamilyPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-2">
-                <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Çocuğun Adı</label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={studentName}
-                    onChange={(e) => setStudentName(e.target.value)}
-                    className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-zinc-900 transition-all outline-none"
-                  />
-                ) : (
-                  <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">{studentName || "..."}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Doğum Tarihi</label>
-                {isEditing ? (
-                  <div className="space-y-2">
+              <div className="space-y-5">
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Çocuğun Adı</label>
+                  {isEditing ? (
                     <input
-                      type="date"
-                      value={toDateInputValue(studentBirthDate)}
-                      onChange={(e) => setStudentBirthDate(toDateInputValue(e.target.value))}
+                      type="text"
+                      value={studentName}
+                      onChange={(e) => setStudentName(e.target.value)}
                       className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-zinc-900 transition-all outline-none"
                     />
-                    <div className="text-sm font-bold text-zinc-500 dark:text-zinc-400">
-                      {(() => {
-                        const age = computeAgeYears(studentBirthDate);
-                        return age !== null ? `${age} Yaşında` : "";
-                      })()}
+                  ) : (
+                    <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">{studentName || "..."}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Doğum Tarihi</label>
+                  {isEditing ? (
+                    <div className="space-y-2">
+                      <input
+                        type="date"
+                        value={toDateInputValue(studentBirthDate)}
+                        onChange={(e) => setStudentBirthDate(toDateInputValue(e.target.value))}
+                        className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-zinc-900 transition-all outline-none"
+                      />
+                      <div className="text-sm font-bold text-zinc-500 dark:text-zinc-400">
+                        {(() => {
+                          const age = computeAgeYears(studentBirthDate);
+                          return age !== null ? `${age} Yaşında` : "";
+                        })()}
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className="space-y-1">
-                    <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">
-                      {formatBirthDate(studentBirthDate) || "..."}
-                    </p>
-                    <div className="text-sm font-bold text-zinc-500 dark:text-zinc-400">
-                      {(() => {
-                        const age = computeAgeYears(studentBirthDate);
-                        if (age !== null) return `${age} Yaşında`;
-                        const legacy = activeProfile?.legacyAge ?? "";
-                        return legacy ? `${legacy} Yaşında` : "";
-                      })()}
+                  ) : (
+                    <div className="space-y-1">
+                      <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">
+                        {formatBirthDate(studentBirthDate) || "..."}
+                      </p>
+                      <div className="text-sm font-bold text-zinc-500 dark:text-zinc-400">
+                        {(() => {
+                          const age = computeAgeYears(studentBirthDate);
+                          if (age !== null) return `${age} Yaşında`;
+                          const legacy = activeProfile?.legacyAge ?? "";
+                          return legacy ? `${legacy} Yaşında` : "";
+                        })()}
+                      </div>
                     </div>
-                  </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Fotoğraf</label>
+                <div className="aspect-square w-full rounded-3xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 overflow-hidden flex items-center justify-center">
+                  {studentPhotoDataUrl ? (
+                    <img src={studentPhotoDataUrl} alt="" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="text-zinc-400 font-black text-sm uppercase tracking-widest">Fotoğraf Yok</div>
+                  )}
+                </div>
+                {isEditing && canEdit && (
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) void setPhotoFromFile(f);
+                      e.currentTarget.value = "";
+                    }}
+                    className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 font-bold"
+                  />
                 )}
               </div>
             </div>

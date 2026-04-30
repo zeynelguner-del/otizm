@@ -27,6 +27,7 @@ const getLocalStorageValue = (key: string, fallback: string) => {
 
 const PROFILE_SYNC_EVENT = "profile-sync-v1";
 const STUDENT_BIRTHDATE_KEY = "studentBirthDate";
+const STUDENT_PHOTO_KEY = "studentPhotoV1";
 const USER_FULL_NAME_KEY = "userFullNameV1";
 const USER_PHONE_KEY = "userPhoneV1";
 
@@ -157,6 +158,7 @@ export default function Home() {
   const [studentName, setStudentName] = useState(() => getLocalStorageValue("studentName", ""));
   const [studentBirthDate, setStudentBirthDate] = useState(() => getLocalStorageValue(STUDENT_BIRTHDATE_KEY, ""));
   const [legacyAge, setLegacyAge] = useState(() => getLocalStorageValue("studentAge", ""));
+  const [studentPhotoDataUrl, setStudentPhotoDataUrl] = useState(() => getLocalStorageValue(STUDENT_PHOTO_KEY, ""));
   const [userProfileOpen, setUserProfileOpen] = useState(false);
   const [userFullName, setUserFullName] = useState(() => getLocalStorageValue(USER_FULL_NAME_KEY, ""));
   const [userPhone, setUserPhone] = useState(() => getLocalStorageValue(USER_PHONE_KEY, ""));
@@ -168,6 +170,7 @@ export default function Home() {
       setStudentName(getLocalStorageValue("studentName", ""));
       setStudentBirthDate(getLocalStorageValue(STUDENT_BIRTHDATE_KEY, ""));
       setLegacyAge(getLocalStorageValue("studentAge", ""));
+      setStudentPhotoDataUrl(getLocalStorageValue(STUDENT_PHOTO_KEY, ""));
     };
     read();
     window.addEventListener("storage", read);
@@ -184,17 +187,34 @@ export default function Home() {
       try {
         const localName = getLocalStorageValue("studentName", "");
         const localBirthDate = getLocalStorageValue(STUDENT_BIRTHDATE_KEY, "");
-        const localHasData = Boolean(localName || localBirthDate);
+        const localPhoto = getLocalStorageValue(STUDENT_PHOTO_KEY, "");
+        const localHasData = Boolean(localName || localBirthDate || localPhoto);
 
         const remoteRes = await fetch("/api/profile", { method: "GET", cache: "no-store" });
         if (!remoteRes.ok) return;
         const remote = (await remoteRes.json().catch(() => ({}))) as {
-          profile?: { profiles?: Array<{ id?: string; name?: string; birthDate?: string; age?: string; legacyAge?: string }>; activeProfileId?: string } | null;
+          profile?: {
+            profiles?: Array<{ id?: string; name?: string; birthDate?: string; age?: string; legacyAge?: string; photoDataUrl?: string }>;
+            activeProfileId?: string;
+          } | null;
         };
         const remoteProfiles = remote.profile?.profiles;
         const remoteActiveId = remote.profile?.activeProfileId;
         if (!Array.isArray(remoteProfiles) || remoteProfiles.length === 0 || typeof remoteActiveId !== "string" || !remoteActiveId) return;
-        if (localHasData) return;
+        if (localHasData) {
+          if (!localPhoto) {
+            const active = remoteProfiles.find((p) => p?.id === remoteActiveId) ?? remoteProfiles[0] ?? null;
+            const nextPhoto = typeof active?.photoDataUrl === "string" ? active.photoDataUrl : "";
+            if (nextPhoto) {
+              try {
+                localStorage.setItem(STUDENT_PHOTO_KEY, nextPhoto);
+              } catch {}
+              setStudentPhotoDataUrl(nextPhoto);
+              if (typeof window !== "undefined") window.dispatchEvent(new Event(PROFILE_SYNC_EVENT));
+            }
+          }
+          return;
+        }
 
         const active = remoteProfiles.find((p) => p?.id === remoteActiveId) ?? remoteProfiles[0] ?? null;
         const nextName = typeof active?.name === "string" ? active.name : "";
@@ -205,9 +225,11 @@ export default function Home() {
               ? ""
               : "";
         const nextLegacyAge = typeof active?.legacyAge === "string" ? active.legacyAge : typeof active?.age === "string" ? active.age : "";
+        const nextPhoto = typeof active?.photoDataUrl === "string" ? active.photoDataUrl : "";
         try {
           localStorage.setItem("studentName", nextName);
           localStorage.setItem(STUDENT_BIRTHDATE_KEY, nextBirthDate);
+          localStorage.setItem(STUDENT_PHOTO_KEY, nextPhoto);
           localStorage.setItem("profilesV1", JSON.stringify(remoteProfiles));
           localStorage.setItem("activeProfileV1", remoteActiveId);
           if (nextLegacyAge) localStorage.setItem("studentAge", nextLegacyAge);
@@ -216,6 +238,7 @@ export default function Home() {
         setStudentName(nextName);
         setStudentBirthDate(nextBirthDate);
         setLegacyAge(nextLegacyAge);
+        setStudentPhotoDataUrl(nextPhoto);
         if (typeof window !== "undefined") window.dispatchEvent(new Event(PROFILE_SYNC_EVENT));
       } catch {}
     })();
@@ -723,13 +746,26 @@ export default function Home() {
               >
                 Profil
               </button>
-              {session.email.trim().toLowerCase() === "zeynelguner@gmail.com" && (
-                <Link
-                  href="/admin"
-                  className="w-full px-4 py-3 sm:px-5 sm:py-4 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all text-zinc-700 dark:text-zinc-200 shadow-sm font-black uppercase tracking-widest text-[11px] sm:text-xs text-center"
-                >
-                  Yönetim
-                </Link>
+              {session.email.trim().toLowerCase() === "zeynelguner@gmail.com" ? (
+                <>
+                  <Link
+                    href="/admin"
+                    className="w-full px-4 py-3 sm:px-5 sm:py-4 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all text-zinc-700 dark:text-zinc-200 shadow-sm font-black uppercase tracking-widest text-[11px] sm:text-xs text-center"
+                  >
+                    Yönetim
+                  </Link>
+                  {studentPhotoDataUrl && (
+                    <div className="w-full rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950">
+                      <img src={studentPhotoDataUrl} alt="" className="w-full h-28 object-cover" />
+                    </div>
+                  )}
+                </>
+              ) : (
+                studentPhotoDataUrl && (
+                  <div className="w-full rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950">
+                    <img src={studentPhotoDataUrl} alt="" className="w-full h-28 object-cover" />
+                  </div>
+                )
               )}
             </div>
           </div>

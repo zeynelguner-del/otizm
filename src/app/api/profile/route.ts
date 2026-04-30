@@ -15,6 +15,7 @@ type Profile = {
   familyNotes: string;
   educationNotes: string;
   legacyAge: string;
+  photoDataUrl: string;
 };
 
 const sameOriginOk = (req: Request) => {
@@ -56,6 +57,7 @@ const normalizeProfiles = (v: unknown): Profile[] | null => {
     const legacyAge = typeof o.legacyAge === "string" ? o.legacyAge : typeof o.age === "string" ? o.age : "";
     const familyNotes = typeof o.familyNotes === "string" ? o.familyNotes : "";
     const educationNotes = typeof o.educationNotes === "string" ? o.educationNotes : "";
+    const photoDataUrl = typeof o.photoDataUrl === "string" ? o.photoDataUrl : "";
     if (!id) return null;
     out.push({
       id: id.slice(0, 64),
@@ -64,6 +66,7 @@ const normalizeProfiles = (v: unknown): Profile[] | null => {
       familyNotes: familyNotes.slice(0, 5000),
       educationNotes: educationNotes.slice(0, 5000),
       legacyAge: legacyAge.slice(0, 32),
+      photoDataUrl: photoDataUrl.slice(0, 200_000),
     });
     if (out.length > 50) return null;
   }
