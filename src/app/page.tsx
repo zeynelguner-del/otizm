@@ -349,13 +349,6 @@ export default function Home() {
       href: "/calendar",
       color: "bg-amber-100 text-amber-600 border-amber-200 hover:bg-amber-200",
     },
-    {
-      title: "Aile Paneli",
-      description: "İletişim ve Ayarlar",
-      icon: Users,
-      href: "/family",
-      color: "bg-zinc-100 text-zinc-600 border-zinc-200 hover:bg-zinc-200",
-    },
   ];
 
   const handleLogout = async () => {
