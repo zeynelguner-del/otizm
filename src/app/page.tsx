@@ -221,6 +221,54 @@ export default function Home() {
     })();
   }, [session?.email]);
 
+  useEffect(() => {
+    if (!session?.email) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const localFullName = getLocalStorageValue(USER_FULL_NAME_KEY, "");
+        const localPhone = getLocalStorageValue(USER_PHONE_KEY, "");
+
+        const res = await fetch("/api/user-meta", { method: "GET", cache: "no-store" });
+        if (!res.ok) return;
+        const data = (await res.json().catch(() => ({}))) as {
+          meta?: { userFullName?: string; userPhone?: string } | null;
+        };
+        const meta = data.meta;
+
+        if (!meta) {
+          if (!localFullName && !localPhone) return;
+          await fetch("/api/user-meta", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ userFullName: localFullName, userPhone: localPhone }),
+          }).catch(() => {});
+          return;
+        }
+
+        if (cancelled) return;
+        const remoteFullName = typeof meta.userFullName === "string" ? meta.userFullName : "";
+        const remotePhone = typeof meta.userPhone === "string" ? meta.userPhone : "";
+
+        if (!localFullName && remoteFullName) {
+          try {
+            localStorage.setItem(USER_FULL_NAME_KEY, remoteFullName);
+          } catch {}
+          setUserFullName(remoteFullName);
+        }
+        if (!localPhone && remotePhone) {
+          try {
+            localStorage.setItem(USER_PHONE_KEY, remotePhone);
+          } catch {}
+          setUserPhone(remotePhone);
+        }
+      } catch {}
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [session?.email]);
+
   const modules = [
     {
       title: "Otizm Bilgilendirme",
@@ -611,6 +659,11 @@ export default function Home() {
                       localStorage.setItem(USER_FULL_NAME_KEY, userFullName.trim());
                       localStorage.setItem(USER_PHONE_KEY, userPhone.trim());
                     } catch {}
+                    fetch("/api/user-meta", {
+                      method: "POST",
+                      headers: { "content-type": "application/json" },
+                      body: JSON.stringify({ userFullName: userFullName.trim(), userPhone: userPhone.trim() }),
+                    }).catch(() => {});
                     setUserProfileOk("Kaydedildi.");
                     window.setTimeout(() => setUserProfileOk(null), 1500);
                   }}

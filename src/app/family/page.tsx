@@ -130,6 +130,7 @@ const notifyProfileSync = () => {
 export default function FamilyPage() {
   const [tab, setTab] = useState<"bilgiler" | "ayarlar">("bilgiler");
   const syncOnceRef = useRef(false);
+  const metaSyncOnceRef = useRef(false);
 
   const [profiles, setProfiles] = useState<Profile[]>(() => {
     const fromStorageRaw = readJson<unknown>(PROFILES_KEY, []);
@@ -251,6 +252,55 @@ export default function FamilyPage() {
     };
   }, [activeProfileId, educationNotes, familyNotes, profiles, studentBirthDate, studentName]);
 
+  useEffect(() => {
+    if (metaSyncOnceRef.current) return;
+    metaSyncOnceRef.current = true;
+    let cancelled = false;
+    (async () => {
+      try {
+        const localInstructor = getLocalStorageValue("instructorPhone", "");
+        const localDoctor = getLocalStorageValue("doctorPhone", "");
+
+        const res = await fetch("/api/user-meta", { method: "GET", cache: "no-store" });
+        if (!res.ok) return;
+        const data = (await res.json().catch(() => ({}))) as {
+          meta?: { instructorPhone?: string; doctorPhone?: string } | null;
+        };
+        const meta = data.meta;
+
+        if (!meta) {
+          if (!localInstructor && !localDoctor) return;
+          await fetch("/api/user-meta", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ instructorPhone: localInstructor, doctorPhone: localDoctor }),
+          }).catch(() => {});
+          return;
+        }
+
+        if (cancelled) return;
+        const remoteInstructor = typeof meta.instructorPhone === "string" ? meta.instructorPhone : "";
+        const remoteDoctor = typeof meta.doctorPhone === "string" ? meta.doctorPhone : "";
+
+        if (!localInstructor && remoteInstructor) {
+          try {
+            localStorage.setItem("instructorPhone", remoteInstructor);
+          } catch {}
+          setInstructorPhone(remoteInstructor);
+        }
+        if (!localDoctor && remoteDoctor) {
+          try {
+            localStorage.setItem("doctorPhone", remoteDoctor);
+          } catch {}
+          setDoctorPhone(remoteDoctor);
+        }
+      } catch {}
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const selectProfile = (id: string) => {
     const profile = profiles.find((p) => p.id === id);
     if (!profile) return;
@@ -288,6 +338,11 @@ export default function FamilyPage() {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ profiles: nextProfiles, activeProfileId }),
+    }).catch(() => {});
+    void fetch("/api/user-meta", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ instructorPhone, doctorPhone }),
     }).catch(() => {});
 
     writeJson(UI_SETTINGS_KEY, uiSettings);
