@@ -5,12 +5,12 @@ import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { cn } from "@/lib/utils";
 
 const STORAGE_KEY = "dailyScheduleRecordsV1";
-const FIRST_DATE_KEY = "dailyScheduleFirstDateV1";
 const EMPTY_RECORDS: Record<string, Record<string, boolean>> = {};
 const FIRST_THEN_KEY = "firstThenV1";
 const TOKENS_KEY = "tokenBalanceV1";
 const SPEECH_SETTINGS_KEY = "speechSettingsV1";
 const TOKENS_EVENT = "token-storage";
+const HISTORY_DAYS = 7;
 
 let cachedRecordsRaw: string | null | undefined = undefined;
 let cachedRecordsParsed: Record<string, Record<string, boolean>> = EMPTY_RECORDS;
@@ -146,6 +146,10 @@ const writeJsonSafe = (key: string, value: unknown) => {
 export default function CalendarPage() {
   const todayKey = useMemo(() => toDateKey(new Date()), []);
   const yesterdayKey = useMemo(() => addDays(todayKey, -1), [todayKey]);
+  const historyKeys = useMemo(() => {
+    return Array.from({ length: HISTORY_DAYS }, (_, i) => addDays(todayKey, -(i + 1)));
+  }, [todayKey]);
+  const earliestHistoryKey = useMemo(() => historyKeys[historyKeys.length - 1] ?? addDays(todayKey, -HISTORY_DAYS), [historyKeys, todayKey]);
 
   const [selectedDateKey, setSelectedDateKey] = useState(todayKey);
   const [firstThen, setFirstThen] = useState<{ first: string; then: string }>(() =>
@@ -198,17 +202,21 @@ export default function CalendarPage() {
     () => EMPTY_RECORDS
   );
 
-  const firstRecordedDateKey = useSyncExternalStore(
-    subscribeToStorage,
-    () => {
-      try {
-        return localStorage.getItem(FIRST_DATE_KEY);
-      } catch {
-        return null;
-      }
-    },
-    () => null
-  );
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const next = { ...records };
+    let changed = false;
+    const ensure = (key: string) => {
+      if (Object.prototype.hasOwnProperty.call(next, key)) return;
+      next[key] = {};
+      changed = true;
+    };
+    ensure(todayKey);
+    for (const k of historyKeys) ensure(k);
+    if (!changed) return;
+    writeJsonSafe(STORAGE_KEY, next);
+    notifyStorageUpdate();
+  }, [records, todayKey, historyKeys]);
 
   const schedule = useMemo(() => {
     const selectedDoneMap = records[selectedDateKey] ?? {};
@@ -227,12 +235,15 @@ export default function CalendarPage() {
   const totalCount = schedule.length;
   const completionPercent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
-  const canGoBack = firstRecordedDateKey ? selectedDateKey > firstRecordedDateKey : false;
+  const canGoBack = selectedDateKey > earliestHistoryKey;
   const canGoForward = selectedDateKey < todayKey;
 
   const goBackOneDay = () => {
     if (!canGoBack) return;
-    setSelectedDateKey((prev) => addDays(prev, -1));
+    setSelectedDateKey((prev) => {
+      const next = addDays(prev, -1);
+      return next < earliestHistoryKey ? earliestHistoryKey : next;
+    });
   };
 
   const goForwardOneDay = () => {
@@ -244,10 +255,22 @@ export default function CalendarPage() {
   };
 
   const openHistory = () => {
-    if (!firstRecordedDateKey) return;
-    const keys = Object.keys(records).filter((k) => k < todayKey).sort();
-    const mostRecentPast = keys[keys.length - 1];
-    setSelectedDateKey(mostRecentPast ?? firstRecordedDateKey);
+    setSelectedDateKey(addDays(todayKey, -2));
+  };
+
+  const formatHistoryLabel = (key: string) => {
+    try {
+      return new Intl.DateTimeFormat("tr-TR", { weekday: "short", day: "2-digit", month: "2-digit" }).format(fromDateKey(key));
+    } catch {
+      return key;
+    }
+  };
+
+  const completionForDate = (key: string) => {
+    const doneMap = records[key] ?? {};
+    const doneCount = SCHEDULE_TEMPLATE.reduce((acc, item) => acc + (doneMap[item.id] ? 1 : 0), 0);
+    const total = SCHEDULE_TEMPLATE.length;
+    return total > 0 ? Math.round((doneCount / total) * 100) : 0;
   };
 
   const toggleTaskDone = (taskId: string) => {
@@ -357,7 +380,7 @@ export default function CalendarPage() {
 
         <section className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-xl space-y-6">
           <h2 className="text-2xl font-black tracking-tight flex items-center gap-3">
-            <AlarmClock className="text-amber-500" /> First - Then
+            <AlarmClock className="text-amber-500" /> Önce - Sonra
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -524,18 +547,48 @@ export default function CalendarPage() {
           </button>
           <button
             onClick={openHistory}
-            disabled={!firstRecordedDateKey}
             className={cn(
               "flex-1 py-4 rounded-2xl font-black transition-all",
               selectedTab === "Geçmiş"
                 ? "bg-amber-500 text-white shadow-lg scale-[1.02]"
                 : "text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800",
-              !firstRecordedDateKey && "opacity-50 cursor-not-allowed hover:bg-transparent"
             )}
           >
             Geçmiş
           </button>
         </section>
+
+        {selectedTab === "Geçmiş" ? (
+          <section className="bg-white dark:bg-zinc-900 p-6 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-xl">
+            <div className="flex items-center justify-between gap-4 mb-4">
+              <h2 className="text-xl font-black tracking-tight">Son 7 Gün</h2>
+              <div className="text-xs font-black text-zinc-400 uppercase tracking-widest">Kayıt olmasa da görünür</div>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {historyKeys.slice(0, HISTORY_DAYS).map((k) => {
+                const pct = completionForDate(k);
+                const active = selectedDateKey === k;
+                return (
+                  <button
+                    key={k}
+                    type="button"
+                    onClick={() => setSelectedDateKey(k)}
+                    className={cn(
+                      "p-4 rounded-2xl border text-left transition-all",
+                      active
+                        ? "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-900/30"
+                        : "bg-zinc-50 dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 hover:border-amber-200"
+                    )}
+                  >
+                    <div className="font-black text-zinc-900 dark:text-zinc-50">{formatHistoryLabel(k)}</div>
+                    <div className="text-xs font-black text-zinc-500 mt-1">%{pct} tamam</div>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        ) : null}
 
         {/* Schedule Card */}
         <section className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-xl">
