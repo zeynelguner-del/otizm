@@ -35,6 +35,7 @@ export default function MusicPage() {
   const [playbackTotalSeconds, setPlaybackTotalSeconds] = useState<number | null>(null);
   const [playbackRemainingSeconds, setPlaybackRemainingSeconds] = useState<number | null>(null);
   const [playbackIndex, setPlaybackIndex] = useState<number | null>(null);
+  const [playbackSourceLabel, setPlaybackSourceLabel] = useState<string | null>(null);
 
   const tracks = useMemo(
     (): Track[] => [
@@ -51,18 +52,17 @@ export default function MusicPage() {
     []
   );
 
-  const commonsFileUrl = (fileName: string) => `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(fileName)}`;
-
-  const remoteAmbientFiles: Partial<Record<AmbientKind, string>> = {
-    ocean: "Water on Rocks.ogg",
-    rain: "Heavy rain in Glenshaw, PA.ogg",
-    wind: "Gentle wind after shower accompanied by thunders.ogg",
+  const remoteAmbientUrls: Partial<Record<AmbientKind, string>> = {
+    ocean: "https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8a/Water_on_Rocks.ogg/Water_on_Rocks.ogg.mp3",
+    rain: "https://upload.wikimedia.org/wikipedia/commons/transcoded/c/cb/Heavy_rain_in_Glenshaw%2C_PA.ogg/Heavy_rain_in_Glenshaw%2C_PA.ogg.mp3",
+    wind: "https://upload.wikimedia.org/wikipedia/commons/transcoded/6/6c/Gentle_wind_after_shower_accompanied_by_thunders.ogg/Gentle_wind_after_shower_accompanied_by_thunders.ogg.mp3",
   };
 
-  const remoteMelodyFiles: Partial<Record<MelodyKind, string>> = {
-    calm: "02 - Breezy May Acoustic.ogg",
-    focus: "Axle - 01 - A Mist On Hinksey Stream.ogg",
-    happy: "Axle - 02 - The Curious Roe.ogg",
+  const remoteMelodyUrls: Partial<Record<MelodyKind, string>> = {
+    calm: "https://upload.wikimedia.org/wikipedia/commons/transcoded/d/d7/02_-_Breezy_May_Acoustic.ogg/02_-_Breezy_May_Acoustic.ogg.mp3",
+    focus:
+      "https://upload.wikimedia.org/wikipedia/commons/transcoded/8/89/Axle_-_01_-_A_Mist_On_Hinksey_Stream.ogg/Axle_-_01_-_A_Mist_On_Hinksey_Stream.ogg.mp3",
+    happy: "https://upload.wikimedia.org/wikipedia/commons/transcoded/e/e8/Axle_-_02_-_The_Curious_Roe.ogg/Axle_-_02_-_The_Curious_Roe.ogg.mp3",
   };
 
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -95,18 +95,17 @@ export default function MusicPage() {
         fn();
       } catch {}
     }
+    setPlaybackSourceLabel(null);
   };
 
-  const startRemoteAudio = async (fileName: string, opts?: { loop?: boolean }) => {
+  const startRemoteAudio = async (url: string, opts?: { loop?: boolean }) => {
     if (typeof window === "undefined") return false;
     stopPlayback();
 
-    const url = commonsFileUrl(fileName);
     const audio = new Audio(url);
     audio.preload = "auto";
     audio.loop = opts?.loop ?? true;
     audio.volume = Math.min(1, Math.max(0, volume));
-    audio.crossOrigin = "anonymous";
     audioElRef.current = audio;
 
     cleanupRef.current.push(() => {
@@ -122,6 +121,7 @@ export default function MusicPage() {
 
     try {
       await audio.play();
+      setPlaybackSourceLabel("Kayıt");
       return true;
     } catch {
       return false;
@@ -198,9 +198,9 @@ export default function MusicPage() {
   };
 
   const startAmbient = async (kind: AmbientKind) => {
-    const fileName = remoteAmbientFiles[kind];
-    if (fileName) {
-      const ok = await startRemoteAudio(fileName, { loop: true });
+    const url = remoteAmbientUrls[kind];
+    if (url) {
+      const ok = await startRemoteAudio(url, { loop: true });
       if (ok) return;
     }
 
@@ -209,6 +209,7 @@ export default function MusicPage() {
     if (!ctx || !masterGain) return;
     await ctx.resume();
     stopPlayback();
+    setPlaybackSourceLabel("Dijital");
 
     const bufferSeconds = 2;
     const buffer = createNoiseBuffer(ctx, bufferSeconds, kind);
@@ -320,9 +321,9 @@ export default function MusicPage() {
   const midiToHz = (midi: number) => 440 * Math.pow(2, (midi - 69) / 12);
 
   const startMelody = async (kind: MelodyKind) => {
-    const fileName = remoteMelodyFiles[kind];
-    if (fileName) {
-      const ok = await startRemoteAudio(fileName, { loop: true });
+    const url = remoteMelodyUrls[kind];
+    if (url) {
+      const ok = await startRemoteAudio(url, { loop: true });
       if (ok) return;
     }
 
@@ -331,6 +332,7 @@ export default function MusicPage() {
     if (!ctx || !masterGain) return;
     await ctx.resume();
     stopPlayback();
+    setPlaybackSourceLabel("Dijital");
 
     const cfg: Record<
       MelodyKind,
@@ -575,6 +577,7 @@ export default function MusicPage() {
             
             <h2 className="text-2xl font-black mb-2 tracking-tight">{nowPlaying.title}</h2>
             <p className="text-indigo-100 font-bold mb-8">{nowPlaying.category} Çalışması</p>
+            {playbackSourceLabel && <p className="text-indigo-100 font-black mb-4">Kaynak: {playbackSourceLabel}</p>}
             
             <div className="w-full bg-white/20 h-2 rounded-full mb-8 overflow-hidden">
               <div className="bg-white h-full rounded-full transition-all" style={{ width: `${progressPercent}%` }} />
