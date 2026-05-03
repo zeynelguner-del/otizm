@@ -290,18 +290,6 @@ export default function CalendarPage() {
       window.setTimeout(() => setRewardToast(null), 1200);
     }
 
-    const nextFirst = firstRecordedDateKey
-      ? selectedDateKey < firstRecordedDateKey
-        ? selectedDateKey
-        : firstRecordedDateKey
-      : selectedDateKey;
-
-    if (nextFirst !== firstRecordedDateKey) {
-      try {
-        localStorage.setItem(FIRST_DATE_KEY, nextFirst);
-      } catch {}
-    }
-
     notifyStorageUpdate();
   };
 
