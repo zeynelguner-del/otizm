@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { Heart, BookOpen, Gamepad2, Users, Settings, Music, Calendar, Info, MessageSquare, HelpCircle, User, Phone, Mail } from "lucide-react";
+import { Heart, BookOpen, Gamepad2, Users, Settings, Music, Calendar, Info, MessageSquare, HelpCircle, User, Phone, Mail, AlarmClock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Session = {
@@ -355,6 +355,13 @@ export default function Home() {
       icon: Calendar,
       href: "/calendar",
       color: "bg-amber-100 text-amber-600 border-amber-200 hover:bg-amber-200",
+    },
+    {
+      title: "Eğitim Hatırlatıcı",
+      description: "7 günlük hatırlatıcı ayarla",
+      icon: AlarmClock,
+      href: "/education-reminder",
+      color: "bg-emerald-100 text-emerald-600 border-emerald-200 hover:bg-emerald-200",
     },
     {
       title: "Aile Paneli",
