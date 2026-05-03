@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Bell, Clock } from "lucide-react";
+import { ArrowLeft, Bell, Clock, Play } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -63,12 +63,15 @@ const nextOccurrence = (dayIndexMonday0: number, time: string) => {
   return new Date(now.getFullYear(), now.getMonth(), now.getDate() + delta, hour, minute, 0, 0);
 };
 
-const playBeep = () => {
+const playBeep = async () => {
   if (typeof window === "undefined") return;
   try {
     const AudioContext = window.AudioContext || (window as unknown as { webkitAudioContext?: typeof window.AudioContext }).webkitAudioContext;
     if (!AudioContext) return;
     const ctx = new AudioContext();
+    try {
+      await ctx.resume();
+    } catch {}
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = "sine";
@@ -86,14 +89,49 @@ const playBeep = () => {
   } catch {}
 };
 
+const formatDateTime = (d: Date) => {
+  try {
+    return new Intl.DateTimeFormat("tr-TR", {
+      weekday: "long",
+      day: "2-digit",
+      month: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(d);
+  } catch {
+    return d.toLocaleString();
+  }
+};
+
 export default function EducationReminderPage() {
   const [state, setState] = useState<EducationReminderState>(() => readState());
-  const [permission, setPermission] = useState<NotificationPermission>(() => (typeof window === "undefined" ? "default" : Notification.permission));
+  const [permission, setPermission] = useState<NotificationPermission>(() => {
+    if (typeof window === "undefined") return "default";
+    if (!("Notification" in window)) return "denied";
+    return Notification.permission;
+  });
   const timersRef = useRef<number[]>([]);
+  const [lastFired, setLastFired] = useState<string | null>(null);
 
   const canNotify = useMemo(() => {
     if (typeof window === "undefined") return false;
     return "Notification" in window;
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!("Notification" in window)) {
+      setPermission("denied");
+      return;
+    }
+    const refresh = () => setPermission(Notification.permission);
+    refresh();
+    window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", refresh);
+    return () => {
+      window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", refresh);
+    };
   }, []);
 
   useEffect(() => {
@@ -115,12 +153,9 @@ export default function EducationReminderPage() {
           try {
             new Notification(title, { body });
           } catch {}
-        } else {
-          playBeep();
-          try {
-            alert(`${title}\n${body}`);
-          } catch {}
         }
+        setLastFired(`${title} • ${body}`);
+        playBeep();
         setState(readState());
       }, ms);
       timersRef.current.push(id);
@@ -154,6 +189,18 @@ export default function EducationReminderPage() {
     }
   };
 
+  const testNow = async () => {
+    const title = "Eğitim Hatırlatıcı";
+    const body = "Test bildirimi.";
+    if (canNotify && Notification.permission === "granted") {
+      try {
+        new Notification(title, { body });
+      } catch {}
+    }
+    setLastFired(`${title} • ${body}`);
+    await playBeep();
+  };
+
   const updateDay = (index: number, patch: Partial<DayReminder>) => {
     setState((prev) => {
       const nextDays = prev.days.slice();
@@ -161,6 +208,16 @@ export default function EducationReminderPage() {
       nextDays[index] = { ...existing, ...patch };
       return { days: nextDays };
     });
+  };
+
+  const onToggleEnabled = async (index: number, enabled: boolean) => {
+    if (enabled && canNotify && Notification.permission !== "granted") {
+      await requestPermission();
+    }
+    updateDay(index, { enabled });
+    if (enabled) {
+      await playBeep();
+    }
   };
 
   return (
@@ -175,6 +232,14 @@ export default function EducationReminderPage() {
             Ana Sayfa
           </Link>
           <div className="flex-1" />
+          <button
+            type="button"
+            onClick={testNow}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 font-black"
+          >
+            <Play className="w-4 h-4" />
+            Test Et
+          </button>
           <button
             type="button"
             onClick={requestPermission}
@@ -193,12 +258,19 @@ export default function EducationReminderPage() {
         <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2.5rem] p-8 shadow-xl">
           <h1 className="text-3xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">Eğitim Hatırlatıcı</h1>
           <p className="text-zinc-500 font-medium mt-2">
-            Haftanın her günü için istediğin saati seç. Tarayıcı açıkken bildirim veya alarm sesi verir.
+            Haftanın her günü için istediğin saati seç. Web’de hatırlatıcılar sadece tarayıcı açıkken çalışır.
           </p>
+
+          {lastFired ? (
+            <div className="mt-5 p-4 rounded-2xl border border-emerald-200 bg-emerald-50 text-emerald-900 font-bold">
+              Son tetiklenen: {lastFired}
+            </div>
+          ) : null}
 
           <div className="mt-8 grid gap-3">
             {DAY_LABELS.map((label, i) => {
               const d = state.days[i]!;
+              const next = d.enabled ? nextOccurrence(i, d.time) : null;
               return (
                 <div
                   key={label}
@@ -208,11 +280,14 @@ export default function EducationReminderPage() {
                     type="checkbox"
                     className="w-5 h-5 accent-emerald-600"
                     checked={d.enabled}
-                    onChange={(e) => updateDay(i, { enabled: e.target.checked })}
+                    onChange={(e) => onToggleEnabled(i, e.target.checked)}
                   />
                   <div className="flex-1">
                     <div className="font-black text-zinc-900 dark:text-zinc-50">{label}</div>
-                    <div className="text-sm font-bold text-zinc-500">{d.enabled ? `Saat: ${d.time}` : "Kapalı"}</div>
+                    <div className="text-sm font-bold text-zinc-500">
+                      {d.enabled ? `Saat: ${d.time}` : "Kapalı"}
+                      {next ? ` • Sonraki: ${formatDateTime(next)}` : ""}
+                    </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <Clock className="w-4 h-4 text-zinc-400" />
@@ -235,7 +310,7 @@ export default function EducationReminderPage() {
           </div>
 
           <div className="mt-6 text-xs font-bold text-zinc-500">
-            Not: Tarayıcı kapalıyken web bildirimleri çalışmayabilir. Telefonda kesin bildirim için mobil uygulamayı kullan.
+            Not: Web’de tarayıcı sekmesi kapanırsa/uykuya geçerse hatırlatıcı kaçabilir. Kesin bildirim için mobil uygulamayı kullan.
           </div>
         </div>
       </div>
