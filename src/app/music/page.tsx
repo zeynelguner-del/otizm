@@ -36,6 +36,7 @@ export default function MusicPage() {
   const [playbackRemainingSeconds, setPlaybackRemainingSeconds] = useState<number | null>(null);
   const [playbackIndex, setPlaybackIndex] = useState<number | null>(null);
   const [playbackSourceLabel, setPlaybackSourceLabel] = useState<string | null>(null);
+  const [playbackError, setPlaybackError] = useState<string | null>(null);
 
   const tracks = useMemo(
     (): Track[] => [
@@ -56,6 +57,9 @@ export default function MusicPage() {
     ocean: "https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8a/Water_on_Rocks.ogg/Water_on_Rocks.ogg.mp3",
     rain: "https://upload.wikimedia.org/wikipedia/commons/transcoded/c/cb/Heavy_rain_in_Glenshaw%2C_PA.ogg/Heavy_rain_in_Glenshaw%2C_PA.ogg.mp3",
     wind: "https://upload.wikimedia.org/wikipedia/commons/transcoded/6/6c/Gentle_wind_after_shower_accompanied_by_thunders.ogg/Gentle_wind_after_shower_accompanied_by_thunders.ogg.mp3",
+    white: "https://upload.wikimedia.org/wikipedia/commons/transcoded/a/aa/White_noise.ogg/White_noise.ogg.mp3",
+    pink: "https://upload.wikimedia.org/wikipedia/commons/transcoded/6/6c/Pink_noise.ogg/Pink_noise.ogg.mp3",
+    brown: "https://upload.wikimedia.org/wikipedia/commons/transcoded/4/48/Brown_noise.ogg/Brown_noise.ogg.mp3",
   };
 
   const remoteMelodyUrls: Partial<Record<MelodyKind, string>> = {
@@ -65,8 +69,6 @@ export default function MusicPage() {
     happy: "https://upload.wikimedia.org/wikipedia/commons/transcoded/e/e8/Axle_-_02_-_The_Curious_Roe.ogg/Axle_-_02_-_The_Curious_Roe.ogg.mp3",
   };
 
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const masterGainRef = useRef<GainNode | null>(null);
   const cleanupRef = useRef<(() => void)[]>([]);
   const countdownEndAtMsRef = useRef<number | null>(null);
   const countdownTotalSecondsRef = useRef<number>(0);
@@ -74,19 +76,6 @@ export default function MusicPage() {
   const audioElRef = useRef<HTMLAudioElement | null>(null);
 
   const nowPlaying = useMemo(() => tracks[selectedIndex] ?? tracks[0], [selectedIndex, tracks]);
-
-  const ensureAudio = () => {
-    if (typeof window === "undefined") return null;
-    if (!audioCtxRef.current) {
-      const ctx = new AudioContext();
-      const gain = ctx.createGain();
-      gain.gain.value = volume;
-      gain.connect(ctx.destination);
-      audioCtxRef.current = ctx;
-      masterGainRef.current = gain;
-    }
-    return audioCtxRef.current;
-  };
 
   const stopPlayback = () => {
     const fns = cleanupRef.current.splice(0, cleanupRef.current.length);
@@ -96,11 +85,13 @@ export default function MusicPage() {
       } catch {}
     }
     setPlaybackSourceLabel(null);
+    setPlaybackError(null);
   };
 
   const startRemoteAudio = async (url: string, opts?: { loop?: boolean }) => {
     if (typeof window === "undefined") return false;
     stopPlayback();
+    setPlaybackError(null);
 
     const audio = new Audio(url);
     audio.preload = "auto";
@@ -124,6 +115,7 @@ export default function MusicPage() {
       setPlaybackSourceLabel("Kayıt");
       return true;
     } catch {
+      setPlaybackError("Kayıt ses açılamadı.");
       return false;
     }
   };
@@ -156,332 +148,22 @@ export default function MusicPage() {
     cleanupRef.current.push(() => window.clearInterval(timer));
   };
 
-  const createNoiseBuffer = (ctx: AudioContext, seconds: number, kind: AmbientKind) => {
-    const buffer = ctx.createBuffer(1, ctx.sampleRate * seconds, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-
-    if (kind === "brown") {
-      let last = 0;
-      for (let i = 0; i < data.length; i += 1) {
-        const white = Math.random() * 2 - 1;
-        last = (last + 0.02 * white) / 1.02;
-        data[i] = last * 3.2;
-      }
-      return buffer;
-    }
-
-    if (kind === "pink") {
-      let b0 = 0;
-      let b1 = 0;
-      let b2 = 0;
-      let b3 = 0;
-      let b4 = 0;
-      let b5 = 0;
-      let b6 = 0;
-      for (let i = 0; i < data.length; i += 1) {
-        const white = Math.random() * 2 - 1;
-        b0 = 0.99886 * b0 + white * 0.0555179;
-        b1 = 0.99332 * b1 + white * 0.0750759;
-        b2 = 0.969 * b2 + white * 0.153852;
-        b3 = 0.8665 * b3 + white * 0.3104856;
-        b4 = 0.55 * b4 + white * 0.5329522;
-        b5 = -0.7616 * b5 - white * 0.016898;
-        const pink = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
-        b6 = white * 0.115926;
-        data[i] = pink * 0.15;
-      }
-      return buffer;
-    }
-
-    for (let i = 0; i < data.length; i += 1) data[i] = (Math.random() * 2 - 1) * 0.7;
-    return buffer;
-  };
-
-  const startAmbient = async (kind: AmbientKind) => {
+  const startAmbient = async (kind: AmbientKind): Promise<boolean> => {
     const url = remoteAmbientUrls[kind];
-    if (url) {
-      const ok = await startRemoteAudio(url, { loop: true });
-      if (ok) return;
+    if (!url) {
+      setPlaybackError("Bu parça için kayıt ses bulunamadı.");
+      return false;
     }
-
-    const ctx = ensureAudio();
-    const masterGain = masterGainRef.current;
-    if (!ctx || !masterGain) return;
-    await ctx.resume();
-    stopPlayback();
-    setPlaybackSourceLabel("Dijital");
-
-    const bufferSeconds = 2;
-    const buffer = createNoiseBuffer(ctx, bufferSeconds, kind);
-    const source = ctx.createBufferSource();
-    source.buffer = buffer;
-    source.loop = true;
-
-    const preGain = ctx.createGain();
-    preGain.gain.value = 0.9;
-
-    const filter = ctx.createBiquadFilter();
-    filter.Q.value = 0.6;
-
-    const shapeGain = ctx.createGain();
-    shapeGain.gain.value = 0.9;
-
-    const lfo = ctx.createOscillator();
-    lfo.type = "sine";
-
-    const lfoGain = ctx.createGain();
-
-    if (kind === "ocean") {
-      filter.type = "lowpass";
-      filter.frequency.value = 900;
-      lfo.frequency.value = 0.11;
-      lfoGain.gain.value = 520;
-      shapeGain.gain.value = 0.9;
-    } else if (kind === "rain") {
-      filter.type = "highpass";
-      filter.frequency.value = 1400;
-      lfo.frequency.value = 0.18;
-      lfoGain.gain.value = 900;
-      shapeGain.gain.value = 0.75;
-    } else if (kind === "wind") {
-      filter.type = "lowpass";
-      filter.frequency.value = 650;
-      lfo.frequency.value = 0.06;
-      lfoGain.gain.value = 380;
-      shapeGain.gain.value = 0.8;
-    } else if (kind === "white") {
-      filter.type = "lowpass";
-      filter.frequency.value = 14000;
-      lfo.frequency.value = 0.0;
-      lfoGain.gain.value = 0;
-      shapeGain.gain.value = 0.55;
-    } else if (kind === "pink") {
-      filter.type = "lowpass";
-      filter.frequency.value = 11000;
-      lfo.frequency.value = 0.0;
-      lfoGain.gain.value = 0;
-      shapeGain.gain.value = 0.7;
-    } else {
-      filter.type = "lowpass";
-      filter.frequency.value = 3000;
-      lfo.frequency.value = 0.0;
-      lfoGain.gain.value = 0;
-      shapeGain.gain.value = 0.75;
-    }
-
-    source.connect(preGain);
-    preGain.connect(filter);
-    filter.connect(shapeGain);
-    shapeGain.connect(masterGain);
-
-    lfo.connect(lfoGain);
-    if (lfoGain.gain.value > 0) lfoGain.connect(filter.frequency);
-
-    cleanupRef.current.push(() => {
-      try {
-        source.stop();
-      } catch {}
-      try {
-        source.disconnect();
-      } catch {}
-    });
-    cleanupRef.current.push(() => {
-      try {
-        lfo.stop();
-      } catch {}
-      try {
-        lfo.disconnect();
-      } catch {}
-    });
-    cleanupRef.current.push(() => {
-      try {
-        lfoGain.disconnect();
-      } catch {}
-    });
-    cleanupRef.current.push(() => {
-      try {
-        shapeGain.disconnect();
-      } catch {}
-    });
-    cleanupRef.current.push(() => {
-      try {
-        filter.disconnect();
-      } catch {}
-    });
-    cleanupRef.current.push(() => {
-      try {
-        preGain.disconnect();
-      } catch {}
-    });
-
-    if (lfoGain.gain.value > 0) lfo.start();
-    source.start();
+    return await startRemoteAudio(url, { loop: true });
   };
 
-  const midiToHz = (midi: number) => 440 * Math.pow(2, (midi - 69) / 12);
-
-  const startMelody = async (kind: MelodyKind) => {
+  const startMelody = async (kind: MelodyKind): Promise<boolean> => {
     const url = remoteMelodyUrls[kind];
-    if (url) {
-      const ok = await startRemoteAudio(url, { loop: true });
-      if (ok) return;
+    if (!url) {
+      setPlaybackError("Bu parça için kayıt ses bulunamadı.");
+      return false;
     }
-
-    const ctx = ensureAudio();
-    const masterGain = masterGainRef.current;
-    if (!ctx || !masterGain) return;
-    await ctx.resume();
-    stopPlayback();
-    setPlaybackSourceLabel("Dijital");
-
-    const cfg: Record<
-      MelodyKind,
-      {
-        bpm: number;
-        osc: OscillatorType;
-        filterHz: number;
-        gain: number;
-        steps: Array<number | null>;
-      }
-    > = {
-      calm: {
-        bpm: 76,
-        osc: "sine",
-        filterHz: 2200,
-        gain: 0.5,
-        steps: [
-          60,
-          null,
-          64,
-          null,
-          67,
-          null,
-          64,
-          null,
-          62,
-          null,
-          65,
-          null,
-          69,
-          null,
-          65,
-          null,
-        ],
-      },
-      focus: {
-        bpm: 92,
-        osc: "triangle",
-        filterHz: 1800,
-        gain: 0.45,
-        steps: [
-          57,
-          null,
-          60,
-          null,
-          64,
-          null,
-          60,
-          null,
-          57,
-          null,
-          60,
-          null,
-          65,
-          null,
-          60,
-          null,
-        ],
-      },
-      happy: {
-        bpm: 108,
-        osc: "triangle",
-        filterHz: 2600,
-        gain: 0.5,
-        steps: [
-          60,
-          64,
-          67,
-          null,
-          67,
-          69,
-          71,
-          null,
-          72,
-          71,
-          69,
-          null,
-          67,
-          64,
-          62,
-          null,
-        ],
-      },
-    };
-
-    const { bpm, osc, filterHz, gain, steps } = cfg[kind];
-    const stepSeconds = (60 / bpm) / 2;
-    let step = 0;
-
-    const filter = ctx.createBiquadFilter();
-    filter.type = "lowpass";
-    filter.frequency.value = filterHz;
-    filter.Q.value = 0.7;
-
-    const musicGain = ctx.createGain();
-    musicGain.gain.value = gain;
-
-    musicGain.connect(filter);
-    filter.connect(masterGain);
-
-    const tick = () => {
-      const note = steps[step % steps.length];
-      step += 1;
-      if (!note) return;
-
-      const t0 = ctx.currentTime + 0.02;
-      const dur = stepSeconds * 0.85;
-
-      const oscNode = ctx.createOscillator();
-      oscNode.type = osc;
-      oscNode.frequency.value = midiToHz(note);
-
-      const env = ctx.createGain();
-      env.gain.value = 0;
-
-      oscNode.connect(env);
-      env.connect(musicGain);
-
-      env.gain.setValueAtTime(0.0001, t0);
-      env.gain.exponentialRampToValueAtTime(0.7, t0 + 0.02);
-      env.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
-
-      oscNode.start(t0);
-      oscNode.stop(t0 + dur + 0.02);
-
-      cleanupRef.current.push(() => {
-        try {
-          oscNode.disconnect();
-        } catch {}
-        try {
-          env.disconnect();
-        } catch {}
-      });
-    };
-
-    tick();
-    const timer = window.setInterval(tick, stepSeconds * 1000);
-
-    cleanupRef.current.push(() => window.clearInterval(timer));
-    cleanupRef.current.push(() => {
-      try {
-        filter.disconnect();
-      } catch {}
-    });
-    cleanupRef.current.push(() => {
-      try {
-        musicGain.disconnect();
-      } catch {}
-    });
+    return await startRemoteAudio(url, { loop: true });
   };
 
   const startPlayback = async (idx: number, opts?: { resume?: boolean }) => {
@@ -495,8 +177,11 @@ export default function MusicPage() {
     setIsPlaying(true);
     stopPlayback();
 
-    if (track.mode === "ambient") await startAmbient(track.kind);
-    else await startMelody(track.kind);
+    const ok = track.mode === "ambient" ? await startAmbient(track.kind) : await startMelody(track.kind);
+    if (!ok) {
+      setIsPlaying(false);
+      return;
+    }
 
     if (totalSeconds > 0) startCountdown(idx, totalSeconds, remainingSeconds);
   };
@@ -511,8 +196,6 @@ export default function MusicPage() {
   };
 
   useEffect(() => {
-    const gain = masterGainRef.current;
-    if (gain) gain.gain.value = volume;
     const el = audioElRef.current;
     if (el) el.volume = Math.min(1, Math.max(0, volume));
   }, [volume]);
@@ -520,13 +203,6 @@ export default function MusicPage() {
   useEffect(() => {
     return () => {
       stopPlayback();
-      if (audioCtxRef.current) {
-        try {
-          audioCtxRef.current.close();
-        } catch {}
-        audioCtxRef.current = null;
-        masterGainRef.current = null;
-      }
     };
   }, []);
 
@@ -578,6 +254,7 @@ export default function MusicPage() {
             <h2 className="text-2xl font-black mb-2 tracking-tight">{nowPlaying.title}</h2>
             <p className="text-indigo-100 font-bold mb-8">{nowPlaying.category} Çalışması</p>
             {playbackSourceLabel && <p className="text-indigo-100 font-black mb-4">Kaynak: {playbackSourceLabel}</p>}
+            {playbackError && <p className="text-indigo-100 font-black mb-4">{playbackError}</p>}
             
             <div className="w-full bg-white/20 h-2 rounded-full mb-8 overflow-hidden">
               <div className="bg-white h-full rounded-full transition-all" style={{ width: `${progressPercent}%` }} />
