@@ -51,12 +51,27 @@ export default function MusicPage() {
     []
   );
 
+  const commonsFileUrl = (fileName: string) => `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(fileName)}`;
+
+  const remoteAmbientFiles: Partial<Record<AmbientKind, string>> = {
+    ocean: "Water on Rocks.ogg",
+    rain: "Heavy rain in Glenshaw, PA.ogg",
+    wind: "Gentle wind after shower accompanied by thunders.ogg",
+  };
+
+  const remoteMelodyFiles: Partial<Record<MelodyKind, string>> = {
+    calm: "02 - Breezy May Acoustic.ogg",
+    focus: "Axle - 01 - A Mist On Hinksey Stream.ogg",
+    happy: "Axle - 02 - The Curious Roe.ogg",
+  };
+
   const audioCtxRef = useRef<AudioContext | null>(null);
   const masterGainRef = useRef<GainNode | null>(null);
   const cleanupRef = useRef<(() => void)[]>([]);
   const countdownEndAtMsRef = useRef<number | null>(null);
   const countdownTotalSecondsRef = useRef<number>(0);
   const countdownIndexRef = useRef<number>(0);
+  const audioElRef = useRef<HTMLAudioElement | null>(null);
 
   const nowPlaying = useMemo(() => tracks[selectedIndex] ?? tracks[0], [selectedIndex, tracks]);
 
@@ -79,6 +94,37 @@ export default function MusicPage() {
       try {
         fn();
       } catch {}
+    }
+  };
+
+  const startRemoteAudio = async (fileName: string, opts?: { loop?: boolean }) => {
+    if (typeof window === "undefined") return false;
+    stopPlayback();
+
+    const url = commonsFileUrl(fileName);
+    const audio = new Audio(url);
+    audio.preload = "auto";
+    audio.loop = opts?.loop ?? true;
+    audio.volume = Math.min(1, Math.max(0, volume));
+    audio.crossOrigin = "anonymous";
+    audioElRef.current = audio;
+
+    cleanupRef.current.push(() => {
+      try {
+        audio.pause();
+      } catch {}
+      try {
+        audio.src = "";
+        audio.load();
+      } catch {}
+      if (audioElRef.current === audio) audioElRef.current = null;
+    });
+
+    try {
+      await audio.play();
+      return true;
+    } catch {
+      return false;
     }
   };
 
@@ -152,6 +198,12 @@ export default function MusicPage() {
   };
 
   const startAmbient = async (kind: AmbientKind) => {
+    const fileName = remoteAmbientFiles[kind];
+    if (fileName) {
+      const ok = await startRemoteAudio(fileName, { loop: true });
+      if (ok) return;
+    }
+
     const ctx = ensureAudio();
     const masterGain = masterGainRef.current;
     if (!ctx || !masterGain) return;
@@ -268,6 +320,12 @@ export default function MusicPage() {
   const midiToHz = (midi: number) => 440 * Math.pow(2, (midi - 69) / 12);
 
   const startMelody = async (kind: MelodyKind) => {
+    const fileName = remoteMelodyFiles[kind];
+    if (fileName) {
+      const ok = await startRemoteAudio(fileName, { loop: true });
+      if (ok) return;
+    }
+
     const ctx = ensureAudio();
     const masterGain = masterGainRef.current;
     if (!ctx || !masterGain) return;
@@ -453,6 +511,8 @@ export default function MusicPage() {
   useEffect(() => {
     const gain = masterGainRef.current;
     if (gain) gain.gain.value = volume;
+    const el = audioElRef.current;
+    if (el) el.volume = Math.min(1, Math.max(0, volume));
   }, [volume]);
 
   useEffect(() => {
