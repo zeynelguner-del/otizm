@@ -308,6 +308,13 @@ export default function Home() {
       color: "bg-cyan-100 text-cyan-700 border-cyan-200 hover:bg-cyan-200",
     },
     {
+      title: "Eğitim",
+      description: "Terapi ve eğitim yaklaşımları",
+      icon: BookOpen,
+      href: "/education",
+      color: "bg-violet-100 text-violet-700 border-violet-200 hover:bg-violet-200",
+    },
+    {
       title: "Duygularım",
       description: "Nasıl hissettiğini keşfet",
       icon: Heart,
