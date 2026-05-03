@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -35,14 +34,13 @@ export default function RootLayout({
               "(function(){try{var t=localStorage.getItem('themeV1');var r=document.documentElement;r.classList.remove('dark','light');if(t==='dark'){r.classList.add('dark');}else if(t==='light'){r.classList.add('light');}else{if(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches){r.classList.add('dark');}}}catch(e){}})();",
           }}
         />
+        <script
+          async
+          crossOrigin="anonymous"
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6555296619233151"
+        />
       </head>
       <body className="min-h-full flex flex-col">{children}</body>
-      <Script
-        async
-        crossOrigin="anonymous"
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6555296619233151"
-        strategy="afterInteractive"
-      />
     </html>
   );
 }
