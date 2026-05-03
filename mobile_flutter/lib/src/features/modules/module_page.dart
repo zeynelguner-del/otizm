@@ -2449,17 +2449,26 @@ class _EducationReminderModuleBody extends StatefulWidget {
 class _EducationReminderModuleBodyState extends State<_EducationReminderModuleBody> {
   static const _storageName = 'education_reminders_v1.json';
   static const _baseNotificationId = 9100;
+  static const _defaultMessage = 'Eğitim zamanı';
+  static const _messagePresets = <String>[
+    'Floortime zamanı',
+    'Dil terapisi zamanı',
+    'Özel eğitim zamanı',
+    'Ergo terapi zamanı',
+    'Hareket eğitimi zamanı',
+    'Duygu çalışması zamanı',
+  ];
 
   final _service = NotificationService.instance;
 
   final _days = <_EducationReminderDay>[
-    _EducationReminderDay(weekday: DateTime.monday, label: 'Pazartesi'),
-    _EducationReminderDay(weekday: DateTime.tuesday, label: 'Salı'),
-    _EducationReminderDay(weekday: DateTime.wednesday, label: 'Çarşamba'),
-    _EducationReminderDay(weekday: DateTime.thursday, label: 'Perşembe'),
-    _EducationReminderDay(weekday: DateTime.friday, label: 'Cuma'),
-    _EducationReminderDay(weekday: DateTime.saturday, label: 'Cumartesi'),
-    _EducationReminderDay(weekday: DateTime.sunday, label: 'Pazar'),
+    _EducationReminderDay(weekday: DateTime.monday, label: 'Pazartesi', message: _defaultMessage),
+    _EducationReminderDay(weekday: DateTime.tuesday, label: 'Salı', message: _defaultMessage),
+    _EducationReminderDay(weekday: DateTime.wednesday, label: 'Çarşamba', message: _defaultMessage),
+    _EducationReminderDay(weekday: DateTime.thursday, label: 'Perşembe', message: _defaultMessage),
+    _EducationReminderDay(weekday: DateTime.friday, label: 'Cuma', message: _defaultMessage),
+    _EducationReminderDay(weekday: DateTime.saturday, label: 'Cumartesi', message: _defaultMessage),
+    _EducationReminderDay(weekday: DateTime.sunday, label: 'Pazar', message: _defaultMessage),
   ];
 
   bool _loading = true;
@@ -2492,10 +2501,12 @@ class _EducationReminderModuleBodyState extends State<_EducationReminderModuleBo
           final enabled = item['enabled'] == true;
           final hour = item['hour'];
           final minute = item['minute'];
+          final message = item['message'];
           _days[idx] = _days[idx].copyWith(
             enabled: enabled,
             hour: hour is int ? hour : _days[idx].hour,
             minute: minute is int ? minute : _days[idx].minute,
+            message: message is String && message.trim().isNotEmpty ? message.trim() : _days[idx].message,
           );
         }
       }
@@ -2527,7 +2538,7 @@ class _EducationReminderModuleBodyState extends State<_EducationReminderModuleBo
       hour: d.hour,
       minute: d.minute,
       title: 'Eğitim Hatırlatıcı',
-      body: '${d.label} ${_formatTime(d.hour, d.minute)} zamanı.',
+      body: '${d.label} ${_formatTime(d.hour, d.minute)} • ${d.message}',
     );
   }
 
@@ -2574,6 +2585,68 @@ class _EducationReminderModuleBodyState extends State<_EducationReminderModuleBo
     await _persist();
   }
 
+  Future<void> _pickMessage(int index) async {
+    final current = _days[index];
+    final chosen = await showModalBottomSheet<String>(
+      context: context,
+      showDragHandle: true,
+      builder: (ctx) {
+        return SafeArea(
+          child: ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              const Text('Hatırlatıcı Metni', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
+              const SizedBox(height: 10),
+              ..._messagePresets.map((m) {
+                return ListTile(
+                  title: Text(m, style: const TextStyle(fontWeight: FontWeight.w800)),
+                  onTap: () => Navigator.of(ctx).pop(m),
+                );
+              }),
+              const Divider(),
+              ListTile(
+                title: const Text('Özel...', style: TextStyle(fontWeight: FontWeight.w900)),
+                onTap: () => Navigator.of(ctx).pop('__custom__'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (chosen == null) return;
+    if (!mounted) return;
+
+    String nextMessage = chosen;
+    if (chosen == '__custom__') {
+      final controller = TextEditingController(text: _messagePresets.contains(current.message) ? '' : current.message);
+      final saved = await showDialog<String>(
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            title: const Text('Özel Metin'),
+            content: TextField(
+              controller: controller,
+              decoration: const InputDecoration(hintText: 'Örn: Floortime zamanı'),
+            ),
+            actions: [
+              TextButton(onPressed: () => Navigator.of(ctx).pop(null), child: const Text('İptal')),
+              FilledButton(onPressed: () => Navigator.of(ctx).pop(controller.text), child: const Text('Kaydet')),
+            ],
+          );
+        },
+      );
+      if (saved == null) return;
+      nextMessage = saved.trim().isNotEmpty ? saved.trim() : _defaultMessage;
+    }
+
+    setState(() {
+      _days[index] = _days[index].copyWith(message: nextMessage);
+    });
+    if (_days[index].enabled) await _apply(_days[index]);
+    await _persist();
+  }
+
   Future<void> _disableAll() async {
     setState(() {
       for (var i = 0; i < _days.length; i++) {
@@ -2616,17 +2689,28 @@ class _EducationReminderModuleBodyState extends State<_EducationReminderModuleBo
             child: ListTile(
               title: Text(d.label, style: const TextStyle(fontWeight: FontWeight.w900)),
               subtitle: Text(
-                d.enabled ? 'Saat: ${_formatTime(d.hour, d.minute)}' : 'Kapalı',
+                d.enabled ? 'Saat: ${_formatTime(d.hour, d.minute)}\nMetin: ${d.message}' : 'Kapalı',
                 style: const TextStyle(fontWeight: FontWeight.w700),
               ),
+              isThreeLine: d.enabled,
               leading: Switch(
                 value: d.enabled,
                 onChanged: (v) => _setEnabled(index, v),
               ),
-              trailing: TextButton.icon(
-                onPressed: d.enabled ? () => _pickTime(index) : null,
-                icon: const Icon(Icons.access_time),
-                label: const Text('Saat'),
+              trailing: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextButton.icon(
+                    onPressed: d.enabled ? () => _pickTime(index) : null,
+                    icon: const Icon(Icons.access_time),
+                    label: const Text('Saat'),
+                  ),
+                  TextButton.icon(
+                    onPressed: d.enabled ? () => _pickMessage(index) : null,
+                    icon: const Icon(Icons.text_fields),
+                    label: const Text('Metin'),
+                  ),
+                ],
               ),
               onTap: () => _pickTime(index),
             ),
@@ -2649,6 +2733,7 @@ class _EducationReminderDay {
   final bool enabled;
   final int hour;
   final int minute;
+  final String message;
 
   const _EducationReminderDay({
     required this.weekday,
@@ -2656,15 +2741,17 @@ class _EducationReminderDay {
     this.enabled = false,
     this.hour = 9,
     this.minute = 0,
+    required this.message,
   });
 
-  _EducationReminderDay copyWith({bool? enabled, int? hour, int? minute}) {
+  _EducationReminderDay copyWith({bool? enabled, int? hour, int? minute, String? message}) {
     return _EducationReminderDay(
       weekday: weekday,
       label: label,
       enabled: enabled ?? this.enabled,
       hour: hour ?? this.hour,
       minute: minute ?? this.minute,
+      message: message ?? this.message,
     );
   }
 
@@ -2675,6 +2762,7 @@ class _EducationReminderDay {
       'enabled': enabled,
       'hour': hour,
       'minute': minute,
+      'message': message,
     };
   }
 }

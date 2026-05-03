@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 type DayReminder = {
   enabled: boolean;
   time: string;
+  message: string;
 };
 
 type EducationReminderState = {
@@ -17,23 +18,26 @@ type EducationReminderState = {
 const STORAGE_KEY = "educationReminderV1";
 
 const DAY_LABELS = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"];
+const MESSAGE_PRESETS = ["Floortime zamanı", "Dil terapisi zamanı", "Özel eğitim zamanı", "Ergo terapi zamanı", "Hareket eğitimi zamanı", "Duygu çalışması zamanı"];
+const DEFAULT_MESSAGE = "Eğitim zamanı";
 
 const readState = (): EducationReminderState => {
-  if (typeof window === "undefined") return { days: DAY_LABELS.map(() => ({ enabled: false, time: "09:00" })) };
+  if (typeof window === "undefined") return { days: DAY_LABELS.map(() => ({ enabled: false, time: "09:00", message: DEFAULT_MESSAGE })) };
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { days: DAY_LABELS.map(() => ({ enabled: false, time: "09:00" })) };
+    if (!raw) return { days: DAY_LABELS.map(() => ({ enabled: false, time: "09:00", message: DEFAULT_MESSAGE })) };
     const parsed = JSON.parse(raw) as unknown;
     const obj = parsed as EducationReminderState;
-    if (!obj || !Array.isArray(obj.days) || obj.days.length !== 7) return { days: DAY_LABELS.map(() => ({ enabled: false, time: "09:00" })) };
+    if (!obj || !Array.isArray(obj.days) || obj.days.length !== 7) return { days: DAY_LABELS.map(() => ({ enabled: false, time: "09:00", message: DEFAULT_MESSAGE })) };
     return {
       days: obj.days.map((d) => ({
         enabled: Boolean(d?.enabled),
         time: typeof d?.time === "string" && /^\d{2}:\d{2}$/.test(d.time) ? d.time : "09:00",
+        message: typeof d?.message === "string" && d.message.trim() ? d.message.trim() : DEFAULT_MESSAGE,
       })),
     };
   } catch {
-    return { days: DAY_LABELS.map(() => ({ enabled: false, time: "09:00" })) };
+    return { days: DAY_LABELS.map(() => ({ enabled: false, time: "09:00", message: DEFAULT_MESSAGE })) };
   }
 };
 
@@ -148,7 +152,7 @@ export default function EducationReminderPage() {
       const ms = Math.max(0, when.getTime() - Date.now());
       const id = window.setTimeout(() => {
         const title = "Eğitim Hatırlatıcı";
-        const body = `${DAY_LABELS[i]} ${d.time} zamanı.`;
+        const body = `${DAY_LABELS[i]} ${d.time} • ${d.message}`;
         if (canNotify && Notification.permission === "granted") {
           try {
             new Notification(title, { body });
@@ -191,7 +195,7 @@ export default function EducationReminderPage() {
 
   const testNow = async () => {
     const title = "Eğitim Hatırlatıcı";
-    const body = "Test bildirimi.";
+    const body = "Test bildirimi • Eğitim zamanı";
     if (canNotify && Notification.permission === "granted") {
       try {
         new Notification(title, { body });
@@ -271,6 +275,8 @@ export default function EducationReminderPage() {
             {DAY_LABELS.map((label, i) => {
               const d = state.days[i]!;
               const next = d.enabled ? nextOccurrence(i, d.time) : null;
+              const messageIsCustom = !MESSAGE_PRESETS.includes(d.message);
+              const selectValue = messageIsCustom ? "__custom__" : d.message;
               return (
                 <div
                   key={label}
@@ -287,6 +293,48 @@ export default function EducationReminderPage() {
                     <div className="text-sm font-bold text-zinc-500">
                       {d.enabled ? `Saat: ${d.time}` : "Kapalı"}
                       {next ? ` • Sonraki: ${formatDateTime(next)}` : ""}
+                    </div>
+                    <div className="mt-2 flex flex-col gap-2">
+                      <select
+                        value={selectValue}
+                        disabled={!d.enabled}
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          if (v === "__custom__") {
+                            updateDay(i, { message: d.message && !MESSAGE_PRESETS.includes(d.message) ? d.message : "" });
+                            return;
+                          }
+                          updateDay(i, { message: v });
+                        }}
+                        className={cn(
+                          "px-3 py-2 rounded-xl border font-black",
+                          d.enabled
+                            ? "bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800"
+                            : "bg-zinc-100 dark:bg-zinc-900/50 border-zinc-200 dark:border-zinc-800 text-zinc-400"
+                        )}
+                      >
+                        {MESSAGE_PRESETS.map((p) => (
+                          <option key={p} value={p}>
+                            {p}
+                          </option>
+                        ))}
+                        <option value="__custom__">Özel...</option>
+                      </select>
+                      {messageIsCustom ? (
+                        <input
+                          type="text"
+                          value={d.message}
+                          disabled={!d.enabled}
+                          onChange={(e) => updateDay(i, { message: e.target.value })}
+                          placeholder="Örn: Floortime zamanı"
+                          className={cn(
+                            "px-3 py-2 rounded-xl border font-black",
+                            d.enabled
+                              ? "bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800"
+                              : "bg-zinc-100 dark:bg-zinc-900/50 border-zinc-200 dark:border-zinc-800 text-zinc-400"
+                          )}
+                        />
+                      ) : null}
                     </div>
                   </div>
                   <div className="flex items-center gap-2">

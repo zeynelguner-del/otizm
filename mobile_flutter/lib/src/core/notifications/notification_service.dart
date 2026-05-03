@@ -42,7 +42,7 @@ class NotificationService {
     }
 
     if (Platform.isIOS) {
-      final ios = _plugin.resolvePlatformSpecificImplementation<DarwinFlutterLocalNotificationsPlugin>();
+      final ios = _plugin.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
       final granted = await ios?.requestPermissions(alert: true, badge: true, sound: true);
       return granted ?? true;
     }
@@ -86,7 +86,7 @@ class NotificationService {
       body,
       scheduled,
       details,
-      androidAllowWhileIdle: true,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
     );
@@ -101,4 +101,3 @@ class NotificationService {
     return scheduled;
   }
 }
-
