@@ -2457,6 +2457,18 @@ class _EducationReminderModuleBodyState extends State<_EducationReminderModuleBo
     'Ergo terapi zamanı',
     'Hareket eğitimi zamanı',
     'Duygu çalışması zamanı',
+    'Duyu bütünleme zamanı',
+    'Ev ödevi zamanı',
+    'Okuma saati',
+    'Oyun zamanı',
+    'Sosyal öykü zamanı',
+    'Taklit çalışması zamanı',
+    'İletişim kartları zamanı',
+    'Mola zamanı',
+    'Yürüyüş zamanı',
+    'Beslenme zamanı',
+    'Ödül zamanı',
+    'Uyku hazırlığı zamanı',
   ];
 
   final _service = NotificationService.instance;

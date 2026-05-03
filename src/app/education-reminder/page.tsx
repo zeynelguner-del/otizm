@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Bell, Clock, Play } from "lucide-react";
+import { ArrowLeft, Bell, Clock } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -18,7 +18,26 @@ type EducationReminderState = {
 const STORAGE_KEY = "educationReminderV1";
 
 const DAY_LABELS = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"];
-const MESSAGE_PRESETS = ["Floortime zamanı", "Dil terapisi zamanı", "Özel eğitim zamanı", "Ergo terapi zamanı", "Hareket eğitimi zamanı", "Duygu çalışması zamanı"];
+const MESSAGE_PRESETS = [
+  "Floortime zamanı",
+  "Dil terapisi zamanı",
+  "Özel eğitim zamanı",
+  "Ergo terapi zamanı",
+  "Hareket eğitimi zamanı",
+  "Duygu çalışması zamanı",
+  "Duyu bütünleme zamanı",
+  "Ev ödevi zamanı",
+  "Okuma saati",
+  "Oyun zamanı",
+  "Sosyal öykü zamanı",
+  "Taklit çalışması zamanı",
+  "İletişim kartları zamanı",
+  "Mola zamanı",
+  "Yürüyüş zamanı",
+  "Beslenme zamanı",
+  "Ödül zamanı",
+  "Uyku hazırlığı zamanı",
+];
 const DEFAULT_MESSAGE = "Eğitim zamanı";
 
 const readState = (): EducationReminderState => {
@@ -193,18 +212,6 @@ export default function EducationReminderPage() {
     }
   };
 
-  const testNow = async () => {
-    const title = "Eğitim Hatırlatıcı";
-    const body = "Test bildirimi • Eğitim zamanı";
-    if (canNotify && Notification.permission === "granted") {
-      try {
-        new Notification(title, { body });
-      } catch {}
-    }
-    setLastFired(`${title} • ${body}`);
-    await playBeep();
-  };
-
   const updateDay = (index: number, patch: Partial<DayReminder>) => {
     setState((prev) => {
       const nextDays = prev.days.slice();
@@ -236,14 +243,6 @@ export default function EducationReminderPage() {
             Ana Sayfa
           </Link>
           <div className="flex-1" />
-          <button
-            type="button"
-            onClick={testNow}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 font-black"
-          >
-            <Play className="w-4 h-4" />
-            Test Et
-          </button>
           <button
             type="button"
             onClick={requestPermission}
