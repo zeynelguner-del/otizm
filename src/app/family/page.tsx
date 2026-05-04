@@ -187,6 +187,12 @@ export default function FamilyPage() {
   const [privacyBusy, setPrivacyBusy] = useState(false);
   const [privacyError, setPrivacyError] = useState<string | null>(null);
   const [privacyOk, setPrivacyOk] = useState<string | null>(null);
+  const [passwordBusy, setPasswordBusy] = useState(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordOk, setPasswordOk] = useState<string | null>(null);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [newPassword2, setNewPassword2] = useState("");
 
   const canEdit = !parentLockEnabled || unlockPin === parentPin || !parentPin;
 
@@ -954,6 +960,116 @@ export default function FamilyPage() {
                   {parentLockEnabled ? "Kilidi Kapat" : "Kilidi Aç"}
                 </button>
               </div>
+            </div>
+
+            <div className="h-px bg-zinc-100 dark:bg-zinc-800" />
+
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <Shield className="text-zinc-400" />
+                <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">Şifre</h2>
+              </div>
+
+              {(passwordError || passwordOk) && (
+                <div
+                  className={cn(
+                    "p-4 rounded-2xl border font-bold",
+                    passwordError
+                      ? "bg-rose-50 border-rose-100 text-rose-700"
+                      : "bg-emerald-50 border-emerald-100 text-emerald-700"
+                  )}
+                >
+                  {passwordError ?? passwordOk}
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Mevcut</label>
+                  <input
+                    type="password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-zinc-900 transition-all outline-none"
+                    autoComplete="current-password"
+                    disabled={!canEdit || passwordBusy}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Yeni</label>
+                  <input
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-zinc-900 transition-all outline-none"
+                    autoComplete="new-password"
+                    disabled={!canEdit || passwordBusy}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Tekrar</label>
+                  <input
+                    type="password"
+                    value={newPassword2}
+                    onChange={(e) => setNewPassword2(e.target.value)}
+                    className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-zinc-900 transition-all outline-none"
+                    autoComplete="new-password"
+                    disabled={!canEdit || passwordBusy}
+                  />
+                </div>
+              </div>
+
+              <button
+                type="button"
+                disabled={!canEdit || passwordBusy}
+                onClick={async () => {
+                  setPasswordError(null);
+                  setPasswordOk(null);
+
+                  if (!currentPassword) {
+                    setPasswordError("Mevcut şifre gerekli.");
+                    return;
+                  }
+                  if (!newPassword || newPassword.length < 8) {
+                    setPasswordError("Yeni şifre en az 8 karakter olmalı.");
+                    return;
+                  }
+                  if (newPassword !== newPassword2) {
+                    setPasswordError("Yeni şifreler eşleşmiyor.");
+                    return;
+                  }
+
+                  setPasswordBusy(true);
+                  try {
+                    const res = await fetch("/api/auth/change-password", {
+                      method: "POST",
+                      headers: { "content-type": "application/json" },
+                      body: JSON.stringify({ currentPassword, newPassword, newPassword2 }),
+                    });
+                    const data = (await res.json().catch(() => ({}))) as { error?: string };
+                    if (!res.ok) {
+                      setPasswordError(typeof data.error === "string" ? data.error : "Şifre değiştirilemedi.");
+                      return;
+                    }
+                    setPasswordOk("Şifre güncellendi.");
+                    setCurrentPassword("");
+                    setNewPassword("");
+                    setNewPassword2("");
+                  } catch (e) {
+                    setPasswordError(e instanceof Error ? e.message : "Şifre değiştirilemedi.");
+                  } finally {
+                    setPasswordBusy(false);
+                  }
+                }}
+                className={cn(
+                  "p-5 rounded-2xl border-2 font-black transition-all active:scale-95",
+                  !canEdit || passwordBusy
+                    ? "bg-zinc-100 border-zinc-100 text-zinc-400 cursor-not-allowed"
+                    : "bg-emerald-50 border-emerald-200 text-emerald-700"
+                )}
+              >
+                Şifreyi Değiştir
+              </button>
             </div>
 
             <div className="h-px bg-zinc-100 dark:bg-zinc-800" />
