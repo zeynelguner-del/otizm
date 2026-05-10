@@ -102,6 +102,127 @@ export default function OsbResearchPage() {
               </p>
             </div>
           </div>
+
+          <div className="space-y-4">
+            <h2 className="text-2xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">
+              UC Davis MIND Institute, Princeton Üniversitesi ve Üsküdar Üniversitesi’nin en son gerçekleştirdiği araştırmaların teknik detayları, moleküler
+              mekanizmaları ve klinik sonuçları
+            </h2>
+
+            <div className="space-y-8 text-zinc-700 dark:text-zinc-300 font-medium leading-relaxed">
+              <div className="space-y-3">
+                <h3 className="text-xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">1. Princeton Üniversitesi ve Simons Foundation: 4 Biyolojik Alt Tipin Klinik Özellikleri</h3>
+                <p>
+                  Princeton Üniversitesi, 5.000&apos;den fazla otizmli bireyin beyin görüntüleme (fMRG), gen dizileme ve klinik davranış verilerini yapay zeka tabanlı
+                  kümeleme (clustering) algoritmalarıyla analiz ederek otizmi 4 ana biyolojik alt tipe ayırmıştır.
+                </p>
+
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="font-black text-zinc-900 dark:text-zinc-50">Tip 1: Sosyal ve İletişimsel Odaklı Küme</div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">Moleküler Altyapı:</span> Dil gelişimi ve sosyal bağlanma ile ilişkili gen
+                      varyasyonları (örn. FOXP2 ve OXT oksitosin reseptör yolları) baskındır.
+                    </div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">Klinik Görünüm:</span> Motor becerileri ve genel zeka düzeyi tipik sınırlardadır.
+                      Ancak göz teması kurma, sosyal ipuçlarını okuma, empati ve karşılıklı konuşmayı sürdürme alanlarında derin nöral senkronizasyon eksikliği
+                      yaşarlar.
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="font-black text-zinc-900 dark:text-zinc-50">Tip 2: Duyusal-Motor ve Stereotipik Küme</div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">Moleküler Altyapı:</span> Beynin motor planlama ve duyusal entegrasyon merkezlerini
+                      (bazal ganglionlar ve talamus) yöneten genlerde mutasyonlar izlenir.
+                    </div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">Klinik Görünüm:</span> Yoğun tekrarlayıcı hareketler (el çırpma, sallanma) ve aşırı
+                      duyusal hassasiyetler (ses, ışık, dokunma reaksiyonları) ön plandadır. Sosyal beceriler bu hassasiyetlerin yönetilmesiyle kısmen stabil
+                      kalabilir.
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="font-black text-zinc-900 dark:text-zinc-50">Tip 3: Gelişimsel Gecikme ve Bilişsel Etkilenme Kümesi</div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">Moleküler Altyapı:</span> Erken embriyonik dönemde beyin kabuğunun (korteks)
+                      tabakalaşmasını yöneten büyük ölçekli kromozomal kopya sayısı varyasyonları (CNV) ile ilişkilidir.
+                    </div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">Klinik Görünüm:</span> Konuşmanın hiç gelişmemesi veya ciddi şekilde gecikmesi, motor
+                      becerilerde yavaşlık ve zihinsel gelişim süreçlerinde ek destek ihtiyacı ile karakterizedir.
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="font-black text-zinc-900 dark:text-zinc-50">Tip 4: Geniş Kapsamlı ve Medikal Komorbidite Kümesi</div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">Moleküler Altyapı:</span> Sadece sinir sistemini değil; bağışıklık ve sindirim
+                      sistemini de düzenleyen multi-sistemik genetik yolaklar (örn. PTEN ve TSC gen mutasyonları) aktiftir.
+                    </div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">Klinik Görünüm:</span> Spektrum semptomlarına eş zamanlı olarak dirençli epilepsi,
+                      uyku bozuklukları, ağır gastrointestinal (mide-bağırsak) sorunlar ve kronik nöro-enflamasyon eşlik eder.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <h3 className="text-xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">2. Üsküdar Üniversitesi: GRID2 Geni ve Glutamat Mekanizması</h3>
+                <p>
+                  Üsküdar Üniversitesi bünyesinde yürütülen moleküler nörobilim çalışmaları, otizmin arkasındaki hücresel mekanizmalardan birini
+                  &quot;Eksitasyon/İnhibisyon (Uyarılma/Baskılanma) Dengesizliği&quot; üzerinden açıklamış ve uluslararası literatüre sunmuştur.
+                </p>
+                <p>
+                  [Sistemik Enflamasyon (TNFα Artışı)] ──&gt; [GRID2 Geninin Baskılanması] ──&gt; [Glutamat Reseptör Kusuru] ──&gt; [Beyinde Aşırı Elektriksel
+                  Uyarılma (Duyusal Aşırı Yüklenme)]
+                </p>
+                <p>
+                  <span className="font-black text-zinc-900 dark:text-zinc-50">GRID2 Geninin Rolü:</span> Bu gen, beyincikte (serebellum) bulunan ve hareket kontrolü
+                  ile duyusal bilgilerin işlenmesinden sorumlu olan Purkinje hücrelerindeki İyonotropik Glutamat Reseptörü Delta-2 proteinini kodlar.
+                </p>
+                <p>
+                  <span className="font-black text-zinc-900 dark:text-zinc-50">Sitokin (TNFα) Tetiklemesi:</span> Araştırma, vücuttaki veya beyindeki kronik
+                  enflamasyonun (bağışıklık sistemi aktivasyonu) bir göstergesi olan TNFα adlı molekülün yükseldiğinde, GRID2 geninin ifadesini (ekspresyonunu)
+                  baskıladığını kanıtlamıştır.
+                </p>
+                <p>
+                  <span className="font-black text-zinc-900 dark:text-zinc-50">Nöral Sonuç:</span> GRID2 geninin işlevini tam yapamaması, sinapslarda ana uyarıcı
+                  kimyasal olan glutamatın geri emilimini ve dengelenmesini bozar. Beyin hücreleri aşırı uyarılır. Bu durum otizmli bireylerde duyusal bilgilerin
+                  filtrelenememesine (duyusal aşırı yüklenme), motor koordinasyon sorunlarına ve öğrenme süreçlerindeki farklılıklara yol açar.
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <h3 className="text-xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">
+                  3. UC Davis MIND Institute: Yaşlanma ve Yetişkinlik Dönemi Otizm Araştırmaları
+                </h3>
+                <p>
+                  UC Davis MIND Institute, otizmin sadece bir çocukluk dönemi durumu olmadığını, yaşam boyu süren nörobiyolojik bir süreç olduğunu boylamsal
+                  (longitudinal) çalışmalarla ortaya koymaktadır.
+                </p>
+                <p>
+                  <span className="font-black text-zinc-900 dark:text-zinc-50">Nörolojik Yaşlanma Hızı:</span> Enstitünün beyin görüntüleme arşivleri üzerinde yaptığı
+                  incelemeler, otizmli bireylerin beyinlerindeki bazı bölgelerin (özellikle prefrontal korteks) yaşlanma ile birlikte tipik gelişim gösteren
+                  bireylere göre daha hızlı hacim kaybına uğrayabildiğini göstermiştir.
+                </p>
+                <p>
+                  <span className="font-black text-zinc-900 dark:text-zinc-50">Bağışıklık Sistemi ve Hücresel Yaşlanma:</span> Yetişkin otizmli bireylerde, hücresel
+                  yaşlanmayı gösteren telomer kısalmasının ve hücresel stres düzeylerinin daha yüksek olduğu saptanmıştır. Bu durum, yaşlandıkça kardiyovasküler
+                  sistem ve metabolik rahatsızlıkların spektrumdaki bireylerde daha erken yaşlarda görülme riskini artırmaktadır.
+                </p>
+                <p>
+                  <span className="font-black text-zinc-900 dark:text-zinc-50">Klinik &quot;Maskeleme&quot; ve Ruh Sağlığı:</span> Yetişkinlik dönemine ulaşmış, tanı
+                  almamış veya geç tanı almış yüksek işlevli otizmli bireylerin (özellikle kadınların), sosyal hayata uyum sağlamak için geliştirdikleri
+                  &quot;kamuflaj/maskeleme&quot; stratejilerinin, orta ve ileri yaşlarda ağır tükenmişlik (autistic burnout), klinik depresyon ve anksiyete
+                  bozukluklarını tetiklediği enstitünün klinik raporlarında doğrulanmıştır.
+                </p>
+              </div>
+            </div>
+          </div>
         </section>
       </main>
     </div>
