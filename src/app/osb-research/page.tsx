@@ -223,6 +223,174 @@ export default function OsbResearchPage() {
               </div>
             </div>
           </div>
+
+          <div className="space-y-4">
+            <h2 className="text-2xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">
+              Otizmin tanı anından yetişkinlikteki moleküler tedavisine kadar olan süreci tamamen kişiselleştirilmiş tıp ve eğitim modeline dönüştürmesi
+            </h2>
+
+            <div className="space-y-8 text-zinc-700 dark:text-zinc-300 font-medium leading-relaxed">
+              <div className="space-y-3">
+                <h3 className="text-xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">I. Princeton 4 Alt Tipi İçin Kişiye Özel Eğitim ve Terapi Modelleri</h3>
+                <p>
+                  Princeton Üniversitesi’nin yapay zeka ile ayrıştırdığı 4 biyolojik alt tip, &quot;tek tip eğitim&quot; dönemini kapatarak doğrudan hedefe yönelik
+                  terapi modellerini zorunlu kılmaktadır.
+                </p>
+
+                <div className="space-y-5">
+                  <div className="space-y-2">
+                    <div className="font-black text-zinc-900 dark:text-zinc-50">1. Tip 1 (Sosyal ve İletişimsel Odaklı Küme) Terapi Modeli</div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">Odak Noktası:</span> Doğrudan akran etkileşimi, sosyal semantika ve jest-mimik okuma.
+                    </div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">Uygulanan Model:</span> DIR/Floortime ve Sosyal Öyküler (Social Stories).
+                    </div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">Metot:</span> Çocuğun liderliği takip edilerek nöral bağlanma mekanizmaları
+                      (oksitosin yolakları) sosyal oyunlarla uyarılır. Akademik veya motor becerilere zaman harcamak yerine, karşılıklı iletişim döngüleri (circle of
+                      communication) genişletilir.
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="font-black text-zinc-900 dark:text-zinc-50">2. Tip 2 (Duyusal-Motor ve Stereotipik Küme) Terapi Modeli</div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">Odak Noktası:</span> Duyusal bütünleme, talamik filtreleme ve motor planlama.
+                    </div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">Uygulanan Model:</span> Ayres Duyusal Bütünleme (ASI) ve Yoğun Davranışsal Analiz
+                      (ABA) modifikasyonu.
+                    </div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">Metot:</span> Bu grupta stereotipik (tekrarlayıcı) hareketler doğrudan engellenmez.
+                      Hareketlerin altında yatan duyusal arayış (örneğin propriyoseptif veya vestibüler ihtiyaç) tespit edilir. Salıncaklar, ağırlıklı yelekler ve
+                      derin basınç terapileriyle sinir sistemi yatıştırıldıktan sonra fonksiyonel beceri eğitimine geçilir.
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="font-black text-zinc-900 dark:text-zinc-50">3. Tip 3 (Gelişimsel Gecikme ve Bilişsel Etkilenme) Terapi Modeli</div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">Odak Noktası:</span> Alternatif iletişim kanalları kurma ve fonksiyonel yaşam becerileri.
+                    </div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">Uygulanan Model:</span> PECS (Resim Değiş Tokuşuna Dayalı İletişim Sistemi) ve EDM
+                      (Erken Başlangıç Denver Modeli).
+                    </div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">Metot:</span> Alıcı ve ifade edici dil gecikmesini kompanse etmek için görsel destek
+                      sistemleri (AAC) en erken evrede devreye sokulur. Nöroplastisiteden maksimum faydalanmak adına haftalık 20-40 saat arası çok yoğun,
+                      yapılandırılmış davranışsal eğitim uygulanır.
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="font-black text-zinc-900 dark:text-zinc-50">4. Tip 4 (Geniş Kapsamlı ve Medikal Komorbidite) Terapi Modeli</div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">Odak Noktası:</span> Önce tıbbi stabilizasyon, ardından multidisipliner destek.
+                    </div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">Uygulanan Model:</span> Medikal-Biyolojik Destekli Özel Eğitim.
+                    </div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">Metot:</span> Epilepsi, uyku ve ağır gastrointestinal sorunlar çözülmeden eğitim
+                      modelleri yanıt vermez. Çocuk hekimi, çocuk psikiyatristi, diyetisyen ve özel eğitimci ortak bir protokol yürütür. İnflamasyonu azaltıcı
+                      diyetler ve nöro-enflamasyon terapileri eşliğinde esnek eğitim saatleri uygulanır.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <h3 className="text-xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">II. Üsküdar Üniversitesi Glutamat Keşfinin İlaç Araştırmalarına Etkisi</h3>
+                <p>
+                  Üsküdar Üniversitesi&apos;nin GRID2 geni ve TNFα sitokin artışı arasındaki bağı çözmesi, otizmde semptom bastırmak yerine hücresel köke inen
+                  farmakolojik stratejilerin önünü açmıştır:
+                </p>
+
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="font-black text-zinc-900 dark:text-zinc-50">1. Hedefli Glutamat Regülatörleri (Eksitotoksisiteyi Önleme)</div>
+                    <p>
+                      Beyinde glutamatın aşırı birikmesi (nöral uyarılma patlaması), duyusal filtrenin çökmesine ve anksiyeteye yol açar. Geliştirilecek yeni nesil
+                      moleküller, GRID2 reseptörlerinin duyarlılığını yapay olarak artırarak veya glutamatın sinaptik aralıktan geri emilimini hızlandırarak beyni bu
+                      &quot;aşırı yüklenmeden&quot; korumayı hedeflemektedir.
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="font-black text-zinc-900 dark:text-zinc-50">2. Antienflamatuar ve Sitokin Engelleyici Terapiler</div>
+                    <p>
+                      Araştırma, sistemik enflamasyonun (TNFα biyobelirtecinin) GRID2 genini doğrudan baskıladığını ortaya koyduğu için, nöro-enflamasyonu hedef alan
+                      monoklonal antikorlar veya biyolojik ajanlar yeni tedavi protokollerine adaydır. Vücuttaki enflamasyon baskılandığında, GRID2 geni üzerindeki
+                      epigenetik blokaj kalkacak ve beyin kendi glutamat dengesini doğal yolla kurabilecektir.
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="font-black text-zinc-900 dark:text-zinc-50">3. Gen Tedavileri ve mRNA Teknolojisi</div>
+                    <p>
+                      GRID2 geni mutasyonu veya fonksiyon kaybı yaşayan bireylerde, CRISPR veya koruyucu viral vektörler aracılığıyla doğrudan Purkinje hücrelerine
+                      sağlıklı GRID2 gen talimatlarının iletilmesi, uzun vadeli ve kalıcı tedavi araştırmalarının odak noktası haline gelmiştir.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <h3 className="text-xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">
+                  III. Erken Çocukluk Döneminde Bu Mekanizmaların İlk Klinik Sinyalleri
+                </h3>
+                <p>
+                  Yukarıda bahsedilen moleküler ve yapısal sapmalar, bebek daha 6-18 aylıkken dış dünyaya belirli klinik sinyaller (kırmızı bayraklar) olarak yansır:
+                </p>
+
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="font-black text-zinc-900 dark:text-zinc-50">1. Hücresel İletişim (Kablolama) Farklılığının Sinyalleri (0-9 Ay)</div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">İsme Tepkisizlik:</span> Beyin bölgeleri arası senkronizasyon eksikliği nedeniyle,
+                      bebek arkasından seslenildiğinde sesi işitir ancak bu sesi &quot;sosyal bir uyaran&quot; olarak önceliklendirip başını çevirmez.
+                    </div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">Sosyal Gülümseme Eksikliği:</span> 2-3. aylarda gelişmesi gereken, annenin yüzüne
+                      bakarak gülümseme reaksiyonunda gecikme veya donuk yüz ifadesi.
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="font-black text-zinc-900 dark:text-zinc-50">2. GRID2 ve Glutamat Dengesi Bozukluğunun Sinyalleri (9-12 Ay)</div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">Duyusal Aşırı Reaksiyon veya Tepkisizlik:</span> Serebellumsal ve talamik filtreleme
+                      çalışmadığı için, normal bir ev sesinden (blender, elektrik süpürgesi) acı çekiyormuşçasına ağlama ya da tam tersi yaralanmalara/acılara karşı
+                      aşırı tepkisizlik.
+                    </div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">Göz Takibinde Sapma:</span> Ortak dikkat mekanizmasının kurulamaması. Yetişkinin
+                      parmağı ile işaret ettiği nesneye bakmak yerine, sadece işaret eden parmağa odaklanıp kalma.
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="font-black text-zinc-900 dark:text-zinc-50">3. Erken Motor ve Davranışsal Sinyaller (12-18 Ay)</div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">Taklit Becerilerinin Yokluğu:</span> &quot;Baybay&quot; yapma, &quot;ceee&quot;
+                      oyunu oynama veya alkışlama gibi aynalama mekanizmasına dayalı motor hareketlerin taklit edilememesi.
+                    </div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">Görsel ve Nesnesel Fiksasyonlar:</span> Oyuncak arabayı sürmek yerine ters çevirip
+                      tekerleğini dakikalarca döndürmek, dönen nesnelere (vantilatör, çamaşır makinesi) kilitlenmek.
+                    </div>
+                    <div>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">Babıldama Gerilemesi:</span> 12. aya kadar anlamlı ses birleştirmelerinin (ba-ba,
+                      ma-ma) hiç olmaması veya var olan seslerin/kelimelerin 15-18. aylar arasında aniden bıçak gibi kesilerek kaybolması (regresyon).
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
       </main>
     </div>
