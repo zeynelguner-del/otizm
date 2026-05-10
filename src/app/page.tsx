@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { Heart, BookOpen, Gamepad2, Users, Settings, Music, Calendar, Info, MessageSquare, HelpCircle, User, Phone, Mail, AlarmClock } from "lucide-react";
+import { Heart, BookOpen, Gamepad2, Users, Settings, Music, Calendar, Info, MessageSquare, HelpCircle, User, Phone, Mail, AlarmClock, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Session = {
@@ -313,6 +313,13 @@ export default function Home() {
       icon: BookOpen,
       href: "/education",
       color: "bg-violet-100 text-violet-700 border-violet-200 hover:bg-violet-200",
+    },
+    {
+      title: "Otizm Spektrum Bozukluğu (OSB) üzerine yürütülen küresel ve ulusal araştırmalar",
+      description: "Küresel ve ulusal araştırma özetleri",
+      icon: Globe,
+      href: "/osb-research",
+      color: "bg-teal-100 text-teal-700 border-teal-200 hover:bg-teal-200",
     },
     {
       title: "Duygularım",
