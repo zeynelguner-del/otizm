@@ -391,6 +391,139 @@ export default function OsbResearchPage() {
               </div>
             </div>
           </div>
+
+          <div className="space-y-4">
+            <h2 className="text-2xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">Mekanizmaların pratik takibini yapmak</h2>
+
+            <div className="space-y-8 text-zinc-700 dark:text-zinc-300 font-medium leading-relaxed">
+              <div className="space-y-3">
+                <h3 className="text-xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">I. Evde M-CHAT-R/F Tarama Ölçeği ve Puanlama Sistemi</h3>
+                <p>
+                  M-CHAT-R (Değiştirilmiş Erken Çocukluk Dönemi Otizm Tarama Ölçeği), 16-30 ay arası çocuklarda riski belirleyen 20 soruluk bir tarama aracıdır. Tanı
+                  koymaz, risk seviyesini ölçer.
+                </p>
+
+                <div className="space-y-3">
+                  <div className="font-black text-zinc-900 dark:text-zinc-50">Kritik 20 Madde ve Cevap Anahtarı</div>
+                  <p>Aşağıdaki sorulara çocuğun genel ve sürekli davranışlarını düşünerek &quot;Evet&quot; veya &quot;Hayır&quot; cevabı verin.</p>
+
+                  <ol className="list-decimal pl-6 space-y-2">
+                    <li>Çocuğunuzu havaya kaldırdığınızda veya dizinizde salladığınızda eğlenir mi? (Normal: Evet)</li>
+                    <li>Çocuğunuz diğer çocuklarla ilgilenir mi? (Normal: Evet)</li>
+                    <li>Çocuğunuz eşyaların üzerine tırmanmaktan hoşlanır mı? (Normal: Evet)</li>
+                    <li>Çocuğunuz ce-e veya saklambaç oynamaktan hoşlanır mı? (Normal: Evet)</li>
+                    <li>Çocuğunuz hiç işaret parmağını kullanarak bir şeyi rica etti mi? (Normal: Evet)</li>
+                    <li>Çocuğunuz hiç işaret parmağını kullanarak ilginç bir şeyi size gösterdi mi? (Normal: Evet)</li>
+                    <li>Çocuğunuz oyuncak arabalar veya küplerle (amaca uygun) oynar mı? (Normal: Evet)</li>
+                    <li>Çocuğunuz size bir nesne getirip gösterir mi? (Normal: Evet)</li>
+                    <li>Çocuğunuz gözünüzün içine 1-2 saniyeden uzun bakar mı? (Normal: Evet)</li>
+                    <li>Çocuğunuz aşırı hassas (sese/dokunmaya reaksiyon) görünür mü? (Normal: Hayır)</li>
+                    <li>Çocuğunuz size gülümsediğinizde gülümsemeyle karşılık verir mi? (Normal: Evet)</li>
+                    <li>Çocuğunuz ismine hemen tepki verir mi? (Normal: Evet)</li>
+                    <li>Odanın diğer ucundaki bir oyuncağa işaret ettiğinizde çocuk oyuncağa bakar mı? (Normal: Evet)</li>
+                    <li>Çocuğunuz yürüyebiliyor mu? (Normal: Evet)</li>
+                    <li>Çocuğunuz sizin baktığınız şeye bakar mı? (Normal: Evet)</li>
+                    <li>Çocuğunuz yüzünün yakınında garip parmak hareketleri yapar mı? (Normal: Hayır)</li>
+                    <li>Çocuğunuz etrafındaki insanların yaptıklarını taklit etmeye çalışır mı? (Normal: Evet)</li>
+                    <li>Çocuğunuza seslendiğinizde kulakları duymuyormuş gibi hissettiğiniz olur mu? (Normal: Hayır)</li>
+                    <li>Çocuğunuz etrafındaki insanların ne söylediğini anlar mı? (Normal: Evet)</li>
+                    <li>Çocuğunuz bazen boşluğa bakar mı veya amaçsızca dolanır mı? (Normal: Hayır)</li>
+                  </ol>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="font-black text-zinc-900 dark:text-zinc-50">Puanlama ve Risk Skalası</div>
+                  <p>
+                    &quot;Normal&quot; dışındaki her cevap 1 puan olarak kaydedilir. (Örn: 2. soruya &quot;Hayır&quot; demek 1 puan, 10. soruya &quot;Evet&quot; demek
+                    1 puan).
+                  </p>
+                  <ul className="list-disc pl-6 space-y-2">
+                    <li>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">0 - 2 Puan (Düşük Risk):</span> Genel gelişim takibine devam edilir. Çocuk 24 aydan
+                      küçükse, 24 ayından sonra test tekrarlanmalıdır.
+                    </li>
+                    <li>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">3 - 7 Puan (Orta Risk):</span> M-CHAT-R/F takip görüşmesi yapılmalıdır. Risk devam
+                      ediyorsa çocuk psikiyatristine başvurulmalıdır.
+                    </li>
+                    <li>
+                      <span className="font-black text-zinc-900 dark:text-zinc-50">8 - 20 Puan (Yüksek Risk):</span> Vakit kaybetmeden doğrudan bir Çocuk ve Ergen Ruh
+                      Sağlığı uzmanına (Psikiyatrist) ve Erken Müdahale/Özel Eğitim merkezine başvurulması zorunludur.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <h3 className="text-xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">II. Ev Ortamında Duyusal Diyet (Sensory Diet) Planlama Detayları</h3>
+                <p>
+                  Duyusal diyet; Princeton Tip 2 (Duyusal-Motor) ve Üsküdar Üniversitesi&apos;nin açıkladığı glutamat aşırı uyarımını evde dengelemek için tasarlanan
+                  sinir sistemi sakinleştirme programıdır. Gün içine yayılmış kontrollü aktiviteler içerir.
+                </p>
+
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="font-black text-zinc-900 dark:text-zinc-50">1. Propriyoseptif (Derin Basınç/Kas-Eklem) Aktiviteleri (Sakinleştirici Efekt)</div>
+                    <ul className="list-disc pl-6 space-y-2">
+                      <li>Sandviç Oyunu: Çocuk yere uzanır, üzerine büyük bir minder/yastık konularak hafif ve ritmik baskılar uygulanır. Sinir sistemini hızla yatıştırır.</li>
+                      <li>Ağır İşler (Heavy Work): Evde içi kitap dolu bir sepeti halı üzerinde itme, damacana taşıma taklidi yapma veya ağır bir sırt çantasıyla koridorda yürüme.</li>
+                      <li>Sakız Çiğneme veya Sert Gıdalar: Havuç, elma gibi sert gıdaları ısırma veya çene kaslarını çalıştıracak aktiviteler beyni regüle eder.</li>
+                    </ul>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="font-black text-zinc-900 dark:text-zinc-50">2. Vestibüler (Denge ve Hareket) Regülasyonu</div>
+                    <ul className="list-disc pl-6 space-y-2">
+                      <li>Ritmik Sallanma: Sağa sola hızlı ve ani sallanmalar beyni uyarır; öne arkaya yavaş ve ritmik sallanmalar (hamak veya pilates topu üzerinde) beyni sakinleştirir.</li>
+                      <li>Ters Çevirme (Yerçekimi Değişimi): Çocuğun başını yataktan aşağı hafifçe sarkıtması veya takla atması, beyindeki vestibular sıvı akışını düzenleyerek filtresiz duyusal girdiyi azaltır.</li>
+                    </ul>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="font-black text-zinc-900 dark:text-zinc-50">3. Çevresel Modifikasyon (Ev Düzenlemesi)</div>
+                    <ul className="list-disc pl-6 space-y-2">
+                      <li>Sakinleşme Köşesi (Chill-out Zone): Evin bir köşesine üzeri örtülü küçük bir oyun çadırı kurun. İçine loş ışık, yumuşak kırlentler ve gürültü önleyici kulaklık koyun. Çocuk duyusal yüklenme yaşadığında kendi rızasıyla buraya sığınmalıdır.</li>
+                      <li>Görsel ve İşitsel Sadeleşme: Floresan ışıklar (mikro düzeyde kırpıştığı için glutamat uyarımını artırır) yerine sarı tonlu led veya abajur kullanın. Gün içinde arka planda sürekli açık kalan televizyon sesini tamamen kesin.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <h3 className="text-xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">III. Özel Eğitim Seanslarında Aile Katılımının Yapılandırılması</h3>
+                <p>
+                  Erken çocuklukta haftalık 2 saatlik özel eğitim seansı nöroplastisiteyi tetiklemek için yetersizdir. Bilimsel başarı, seans odağının evde Ebeveyn
+                  Aracılı Müdahale ile 7/24 sürdürülmesine bağlıdır.
+                </p>
+                <p>[Seansı İzleme / Not Alma] ──&gt; [Uzman Eşliğinde Canlı Deneme] ──&gt; [Ev Rutinine Entegrasyon] ──&gt; [Video ile Geri Bildirim]</p>
+
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="font-black text-zinc-900 dark:text-zinc-50">1. Seans İçi Yapılandırma ve Eş-Regülasyon</div>
+                    <ul className="list-disc pl-6 space-y-2">
+                      <li>Cam Arkası İzleme veya Aktif Katılım: Aile, seansı sadece bir seyirci gibi izlememeli; terapistin çocuk ağladığında veya yönergeyi reddettiğinde hangi &quot;davranışsal körleme&quot; veya &quot;pekiştirme&quot; tekniğini kullandığını not etmelidir.</li>
+                      <li>Uygulamalı Koçluk (Coaching Model): Seansın son 15 dakikasında terapist masadan kalkmalı, anne veya baba çocukla masaya oturmalıdır. Terapist, ebeveynin çocukla olan etkileşimini canlı olarak izleyip anlık yönlendirmeler yapmalıdır.</li>
+                    </ul>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="font-black text-zinc-900 dark:text-zinc-50">2. Ev Rutinlerine Doğal Öğretim (NET) Entegrasyonu</div>
+                    <ul className="list-disc pl-6 space-y-2">
+                      <li>Banyo Zamanı: Renkler, &quot;aç-kapa&quot; kavramları ve suyun sıcaklık duyusu yapılandırılmış bir ders yerine banyoda öğretilmelidir.</li>
+                      <li>Yemek Zamanı (Talep Etme): Çocuğun ulaşmak istediği su veya yiyecek doğrudan önüne konmamalıdır. Nesne çocuğun görebileceği ama uzanamayacağı bir yere konarak işaret parmağını kullanması, göz teması kurması veya ses çıkartarak &quot;talep etmesi&quot; (Mand eğitimi) için doğal fırsat pencereleri yaratılmalıdır.</li>
+                    </ul>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="font-black text-zinc-900 dark:text-zinc-50">3. Evden Seansa Geri Bildirim Döngüsü</div>
+                    <ul className="list-disc pl-6 space-y-2">
+                      <li>Video Analizi: Ebeveyn, evde çocuğun yaşadığı kriz (meltdown) anlarını veya öfke nöbetlerini 1 dakikalık kısa videolar halinde kaydetmelidir. Terapist ile bu videolar analiz edilerek tetikleyici çevresel faktör (duyusal mı, davranışsal mı) belirlenmeli ve ortak bir davranış protokolü uygulanmalıdır.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
       </main>
     </div>
