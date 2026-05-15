@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { Heart, BookOpen, Gamepad2, Users, Settings, Music, Calendar, Info, MessageSquare, HelpCircle, User, Phone, Mail, AlarmClock, Globe } from "lucide-react";
+import { Heart, BookOpen, Gamepad2, Users, Settings, Music, Calendar, Info, MessageSquare, HelpCircle, User, Phone, Mail, AlarmClock, Globe, Waves } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Session = {

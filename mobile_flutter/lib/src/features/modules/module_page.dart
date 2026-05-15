@@ -1949,6 +1949,12 @@ class _GamesModuleBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final games = <_GameItem>[
       _GameItem(
+        title: 'Duyguları Eşleştir',
+        description: 'Hangi duygu hangi kelime?',
+        icon: Icons.favorite,
+        open: () => _pushGame(context, const _EmotionsMatchGamePage()),
+      ),
+      _GameItem(
         title: 'Eşleştirme Oyunu',
         description: 'Aynı meyveleri bulup eşleştir',
         icon: Icons.layers,
@@ -2001,6 +2007,187 @@ class _GamesModuleBody extends StatelessWidget {
 
   static void _pushGame(BuildContext context, Widget child) {
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => child));
+  }
+}
+
+class _EmotionsMatchGamePage extends StatefulWidget {
+  const _EmotionsMatchGamePage();
+
+  @override
+  State<_EmotionsMatchGamePage> createState() => _EmotionsMatchGamePageState();
+}
+
+class _EmotionsMatchGamePageState extends State<_EmotionsMatchGamePage> {
+  final List<_MatchCard> _items = const [
+    _MatchCard(id: 'happy', label: 'Mutlu', emoji: '😊'),
+    _MatchCard(id: 'sad', label: 'Üzgün', emoji: '😢'),
+    _MatchCard(id: 'angry', label: 'Kızgın', emoji: '😠'),
+    _MatchCard(id: 'surprised', label: 'Şaşkın', emoji: '😲'),
+    _MatchCard(id: 'scared', label: 'Korkmuş', emoji: '😨'),
+    _MatchCard(id: 'sleepy', label: 'Uykulu', emoji: '😴'),
+  ];
+
+  late List<_MatchCard> _left;
+  late List<_MatchCard> _right;
+
+  String? _selectedLeft;
+  String? _selectedRight;
+  List<String> _matched = [];
+  bool _disabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _resetGame();
+  }
+
+  void _resetGame() {
+    setState(() {
+      _left = List.from(_items)..shuffle();
+      _right = List.from(_items)..shuffle();
+      _selectedLeft = null;
+      _selectedRight = null;
+      _matched = [];
+      _disabled = false;
+    });
+  }
+
+  void _handlePick(String side, String id) {
+    if (_disabled || _matched.contains(id)) return;
+
+    setState(() {
+      if (side == 'left') {
+        _selectedLeft = id;
+      } else {
+        _selectedRight = id;
+      }
+    });
+
+    if (_selectedLeft == null || _selectedRight == null) return;
+
+    if (_selectedLeft == _selectedRight) {
+      setState(() {
+        _matched.add(_selectedLeft!);
+        _selectedLeft = null;
+        _selectedRight = null;
+      });
+      return;
+    }
+
+    setState(() => _disabled = true);
+    Future.delayed(const Duration(milliseconds: 700), () {
+      if (mounted) {
+        setState(() {
+          _selectedLeft = null;
+          _selectedRight = null;
+          _disabled = false;
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isWon = _matched.length == _items.length;
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFF1F2), // rose-50
+      appBar: AppBar(
+        title: const Text('Duyguları Eşleştir'),
+        backgroundColor: Colors.white,
+        actions: [
+          IconButton(icon: const Icon(Icons.refresh), onPressed: _resetGame),
+        ],
+      ),
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: isWon
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.emoji_events, size: 80, color: Colors.amber),
+                    const SizedBox(height: 16),
+                    const Text('Harika İşi Çıkardın!', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900)),
+                    const SizedBox(height: 8),
+                    const Text('Tüm duyguları başarıyla eşleştirdin.'),
+                    const SizedBox(height: 24),
+                    FilledButton(
+                      onPressed: _resetGame,
+                      style: FilledButton.styleFrom(backgroundColor: Colors.green),
+                      child: const Text('Tekrar Oyna'),
+                    ),
+                  ],
+                )
+              : Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        children: _left.map((item) {
+                          final isMatched = _matched.contains(item.id);
+                          final isSelected = _selectedLeft == item.id;
+                          return _buildCard(
+                            child: Text(item.emoji!, style: const TextStyle(fontSize: 32)),
+                            isMatched: isMatched,
+                            isSelected: isSelected,
+                            onTap: () => _handlePick('left', item.id),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        children: _right.map((item) {
+                          final isMatched = _matched.contains(item.id);
+                          final isSelected = _selectedRight == item.id;
+                          return _buildCard(
+                            child: Text(item.label, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            isMatched: isMatched,
+                            isSelected: isSelected,
+                            onTap: () => _handlePick('right', item.id),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ],
+                ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCard({required Widget child, required bool isMatched, required bool isSelected, required VoidCallback onTap}) {
+    Color bgColor = Colors.white;
+    Color borderColor = Colors.grey.shade300;
+
+    if (isMatched) {
+      bgColor = Colors.green.shade100;
+      borderColor = Colors.green.shade300;
+    } else if (isSelected) {
+      bgColor = Colors.white;
+      borderColor = Colors.blue.shade400;
+    }
+
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        margin: const EdgeInsets.only(bottom: 12),
+        height: 80,
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: borderColor, width: isSelected ? 4 : 2),
+          boxShadow: [
+            if (!isMatched)
+              BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))
+          ],
+        ),
+        alignment: Alignment.center,
+        child: Opacity(opacity: isMatched ? 0.5 : 1.0, child: child),
+      ),
+    );
   }
 }
 
@@ -3133,7 +3320,8 @@ class _GameItem {
 class _MatchCard {
   final String id;
   final String label;
-  const _MatchCard({required this.id, required this.label});
+  final String? emoji;
+  const _MatchCard({required this.id, required this.label, this.emoji});
 }
 
 class _MemoryCard {
