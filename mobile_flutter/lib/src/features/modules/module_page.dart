@@ -15,6 +15,8 @@ class ModulePage extends StatelessWidget {
         return 'Otizm Bilgilendirme';
       case 'osb':
         return 'OSB (Otizm Spektrum Bozukluğu)';
+      case 'osb_research':
+        return 'OSB Araştırmaları';
       case 'education':
         return 'Eğitim';
       case 'emotions':
@@ -31,6 +33,8 @@ class ModulePage extends StatelessWidget {
         return 'Takvim ve Program';
       case 'education_reminder':
         return 'Eğitim Hatırlatıcı';
+      case 'sensory':
+        return 'Duyusal Oda';
       default:
         return 'Modül';
     }
@@ -45,6 +49,9 @@ class ModulePage extends StatelessWidget {
         break;
       case 'osb':
         body = const _OsbModuleBody();
+        break;
+      case 'osb_research':
+        body = const _OsbResearchModuleBody();
         break;
       case 'education':
         body = const _EducationModuleBody();
@@ -69,6 +76,9 @@ class ModulePage extends StatelessWidget {
         break;
       case 'games':
         body = const _GamesModuleBody();
+        break;
+      case 'sensory':
+        body = const _SensoryModuleBody();
         break;
       default:
         body = _ComingSoonBody(title: title);
@@ -376,6 +386,173 @@ class _OsbModuleBody extends StatelessWidget {
           title: 'Kaynaklar',
           subtitle: 'Bilgi amaçlı bağlantılar (kopyalayıp tarayıcıda açabilirsiniz).',
           onTap: () => _openDetail(context, 'Kaynaklar', sources),
+        ),
+      ],
+    );
+  }
+}
+
+class _OsbResearchModuleBody extends StatelessWidget {
+  const _OsbResearchModuleBody();
+
+  @override
+  Widget build(BuildContext context) {
+    const summary =
+        'Bu bölüm; web tarafındaki “OSB araştırmaları” içeriğini mobil uygulamaya taşır. Metinler bilgi amaçlıdır; tanı/tedavi yerine geçmez.';
+
+    final sections = <_ModuleSection>[
+      const _ModuleSection(
+        title: 'Küresel ve Ulusal Araştırmalar (Özet)',
+        description: 'Beyin içi iletişim, genetik mekanizmalar, çevresel tetikleyiciler, alt tipler ve erken tanı başlıkları.',
+        content: '1) Beyin İçi İletişim ve Hücresel Yapı Farklılıkları\n\n'
+            'University of Aberdeen (İskoçya - 2025): Nature Communications dergisinde yayımlanan çalışmada, beyindeki hücreler arası destek ve sinyal ağı olan Ekstrasellüler Matriks (ECM) haritalandırılmıştır. Araştırma, otizmle ilişkili genlerin bu hücresel iskele (matrizom) sistemindeki “kablolama” talimatlarını nasıl değiştirdiğini göstermiştir. Bu durum, beynin erken gelişim aşamalarında sinirsel bölgeler arası veri iletiminde yapısal hız ve bant genişliği farklılıklarına yol açmaktadır.\n\n'
+            'Harvard University (Tan Yang Autism Center - 2025): Nörotransmitter mekanizmaları üzerine yoğunlaşan merkez, sinapslar arası kimyasal iletimde (özellikle serotonin ve glutamat dengesinde) yaşanan düzensizliklerin spektrumdaki duyusal hassasiyetleri ve tekrarlayıcı davranış biçimlerini tetiklediğini hücresel düzeyde raporlamıştır.\n\n'
+            '2) Genetik Mekanizmalar, Yapay Zeka ve Cinsiyet Faktörü\n\n'
+            'Princeton University & Simons Foundation (ABD - 2025): Makine öğrenmesi ve yapay zeka algoritmalarıyla 65 genin ötesinde 2.500 yeni risk geni tanımlanmıştır.\n\n'
+            'Baylor College of Medicine (ABD - 2025/2026): Kız çocuklarında “dişi koruyucu etkisi” moleküler düzeyde incelenmiş; benzer semptomların ortaya çıkması için erkek çocuklara kıyasla daha yoğun ve birikimli genetik mutasyon yükü gerektiği raporlanmıştır.\n\n'
+            'Üsküdar Üniversitesi (Türkiye): TNFα düzey artışının GRID2 genini baskıladığı ve bunun glutamat reseptör mekanizması üzerinden OSB patogenezinde rol oynadığına dair bulgular yayımlanmıştır.\n\n'
+            '3) Çevresel Tetikleyiciler, Epigenetik ve Yanılgılar\n\n'
+            'UC Davis MIND Institute (ABD - 2025/2026): Genetik yatkınlığı olan bebeklerin tarım ilaçları (pestisitler), plastik türevleri (PCB) ve ağır metallere maruziyetinin epigenetik mekanizmaları tetikleyebileceği raporlanmıştır.\n\n'
+            'Ege Üniversitesi (Türkiye - 2026): “Ekran maruziyeti veya ilgisizlik otizme yol açar” algısının yanlış olduğu; tablonun genetik temelli nörogelişimsel bir süreç olduğu vurgulanmıştır.\n\n'
+            '4) Biyolojik Alt Tiplerin Keşfi (Kişiselleştirilmiş Tıp)\n\n'
+            'Princeton University & Simons Foundation (2025): 5.000’den fazla otizmli çocuğun klinik ve biyolojik verileriyle yapılan analizler sonucunda OSB’nin 4 farklı biyolojik alt tipe ayrıldığı; her alt tipin farklı mekanizmalar, gelişimsel gidişat ve tedavi yanıtları gösterebildiği bildirilmiştir.\n\n'
+            '5) Erken Tanı ve Bilimsel Eğitim Modelleri\n\n'
+            'University of Toronto (Kanada - 2025): Bilgisayarlı görme ve ses analitiği ile bebeklerin motor hareketleri, ağlama frekansları ve sosyal yönelimleri izlenerek erken risk skorlaması hedeflenmektedir.\n\n'
+            'İstinye Üniversitesi & Hacettepe Üniversitesi (Türkiye): Otizmin çekirdek semptomlarını tamamen ortadan kaldıracak bir ilaç formülünün bulunmadığı; etkinliği kanıtlanmış yaklaşımın erken yaşta başlayan, yoğun ve bireyselleştirilmiş özel eğitim olduğu belirtilmiştir.',
+      ),
+      const _ModuleSection(
+        title: 'Teknik Detaylar (Princeton • Üsküdar • UC Davis)',
+        description: '4 biyolojik alt tipin özellikleri, GRID2/glutamat mekanizması ve yetişkinlik-yaşlanma bulguları.',
+        content: '1) Princeton Üniversitesi ve Simons Foundation: 4 Biyolojik Alt Tipin Klinik Özellikleri\n\n'
+            'Princeton Üniversitesi; fMRG, gen dizileme ve klinik davranış verilerini yapay zeka tabanlı kümeleme (clustering) algoritmalarıyla analiz ederek otizmi 4 ana biyolojik alt tipe ayırmıştır.\n\n'
+            'Tip 1: Sosyal ve İletişimsel Odaklı Küme\n'
+            '- Moleküler altyapı: Dil gelişimi ve sosyal bağlanma ile ilişkili gen varyasyonları (örn. FOXP2 ve OXT oksitosin reseptör yolları).\n'
+            '- Klinik görünüm: Motor beceriler ve genel zeka düzeyi tipik sınırlarda olabilir; göz teması, sosyal ipuçları, empati ve karşılıklı konuşmada senkronizasyon güçlükleri görülebilir.\n\n'
+            'Tip 2: Duyusal-Motor ve Stereotipik Küme\n'
+            '- Moleküler altyapı: Motor planlama ve duyusal entegrasyon merkezlerini (bazal ganglionlar ve talamus) yöneten genlerde mutasyonlar.\n'
+            '- Klinik görünüm: Tekrarlayıcı hareketler ve duyusal hassasiyetler ön planda olabilir.\n\n'
+            'Tip 3: Gelişimsel Gecikme ve Bilişsel Etkilenme Kümesi\n'
+            '- Moleküler altyapı: Korteks tabakalaşmasını etkileyen kromozomal kopya sayısı varyasyonları (CNV).\n'
+            '- Klinik görünüm: Konuşmada ciddi gecikme, motor becerilerde yavaşlık ve ek destek ihtiyacı.\n\n'
+            'Tip 4: Geniş Kapsamlı ve Medikal Komorbidite Kümesi\n'
+            '- Moleküler altyapı: Sinir sistemi yanında bağışıklık/sindirim sistemini de etkileyen yolaklar (örn. PTEN, TSC).\n'
+            '- Klinik görünüm: Epilepsi, uyku bozukluğu, gastrointestinal sorunlar ve kronik nöro-enflamasyon eşlik edebilir.\n\n'
+            '2) Üsküdar Üniversitesi: GRID2 Geni ve Glutamat Mekanizması\n\n'
+            'Eksitasyon/İnhibisyon (Uyarılma/Baskılanma) dengesizliği çerçevesinde:\n'
+            'Sistemik Enflamasyon (TNFα artışı) → GRID2 geninin baskılanması → Glutamat reseptör kusuru → Beyinde aşırı elektriksel uyarılma (duyusal aşırı yüklenme)\n\n'
+            'GRID2 geninin rolü: Beyincikte (serebellum) Purkinje hücrelerindeki İyonotropik Glutamat Reseptörü Delta-2 proteinini kodlar.\n\n'
+            'TNFα tetiklemesi: TNFα yükseldiğinde GRID2 gen ifadesi baskılanabilir.\n\n'
+            'Nöral sonuç: Glutamat dengesi bozulabilir; bu durum duyusal bilgilerin filtrelenmesinde güçlüğe, motor koordinasyon sorunlarına ve öğrenme süreçlerinde farklılıklara yol açabilir.\n\n'
+            '3) UC Davis MIND Institute: Yaşlanma ve Yetişkinlik Dönemi Araştırmaları\n\n'
+            'Otizmin yaşam boyu süren bir nörobiyolojik süreç olduğu; bazı bölgelerde (özellikle prefrontal korteks) yaşlanma ile daha hızlı hacim kaybı olabileceği, telomer kısalması ve hücresel stres göstergelerinin daha yüksek olabildiği bildirilmiştir.\n\n'
+            'Geç tanı almış bireylerde (özellikle kadınlarda) sosyal “maskeleme” stratejilerinin orta/ileri yaşlarda tükenmişlik (autistic burnout), depresyon ve anksiyete ile ilişkili olabileceği raporlanmıştır.',
+      ),
+      const _ModuleSection(
+        title: 'Kişiselleştirilmiş Model (Tanıdan Yetişkinliğe)',
+        description: 'Alt tiplere göre eğitim/terapi, ilaç araştırmalarına etkiler ve erken klinik sinyaller.',
+        content: 'I) Princeton 4 Alt Tipi İçin Kişiye Özel Eğitim ve Terapi Modelleri\n\n'
+            'Tip 1 terapi modeli\n'
+            '- Odak: Akran etkileşimi, sosyal semantika, jest-mimik okuma.\n'
+            '- Model: DIR/Floortime ve Sosyal Öyküler.\n\n'
+            'Tip 2 terapi modeli\n'
+            '- Odak: Duyusal bütünleme, talamik filtreleme, motor planlama.\n'
+            '- Model: Ayres Duyusal Bütünleme (ASI) ve ABA modifikasyonu.\n'
+            '- Not: Stereotipiler doğrudan engellenmeden, altında yatan duyusal ihtiyaç belirlenip sinir sistemi regüle edilerek beceri öğretimine geçilir.\n\n'
+            'Tip 3 terapi modeli\n'
+            '- Odak: Alternatif iletişim kanalları ve fonksiyonel yaşam becerileri.\n'
+            '- Model: PECS ve Erken Başlangıç Denver Modeli (EDM).\n'
+            '- Not: Haftalık yoğun ve yapılandırılmış eğitim (örn. 20–40 saat) hedeflenebilir.\n\n'
+            'Tip 4 terapi modeli\n'
+            '- Odak: Önce tıbbi stabilizasyon, sonra multidisipliner destek.\n'
+            '- Model: Medikal-biyolojik destekli özel eğitim.\n\n'
+            'II) Üsküdar Üniversitesi Glutamat Keşfinin İlaç Araştırmalarına Etkisi\n\n'
+            '1. Hedefli glutamat regülatörleri: Glutamatın aşırı birikimini (eksitotoksisite) önlemeyi hedefler.\n'
+            '2. Antienflamatuar ve sitokin engelleyici terapiler: Nöro-enflamasyonu hedefleyen ajanlar araştırma adaylarıdır.\n'
+            '3. Gen tedavileri ve mRNA teknolojisi: GRID2 fonksiyon kaybı yaşayan bireylerde hedefli yaklaşımlar araştırılmaktadır.\n\n'
+            'III) Erken Çocukluk Döneminde İlk Klinik Sinyaller\n\n'
+            '0–9 ay\n'
+            '- İsme tepkisizlik: Ses işitilse de “sosyal uyaran” olarak önceliklendirilmemesi.\n'
+            '- Sosyal gülümseme gecikmesi.\n\n'
+            '9–12 ay\n'
+            '- Duyusal aşırı reaksiyon veya tepkisizlik.\n'
+            '- Göz takibinde sapma: işaret edilen nesne yerine parmağa kilitlenme.\n\n'
+            '12–18 ay\n'
+            '- Taklit becerilerinde belirgin zorluk.\n'
+            '- Dönen nesnelere/tekerleğe fiksasyon.\n'
+            '- Babıldama/kelime gerilemesi (regresyon) olasılığı.',
+      ),
+      const _ModuleSection(
+        title: 'Mekanizmaların Pratik Takibi',
+        description: 'M-CHAT-R/F taraması, duyusal diyet planı ve aile katılımının yapılandırılması.',
+        content: 'I) Evde M-CHAT-R/F Tarama Ölçeği ve Puanlama\n\n'
+            'M-CHAT-R, 16–30 ay arası çocuklarda riski belirleyen 20 soruluk bir tarama aracıdır. Tanı koymaz; risk seviyesini ölçer.\n\n'
+            'Kritik maddeler (özet)\n'
+            '1. Havaya kaldırma/dizde sallama ile eğlenir mi? (Normal: Evet)\n'
+            '2. Diğer çocuklarla ilgilenir mi? (Normal: Evet)\n'
+            '3. Eşyalara tırmanmaktan hoşlanır mı? (Normal: Evet)\n'
+            '4. Ce-e / saklambaç oynar mı? (Normal: Evet)\n'
+            '5. İşaret parmağıyla bir şeyi rica eder mi? (Normal: Evet)\n'
+            '6. İşaret parmağıyla ilginç bir şeyi gösterir mi? (Normal: Evet)\n'
+            '7. Oyuncak arabalar/küplerle amaca uygun oynar mı? (Normal: Evet)\n'
+            '8. Size bir nesne getirip gösterir mi? (Normal: Evet)\n'
+            '9. 1–2 saniyeden uzun göz teması kurar mı? (Normal: Evet)\n'
+            '10. Aşırı hassas görünür mü? (Normal: Hayır)\n'
+            '11. Siz gülümseyince karşılık verir mi? (Normal: Evet)\n'
+            '12. İsmine hemen tepki verir mi? (Normal: Evet)\n'
+            '13. Uzak bir oyuncağı işaret edince oyuncağa bakar mı? (Normal: Evet)\n'
+            '14. Yürüyebiliyor mu? (Normal: Evet)\n'
+            '15. Sizin baktığınız şeye bakar mı? (Normal: Evet)\n'
+            '16. Yüzünün yakınında garip parmak hareketleri yapar mı? (Normal: Hayır)\n'
+            '17. İnsanları taklit etmeye çalışır mı? (Normal: Evet)\n'
+            '18. Seslenince duymuyor gibi olduğu olur mu? (Normal: Hayır)\n'
+            '19. Söylenenleri anlar mı? (Normal: Evet)\n'
+            '20. Bazen boşluğa bakar mı / amaçsızca dolanır mı? (Normal: Hayır)\n\n'
+            'Puanlama\n'
+            '- “Normal” dışındaki her cevap 1 puan.\n'
+            '- 0–2: Düşük risk\n'
+            '- 3–7: Orta risk (takip görüşmesi)\n'
+            '- 8–20: Yüksek risk (uzmana başvuru)\n\n'
+            'II) Ev Ortamında Duyusal Diyet (Sensory Diet)\n\n'
+            'Propriyoseptif (derin basınç) aktiviteler\n'
+            '- Sandviç oyunu (minderle ritmik baskı)\n'
+            '- Ağır işler (sepet itme, ağırlık taşıma taklidi)\n'
+            '- Sakız/sert gıda çiğneme\n\n'
+            'Vestibüler regülasyon\n'
+            '- Yavaş ritmik sallanma (sakinleştirici)\n'
+            '- Yerçekimi değişimi (baş sarkıtma/takla gibi kontrollü hareketler)\n\n'
+            'Çevresel modifikasyon\n'
+            '- Sakinleşme köşesi (loş ışık, yumuşak alan, kulaklık)\n'
+            '- Görsel/işitsel sadeleşme (arka plan TV sesi kapatma)\n\n'
+            'III) Özel Eğitim Seanslarında Aile Katılımı\n'
+            '[Seansı izleme/not alma] → [Uzman eşliğinde canlı deneme] → [Ev rutinine entegrasyon] → [Video ile geri bildirim]\n\n'
+            'Öneriler (özet)\n'
+            '- Seansı sadece izlemek yerine teknikleri not alma.\n'
+            '- Son bölümde ebeveynin uygulamalı koçlukla çalışması.\n'
+            '- NET ile günlük rutinlere öğretimi yerleştirme.\n'
+            '- Kısa videolarla geri bildirim döngüsü kurma.',
+      ),
+    ];
+
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        _SectionCard(
+          title: 'Kısa Özet',
+          subtitle: summary,
+          onTap: () => _openDetail(context, 'Kısa Özet', summary),
+        ),
+        const SizedBox(height: 16),
+        const Text('Başlıklar', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+        const SizedBox(height: 12),
+        ...sections.map(
+          (s) => Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: _SectionCard(
+              title: s.title,
+              subtitle: s.description,
+              onTap: () => _openDetail(context, s.title, s.content),
+            ),
+          ),
         ),
       ],
     );
@@ -3073,6 +3250,220 @@ class _SectionCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _SensoryModuleBody extends StatefulWidget {
+  const _SensoryModuleBody();
+
+  @override
+  State<_SensoryModuleBody> createState() => _SensoryModuleBodyState();
+}
+
+class _SensoryModuleBodyState extends State<_SensoryModuleBody> with TickerProviderStateMixin {
+  late AnimationController _breathingController;
+  late Animation<double> _breathingAnimation;
+  bool _showBreathing = false;
+  Color _bgColor = const Color(0xFF0C4A6E);
+  final List<_Bubble> _bubbles = [];
+  final Random _random = Random();
+
+  @override
+  void initState() {
+    super.initState();
+    _breathingController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 4),
+    )..repeat(reverse: true);
+
+    _breathingAnimation = Tween<double>(begin: 1.0, end: 1.8).animate(
+      CurvedAnimation(parent: _breathingController, curve: Curves.easeInOut),
+    );
+
+    // Initial bubbles
+    for (int i = 0; i < 15; i++) {
+      _addBubble();
+    }
+
+    Timer.periodic(const Duration(milliseconds: 500), (timer) {
+      if (mounted) {
+        setState(() {
+          for (var bubble in _bubbles) {
+            bubble.y -= bubble.speed;
+            if (bubble.y < -100) {
+              bubble.y = MediaQuery.of(context).size.height + 100;
+              bubble.x = _random.nextDouble() * MediaQuery.of(context).size.width;
+            }
+          }
+        });
+      } else {
+        timer.cancel();
+      }
+    });
+  }
+
+  void _addBubble() {
+    _bubbles.add(_Bubble(
+      x: _random.nextDouble() * 400,
+      y: _random.nextDouble() * 800,
+      size: _random.nextDouble() * 60 + 20,
+      speed: _random.nextDouble() * 2 + 1,
+      opacity: _random.nextDouble() * 0.3 + 0.1,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _breathingController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (details) {
+        setState(() {
+          _bubbles.add(_Bubble(
+            x: details.localPosition.dx,
+            y: details.localPosition.dy,
+            size: _random.nextDouble() * 80 + 40,
+            speed: 2,
+            opacity: 0.5,
+          ));
+        });
+      },
+      child: AnimatedContainer(
+        duration: const Duration(seconds: 2),
+        color: _bgColor,
+        child: Stack(
+          children: [
+            // Bubbles
+            ..._bubbles.map((bubble) => Positioned(
+                  left: bubble.x - bubble.size / 2,
+                  top: bubble.y - bubble.size / 2,
+                  child: Opacity(
+                    opacity: bubble.opacity,
+                    child: Container(
+                      width: bubble.size,
+                      height: bubble.size,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [BoxShadow(color: Colors.white24, blurRadius: 20, spreadRadius: 5)],
+                      ),
+                    ),
+                  ),
+                )),
+
+            // Breathing Guide
+            if (_showBreathing)
+              Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ScaleTransition(
+                      scale: _breathingAnimation,
+                      child: Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white38, width: 4),
+                        ),
+                        child: Center(
+                          child: Container(
+                            width: 10,
+                            height: 10,
+                            decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    const Text(
+                      'Nefes Al ... Nefes Ver',
+                      style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w300, letterSpacing: 4),
+                    ),
+                  ],
+                ),
+              ),
+
+            // Controls
+            Positioned(
+              bottom: 40,
+              left: 20,
+              right: 20,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _SensoryButton(
+                    icon: Icons.wind_power,
+                    label: 'Nefes',
+                    isActive: _showBreathing,
+                    onTap: () => setState(() => _showBreathing = !_showBreathing),
+                  ),
+                  _SensoryButton(
+                    icon: Icons.waves,
+                    label: 'Deniz',
+                    isActive: _bgColor == const Color(0xFF0C4A6E),
+                    onTap: () => setState(() => _bgColor = const Color(0xFF0C4A6E)),
+                  ),
+                  _SensoryButton(
+                    icon: Icons.forest,
+                    label: 'Orman',
+                    isActive: _bgColor == const Color(0xFF064E3B),
+                    onTap: () => setState(() => _bgColor = const Color(0xFF064E3B)),
+                  ),
+                  _SensoryButton(
+                    icon: Icons.wb_sunny,
+                    label: 'Güneş',
+                    isActive: _bgColor == const Color(0xFF7C2D12),
+                    onTap: () => setState(() => _bgColor = const Color(0xFF7C2D12)),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _Bubble {
+  double x, y, size, speed, opacity;
+  _Bubble({required this.x, required this.y, required this.size, required this.speed, required this.opacity});
+}
+
+class _SensoryButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool isActive;
+  final VoidCallback onTap;
+
+  const _SensoryButton({required this.icon, required this.label, required this.isActive, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        GestureDetector(
+          onTap: onTap,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: isActive ? Colors.white : Colors.white10,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Icon(icon, color: isActive ? Colors.black : Colors.white, size: 24),
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(label, style: const TextStyle(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold)),
+      ],
     );
   }
 }

@@ -43,7 +43,7 @@ class App extends ConsumerWidget {
     final router = ref.watch(_routerProvider);
     ref.watch(sessionControllerProvider);
     return MaterialApp.router(
-      title: 'Otizm Farkındalık',
+      title: 'OtiZeka',
       theme: ThemeData(
         useMaterial3: true,
         colorSchemeSeed: const Color(0xFF10B981),

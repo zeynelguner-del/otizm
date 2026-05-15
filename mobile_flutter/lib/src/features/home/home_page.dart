@@ -6,11 +6,16 @@ import '../../core/utils/photo_data_url.dart';
 import '../../state/api_client_provider.dart';
 import '../../state/session_controller.dart';
 
-class HomePage extends ConsumerWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends ConsumerState<HomePage> {
+  @override
+  Widget build(BuildContext context) {
     final session = ref.watch(sessionControllerProvider);
     return Scaffold(
       appBar: AppBar(
@@ -43,6 +48,7 @@ class HomePage extends ConsumerWidget {
                 children: [
                   _ModuleTile(title: 'Otizm Bilgilendirme', keyName: 'info'),
                   _ModuleTile(title: 'OSB (Otizm Spektrum Bozukluğu)', keyName: 'osb'),
+                  _ModuleTile(title: 'OSB Araştırmaları', keyName: 'osb_research'),
                   _ModuleTile(title: 'Eğitim', keyName: 'education'),
                   _ModuleTile(title: 'Duygularım', keyName: 'emotions'),
                   _ModuleTile(title: 'Eğitici Oyunlar', keyName: 'games'),
@@ -50,7 +56,8 @@ class HomePage extends ConsumerWidget {
                   _ModuleTile(title: 'Müzik ve Ses', keyName: 'music'),
                   _ModuleTile(title: 'İletişim Kartları (ACC)', keyName: 'acc'),
                   _ModuleTile(title: 'Takvim ve Program', keyName: 'calendar'),
-                  _ModuleTile(title: 'Eğitim Hatırlatıcı', keyName: 'education_reminder'),
+                   _ModuleTile(title: 'Eğitim Hatırlatıcı', keyName: 'education_reminder'),
+                  _ModuleTile(title: 'Duyusal Oda', keyName: 'sensory'),
                 ],
               ),
               const SizedBox(height: 20),

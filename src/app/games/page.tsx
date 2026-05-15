@@ -1,18 +1,26 @@
 "use client";
 
-import { ArrowLeft, Layers, Palette, Hash, Star, Shapes } from "lucide-react";
+import { ArrowLeft, Layers, Palette, Hash, Star, Shapes, Heart } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 export default function GamesPage() {
   const games = [
     {
-      title: "Eşleştirme Oyunu",
+      title: "Duyguları Eşleştir",
+      description: "Hangi duygu hangi kelime?",
+      icon: Heart,
+      href: "/games/emotions-match",
+      color: "bg-rose-100 text-rose-600 border-rose-200 hover:bg-rose-200",
+    },
+    {
+      title: "Meyve Eşleştirme",
       description: "Aynı meyveleri bulup eşleştir",
       icon: Layers,
       href: "/games/matching",
       color: "bg-sky-100 text-sky-600 border-sky-200 hover:bg-sky-200",
     },
+
     {
       title: "Sayı Saymaca",
       description: "Eğlenceli sayılarla öğren",
