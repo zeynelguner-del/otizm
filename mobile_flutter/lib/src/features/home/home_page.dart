@@ -46,18 +46,18 @@ class _HomePageState extends ConsumerState<HomePage> {
                 spacing: 12,
                 runSpacing: 12,
                 children: [
-                  _ModuleTile(title: 'Otizm Bilgilendirme', keyName: 'info'),
-                  _ModuleTile(title: 'OSB (Otizm Spektrum Bozukluğu)', keyName: 'osb'),
-                  _ModuleTile(title: 'OSB Araştırmaları', keyName: 'osb_research'),
-                  _ModuleTile(title: 'Eğitim', keyName: 'education'),
-                  _ModuleTile(title: 'Duygularım', keyName: 'emotions'),
-                  _ModuleTile(title: 'Eğitici Oyunlar', keyName: 'games'),
-                  _ModuleTile(title: 'Sosyal Öyküler', keyName: 'stories'),
-                  _ModuleTile(title: 'Müzik ve Ses', keyName: 'music'),
-                  _ModuleTile(title: 'İletişim Kartları (ACC)', keyName: 'acc'),
-                  _ModuleTile(title: 'Takvim ve Program', keyName: 'calendar'),
-                   _ModuleTile(title: 'Eğitim Hatırlatıcı', keyName: 'education_reminder'),
-                  _ModuleTile(title: 'Duyusal Oda', keyName: 'sensory'),
+                  _ModuleTile(title: 'Otizm Bilgilendirme', keyName: 'info', icon: Icons.info, color: Colors.blue.shade100, iconColor: Colors.blue.shade700),
+                  _ModuleTile(title: 'OSB', keyName: 'osb', icon: Icons.help, color: Colors.cyan.shade100, iconColor: Colors.cyan.shade700),
+                  _ModuleTile(title: 'Eğitim', keyName: 'education', icon: Icons.menu_book, color: Colors.deepPurple.shade100, iconColor: Colors.deepPurple.shade700),
+                  _ModuleTile(title: 'OSB Araştırmaları', keyName: 'osb_research', icon: Icons.public, color: Colors.teal.shade100, iconColor: Colors.teal.shade700),
+                  _ModuleTile(title: 'Duygularım', keyName: 'emotions', icon: Icons.favorite, color: Colors.pink.shade100, iconColor: Colors.pink.shade600),
+                  _ModuleTile(title: 'Eğitici Oyunlar', keyName: 'games', icon: Icons.sports_esports, color: Colors.lightBlue.shade100, iconColor: Colors.lightBlue.shade700),
+                  _ModuleTile(title: 'Sosyal Öyküler', keyName: 'stories', icon: Icons.auto_stories, color: Colors.green.shade100, iconColor: Colors.green.shade700),
+                  _ModuleTile(title: 'Müzik ve Ses', keyName: 'music', icon: Icons.music_note, color: Colors.indigo.shade100, iconColor: Colors.indigo.shade600),
+                  _ModuleTile(title: 'İletişim Kartları', keyName: 'acc', icon: Icons.chat, color: Colors.amber.shade100, iconColor: Colors.amber.shade800),
+                  _ModuleTile(title: 'Takvim ve Program', keyName: 'calendar', icon: Icons.calendar_month, color: Colors.orange.shade100, iconColor: Colors.orange.shade800),
+                  _ModuleTile(title: 'Eğitim Hatırlatıcı', keyName: 'education_reminder', icon: Icons.alarm, color: Colors.teal.shade100, iconColor: Colors.teal.shade800),
+                  _ModuleTile(title: 'Duyusal Oda', keyName: 'sensory', icon: Icons.waves, color: Colors.lightBlue.shade50, iconColor: Colors.lightBlue.shade600),
                 ],
               ),
               const SizedBox(height: 20),
@@ -159,27 +159,65 @@ class _ProfileSummary extends ConsumerWidget {
 class _ModuleTile extends StatelessWidget {
   final String title;
   final String keyName;
-  const _ModuleTile({required this.title, required this.keyName});
+  final IconData icon;
+  final Color color;
+  final Color iconColor;
+
+  const _ModuleTile({
+    required this.title, 
+    required this.keyName, 
+    required this.icon, 
+    required this.color, 
+    required this.iconColor
+  });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: (MediaQuery.of(context).size.width - 16 * 2 - 12) / 2,
-      height: 92,
+      height: 110,
       child: InkWell(
         onTap: () => context.push('/module/$keyName'),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
         child: Ink(
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: const Color(0xFFE4E4E7)),
+            color: color,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: Colors.white.withOpacity(0.5), width: 2),
+            boxShadow: [
+              BoxShadow(
+                color: iconColor.withOpacity(0.1),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(title, style: const TextStyle(fontWeight: FontWeight.w800)),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(icon, color: iconColor, size: 24),
+                ),
+                Text(
+                  title, 
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w900, 
+                    color: iconColor.withOpacity(0.9),
+                    fontSize: 14,
+                    height: 1.1
+                  )
+                ),
+              ],
             ),
           ),
         ),

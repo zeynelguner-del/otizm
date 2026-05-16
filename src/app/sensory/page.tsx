@@ -46,12 +46,196 @@ const THEMES: Theme[] = [
   { id: "warm-sunset", name: "Sıcak Gün Batımı", colors: ["#7c2d12", "#9a3412", "#c2410c"], icon: Sun, ambientId: "warmth" },
 ];
 
-const SOUNDS: Record<string, string> = {
-  ocean: "https://www.soundjay.com/nature/ocean-waves-1.mp3",
-  space: "https://www.soundjay.com/communication/control-room-chatter-01.mp3", // Temporary placeholder
-  rain: "https://www.soundjay.com/nature/rain-07.mp3",
-  warmth: "https://www.soundjay.com/nature/campfire-1.mp3",
-};
+// --- Procedural Sound Engine ---
+function useSoundEngine(themeId: string, isMuted: boolean, volume: number, hasEntered: boolean) {
+  const ctxRef = useRef<AudioContext | null>(null);
+  const gainNodeRef = useRef<GainNode | null>(null);
+  const oscillatorsRef = useRef<OscillatorNode[]>([]);
+  const noiseSourceRef = useRef<AudioBufferSourceNode | null>(null);
+  const animationRef = useRef<number>(0);
+
+  useEffect(() => {
+    if (!hasEntered) return;
+    
+    window.alert("SES MOTORU TETİKLENDİ - Tema: " + themeId);
+    console.log("SoundEngine: Activating...", { themeId, isMuted, volume });
+
+    if (!ctxRef.current) {
+      try {
+        const AudioContextClass = (window as any).AudioContext || (window as any).webkitAudioContext;
+        if (!AudioContextClass) {
+          console.error("SoundEngine: AudioContext not supported");
+          return;
+        }
+        ctxRef.current = new AudioContextClass();
+        gainNodeRef.current = ctxRef.current.createGain();
+        gainNodeRef.current.connect(ctxRef.current.destination);
+        console.log("SoundEngine: Context created");
+      } catch (err) {
+        console.error("SoundEngine: Error creating context", err);
+        return;
+      }
+    }
+    
+    const ctx = ctxRef.current!;
+    const masterGain = gainNodeRef.current!;
+    
+    // Force full volume for testing
+    masterGain.gain.value = 1.0;
+    
+    if (isMuted) {
+      console.log("SoundEngine: Muted but forcing audio for test");
+    }
+
+    const cleanup = () => {
+      console.log("SoundEngine: Cleaning up previous nodes");
+      oscillatorsRef.current.forEach(o => { try { o.stop(); o.disconnect(); } catch {} });
+      oscillatorsRef.current = [];
+      if (noiseSourceRef.current) { try { noiseSourceRef.current.stop(); noiseSourceRef.current.disconnect(); } catch {} noiseSourceRef.current = null; }
+      cancelAnimationFrame(animationRef.current);
+    };
+    cleanup();
+    
+    if (ctx.state === 'suspended') {
+      ctx.resume().then(() => console.log("SoundEngine: Context resumed")).catch(err => console.error("SoundEngine: Resume failed", err));
+    }
+
+    const createNoiseBuffer = (type: 'pink' | 'brown') => {
+      const bufferSize = ctx.sampleRate * 2;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const output = buffer.getChannelData(0);
+      let b0=0, b1=0, b2=0, b3=0, b4=0, b5=0, b6=0;
+      for (let i = 0; i < bufferSize; i++) {
+        let white = Math.random() * 2 - 1;
+        if (type === 'brown') {
+          b0 = (b0 + (0.02 * white)) / 1.02;
+          output[i] = b0 * 3.5;
+        } else {
+          b0 = 0.99886 * b0 + white * 0.0555179;
+          b1 = 0.99332 * b1 + white * 0.0750759;
+          b2 = 0.96900 * b2 + white * 0.1538520;
+          b3 = 0.86650 * b3 + white * 0.3104856;
+          b4 = 0.55000 * b4 + white * 0.5329522;
+          b5 = -0.7616 * b5 - white * 0.0168980;
+          output[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.11;
+          b6 = white * 0.115926;
+        }
+      }
+      return buffer;
+    };
+
+    console.log(`SoundEngine: Starting theme ${themeId}`);
+
+    if (themeId === 'deep-sea') {
+      const noise = ctx.createBufferSource();
+      noise.buffer = createNoiseBuffer('pink');
+      noise.loop = true;
+      noiseSourceRef.current = noise;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 200;
+
+      const lfo = ctx.createOscillator();
+      lfo.type = 'sine';
+      lfo.frequency.value = 0.1;
+      const lfoGain = ctx.createGain();
+      lfoGain.gain.value = 150;
+      lfo.connect(lfoGain);
+      lfoGain.connect(filter.frequency);
+      
+      const waveVol = ctx.createGain();
+      waveVol.gain.value = 0.5;
+      const volLfo = ctx.createOscillator();
+      volLfo.type = 'sine';
+      volLfo.frequency.value = 0.1;
+      const volLfoGain = ctx.createGain();
+      volLfoGain.gain.value = 0.4;
+      volLfo.connect(volLfoGain);
+      volLfoGain.connect(waveVol.gain);
+
+      noise.connect(filter);
+      filter.connect(waveVol);
+      waveVol.connect(masterGain);
+
+      noise.start(); lfo.start(); volLfo.start();
+      oscillatorsRef.current.push(lfo, volLfo);
+    } else if (themeId === 'forest-rain') {
+      const noise = ctx.createBufferSource();
+      noise.buffer = createNoiseBuffer('pink');
+      noise.loop = true;
+      noiseSourceRef.current = noise;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'highpass';
+      filter.frequency.value = 400;
+
+      const flutterGain = ctx.createGain();
+      flutterGain.gain.value = 0.5;
+      const updateFlutter = () => {
+        flutterGain.gain.setTargetAtTime(0.4 + Math.random() * 0.2, ctx.currentTime, 0.1);
+        animationRef.current = requestAnimationFrame(updateFlutter);
+      };
+      updateFlutter();
+
+      noise.connect(filter);
+      filter.connect(flutterGain);
+      flutterGain.connect(masterGain);
+      noise.start();
+    } else if (themeId === 'warm-sunset') {
+      const noise = ctx.createBufferSource();
+      noise.buffer = createNoiseBuffer('brown');
+      noise.loop = true;
+      noiseSourceRef.current = noise;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 400;
+
+      const crackleGain = ctx.createGain();
+      crackleGain.gain.value = 0.8;
+      const updateCrackle = () => {
+        if (Math.random() > 0.92) {
+          crackleGain.gain.setTargetAtTime(1.2 + Math.random() * 0.5, ctx.currentTime, 0.01);
+          crackleGain.gain.setTargetAtTime(0.8, ctx.currentTime + 0.05, 0.1);
+        }
+        animationRef.current = requestAnimationFrame(updateCrackle);
+      };
+      updateCrackle();
+
+      noise.connect(filter);
+      filter.connect(crackleGain);
+      crackleGain.connect(masterGain);
+      noise.start();
+    } else if (themeId === 'starlit-night') {
+      const freqs = [110, 165, 220, 275];
+      freqs.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        osc.type = i % 2 === 0 ? 'sine' : 'triangle';
+        osc.frequency.value = freq;
+        
+        const oscGain = ctx.createGain();
+        oscGain.gain.value = 0.1;
+        
+        const lfo = ctx.createOscillator();
+        lfo.type = 'sine';
+        lfo.frequency.value = 0.05 + (Math.random() * 0.05);
+        const lfoGain = ctx.createGain();
+        lfoGain.gain.value = 0.08;
+        
+        lfo.connect(lfoGain);
+        lfoGain.connect(oscGain.gain);
+        osc.connect(oscGain);
+        oscGain.connect(masterGain);
+        
+        osc.start(); lfo.start();
+        oscillatorsRef.current.push(osc, lfo);
+      });
+    }
+
+    return cleanup;
+  }, [themeId, isMuted, volume, hasEntered]);
+}
 
 export default function SensoryRoom() {
   const [activeTheme, setActiveTheme] = useState<Theme>(THEMES[0]);
@@ -61,8 +245,16 @@ export default function SensoryRoom() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showBreathing, setShowBreathing] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [hasEntered, setHasEntered] = useState(false);
+  const [mounted, setMounted] = useState(false);
   
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  
+  useSoundEngine(activeTheme.id, isMuted, volume, hasEntered);
+
+  if (!mounted) return <div className="min-h-screen bg-black" />;
 
   // Initialize bubbles
   useEffect(() => {
@@ -114,14 +306,6 @@ export default function SensoryRoom() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-black text-white selection:bg-white/20">
-      {/* Background Audio */}
-      <audio 
-        ref={audioRef}
-        src={SOUNDS[activeTheme.ambientId]} 
-        loop 
-        muted={isMuted}
-      />
-      
       {/* Dynamic Background */}
       <motion.div 
         className="absolute inset-0 z-0 opacity-50"
@@ -259,13 +443,7 @@ export default function SensoryRoom() {
       <footer className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 w-full max-w-md px-6">
         <div className="bg-black/40 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-4 flex items-center gap-6">
           <button
-            onClick={() => {
-              setIsMuted(!isMuted);
-              if (audioRef.current) {
-                if (isMuted) audioRef.current.play().catch(() => {});
-                else audioRef.current.pause();
-              }
-            }}
+            onClick={() => setIsMuted(!isMuted)}
             className="p-3 rounded-2xl bg-white/10 hover:bg-white/20 transition-all"
           >
             {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
@@ -282,11 +460,7 @@ export default function SensoryRoom() {
               max="1" 
               step="0.01"
               value={volume}
-              onChange={(e) => {
-                const val = parseFloat(e.target.value);
-                setVolume(val);
-                if (audioRef.current) audioRef.current.volume = val;
-              }}
+              onChange={(e) => setVolume(parseFloat(e.target.value))}
               className="w-full h-1 bg-white/20 rounded-full appearance-none cursor-pointer accent-white"
             />
           </div>
@@ -304,7 +478,7 @@ export default function SensoryRoom() {
       </footer>
 
       {/* Overlay for first-time interaction (Browsers block auto-audio) */}
-      {isMuted && (
+      {!hasEntered && (
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -312,8 +486,18 @@ export default function SensoryRoom() {
         >
           <button
             onClick={() => {
+              console.log("SensoryRoom: Entry button clicked");
+              // Wake up AudioContext on user gesture
+              const AudioContextClass = (window as any).AudioContext || (window as any).webkitAudioContext;
+              if (AudioContextClass) {
+                const tempCtx = new AudioContextClass();
+                tempCtx.resume().then(() => {
+                  console.log("SensoryRoom: Initial context check OK");
+                  tempCtx.close();
+                });
+              }
+              setHasEntered(true);
               setIsMuted(false);
-              if (audioRef.current) audioRef.current.play().catch(() => {});
             }}
             className="group flex flex-col items-center gap-6"
           >

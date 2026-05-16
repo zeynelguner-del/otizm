@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { Heart, BookOpen, Gamepad2, Users, Settings, Music, Calendar, Info, MessageSquare, HelpCircle, User, Phone, Mail, AlarmClock, Globe, Waves } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
 type Session = {
   email: string;
@@ -640,8 +641,19 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-6 md:p-12" suppressHydrationWarning>
       {userProfileOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-zinc-950/80 backdrop-blur-md">
-          <div className="bg-white dark:bg-zinc-900 w-full max-w-xl rounded-[2.5rem] shadow-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800">
+        <AnimatePresence>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-zinc-950/80 backdrop-blur-md"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-white dark:bg-zinc-900 w-full max-w-xl rounded-[2.5rem] shadow-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800"
+            >
             <div className="p-8 border-b border-zinc-100 dark:border-zinc-800 flex items-start justify-between gap-6 relative overflow-hidden">
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <img src="/loogo.png" alt="" className="w-40 sm:w-48 h-auto opacity-20 dark:opacity-15" />
@@ -725,12 +737,18 @@ export default function Home() {
                 >
                   Kaydet
                 </button>
+                </button>
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </AnimatePresence>
       )}
-      <header className="max-w-5xl mx-auto mb-12">
+      <motion.header 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-5xl mx-auto mb-12"
+      >
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
           <div className="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden relative lg:col-span-2">
             <div className="absolute inset-0 z-0 pointer-events-none">
@@ -833,30 +851,38 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </header>
+      </motion.header>
 
-      <main className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {modules.map((module) => (
-          <Link
-            key={module.href}
-            href={module.href}
-            className={cn(
-              "group p-8 rounded-[2rem] border-2 transition-all active:scale-[0.98] flex flex-col items-start gap-6 shadow-sm hover:shadow-xl overflow-hidden relative",
-              module.color
-            )}
-          >
-            <div className="absolute inset-0 z-0 pointer-events-none">
-              <img src="/loogo.png" alt="" className="w-full h-full object-cover opacity-[0.12] dark:opacity-[0.08]" />
-            </div>
-            <div className="p-5 rounded-2xl bg-white/90 dark:bg-black/20 shadow-md group-hover:scale-110 transition-transform group-hover:rotate-3 relative z-10">
-              <module.icon size={36} />
-            </div>
-            <div className="relative z-10">
-              <h2 className="text-2xl font-black mb-2 tracking-tight">{module.title}</h2>
-              <p className="opacity-90 font-bold text-sm leading-snug">{module.description}</p>
-            </div>
-          </Link>
-        ))}
+      <main className="max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {modules.map((m, idx) => (
+            <motion.div
+              key={m.title}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.05 }}
+            >
+              <Link
+                href={m.href}
+                className={cn(
+                  "group flex flex-col items-start gap-4 p-8 rounded-[2rem] border-2 transition-all active:scale-[0.98] shadow-sm hover:shadow-xl relative overflow-hidden h-full min-h-[200px]",
+                  m.color
+                )}
+              >
+                <div className="absolute inset-0 z-0 pointer-events-none">
+                  <img src="/loogo.png" alt="" className="w-full h-full object-cover opacity-[0.12] dark:opacity-[0.08]" />
+                </div>
+                <div className="p-5 rounded-2xl bg-white/90 dark:bg-black/20 shadow-md group-hover:scale-110 transition-transform group-hover:rotate-3 relative z-10">
+                  <m.icon size={36} />
+                </div>
+                <div className="relative z-10">
+                  <h2 className="text-2xl font-black mb-2 tracking-tight">{m.title}</h2>
+                  <p className="opacity-90 font-bold text-sm leading-snug">{m.description}</p>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
       </main>
 
       <footer className="max-w-5xl mx-auto mt-20 text-center text-zinc-400 text-sm font-bold uppercase tracking-widest">
