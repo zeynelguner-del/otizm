@@ -371,13 +371,7 @@ export default function Home() {
       href: "/education-reminder",
       color: "bg-emerald-100 text-emerald-600 border-emerald-200 hover:bg-emerald-200",
     },
-    {
-      title: "Duyusal Oda",
-      description: "Sakinleş ve Keşfet",
-      icon: Waves,
-      href: "/sensory",
-      color: "bg-sky-100 text-sky-600 border-sky-200 hover:bg-sky-200",
-    },
+
     {
       title: "Aile Paneli",
       description: "İletişim ve Ayarlar",
