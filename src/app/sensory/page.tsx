@@ -57,7 +57,6 @@ function useSoundEngine(themeId: string, isMuted: boolean, volume: number, hasEn
   useEffect(() => {
     if (!hasEntered) return;
     
-    window.alert("SES MOTORU TETİKLENDİ - Tema: " + themeId);
     console.log("SoundEngine: Activating...", { themeId, isMuted, volume });
 
     if (!ctxRef.current) {
