@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { Heart, BookOpen, Gamepad2, Users, Settings, Music, Calendar, Info, MessageSquare, HelpCircle, User, Phone, Mail, AlarmClock, Globe, Waves } from "lucide-react";
+import { Heart, BookOpen, Gamepad2, Users, Settings, Music, Calendar, Info, MessageSquare, HelpCircle, User, Phone, Mail, AlarmClock, Globe, Waves, LogOut, LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -479,7 +479,7 @@ export default function Home() {
   if (!session) {
     const showKvkkOverlay = typeof window !== "undefined" && !kvkkAccepted;
     return (
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-6 md:p-12" suppressHydrationWarning>
+      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex flex-col lg:flex-row relative" suppressHydrationWarning>
         {showKvkkOverlay && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-zinc-950/80 backdrop-blur-md">
             <div className="bg-white dark:bg-zinc-900 w-full max-w-xl rounded-[2.5rem] shadow-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800">
@@ -507,133 +507,269 @@ export default function Home() {
             </div>
           </div>
         )}
-        <header className="max-w-xl mx-auto mb-10">
-          <h1 className="text-3xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">Otizm Destek Uygulaması</h1>
-          <p className="text-zinc-500 font-medium mt-2">E-posta ile giriş yapın veya kayıt olun.</p>
-        </header>
 
-        <main className="max-w-xl mx-auto">
-          <section className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden relative">
-            <div className="absolute inset-0 z-0 pointer-events-none">
+        {/* Sol Kolon - Tanıtım & Markalama */}
+        <div className="hidden lg:flex lg:w-[45%] xl:w-[40%] bg-gradient-to-br from-zinc-900 via-slate-900 to-indigo-950 text-white p-12 flex-col justify-between relative overflow-hidden">
+          {/* Arka Plan Desenleri */}
+          <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
+          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-emerald-500 rounded-full blur-[120px] opacity-20 pointer-events-none" />
+          <div className="absolute -top-40 -right-40 w-96 h-96 bg-indigo-500 rounded-full blur-[120px] opacity-20 pointer-events-none" />
+
+          {/* Logo */}
+          <div className="relative z-10">
+            <div className="inline-block bg-white p-3 rounded-2xl shadow-xl">
+              <img src="/otizeka-logo.png" alt="OtiZeka" className="h-10 w-auto object-contain" />
+            </div>
+          </div>
+
+          {/* Vizyon Metinleri & Tanıtım */}
+          <div className="relative z-10 my-auto space-y-8">
+            <div className="space-y-3">
+              <span className="px-4 py-1.5 rounded-full bg-white/10 text-emerald-400 text-xs font-black uppercase tracking-widest inline-block">
+                Otizm Destek Portalı
+              </span>
+              <h2 className="text-4xl xl:text-5xl font-black tracking-tight leading-tight">
+                Çocuklarımızın <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Gelişim Yolculuğu</span> <br />
+                Burada Başlıyor.
+              </h2>
+              <p className="text-zinc-400 font-medium text-lg leading-relaxed max-w-md">
+                OtiZeka; otizm spektrumundaki çocuklarımızın eğitim, sosyal beceri, duygu takibi ve iletişim gelişimlerini modern yöntemlerle destekleyen kapsamlı bir dijital yardımcıdır.
+              </p>
+            </div>
+
+            {/* Özellikler */}
+            <div className="grid grid-cols-1 gap-4">
+              <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400">
+                  <Gamepad2 size={24} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-sm">Eğitici & Geliştirici Oyunlar</h4>
+                  <p className="text-zinc-400 text-xs mt-0.5">Eğlenirken öğrenmeyi destekleyen interaktif aktiviteler.</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                <div className="p-3 rounded-xl bg-rose-500/10 text-rose-400">
+                  <Heart size={24} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-sm">Duygu & Rutin Takibi</h4>
+                  <p className="text-zinc-400 text-xs mt-0.5">Çocuğunuzun günlük duygu durumunu ve eğitim rutinlerini izleyin.</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                <div className="p-3 rounded-xl bg-amber-500/10 text-amber-400">
+                  <MessageSquare size={24} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-sm">İletişim Kartları (AAC)</h4>
+                  <p className="text-zinc-400 text-xs mt-0.5">Dil ve konuşma becerilerini destekleyen görsel iletişim sistemi.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Alt Bilgi */}
+          <div className="relative z-10 text-xs font-bold text-zinc-500 uppercase tracking-widest">
+            © 2026 OtiZeka - Tüm Hakları Saklıdır
+          </div>
+        </div>
+
+        {/* Sağ Kolon - Giriş / Kayıt Formu */}
+        <div className="flex-1 flex flex-col justify-center items-center p-6 md:p-12 lg:p-20 bg-zinc-50 dark:bg-zinc-950 relative overflow-hidden">
+          {/* Mobil Cihazlar için Üst Logo */}
+          <div className="lg:hidden mb-8 text-center">
+            <div className="inline-block bg-white p-3 rounded-2xl shadow-md mb-4">
+              <img src="/otizeka-logo.png" alt="OtiZeka" className="h-10 w-auto object-contain" />
+            </div>
+            <h1 className="text-2xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">Otizm Destek Uygulaması</h1>
+            <p className="text-zinc-500 text-sm font-medium mt-1">E-posta ile giriş yapın veya kayıt olun.</p>
+          </div>
+
+          <div className="w-full max-w-md bg-white dark:bg-zinc-900 p-8 md:p-10 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden relative">
+            {/* Arka Planda Şeffaf Beyin Puzzle Logosu */}
+            <div className="absolute inset-0 z-0 pointer-events-none flex items-center justify-center">
               <img src="/loogo.png" alt="" className="w-full h-full object-cover opacity-[0.08] dark:opacity-[0.06]" />
             </div>
-            <div className="grid grid-cols-2 gap-2 bg-zinc-100 dark:bg-zinc-800 p-2 rounded-2xl mb-8">
-              <button
-                onClick={() => {
-                  setAuthMode("login");
-                  setAuthError(null);
-                }}
-                className={cn(
-                  "py-3 rounded-xl font-black transition-all",
-                  authMode === "login" ? "bg-white dark:bg-zinc-900 shadow text-zinc-900 dark:text-zinc-50" : "text-zinc-500"
-                )}
-              >
-                Giriş
-              </button>
-              <button
-                onClick={() => {
-                  setAuthMode("register");
-                  setAuthError(null);
-                }}
-                className={cn(
-                  "py-3 rounded-xl font-black transition-all",
-                  authMode === "register"
-                    ? "bg-white dark:bg-zinc-900 shadow text-zinc-900 dark:text-zinc-50"
-                    : "text-zinc-500"
-                )}
-              >
-                Kayıt Ol
-              </button>
-            </div>
 
-            <div className="space-y-5">
-              {serverError && (
-                <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-900/30 text-amber-800 dark:text-amber-100 font-bold">
-                  {serverError}
-                </div>
-              )}
-              <div className="space-y-2">
-                <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">E-posta</label>
-                <input
-                  type="email"
-                  value={authEmail}
-                  onChange={(e) => setAuthEmail(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key !== "Enter") return;
-                    (authMode === "login" ? handleLogin : handleRegister)();
+            <div className="relative z-10">
+              <div className="grid grid-cols-2 gap-2 bg-zinc-100 dark:bg-zinc-800 p-1.5 rounded-2xl mb-8">
+                <button
+                  onClick={() => {
+                    setAuthMode("login");
+                    setAuthError(null);
                   }}
-                  className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-zinc-900 transition-all outline-none"
-                  placeholder="ornek@mail.com"
-                  autoComplete="email"
-                />
+                  className={cn(
+                    "py-3 rounded-xl font-black transition-all text-sm uppercase tracking-wider",
+                    authMode === "login" ? "bg-white dark:bg-zinc-900 shadow text-zinc-900 dark:text-zinc-50" : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                  )}
+                >
+                  Giriş
+                </button>
+                <button
+                  onClick={() => {
+                    setAuthMode("register");
+                    setAuthError(null);
+                  }}
+                  className={cn(
+                    "py-3 rounded-xl font-black transition-all text-sm uppercase tracking-wider",
+                    authMode === "register"
+                      ? "bg-white dark:bg-zinc-900 shadow text-zinc-900 dark:text-zinc-50"
+                      : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                  )}
+                >
+                  Kayıt Ol
+                </button>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Şifre</label>
-                <input
-                  type="password"
-                  value={authPassword}
-                  onChange={(e) => setAuthPassword(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key !== "Enter") return;
-                    (authMode === "login" ? handleLogin : handleRegister)();
-                  }}
-                  className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-zinc-900 transition-all outline-none"
-                  placeholder="••••••"
-                  autoComplete={authMode === "login" ? "current-password" : "new-password"}
-                />
-              </div>
-
-              {authMode === "register" && (
+              <div className="space-y-5">
+                {serverError && (
+                  <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-900/30 text-amber-800 dark:text-amber-100 font-bold text-sm">
+                    {serverError}
+                  </div>
+                )}
+                
                 <div className="space-y-2">
-                  <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Şifre (Tekrar)</label>
+                  <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">E-posta</label>
                   <input
-                    type="password"
-                    value={authPassword2}
-                    onChange={(e) => setAuthPassword2(e.target.value)}
+                    type="email"
+                    value={authEmail}
+                    onChange={(e) => setAuthEmail(e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key !== "Enter") return;
-                      handleRegister();
+                      (authMode === "login" ? handleLogin : handleRegister)();
                     }}
-                    className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-zinc-900 transition-all outline-none"
-                    placeholder="••••••"
-                    autoComplete="new-password"
+                    className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 dark:focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100"
+                    placeholder="ornek@mail.com"
+                    autoComplete="email"
                   />
                 </div>
-              )}
 
-              {authError && (
-                <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-900/30 text-rose-700 dark:text-rose-200 font-bold">
-                  {authError}
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Şifre</label>
+                  <input
+                    type="password"
+                    value={authPassword}
+                    onChange={(e) => setAuthPassword(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key !== "Enter") return;
+                      (authMode === "login" ? handleLogin : handleRegister)();
+                    }}
+                    className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 dark:focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100"
+                    placeholder="••••••"
+                    autoComplete={authMode === "login" ? "current-password" : "new-password"}
+                  />
                 </div>
-              )}
 
-              <button
-                disabled={authBusy || !kvkkAccepted}
-                onClick={authMode === "login" ? handleLogin : handleRegister}
-                className={cn(
-                  "w-full px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-sm transition-all shadow-lg active:scale-95",
-                  authBusy || !kvkkAccepted
-                    ? "bg-zinc-200 text-zinc-500 cursor-not-allowed"
-                    : "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:opacity-90"
+                {authMode === "register" && (
+                  <div className="space-y-2">
+                    <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Şifre (Tekrar)</label>
+                    <input
+                      type="password"
+                      value={authPassword2}
+                      onChange={(e) => setAuthPassword2(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key !== "Enter") return;
+                        handleRegister();
+                      }}
+                      className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 dark:focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100"
+                      placeholder="••••••"
+                      autoComplete="new-password"
+                    />
+                  </div>
                 )}
-              >
-                {!kvkkAccepted ? "KVKK Onayı Gerekli" : authMode === "login" ? "Giriş Yap" : "Kayıt Ol"}
-              </button>
-              {!kvkkAccepted && (
-                <div className="text-xs font-bold text-zinc-500">
-                  Devam etmek için KVKK Açık Rıza ekranında “Kabul Ediyorum” butonuna basın.
-                </div>
-              )}
+
+                {authError && (
+                  <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-900/30 text-rose-700 dark:text-rose-200 font-bold text-sm">
+                    {authError}
+                  </div>
+                )}
+
+                <button
+                  disabled={authBusy || !kvkkAccepted}
+                  onClick={authMode === "login" ? handleLogin : handleRegister}
+                  className={cn(
+                    "w-full px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-sm transition-all shadow-md active:scale-95",
+                    authBusy || !kvkkAccepted
+                      ? "bg-zinc-200 dark:bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                      : "bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/15"
+                  )}
+                >
+                  {!kvkkAccepted ? "KVKK Onayı Gerekli" : authMode === "login" ? "Giriş Yap" : "Kayıt Ol"}
+                </button>
+                
+                {!kvkkAccepted && (
+                  <div className="text-xs font-bold text-zinc-500 leading-normal">
+                    Devam etmek için KVKK Açık Rıza ekranında “Kabul Ediyorum” butonuna basın.
+                  </div>
+                )}
+              </div>
             </div>
-          </section>
-        </main>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-6 md:p-12" suppressHydrationWarning>
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex flex-col" suppressHydrationWarning>
+      {/* Global Navbar */}
+      <nav className="sticky top-0 z-40 w-full border-b border-zinc-200/80 dark:border-zinc-800/80 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md transition-colors">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+          {/* Sol Kısım - OtiZeka Logo */}
+          <Link href="/" className="flex items-center gap-3">
+            <div className="bg-white p-2 rounded-xl shadow-sm border border-zinc-100 dark:border-zinc-800">
+              <img src="/otizeka-logo.png" alt="OtiZeka" className="h-7 w-auto object-contain" />
+            </div>
+          </Link>
+
+          {/* Sağ Kısım - Menü & Profil */}
+          <div className="flex items-center gap-4">
+            <div className="hidden sm:flex flex-col text-right mr-2">
+              <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Hoş Geldiniz</span>
+              <span className="text-sm font-black text-zinc-800 dark:text-zinc-200">{userFullName || session.email}</span>
+            </div>
+            
+            <button
+              type="button"
+              onClick={() => setUserProfileOpen(true)}
+              className="px-5 py-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-200 text-xs font-black uppercase tracking-widest transition-all"
+            >
+              Profilim
+            </button>
+            
+            <Link
+              href="/family"
+              className="px-5 py-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-200 text-xs font-black uppercase tracking-widest transition-all flex items-center gap-1.5"
+            >
+              <Settings size={14} /> Ayarlar
+            </Link>
+
+            {session.email.trim().toLowerCase() === "zeynelguner@gmail.com" && (
+              <Link
+                href="/admin"
+                className="px-5 py-3 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 text-xs font-black uppercase tracking-widest transition-all"
+              >
+                Yönetim
+              </Link>
+            )}
+
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="p-3 rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 transition-all"
+              title="Çıkış Yap"
+            >
+              <LogOut size={18} />
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Profil Modalı */}
       {userProfileOpen && (
         <AnimatePresence>
           <motion.div 
@@ -648,239 +784,224 @@ export default function Home() {
               exit={{ scale: 0.9, y: 20 }}
               className="bg-white dark:bg-zinc-900 w-full max-w-xl rounded-[2.5rem] shadow-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800"
             >
-            <div className="p-8 border-b border-zinc-100 dark:border-zinc-800 flex items-start justify-between gap-6 relative overflow-hidden">
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <img src="/loogo.png" alt="" className="w-40 sm:w-48 h-auto opacity-20 dark:opacity-15" />
-              </div>
-              <div className="relative z-10">
-                <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">Profil</h2>
-                <p className="text-zinc-500 font-bold text-sm mt-2">Kullanıcı bilgileri</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setUserProfileOpen(false)}
-                className="relative z-10 px-5 py-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 font-black uppercase tracking-widest text-xs hover:opacity-90 transition-all"
-              >
-                Kapat
-              </button>
-            </div>
-
-            <div className="p-8 space-y-6">
-              <div className="space-y-2">
-                <label className="text-xs font-black text-zinc-400 uppercase tracking-widest flex items-center gap-2">
-                  <User size={16} /> Ad Soyad
-                </label>
-                <input
-                  type="text"
-                  value={userFullName}
-                  onChange={(e) => setUserFullName(e.target.value)}
-                  className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-zinc-900 transition-all outline-none"
-                  placeholder="Ad Soyad"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs font-black text-zinc-400 uppercase tracking-widest flex items-center gap-2">
-                  <Phone size={16} /> Telefon
-                </label>
-                <input
-                  type="tel"
-                  inputMode="tel"
-                  value={userPhone}
-                  onChange={(e) => setUserPhone(e.target.value)}
-                  className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-zinc-900 transition-all outline-none"
-                  placeholder="05xx xxx xx xx"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs font-black text-zinc-400 uppercase tracking-widest flex items-center gap-2">
-                  <Mail size={16} /> E-Posta
-                </label>
-                <input
-                  type="email"
-                  value={session.email}
-                  readOnly
-                  className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-100/70 dark:bg-zinc-950 font-bold text-zinc-700 dark:text-zinc-200"
-                />
-              </div>
-
-              {userProfileOk && (
-                <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-900/30 text-emerald-700 dark:text-emerald-200 font-bold">
-                  {userProfileOk}
-                </div>
-              )}
-
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  onClick={() => {
-                    try {
-                      localStorage.setItem(USER_FULL_NAME_KEY, userFullName.trim());
-                      localStorage.setItem(USER_PHONE_KEY, userPhone.trim());
-                    } catch {}
-                    fetch("/api/user-meta", {
-                      method: "POST",
-                      headers: { "content-type": "application/json" },
-                      body: JSON.stringify({ userFullName: userFullName.trim(), userPhone: userPhone.trim() }),
-                    }).catch(() => {});
-                    setUserProfileOk("Kaydedildi.");
-                    window.setTimeout(() => setUserProfileOk(null), 1500);
-                  }}
-                  className="px-8 py-4 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-2xl font-black uppercase tracking-widest text-sm hover:opacity-90 transition-all"
-                >
-                  Kaydet
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-      </AnimatePresence>
-    )}
-      <motion.header 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-5xl mx-auto mb-12"
-      >
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
-          <div className="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden relative lg:col-span-2">
-            <div className="absolute inset-0 z-0 pointer-events-none">
-              <img src="/loogo.png" alt="" className="w-full h-full object-cover opacity-[0.12] dark:opacity-[0.08]" />
-            </div>
-            <div className="absolute top-0 right-0 p-8 opacity-5 z-0 pointer-events-none">
-              <Users size={120} />
-            </div>
-
-            <div className="relative z-10 h-full flex flex-col">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                <h2 className="text-xs font-bold text-zinc-400 uppercase tracking-[0.2em]">Sistem Aktif</h2>
-              </div>
-              <h1 className="text-4xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">Aile Paneli</h1>
-              <p className="text-zinc-500 font-medium mt-1 text-lg">Aile Yönetim Paneli</p>
-              <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mt-3">
-                Kullanıcı: <span className="lowercase">{userFullName || session.email}</span>
-              </p>
-
-              <div className="mt-6 flex-1 flex flex-col md:flex-row gap-6">
-                <div className="order-2 md:order-1 flex-1 flex flex-col">
-                  <div className="flex-1" />
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div>
-                      <p className="text-xs font-bold text-zinc-400 uppercase mb-2">Çocuğun Adı</p>
-                      <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">{studentName || "Belirtilmedi"}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-bold text-zinc-400 uppercase mb-2">Doğum Tarihi</p>
-                      <div className="space-y-1">
-                        <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">
-                          {formatBirthDate(studentBirthDate) || "Belirtilmedi"}
-                        </p>
-                        <div className="text-sm font-bold text-zinc-500 dark:text-zinc-400">
-                          {(() => {
-                            const age = computeAgeYears(studentBirthDate);
-                            if (age !== null) return `${age} Yaşında`;
-                            return legacyAge ? `${legacyAge} Yaşında` : "";
-                          })()}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="order-1 md:order-2 w-full md:w-64 rounded-3xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 self-start">
-                  {studentPhotoDataUrl ? (
-                    <img
-                      src={studentPhotoDataUrl}
-                      alt=""
-                      className="block w-full h-56 md:h-64 object-cover object-center"
-                      style={{ objectPosition: "50% 50%" }}
-                    />
-                  ) : (
-                    <div className="w-full h-56 md:h-64 flex items-center justify-center text-zinc-400 font-black text-xs uppercase tracking-widest">
-                      Fotoğraf Yok
-                    </div>
-                  )}
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          <div className="bg-white dark:bg-zinc-900 p-6 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden relative h-full">
-            <div className="absolute inset-0 z-0 pointer-events-none">
-              <img src="/loogo.png" alt="" className="w-full h-full object-cover opacity-[0.10] dark:opacity-[0.06]" />
-            </div>
-            <div className="relative z-10 space-y-3 h-full flex flex-col">
-              <button
-                type="button"
-                onClick={() => setUserProfileOpen(true)}
-                className="w-full px-5 py-4 rounded-2xl bg-emerald-500 text-white font-black uppercase tracking-widest text-[11px] sm:text-xs hover:bg-emerald-600 transition-all shadow-sm whitespace-nowrap"
-              >
-                Profil
-              </button>
-              <Link
-                href="/family"
-                className="w-full px-5 py-4 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all text-zinc-700 dark:text-zinc-200 shadow-sm font-black uppercase tracking-widest text-[11px] sm:text-xs text-center flex items-center justify-center gap-2"
-              >
-                <Settings size={18} /> Ayarlar
-              </Link>
-              {session.email.trim().toLowerCase() === "zeynelguner@gmail.com" && (
-                <Link
-                  href="/admin"
-                  className="w-full px-5 py-4 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all text-zinc-700 dark:text-zinc-200 shadow-sm font-black uppercase tracking-widest text-[11px] sm:text-xs text-center"
-                >
-                  Yönetim
-                </Link>
-              )}
-              <div className="flex-1" />
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="w-full px-5 py-4 rounded-2xl bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-black uppercase tracking-widest text-[11px] sm:text-xs hover:opacity-90 transition-all shadow-sm whitespace-nowrap"
-              >
-                Çıkış
-              </button>
-            </div>
-          </div>
-        </div>
-      </motion.header>
-
-      <main className="max-w-5xl mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {modules.map((m, idx) => (
-            <motion.div
-              key={m.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.05 }}
-            >
-              <Link
-                href={m.href}
-                className={cn(
-                  "group flex flex-col items-start gap-4 p-8 rounded-[2rem] border-2 transition-all active:scale-[0.98] shadow-sm hover:shadow-xl relative overflow-hidden h-full min-h-[200px]",
-                  m.color
-                )}
-              >
-                <div className="absolute inset-0 z-0 pointer-events-none">
-                  <img src="/loogo.png" alt="" className="w-full h-full object-cover opacity-[0.12] dark:opacity-[0.08]" />
-                </div>
-                <div className="p-5 rounded-2xl bg-white/90 dark:bg-black/20 shadow-md group-hover:scale-110 transition-transform group-hover:rotate-3 relative z-10">
-                  <m.icon size={36} />
+              <div className="p-8 border-b border-zinc-100 dark:border-zinc-800 flex items-start justify-between gap-6 relative overflow-hidden">
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <img src="/loogo.png" alt="" className="w-40 sm:w-48 h-auto opacity-20 dark:opacity-15" />
                 </div>
                 <div className="relative z-10">
-                  <h2 className="text-2xl font-black mb-2 tracking-tight">{m.title}</h2>
-                  <p className="opacity-90 font-bold text-sm leading-snug">{m.description}</p>
+                  <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">Profil</h2>
+                  <p className="text-zinc-500 font-bold text-sm mt-2">Kullanıcı bilgileri</p>
                 </div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-      </main>
+                <button
+                  type="button"
+                  onClick={() => setUserProfileOpen(false)}
+                  className="relative z-10 px-5 py-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 font-black uppercase tracking-widest text-xs hover:opacity-90 transition-all"
+                >
+                  Kapat
+                </button>
+              </div>
 
-      <footer className="max-w-5xl mx-auto mt-20 text-center text-zinc-400 text-sm font-bold uppercase tracking-widest">
-        <p>© 2026 Otizm Destek Uygulaması - Tüm Hakları Saklıdır</p>
+              <div className="p-8 space-y-6">
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-zinc-400 uppercase tracking-widest flex items-center gap-2">
+                    <User size={16} /> Ad Soyad
+                  </label>
+                  <input
+                    type="text"
+                    value={userFullName}
+                    onChange={(e) => setUserFullName(e.target.value)}
+                    className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 transition-all outline-none"
+                    placeholder="Ad Soyad"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-zinc-400 uppercase tracking-widest flex items-center gap-2">
+                    <Phone size={16} /> Telefon
+                  </label>
+                  <input
+                    type="text"
+                    value={userPhone}
+                    onChange={(e) => setUserPhone(e.target.value)}
+                    className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 transition-all outline-none"
+                    placeholder="05xx xxx xx xx"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-zinc-400 uppercase tracking-widest flex items-center gap-2">
+                    <Mail size={16} /> E-Posta
+                  </label>
+                  <input
+                    type="email"
+                    value={session.email}
+                    readOnly
+                    className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-100/70 dark:bg-zinc-950 font-bold text-zinc-700 dark:text-zinc-200"
+                  />
+                </div>
+
+                {userProfileOk && (
+                  <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-900/30 text-emerald-700 dark:text-emerald-200 font-bold">
+                    {userProfileOk}
+                  </div>
+                )}
+
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      try {
+                        localStorage.setItem(USER_FULL_NAME_KEY, userFullName.trim());
+                        localStorage.setItem(USER_PHONE_KEY, userPhone.trim());
+                      } catch {}
+                      fetch("/api/user-meta", {
+                        method: "POST",
+                        headers: { "content-type": "application/json" },
+                        body: JSON.stringify({ userFullName: userFullName.trim(), userPhone: userPhone.trim() }),
+                      }).catch(() => {});
+                      setUserProfileOk("Kaydedildi.");
+                      window.setTimeout(() => setUserProfileOk(null), 1500);
+                    }}
+                    className="px-8 py-4 bg-emerald-500 text-white rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-emerald-600 transition-all"
+                  >
+                    Kaydet
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        </AnimatePresence>
+      )}
+
+      {/* Ana İçerik */}
+      <div className="flex-1 max-w-7xl w-full mx-auto px-6 py-10 space-y-10">
+        
+        {/* Aile Paneli Kahraman Bölümü */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden relative"
+        >
+          {/* Arka Plan Şeffaf Beyin Puzzle Görseli */}
+          <div className="absolute inset-0 z-0 pointer-events-none">
+            <img src="/loogo.png" alt="" className="w-full h-full object-cover opacity-[0.08] dark:opacity-[0.05]" />
+          </div>
+
+          <div className="relative z-10 flex flex-col lg:flex-row gap-8 items-stretch justify-between">
+            {/* Sol Bölüm - Aile ve Çocuk Bilgileri */}
+            <div className="flex-1 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse" />
+                  <h2 className="text-xs font-bold text-zinc-400 uppercase tracking-[0.2em]">OtiZeka Portalı Aktif</h2>
+                </div>
+                <h1 className="text-4xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">Aile Yönetim Paneli</h1>
+                <p className="text-zinc-500 font-medium mt-1">Çocuğunuzun gelişimini ve uygulamaları buradan takip edin.</p>
+              </div>
+
+              {/* Çocuğun Detayları Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8 pt-8 border-t border-zinc-100 dark:border-zinc-800">
+                <div>
+                  <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest block mb-1">Öğrenci Adı</span>
+                  <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">{studentName || "Belirtilmedi"}</p>
+                </div>
+                <div>
+                  <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest block mb-1">Doğum Tarihi / Yaş</span>
+                  <div className="flex items-baseline gap-2">
+                    <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">
+                      {formatBirthDate(studentBirthDate) || "Belirtilmedi"}
+                    </p>
+                    <span className="text-sm font-bold text-emerald-500 bg-emerald-500/10 px-2.5 py-0.5 rounded-full">
+                      {(() => {
+                        const age = computeAgeYears(studentBirthDate);
+                        if (age !== null) return `${age} Yaş`;
+                        return legacyAge ? `${legacyAge} Yaş` : "Belirtilmedi";
+                      })()}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Sağ Bölüm - Çocuk Fotoğrafı */}
+            <div className="w-full lg:w-72 flex justify-center lg:justify-end">
+              <div className="w-full max-w-sm rounded-[2rem] overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 shadow-inner relative flex items-center justify-center">
+                {studentPhotoDataUrl ? (
+                  <img
+                    src={studentPhotoDataUrl}
+                    alt={studentName}
+                    className="block w-full h-64 object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-64 flex flex-col items-center justify-center text-zinc-400 font-bold p-6 text-center">
+                    <div className="p-4 rounded-full bg-zinc-100 dark:bg-zinc-900 text-zinc-400 mb-2">
+                      <User size={36} />
+                    </div>
+                    <span className="text-xs uppercase tracking-widest">Profil Fotoğrafı Eklenmedi</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Modüller Grid (Spacious Grid) */}
+        <main className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-black text-zinc-800 dark:text-zinc-100 uppercase tracking-wider flex items-center gap-2">
+              <LayoutDashboard size={20} className="text-emerald-500" /> Aktif Modüller
+            </h3>
+            <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest">{modules.length} Modül Kullanılabilir</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {modules.map((m, idx) => (
+              <motion.div
+                key={m.title}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.04 }}
+                className="h-full"
+              >
+                <Link
+                  href={m.href}
+                  className={cn(
+                    "group flex flex-col items-start justify-between p-6 rounded-[2rem] border-2 transition-all active:scale-[0.98] shadow-sm hover:shadow-xl hover:-translate-y-1 relative overflow-hidden h-full min-h-[220px]",
+                    m.color
+                  )}
+                >
+                  {/* Arka Plan Şeffaf Beyin Puzzle */}
+                  <div className="absolute inset-0 z-0 pointer-events-none">
+                    <img src="/loogo.png" alt="" className="w-full h-full object-cover opacity-[0.10] dark:opacity-[0.06]" />
+                  </div>
+                  
+                  {/* İkon */}
+                  <div className="p-4 rounded-2xl bg-white/95 dark:bg-black/25 shadow-sm group-hover:scale-110 transition-transform group-hover:rotate-3 relative z-10 mb-4">
+                    <m.icon size={28} />
+                  </div>
+                  
+                  {/* Metinler */}
+                  <div className="relative z-10 w-full mt-auto">
+                    <h2 className="text-xl font-black mb-1.5 tracking-tight group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors line-clamp-2">{m.title}</h2>
+                    <p className="opacity-80 font-bold text-xs leading-normal line-clamp-2">{m.description}</p>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </main>
+      </div>
+
+      {/* Footer */}
+      <footer className="w-full border-t border-zinc-200/50 dark:border-zinc-800/50 bg-white/30 dark:bg-zinc-950/30 py-8 mt-12">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-zinc-400 text-xs font-bold uppercase tracking-widest">
+          <div className="flex items-center gap-2">
+            <img src="/otizeka-logo.png" alt="OtiZeka" className="h-4 w-auto grayscale opacity-50" />
+            <span>© 2026 OtiZeka</span>
+          </div>
+          <p>Tüm Hakları Saklıdır</p>
+        </div>
       </footer>
     </div>
   );
