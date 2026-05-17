@@ -731,12 +731,12 @@ export default function Home() {
                 >
                   Kaydet
                 </button>
-                </button>
               </div>
             </div>
           </motion.div>
-        </AnimatePresence>
-      )}
+        </motion.div>
+      </AnimatePresence>
+    )}
       <motion.header 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
