@@ -688,24 +688,32 @@ export default function Home() {
                   </div>
                 )}
 
-                <button
-                  disabled={authBusy || !kvkkAccepted}
-                  onClick={authMode === "login" ? handleLogin : handleRegister}
-                  className={cn(
-                    "w-full px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-sm transition-all shadow-md active:scale-95",
-                    authBusy || !kvkkAccepted
-                      ? "bg-zinc-200 dark:bg-zinc-800 text-zinc-500 cursor-not-allowed"
-                      : "bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/15"
-                  )}
-                >
-                  {!kvkkAccepted ? "KVKK Onayı Gerekli" : authMode === "login" ? "Giriş Yap" : "Kayıt Ol"}
-                </button>
-                
-                {!kvkkAccepted && (
-                  <div className="text-xs font-bold text-zinc-500 leading-normal">
-                    Devam etmek için KVKK Açık Rıza ekranında “Kabul Ediyorum” butonuna basın.
+                  <button
+                    disabled={authBusy || !kvkkAccepted}
+                    onClick={authMode === "login" ? handleLogin : handleRegister}
+                    className={cn(
+                      "w-full px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-sm transition-all shadow-md active:scale-95",
+                      authBusy || !kvkkAccepted
+                        ? "bg-zinc-200 dark:bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                        : "bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/15"
+                    )}
+                  >
+                    {!kvkkAccepted ? "KVKK Onayı Gerekli" : authMode === "login" ? "Giriş Yap" : "Kayıt Ol"}
+                  </button>
+                  {/* Store badges */}
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-4">
+                    <a href="https://apps.apple.com/tr/app/otizeka" target="_blank" rel="noopener noreferrer">
+                      <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="App Store'dan İndir" className="h-12" />
+                    </a>
+                    <a href="https://play.google.com/store/apps/details?id=com.otizeka" target="_blank" rel="noopener noreferrer">
+                      <img src="https://play.google.com/intl/en_us/badges/static/images/badge-android.png" alt="Google Play'den İndir" className="h-12" />
+                    </a>
                   </div>
-                )}
+                  {!kvkkAccepted && (
+                    <div className="text-xs font-bold text-zinc-500 leading-normal">
+                      Devam etmek için KVKK Açık Rıza ekranında “Kabul Ediyorum” butonuna basın.
+                    </div>
+                  )}
               </div>
             </div>
           </div>

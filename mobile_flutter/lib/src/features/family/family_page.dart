@@ -1,10 +1,13 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../core/api/api_models.dart';
+import '../../core/utils/photo_data_url.dart';
 import '../../state/api_client_provider.dart';
 import '../../state/session_controller.dart';
 
@@ -72,54 +75,132 @@ class _ProfilesTabState extends ConsumerState<_ProfilesTab> {
     final familyNotes = TextEditingController(text: existing?.familyNotes ?? '');
     final educationNotes = TextEditingController(text: existing?.educationNotes ?? '');
     final legacyAge = TextEditingController(text: existing?.legacyAge ?? '');
+    String selectedPhoto = existing?.photoDataUrl ?? '';
 
     final saved = await showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            left: 16,
-            right: 16,
-            top: 16,
-            bottom: 16 + MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(existing == null ? 'Yeni Profil' : 'Profili Düzenle', style: const TextStyle(fontWeight: FontWeight.w900)),
-              const SizedBox(height: 12),
-              TextField(controller: name, decoration: const InputDecoration(labelText: 'Çocuğun adı', border: OutlineInputBorder())),
-              const SizedBox(height: 12),
-              TextField(
-                controller: birth,
-                decoration: const InputDecoration(labelText: 'Doğum tarihi (YYYY-MM-DD)', border: OutlineInputBorder()),
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 16,
+                bottom: 16 + MediaQuery.of(context).viewInsets.bottom,
               ),
-              const SizedBox(height: 12),
-              TextField(controller: legacyAge, decoration: const InputDecoration(labelText: 'Yaş (opsiyonel)', border: OutlineInputBorder())),
-              const SizedBox(height: 12),
-              TextField(
-                controller: familyNotes,
-                maxLines: 3,
-                decoration: const InputDecoration(labelText: 'Aile notları', border: OutlineInputBorder()),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: educationNotes,
-                maxLines: 3,
-                decoration: const InputDecoration(labelText: 'Eğitim notları', border: OutlineInputBorder()),
-              ),
-              const SizedBox(height: 12),
-              SizedBox(
-                width: double.infinity,
-                height: 48,
-                child: FilledButton(
-                  onPressed: () => Navigator.of(context).pop(true),
-                  child: const Text('Kaydet'),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      existing == null ? 'Yeni Profil' : 'Profili Düzenle',
+                      style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
+                    ),
+                    const SizedBox(height: 20),
+                    // Clickable Profile Photo Circle
+                    Center(
+                      child: GestureDetector(
+                        onTap: () async {
+                          final ImagePicker picker = ImagePicker();
+                          final XFile? image = await picker.pickImage(
+                            source: ImageSource.gallery,
+                            maxWidth: 512,
+                            maxHeight: 512,
+                            imageQuality: 80,
+                          );
+                          if (image != null) {
+                            final bytes = await image.readAsBytes();
+                            final base64Str = base64Encode(bytes);
+                            final mimeType = image.name.endsWith('.png') ? 'image/png' : 'image/jpeg';
+                            setModalState(() {
+                              selectedPhoto = 'data:$mimeType;base64,$base64Str';
+                            });
+                          }
+                        },
+                        child: Column(
+                          children: [
+                            Container(
+                              width: 84,
+                              height: 84,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.grey.shade100,
+                                border: Border.all(color: const Color(0xFF10B981), width: 3),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 10,
+                                    spreadRadius: 2,
+                                  )
+                                ],
+                              ),
+                              alignment: Alignment.center,
+                              child: selectedPhoto.isNotEmpty
+                                  ? ClipOval(
+                                      child: Image.memory(
+                                        decodeDataUrlImage(selectedPhoto)!,
+                                        width: 78,
+                                        height: 78,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    )
+                                  : Icon(Icons.add_a_photo, size: 36, color: Colors.grey.shade400),
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              'Fotoğraf Değiştir / Seç',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF10B981),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    TextField(controller: name, decoration: const InputDecoration(labelText: 'Çocuğun adı', border: OutlineInputBorder())),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: birth,
+                      decoration: const InputDecoration(labelText: 'Doğum tarihi (YYYY-MM-DD)', border: OutlineInputBorder()),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(controller: legacyAge, decoration: const InputDecoration(labelText: 'Yaş (opsiyonel)', border: OutlineInputBorder())),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: familyNotes,
+                      maxLines: 2,
+                      decoration: const InputDecoration(labelText: 'Aile notları', border: OutlineInputBorder()),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: educationNotes,
+                      maxLines: 2,
+                      decoration: const InputDecoration(labelText: 'Eğitim notları', border: OutlineInputBorder()),
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: FilledButton(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: const Color(0xFF10B981),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        ),
+                        child: const Text('Kaydet'),
+                      ),
+                    )
+                  ],
                 ),
-              )
-            ],
-          ),
+              ),
+            );
+          },
         );
       },
     );
@@ -134,7 +215,7 @@ class _ProfilesTabState extends ConsumerState<_ProfilesTab> {
       familyNotes: familyNotes.text.trim(),
       educationNotes: educationNotes.text.trim(),
       legacyAge: legacyAge.text.trim(),
-      photoDataUrl: existing?.photoDataUrl ?? '',
+      photoDataUrl: selectedPhoto,
     );
 
     final nextProfiles = [...env.profiles.where((p) => p.id != id), nextProfile];

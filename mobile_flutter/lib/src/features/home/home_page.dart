@@ -26,7 +26,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         centerTitle: false,
         title: Image.asset(
           'assets/otizeka-logo.png',
-          height: 32,
+          height: 46,
           fit: BoxFit.contain,
         ),
         actions: [

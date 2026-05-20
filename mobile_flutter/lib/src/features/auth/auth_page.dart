@@ -101,9 +101,20 @@ class _AuthPageState extends ConsumerState<AuthPage> with SingleTickerProviderSt
                   ),
                   const SizedBox(width: 12),
                   const Expanded(
-                    child: Text(
-                      'Otizm Destek',
-                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'OtiZeka',
+                          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+                        ),
+                        SizedBox(height: 2),
+                        Text(
+                          'Otizm Farkındalık',
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.grey),
+                        ),
+                      ],
                     ),
                   ),
                 ],
