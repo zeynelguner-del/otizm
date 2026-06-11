@@ -92,6 +92,24 @@ class ApiClient {
     _ensureOk(res);
   }
 
+  Future<void> forgotPassword({required String email}) async {
+    final res = await _dio.post('/api/auth/forgot-password', data: {'email': email});
+    _ensureOk(res);
+  }
+
+  Future<void> resetPassword({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) async {
+    final res = await _dio.post('/api/auth/reset-password', data: {
+      'email': email,
+      'code': code,
+      'newPassword': newPassword,
+    });
+    _ensureOk(res);
+  }
+
   Future<AdminStats> adminStats() async {
     final res = await _dio.get('/api/admin/stats');
     final map = _asJsonMap(res.data);

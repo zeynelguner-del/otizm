@@ -2,9 +2,35 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { Heart, BookOpen, Gamepad2, Users, Settings, Music, Calendar, Info, MessageSquare, HelpCircle, User, Phone, Mail, AlarmClock, Globe, Waves, LogOut, LayoutDashboard } from "lucide-react";
+import { 
+  Heart, 
+  BookOpen, 
+  Gamepad2, 
+  Users, 
+  Settings, 
+  Music, 
+  Calendar, 
+  Info, 
+  MessageSquare, 
+  HelpCircle, 
+  User, 
+  Phone, 
+  Mail, 
+  AlarmClock, 
+  Globe, 
+  Waves, 
+  LogOut, 
+  LayoutDashboard, 
+  Sparkles,
+  Eye,
+  Tv,
+  Brain,
+  Award,
+  TrendingUp
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+
 
 type Session = {
   email: string;
@@ -293,91 +319,117 @@ export default function Home() {
     };
   }, [session?.email]);
 
-  const modules = [
+  const intelligenceModules = [
     {
-      title: "Otizm Bilgilendirme",
-      description: "Faydalı bilgiler",
-      icon: Info,
-      href: "/info",
-      color: "bg-blue-100 text-blue-600 border-blue-200 hover:bg-blue-200",
+      title: "Nesneleri Tanıyalım",
+      description: "Meyveler, hayvanlar ve taşıtları eşleştir",
+      icon: Eye,
+      href: "/games/objects",
+      color: "bg-red-50 text-red-700 border-red-100 dark:bg-red-950/20 dark:text-red-400 dark:border-red-900/30 hover:bg-red-100/50",
     },
     {
-      title: "Otizm Spektrum Bozukluğu",
-      description: "OSB hakkında temel bilgiler",
-      icon: HelpCircle,
-      href: "/osb",
-      color: "bg-cyan-100 text-cyan-700 border-cyan-200 hover:bg-cyan-200",
+      title: "Taklit Oyunu",
+      description: "Beden hareketlerini görsel olarak taklit et",
+      icon: Tv,
+      href: "/imitation",
+      color: "bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900/30 hover:bg-emerald-100/50",
     },
     {
-      title: "Eğitim",
-      description: "Terapi ve eğitim yaklaşımları",
-      icon: BookOpen,
-      href: "/education",
-      color: "bg-violet-100 text-violet-700 border-violet-200 hover:bg-violet-200",
-    },
-    {
-      title: "Otizm Spektrum Bozukluğu (OSB) üzerine yürütülen küresel ve ulusal araştırmalar",
-      description: "Küresel ve ulusal araştırma özetleri",
-      icon: Globe,
-      href: "/osb-research",
-      color: "bg-teal-100 text-teal-700 border-teal-200 hover:bg-teal-200",
-    },
-    {
-      title: "Duygularım",
-      description: "Nasıl hissettiğini keşfet",
-      icon: Heart,
-      href: "/emotions",
-      color: "bg-rose-100 text-rose-600 border-rose-200 hover:bg-rose-200",
-    },
-    {
-      title: "Eğitici Oyunlar",
-      description: "Eğlenerek öğren",
-      icon: Gamepad2,
-      href: "/games",
-      color: "bg-sky-100 text-sky-600 border-sky-200 hover:bg-sky-200",
-    },
-    {
-      title: "Sosyal Öyküler",
-      description: "Yeni hikayeler öğren",
-      icon: BookOpen,
-      href: "/stories",
-      color: "bg-emerald-100 text-emerald-600 border-emerald-200 hover:bg-emerald-200",
-    },
-    {
-      title: "Müzik ve Ses",
-      description: "Ritim ve ses çalışmaları",
-      icon: Music,
-      href: "/music",
-      color: "bg-indigo-100 text-indigo-600 border-indigo-200 hover:bg-indigo-200",
-    },
-    {
-      title: "İletişim Kartları",
-      description: "ACC Kartları",
-      icon: MessageSquare,
-      href: "/acc",
-      color: "bg-amber-100 text-amber-600 border-amber-200 hover:bg-amber-200",
-    },
-    {
-      title: "Takvim ve Program",
-      description: "Günlük aktiviteler",
-      icon: Calendar,
-      href: "/calendar",
-      color: "bg-amber-100 text-amber-600 border-amber-200 hover:bg-amber-200",
+      title: "Cümle Kur & Sesler",
+      description: "Cümle kurmayı ve alfabe seslerini öğren",
+      icon: Brain,
+      href: "/sentence-sounds",
+      color: "bg-purple-50 text-purple-700 border-purple-100 dark:bg-purple-950/20 dark:text-purple-400 dark:border-purple-900/30 hover:bg-purple-100/50",
     },
     {
       title: "Eğitim Hatırlatıcı",
-      description: "7 günlük hatırlatıcı ayarla",
+      description: "7 günlük hatırlatıcı kurun ve takip edin",
       icon: AlarmClock,
       href: "/education-reminder",
-      color: "bg-emerald-100 text-emerald-600 border-emerald-200 hover:bg-emerald-200",
+      color: "bg-sky-50 text-sky-700 border-sky-100 dark:bg-sky-950/20 dark:text-sky-400 dark:border-sky-900/30 hover:bg-sky-100/50",
     },
+  ];
 
+  const therapyModules = [
     {
-      title: "Aile Paneli",
-      description: "İletişim ve Ayarlar",
-      icon: Users,
-      href: "/family",
-      color: "bg-zinc-100 text-zinc-600 border-zinc-200 hover:bg-zinc-200",
+      title: "Eğitici Oyunlar",
+      description: "Eğlenirken öğrenmeyi destekleyen aktiviteler",
+      icon: Gamepad2,
+      href: "/games",
+      color: "bg-blue-50 text-blue-700 border-blue-100 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-900/30 hover:bg-blue-100/50",
+    },
+    {
+      title: "Duyusal Oda",
+      description: "Rahatlatıcı ses, renk ve ritim odası",
+      icon: Sparkles,
+      href: "/duyusal-oda",
+      color: "bg-pink-50 text-pink-700 border-pink-100 dark:bg-pink-950/20 dark:text-pink-400 dark:border-pink-900/30 hover:bg-pink-100/50",
+    },
+    {
+      title: "Müzik ve Ses",
+      description: "Ses taklitleri ve ritim çalışmaları",
+      icon: Music,
+      href: "/music",
+      color: "bg-indigo-50 text-indigo-700 border-indigo-100 dark:bg-indigo-950/20 dark:text-indigo-400 dark:border-indigo-900/30 hover:bg-indigo-100/50",
+    },
+    {
+      title: "Sosyal Öyküler",
+      description: "Davranışsal ve sosyal gelişim hikayeleri",
+      icon: BookOpen,
+      href: "/stories",
+      color: "bg-teal-50 text-teal-700 border-teal-100 dark:bg-teal-950/20 dark:text-teal-400 dark:border-teal-900/30 hover:bg-teal-100/50",
+    },
+    {
+      title: "Duygularım",
+      description: "Duygu durumlarını görselleştir ve takip et",
+      icon: Heart,
+      href: "/emotions",
+      color: "bg-rose-50 text-rose-700 border-rose-100 dark:bg-rose-950/20 dark:text-rose-400 dark:border-rose-900/30 hover:bg-rose-100/50",
+    },
+  ];
+
+  const guidanceModules = [
+    {
+      title: "İletişim Kartları",
+      description: "Görsel ve sesli iletişim kartları (ACC)",
+      icon: MessageSquare,
+      href: "/acc",
+      color: "bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900/30 hover:bg-amber-100/50",
+    },
+    {
+      title: "Takvim ve Program",
+      description: "Günlük aktiviteler ve rutin yönetimi",
+      icon: Calendar,
+      href: "/calendar",
+      color: "bg-orange-50 text-orange-700 border-orange-100 dark:bg-orange-950/20 dark:text-orange-400 dark:border-orange-900/30 hover:bg-orange-100/50",
+    },
+    {
+      title: "Otizm Bilgilendirme",
+      description: "Faydalı makaleler ve ebeveyn önerileri",
+      icon: Info,
+      href: "/info",
+      color: "bg-cyan-50 text-cyan-700 border-cyan-100 dark:bg-cyan-950/20 dark:text-cyan-400 dark:border-cyan-900/30 hover:bg-cyan-100/50",
+    },
+    {
+      title: "OSB Tanısı Nedir?",
+      description: "OSB spektrumu hakkında tıbbi kılavuz",
+      icon: HelpCircle,
+      href: "/osb",
+      color: "bg-zinc-50 text-zinc-700 border-zinc-100 dark:bg-zinc-950/20 dark:text-zinc-400 dark:border-zinc-800 hover:bg-zinc-100/50",
+    },
+    {
+      title: "Eğitim Rehberi",
+      description: "Spektruma uygun terapi yaklaşımları",
+      icon: BookOpen,
+      href: "/education",
+      color: "bg-purple-50 text-purple-700 border-purple-100 dark:bg-purple-950/20 dark:text-purple-400 dark:border-purple-900/30 hover:bg-purple-100/50",
+    },
+    {
+      title: "OSB Araştırmaları",
+      description: "Spektrum üzerine küresel ve ulusal makaleler",
+      icon: Globe,
+      href: "/osb-research",
+      color: "bg-lime-50 text-lime-700 border-lime-100 dark:bg-lime-950/20 dark:text-lime-400 dark:border-lime-900/30 hover:bg-lime-100/50",
     },
   ];
 
@@ -479,7 +531,7 @@ export default function Home() {
   if (!session) {
     const showKvkkOverlay = typeof window !== "undefined" && !kvkkAccepted;
     return (
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex flex-col lg:flex-row relative" suppressHydrationWarning>
+      <div className="min-h-screen lg:h-screen lg:overflow-hidden bg-zinc-50 dark:bg-zinc-950 flex flex-col lg:flex-row relative" suppressHydrationWarning>
         {showKvkkOverlay && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-zinc-950/80 backdrop-blur-md">
             <div className="bg-white dark:bg-zinc-900 w-full max-w-xl rounded-[2.5rem] shadow-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800">
@@ -509,94 +561,107 @@ export default function Home() {
         )}
 
         {/* Sol Kolon - Tanıtım & Markalama */}
-        <div className="hidden lg:flex lg:w-[45%] xl:w-[40%] bg-gradient-to-br from-zinc-900 via-slate-900 to-indigo-950 text-white p-12 flex-col justify-between relative overflow-hidden">
+        <div className="hidden lg:flex lg:w-[45%] xl:w-[40%] bg-gradient-to-br from-zinc-900 via-slate-900 to-indigo-950 text-white p-8 xl:p-10 flex-col justify-between relative overflow-hidden">
           {/* Arka Plan Desenleri */}
           <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
           <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-emerald-500 rounded-full blur-[120px] opacity-20 pointer-events-none" />
           <div className="absolute -top-40 -right-40 w-96 h-96 bg-indigo-500 rounded-full blur-[120px] opacity-20 pointer-events-none" />
 
-          {/* Logo */}
-          <div className="relative z-10">
-            <div className="inline-block bg-white p-3 rounded-2xl shadow-xl">
-              <img src="/otizeka-logo.png" alt="OtiZeka" className="h-10 w-auto object-contain" />
+          {/* Tanıtım Videosu */}
+          <div className="relative z-10 flex flex-col items-center justify-center w-full mt-2 mb-6">
+            <div className="overflow-hidden rounded-[1.8rem] border border-white/15 shadow-2xl w-full max-w-[320px] bg-indigo-950/40 backdrop-blur-sm relative">
+              <video
+                src="/otizeka_promo.mp4"
+                poster="/otizeka-banner.jpg?v=3"
+                controls
+                playsInline
+                className="w-full h-auto block"
+              />
             </div>
+            <span className="text-[10px] font-black text-white/50 uppercase tracking-widest mt-2">
+              Uygulama Tanıtım Videosu
+            </span>
           </div>
 
           {/* Vizyon Metinleri & Tanıtım */}
-          <div className="relative z-10 my-auto space-y-8">
-            <div className="space-y-3">
-              <span className="px-4 py-1.5 rounded-full bg-white/10 text-emerald-400 text-xs font-black uppercase tracking-widest inline-block">
+          <div className="relative z-10 my-auto space-y-5 lg:space-y-6">
+            <div className="space-y-2">
+              <span className="px-4 py-1 rounded-full bg-white/10 text-emerald-400 text-xs font-black uppercase tracking-widest inline-block">
                 Otizm Destek Portalı
               </span>
-              <h2 className="text-4xl xl:text-5xl font-black tracking-tight leading-tight">
+              <h2 className="text-3xl xl:text-4xl font-black tracking-tight leading-tight">
                 Çocuklarımızın <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Gelişim Yolculuğu</span> <br />
                 Burada Başlıyor.
               </h2>
-              <p className="text-zinc-400 font-medium text-lg leading-relaxed max-w-md">
+              <p className="text-zinc-400 font-medium text-sm xl:text-base leading-relaxed max-w-md">
                 OtiZeka; otizm spektrumundaki çocuklarımızın eğitim, sosyal beceri, duygu takibi ve iletişim gelişimlerini modern yöntemlerle destekleyen kapsamlı bir dijital yardımcıdır.
               </p>
             </div>
 
             {/* Özellikler */}
-            <div className="grid grid-cols-1 gap-4">
-              <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
-                <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400">
-                  <Gamepad2 size={24} />
+            <div className="grid grid-cols-1 gap-3">
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400">
+                  <Gamepad2 size={20} />
                 </div>
                 <div>
-                  <h4 className="font-bold text-sm">Eğitici & Geliştirici Oyunlar</h4>
-                  <p className="text-zinc-400 text-xs mt-0.5">Eğlenirken öğrenmeyi destekleyen interaktif aktiviteler.</p>
+                  <h4 className="font-bold text-xs xl:text-sm">Eğitici & Geliştirici Oyunlar</h4>
+                  <p className="text-zinc-400 text-[11px] xl:text-xs mt-0.5">Eğlenirken öğrenmeyi destekleyen interaktif aktiviteler.</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
-                <div className="p-3 rounded-xl bg-rose-500/10 text-rose-400">
-                  <Heart size={24} />
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                <div className="p-2 rounded-xl bg-rose-500/10 text-rose-400">
+                  <Heart size={20} />
                 </div>
                 <div>
-                  <h4 className="font-bold text-sm">Duygu & Rutin Takibi</h4>
-                  <p className="text-zinc-400 text-xs mt-0.5">Çocuğunuzun günlük duygu durumunu ve eğitim rutinlerini izleyin.</p>
+                  <h4 className="font-bold text-xs xl:text-sm">Duygu & Rutin Takibi</h4>
+                  <p className="text-zinc-400 text-[11px] xl:text-xs mt-0.5">Çocuğunuzun günlük duygu durumunu ve eğitim rutinlerini izleyin.</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
-                <div className="p-3 rounded-xl bg-amber-500/10 text-amber-400">
-                  <MessageSquare size={24} />
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                <div className="p-2 rounded-xl bg-amber-500/10 text-amber-400">
+                  <MessageSquare size={20} />
                 </div>
                 <div>
-                  <h4 className="font-bold text-sm">İletişim Kartları (AAC)</h4>
-                  <p className="text-zinc-400 text-xs mt-0.5">Dil ve konuşma becerilerini destekleyen görsel iletişim sistemi.</p>
+                  <h4 className="font-bold text-xs xl:text-sm">İletişim Kartları (AAC)</h4>
+                  <p className="text-zinc-400 text-[11px] xl:text-xs mt-0.5">Dil ve konuşma becerilerini destekleyen görsel iletişim sistemi.</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Alt Bilgi */}
-          <div className="relative z-10 text-xs font-bold text-zinc-500 uppercase tracking-widest">
-            © 2026 OtiZeka - Tüm Hakları Saklıdır
+          <div className="relative z-10 text-xs font-bold text-zinc-500 uppercase tracking-widest flex flex-wrap items-center gap-3">
+            <span>© 2026 OtiZeka - Tüm Hakları Saklıdır</span>
+            <span className="hidden sm:inline text-zinc-700">|</span>
+            <Link href="/gizlilik" className="text-zinc-400 hover:text-emerald-400 underline transition-colors normal-case">
+              Gizlilik Politikası
+            </Link>
           </div>
         </div>
 
         {/* Sağ Kolon - Giriş / Kayıt Formu */}
-        <div className="flex-1 flex flex-col justify-center items-center p-6 md:p-12 lg:p-20 bg-zinc-50 dark:bg-zinc-950 relative overflow-hidden">
-          {/* Mobil Cihazlar için Üst Logo */}
-          <div className="lg:hidden mb-8 text-center">
-            <div className="inline-block bg-white p-3 rounded-2xl shadow-md mb-4">
-              <img src="/otizeka-logo.png" alt="OtiZeka" className="h-10 w-auto object-contain" />
-            </div>
-            <h1 className="text-2xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">Otizm Destek Uygulaması</h1>
-            <p className="text-zinc-500 text-sm font-medium mt-1">E-posta ile giriş yapın veya kayıt olun.</p>
-          </div>
+        <div className="flex-1 flex flex-col justify-center items-center p-6 lg:p-12 bg-zinc-50 dark:bg-zinc-950 relative overflow-hidden">
+          <div className="w-full max-w-md bg-white dark:bg-zinc-900 p-6 md:p-8 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden relative">
 
-          <div className="w-full max-w-md bg-white dark:bg-zinc-900 p-8 md:p-10 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden relative">
-            {/* Arka Planda Şeffaf Beyin Puzzle Logosu */}
-            <div className="absolute inset-0 z-0 pointer-events-none flex items-center justify-center">
-              <img src="/loogo.png" alt="" className="w-full h-full object-cover opacity-[0.08] dark:opacity-[0.06]" />
-            </div>
 
             <div className="relative z-10">
-              <div className="grid grid-cols-2 gap-2 bg-zinc-100 dark:bg-zinc-800 p-1.5 rounded-2xl mb-8">
+              {/* Card Header Branding */}
+              <div className="flex flex-col items-center justify-center mb-5 text-center select-none">
+                <div className="bg-zinc-50 dark:bg-zinc-950 p-2.5 rounded-[1.5rem] shadow-inner border border-zinc-100 dark:border-zinc-800 inline-block mb-2 hover:scale-105 transition-transform duration-300">
+                  <img src="/otizeka-logo.png" alt="OtiZeka" className="h-9 w-auto object-contain" />
+                </div>
+                <h2 className="text-xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
+                  OtiZeka
+                </h2>
+                <p className="text-zinc-400 dark:text-zinc-500 text-xs font-bold uppercase tracking-widest mt-1">
+                  Otizm Destek Uygulaması
+                </p>
+              </div>
+              <div className="grid grid-cols-2 gap-2 bg-zinc-100 dark:bg-zinc-800 p-1.5 rounded-2xl mb-5">
                 <button
                   onClick={() => {
                     setAuthMode("login");
@@ -625,14 +690,14 @@ export default function Home() {
                 </button>
               </div>
 
-              <div className="space-y-5">
+              <div className="space-y-4">
                 {serverError && (
                   <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-900/30 text-amber-800 dark:text-amber-100 font-bold text-sm">
                     {serverError}
                   </div>
                 )}
                 
-                <div className="space-y-2">
+                <div className="space-y-1">
                   <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">E-posta</label>
                   <input
                     type="email"
@@ -642,13 +707,13 @@ export default function Home() {
                       if (e.key !== "Enter") return;
                       (authMode === "login" ? handleLogin : handleRegister)();
                     }}
-                    className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 dark:focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100"
+                    className="w-full p-3 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 dark:focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100"
                     placeholder="ornek@mail.com"
                     autoComplete="email"
                   />
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-1">
                   <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Şifre</label>
                   <input
                     type="password"
@@ -658,14 +723,14 @@ export default function Home() {
                       if (e.key !== "Enter") return;
                       (authMode === "login" ? handleLogin : handleRegister)();
                     }}
-                    className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 dark:focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100"
+                    className="w-full p-3 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 dark:focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100"
                     placeholder="••••••"
                     autoComplete={authMode === "login" ? "current-password" : "new-password"}
                   />
                 </div>
 
                 {authMode === "register" && (
-                  <div className="space-y-2">
+                  <div className="space-y-1">
                     <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Şifre (Tekrar)</label>
                     <input
                       type="password"
@@ -675,7 +740,7 @@ export default function Home() {
                         if (e.key !== "Enter") return;
                         handleRegister();
                       }}
-                      className="w-full p-4 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 dark:focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100"
+                      className="w-full p-3 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 dark:focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100"
                       placeholder="••••••"
                       autoComplete="new-password"
                     />
@@ -688,32 +753,32 @@ export default function Home() {
                   </div>
                 )}
 
-                  <button
-                    disabled={authBusy || !kvkkAccepted}
-                    onClick={authMode === "login" ? handleLogin : handleRegister}
-                    className={cn(
-                      "w-full px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-sm transition-all shadow-md active:scale-95",
-                      authBusy || !kvkkAccepted
-                        ? "bg-zinc-200 dark:bg-zinc-800 text-zinc-500 cursor-not-allowed"
-                        : "bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/15"
-                    )}
-                  >
-                    {!kvkkAccepted ? "KVKK Onayı Gerekli" : authMode === "login" ? "Giriş Yap" : "Kayıt Ol"}
-                  </button>
-                  {/* Store badges */}
-                  <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-4">
-                    <a href="https://apps.apple.com/tr/app/otizeka" target="_blank" rel="noopener noreferrer">
-                      <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="App Store'dan İndir" className="h-12" />
-                    </a>
-                    <a href="https://play.google.com/store/apps/details?id=com.otizeka" target="_blank" rel="noopener noreferrer">
-                      <img src="https://play.google.com/intl/en_us/badges/static/images/badge-android.png" alt="Google Play'den İndir" className="h-12" />
-                    </a>
-                  </div>
-                  {!kvkkAccepted && (
-                    <div className="text-xs font-bold text-zinc-500 leading-normal">
-                      Devam etmek için KVKK Açık Rıza ekranında “Kabul Ediyorum” butonuna basın.
-                    </div>
+                <button
+                  disabled={authBusy || !kvkkAccepted}
+                  onClick={authMode === "login" ? handleLogin : handleRegister}
+                  className={cn(
+                    "w-full px-6 py-3.5 rounded-2xl font-black uppercase tracking-widest text-sm transition-all shadow-md active:scale-95",
+                    authBusy || !kvkkAccepted
+                      ? "bg-zinc-200 dark:bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                      : "bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/15"
                   )}
+                >
+                  {!kvkkAccepted ? "KVKK Onayı Gerekli" : authMode === "login" ? "Giriş Yap" : "Kayıt Ol"}
+                </button>
+                <h3 className="text-sm font-bold text-center mt-3">Uygulamamızı İndirin</h3>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-2">
+                  <a href="https://apps.apple.com/tr/app/otizeka" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
+                    <img src="/badges/app-store-badge.svg" alt="App Store'dan İndir" className="h-10 w-auto" />
+                  </a>
+                  <a href="https://play.google.com/store/apps/details?id=com.otizeka" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
+                    <img src="/badges/google-play-badge.svg" alt="Google Play'den İndir" className="h-10 w-auto animate-pulse-subtle" />
+                  </a>
+                </div>
+                {!kvkkAccepted && (
+                  <div className="text-xs font-bold text-zinc-500 leading-normal">
+                    Devam etmek için KVKK Açık Rıza ekranında “Kabul Ediyorum” butonuna basın.
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -727,10 +792,18 @@ export default function Home() {
       {/* Global Navbar */}
       <nav className="sticky top-0 z-40 w-full border-b border-zinc-200/80 dark:border-zinc-800/80 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md transition-colors">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          {/* Sol Kısım - OtiZeka Logo */}
-          <Link href="/" className="flex items-center gap-3">
-            <div className="bg-white p-2 rounded-xl shadow-sm border border-zinc-100 dark:border-zinc-800">
-              <img src="/otizeka-logo.png" alt="OtiZeka" className="h-7 w-auto object-contain" />
+          {/* Sol Kısım - OtiZeka Logo & Başlık */}
+          <Link href="/" className="flex items-center gap-3.5 group select-none">
+            <div className="bg-white p-2.5 rounded-2xl shadow-md border border-zinc-100 dark:border-zinc-800 transition-all duration-300 group-hover:scale-105">
+              <img src="/otizeka-logo.png" alt="OtiZeka Logo" className="h-8 sm:h-9 w-auto object-contain" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xl sm:text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50 transition-colors group-hover:text-emerald-500">
+                OtiZeka
+              </span>
+              <span className="text-[9px] font-black text-emerald-500 uppercase tracking-[0.2em] leading-none mt-0.5">
+                PORTAL
+              </span>
             </div>
           </Link>
 
@@ -756,14 +829,7 @@ export default function Home() {
               <Settings size={14} /> Ayarlar
             </Link>
 
-            {session.email.trim().toLowerCase() === "zeynelguner@gmail.com" && (
-              <Link
-                href="/admin"
-                className="px-5 py-3 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 text-xs font-black uppercase tracking-widest transition-all"
-              >
-                Yönetim
-              </Link>
-            )}
+
 
             <button
               type="button"
@@ -793,9 +859,7 @@ export default function Home() {
               className="bg-white dark:bg-zinc-900 w-full max-w-xl rounded-[2.5rem] shadow-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800"
             >
               <div className="p-8 border-b border-zinc-100 dark:border-zinc-800 flex items-start justify-between gap-6 relative overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <img src="/loogo.png" alt="" className="w-40 sm:w-48 h-auto opacity-20 dark:opacity-15" />
-                </div>
+
                 <div className="relative z-10">
                   <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">Profil</h2>
                   <p className="text-zinc-500 font-bold text-sm mt-2">Kullanıcı bilgileri</p>
@@ -882,45 +946,48 @@ export default function Home() {
       )}
 
       {/* Ana İçerik */}
-      <div className="flex-1 max-w-7xl w-full mx-auto px-6 py-10 space-y-10">
+      <div className="flex-1 max-w-7xl w-full mx-auto px-6 py-10 space-y-12">
         
-        {/* Aile Paneli Kahraman Bölümü */}
+        {/* Aile Paneli Kahraman Bölümü (Premium Night-Blue Gradient) */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden relative"
+          className="bg-gradient-to-br from-indigo-950 via-slate-900 to-blue-950 p-8 sm:p-10 rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden relative text-white"
         >
-          {/* Arka Plan Şeffaf Beyin Puzzle Görseli */}
-          <div className="absolute inset-0 z-0 pointer-events-none">
-            <img src="/loogo.png" alt="" className="w-full h-full object-cover opacity-[0.08] dark:opacity-[0.05]" />
-          </div>
+          {/* Subtle decorative overlays */}
+          <div className="absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-cyan-500/10 via-transparent to-transparent" />
+          <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-purple-500/10 rounded-full blur-[100px] pointer-events-none" />
 
           <div className="relative z-10 flex flex-col lg:flex-row gap-8 items-stretch justify-between">
             {/* Sol Bölüm - Aile ve Çocuk Bilgileri */}
             <div className="flex-1 flex flex-col justify-between">
               <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse" />
-                  <h2 className="text-xs font-bold text-zinc-400 uppercase tracking-[0.2em]">OtiZeka Portalı Aktif</h2>
+                <div className="flex items-center gap-2.5 mb-2">
+                  <span className="w-2.5 h-2.5 bg-cyan-400 rounded-full animate-pulse" />
+                  <h2 className="text-xs font-black text-cyan-400 uppercase tracking-[0.25em]">OtiZeka Premium Portal Aktif</h2>
                 </div>
-                <h1 className="text-4xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">Aile Yönetim Paneli</h1>
-                <p className="text-zinc-500 font-medium mt-1">Çocuğunuzun gelişimini ve uygulamaları buradan takip edin.</p>
+                <h1 className="text-3xl sm:text-4xl font-black tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-r from-white via-zinc-100 to-zinc-300">
+                  Aile Yönetim Paneli
+                </h1>
+                <p className="text-zinc-400 font-bold mt-2 text-sm">
+                  Çocuğunuzun pedagojik gelişim süreçlerini ve günlük aktivitelerini buradan takip edin.
+                </p>
               </div>
 
               {/* Çocuğun Detayları Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8 pt-8 border-t border-zinc-100 dark:border-zinc-800">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8 pt-6 border-t border-white/10">
                 <div>
-                  <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest block mb-1">Öğrenci Adı</span>
-                  <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">{studentName || "Belirtilmedi"}</p>
+                  <span className="text-xs font-black text-zinc-500 uppercase tracking-widest block mb-1">Öğrenci Adı</span>
+                  <p className="text-2xl font-black text-white">{studentName || "Belirtilmedi"}</p>
                 </div>
                 <div>
-                  <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest block mb-1">Doğum Tarihi / Yaş</span>
+                  <span className="text-xs font-black text-zinc-500 uppercase tracking-widest block mb-1">Doğum Tarihi / Yaş</span>
                   <div className="flex items-baseline gap-2">
-                    <p className="text-2xl font-black text-zinc-800 dark:text-zinc-100">
+                    <p className="text-2xl font-black text-white">
                       {formatBirthDate(studentBirthDate) || "Belirtilmedi"}
                     </p>
-                    <span className="text-sm font-bold text-emerald-500 bg-emerald-500/10 px-2.5 py-0.5 rounded-full">
+                    <span className="text-xs font-black text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-3 py-1 rounded-full uppercase tracking-wider">
                       {(() => {
                         const age = computeAgeYears(studentBirthDate);
                         if (age !== null) return `${age} Yaş`;
@@ -930,23 +997,49 @@ export default function Home() {
                   </div>
                 </div>
               </div>
+
+              {/* Günlük Gelişim Hedefi (Daily Progress Tracker) */}
+              <div className="mt-8 p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-black text-cyan-300 uppercase tracking-wider flex items-center gap-1.5">
+                    <Award size={14} /> GÜNLÜK GELİŞİM HEDEFİ
+                  </span>
+                  <span className="text-xs font-black text-cyan-300 bg-cyan-400/10 px-2 py-0.5 rounded-md">
+                    %80 Tamamlandı
+                  </span>
+                </div>
+                
+                {/* Custom Neon Progress Bar */}
+                <div className="w-full h-3 bg-zinc-800/80 rounded-full overflow-hidden border border-white/5 shadow-inner">
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: "80%" }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    className="h-full bg-gradient-to-r from-cyan-400 via-teal-400 to-emerald-400 rounded-full shadow-[0_0_8px_rgba(34,211,238,0.5)]" 
+                  />
+                </div>
+                
+                <p className="text-[11px] text-zinc-400 font-bold uppercase tracking-wide flex items-center gap-1.5">
+                  <TrendingUp size={12} className="text-emerald-400" /> Bugün 4/5 eğitim modülü başarıyla tamamlandı. Harika!
+                </p>
+              </div>
             </div>
 
             {/* Sağ Bölüm - Çocuk Fotoğrafı */}
             <div className="w-full lg:w-72 flex justify-center lg:justify-end">
-              <div className="w-full max-w-sm rounded-[2rem] overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 shadow-inner relative flex items-center justify-center">
+              <div className="w-full max-w-sm rounded-[2rem] overflow-hidden border border-white/10 bg-zinc-950/40 shadow-inner relative flex items-center justify-center p-2">
                 {studentPhotoDataUrl ? (
                   <img
                     src={studentPhotoDataUrl}
                     alt={studentName}
-                    className="block w-full h-64 object-cover"
+                    className="block w-full h-64 object-cover rounded-2xl shadow-md border border-white/5"
                   />
                 ) : (
-                  <div className="w-full h-64 flex flex-col items-center justify-center text-zinc-400 font-bold p-6 text-center">
-                    <div className="p-4 rounded-full bg-zinc-100 dark:bg-zinc-900 text-zinc-400 mb-2">
+                  <div className="w-full h-64 flex flex-col items-center justify-center text-zinc-500 font-bold p-6 text-center">
+                    <div className="p-4 rounded-full bg-white/5 border border-white/10 text-zinc-500 mb-3 shadow-inner">
                       <User size={36} />
                     </div>
-                    <span className="text-xs uppercase tracking-widest">Profil Fotoğrafı Eklenmedi</span>
+                    <span className="text-xs uppercase tracking-widest font-black">Profil Fotoğrafı Eklenmedi</span>
                   </div>
                 )}
               </div>
@@ -954,50 +1047,190 @@ export default function Home() {
           </div>
         </motion.div>
 
-        {/* Modüller Grid (Spacious Grid) */}
-        <main className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xl font-black text-zinc-800 dark:text-zinc-100 uppercase tracking-wider flex items-center gap-2">
-              <LayoutDashboard size={20} className="text-emerald-500" /> Aktif Modüller
-            </h3>
-            <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest">{modules.length} Modül Kullanılabilir</span>
+        {/* Tanıtım Videosu Bölümü */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="bg-white dark:bg-zinc-900 p-6 sm:p-8 rounded-[2.5rem] border border-zinc-200/80 dark:border-zinc-800/80 shadow-md flex flex-col md:flex-row items-center gap-6 sm:gap-8"
+        >
+          <div className="w-full md:w-80 shrink-0 rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-950 relative shadow-inner">
+            <video
+              src="/otizeka_promo.mp4"
+              poster="/otizeka-banner.jpg?v=3"
+              controls
+              playsInline
+              className="w-full h-auto block"
+            />
           </div>
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+              <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.15em] bg-emerald-500/10 px-3 py-1 rounded-full">
+                Rehber & Tanıtım
+              </span>
+            </div>
+            <h2 className="text-xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">
+              OtiZeka Nedir ve Nasıl Çalışır?
+            </h2>
+            <p className="text-zinc-500 dark:text-zinc-400 font-bold text-xs sm:text-sm leading-relaxed">
+              Çocuğunuzun gelişimini desteklemek, iletişim kartlarını etkin kullanmak ve günlük rutinleri düzenlemek için hazırladığımız bu kısa rehber videoyu izleyerek OtiZeka uygulamasının tüm özelliklerini kolayca keşfedebilirsiniz.
+            </p>
+          </div>
+        </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {modules.map((m, idx) => (
-              <motion.div
-                key={m.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.04 }}
-                className="h-full"
-              >
-                <Link
-                  href={m.href}
-                  className={cn(
-                    "group flex flex-col items-start justify-between p-6 rounded-[2rem] border-2 transition-all active:scale-[0.98] shadow-sm hover:shadow-xl hover:-translate-y-1 relative overflow-hidden h-full min-h-[220px]",
-                    m.color
-                  )}
+        {/* Kategorilere Ayrılmış Modüller */}
+        <main className="space-y-16">
+          
+          {/* KATEGORİ 1: Zeka ve Gelişim */}
+          <section className="space-y-6">
+            <div className="border-b border-zinc-200 dark:border-zinc-800 pb-3 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+              <div>
+                <span className="text-[10px] font-black text-rose-500 uppercase tracking-[0.25em] bg-rose-500/10 px-3 py-1 rounded-full">
+                  Zeka Oyunları & Egzersizler
+                </span>
+                <h2 className="text-2xl font-black text-zinc-800 dark:text-zinc-100 tracking-tight mt-2.5">
+                  Zeka ve Gelişim
+                </h2>
+              </div>
+              <p className="text-zinc-400 font-bold text-xs sm:text-sm">Eğitici oyunlar, taklit becerileri ve kelime haznesi</p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {intelligenceModules.map((m, idx) => (
+                <motion.div
+                  key={m.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.04 }}
+                  className="h-full"
                 >
-                  {/* Arka Plan Şeffaf Beyin Puzzle */}
-                  <div className="absolute inset-0 z-0 pointer-events-none">
-                    <img src="/loogo.png" alt="" className="w-full h-full object-cover opacity-[0.10] dark:opacity-[0.06]" />
-                  </div>
-                  
-                  {/* İkon */}
-                  <div className="p-4 rounded-2xl bg-white/95 dark:bg-black/25 shadow-sm group-hover:scale-110 transition-transform group-hover:rotate-3 relative z-10 mb-4">
-                    <m.icon size={28} />
-                  </div>
-                  
-                  {/* Metinler */}
-                  <div className="relative z-10 w-full mt-auto">
-                    <h2 className="text-xl font-black mb-1.5 tracking-tight group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors line-clamp-2">{m.title}</h2>
-                    <p className="opacity-80 font-bold text-xs leading-normal line-clamp-2">{m.description}</p>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
+                  <Link
+                    href={m.href}
+                    className={cn(
+                      "group flex flex-col items-start justify-between p-6 sm:p-7 rounded-[2rem] border-2 transition-all active:scale-[0.98] shadow-sm hover:shadow-xl hover:-translate-y-1 relative overflow-hidden h-full min-h-[220px]",
+                      m.color
+                    )}
+                  >
+                    {/* İkon */}
+                    <div className="p-4 rounded-2xl bg-white/95 dark:bg-black/25 shadow-sm group-hover:scale-110 transition-transform group-hover:rotate-3 relative z-10 mb-4">
+                      <m.icon size={26} />
+                    </div>
+                    
+                    {/* Metinler */}
+                    <div className="relative z-10 w-full mt-auto">
+                      <h3 className="text-lg font-black mb-1.5 tracking-tight group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors line-clamp-2">
+                        {m.title}
+                      </h3>
+                      <p className="opacity-75 font-bold text-xs leading-normal line-clamp-2">
+                        {m.description}
+                      </p>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </section>
+
+          {/* KATEGORİ 2: Terapi ve Oyun */}
+          <section className="space-y-6">
+            <div className="border-b border-zinc-200 dark:border-zinc-800 pb-3 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+              <div>
+                <span className="text-[10px] font-black text-blue-500 uppercase tracking-[0.25em] bg-blue-500/10 px-3 py-1 rounded-full">
+                  Terapi & Dinlenme & Eğlence
+                </span>
+                <h2 className="text-2xl font-black text-zinc-800 dark:text-zinc-100 tracking-tight mt-2.5">
+                  Terapi ve Oyun
+                </h2>
+              </div>
+              <p className="text-zinc-400 font-bold text-xs sm:text-sm">Müzik terapisi, duyusal odalar ve sosyal hikayeler</p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {therapyModules.map((m, idx) => (
+                <motion.div
+                  key={m.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.04 }}
+                  className="h-full"
+                >
+                  <Link
+                    href={m.href}
+                    className={cn(
+                      "group flex flex-col items-start justify-between p-6 sm:p-7 rounded-[2rem] border-2 transition-all active:scale-[0.98] shadow-sm hover:shadow-xl hover:-translate-y-1 relative overflow-hidden h-full min-h-[220px]",
+                      m.color
+                    )}
+                  >
+                    {/* İkon */}
+                    <div className="p-4 rounded-2xl bg-white/95 dark:bg-black/25 shadow-sm group-hover:scale-110 transition-transform group-hover:rotate-3 relative z-10 mb-4">
+                      <m.icon size={26} />
+                    </div>
+                    
+                    {/* Metinler */}
+                    <div className="relative z-10 w-full mt-auto">
+                      <h3 className="text-lg font-black mb-1.5 tracking-tight group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors line-clamp-2">
+                        {m.title}
+                      </h3>
+                      <p className="opacity-75 font-bold text-xs leading-normal line-clamp-2">
+                        {m.description}
+                      </p>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </section>
+
+          {/* KATEGORİ 3: Rehberlik ve Takip */}
+          <section className="space-y-6">
+            <div className="border-b border-zinc-200 dark:border-zinc-800 pb-3 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+              <div>
+                <span className="text-[10px] font-black text-amber-500 uppercase tracking-[0.25em] bg-amber-500/10 px-3 py-1 rounded-full">
+                  Veli Destek, Takvim & Kılavuzlar
+                </span>
+                <h2 className="text-2xl font-black text-zinc-800 dark:text-zinc-100 tracking-tight mt-2.5">
+                  Rehberlik ve Takip
+                </h2>
+              </div>
+              <p className="text-zinc-400 font-bold text-xs sm:text-sm">Otizm spektrum bilgilendirmeleri, takvim ve tıp makaleleri</p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {guidanceModules.map((m, idx) => (
+                <motion.div
+                  key={m.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.04 }}
+                  className="h-full"
+                >
+                  <Link
+                    href={m.href}
+                    className={cn(
+                      "group flex flex-col items-start justify-between p-6 sm:p-7 rounded-[2rem] border-2 transition-all active:scale-[0.98] shadow-sm hover:shadow-xl hover:-translate-y-1 relative overflow-hidden h-full min-h-[220px]",
+                      m.color
+                    )}
+                  >
+                    {/* İkon */}
+                    <div className="p-4 rounded-2xl bg-white/95 dark:bg-black/25 shadow-sm group-hover:scale-110 transition-transform group-hover:rotate-3 relative z-10 mb-4">
+                      <m.icon size={26} />
+                    </div>
+                    
+                    {/* Metinler */}
+                    <div className="relative z-10 w-full mt-auto">
+                      <h3 className="text-lg font-black mb-1.5 tracking-tight group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors line-clamp-2">
+                        {m.title}
+                      </h3>
+                      <p className="opacity-75 font-bold text-xs leading-normal line-clamp-2">
+                        {m.description}
+                      </p>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </section>
         </main>
       </div>
 
@@ -1008,7 +1241,13 @@ export default function Home() {
             <img src="/otizeka-logo.png" alt="OtiZeka" className="h-4 w-auto grayscale opacity-50" />
             <span>© 2026 OtiZeka</span>
           </div>
-          <p>Tüm Hakları Saklıdır</p>
+          <div className="flex items-center gap-4">
+            <Link href="/gizlilik" className="hover:text-emerald-500 underline transition-colors normal-case">
+              Gizlilik Politikası
+            </Link>
+            <span className="hidden sm:inline text-zinc-700">|</span>
+            <p>Tüm Hakları Saklıdır</p>
+          </div>
         </div>
       </footer>
     </div>

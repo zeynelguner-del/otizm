@@ -7,22 +7,29 @@ import 'features/auth/auth_page.dart';
 import 'features/family/family_page.dart';
 import 'features/home/home_page.dart';
 import 'features/modules/module_page.dart';
+import 'features/splash/splash_page.dart';
 import 'state/session_controller.dart';
 
 final _routerProvider = Provider<GoRouter>((ref) {
   final session = ref.watch(sessionControllerProvider);
   final sessionListenable = ref.watch(sessionControllerProvider.notifier);
   return GoRouter(
-    initialLocation: '/home',
+    initialLocation: '/splash',
     refreshListenable: sessionListenable,
     redirect: (context, state) {
       final isLoggedIn = session.valueOrNull?.email != null;
       final goingAuth = state.matchedLocation == '/auth';
+      final goingSplash = state.matchedLocation == '/splash';
+      
+      // If we are currently showing splash, do not redirect immediately.
+      if (goingSplash) return null;
+      
       if (!isLoggedIn && !goingAuth) return '/auth';
       if (isLoggedIn && goingAuth) return '/home';
       return null;
     },
     routes: [
+      GoRoute(path: '/splash', builder: (context, state) => const SplashPage()),
       GoRoute(path: '/auth', builder: (context, state) => const AuthPage()),
       GoRoute(path: '/home', builder: (context, state) => const HomePage()),
       GoRoute(path: '/family', builder: (context, state) => const FamilyPage()),
@@ -44,6 +51,7 @@ class App extends ConsumerWidget {
     ref.watch(sessionControllerProvider);
     return MaterialApp.router(
       title: 'OtiZeka',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
         colorSchemeSeed: const Color(0xFF10B981),

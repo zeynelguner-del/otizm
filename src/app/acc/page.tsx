@@ -290,6 +290,72 @@ export default function ACCPage() {
       </header>
 
       <main className="max-w-5xl mx-auto space-y-12">
+        {/* Resimli Kartlar / Kategoriler */}
+        {categories.map((category, idx) => (
+          <section key={idx}>
+            <h2 className="text-xl font-black text-zinc-400 uppercase tracking-widest mb-6 px-2">
+              {category.title}
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {category.cards.map((card, i) => (
+                <button
+                  key={card.id ?? i}
+                  onClick={() => speak(card.label)}
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    toggleFavorite(card.id);
+                  }}
+                  className={cn(
+                    "group flex flex-col items-center gap-6 p-8 rounded-[2.5rem] border-2 transition-all active:scale-90 shadow-sm hover:shadow-xl relative",
+                    card.color,
+                    favorites.includes(card.id) && "ring-4 ring-amber-400/30"
+                  )}
+                >
+                  {customCardIdSet.has(card.id) && (
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (!window.confirm("Bu kartı silmek istiyor musun?")) return;
+                        deleteCustomCard(card.id);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key !== "Enter" && e.key !== " ") return;
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (!window.confirm("Bu kartı silmek istiyor musun?")) return;
+                        deleteCustomCard(card.id);
+                      }}
+                      className="absolute top-5 left-5 text-xs font-black tracking-widest opacity-70 bg-white/70 dark:bg-black/20 px-3 py-1.5 rounded-full border border-white/50 dark:border-zinc-700/60 hover:opacity-100"
+                    >
+                      Sil
+                    </div>
+                  )}
+                  <div className="absolute top-5 right-5 text-xs font-black tracking-widest opacity-60">
+                    {favorites.includes(card.id) ? "★" : "☆"}
+                  </div>
+                  <div className="p-6 rounded-3xl bg-white/90 dark:bg-black/20 shadow-md group-hover:scale-110 transition-transform">
+                    {card.imageDataUrl ? (
+                      <img src={card.imageDataUrl} alt={card.label} className="w-12 h-12 object-cover rounded-xl" />
+                    ) : card.emoji ? (
+                      <span className="text-5xl leading-none">{card.emoji}</span>
+                    ) : card.icon ? (
+                      <card.icon size={48} />
+                    ) : (
+                      <MessageSquare size={48} />
+                    )}
+                  </div>
+                  <span className="text-xl font-black tracking-tight text-center leading-tight">
+                    {card.label}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </section>
+        ))}
+
+        {/* Cümle Kur */}
         <section className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-xl space-y-6">
           <h2 className="text-xl font-black text-zinc-400 uppercase tracking-widest px-2">Cümle Kur</h2>
 
@@ -432,6 +498,7 @@ export default function ACCPage() {
           </div>
         </section>
 
+        {/* Özel Kart Ekle */}
         <section className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-xl space-y-6">
           <h2 className="text-xl font-black text-zinc-400 uppercase tracking-widest px-2">Özel Kart Ekle</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -491,70 +558,6 @@ export default function ACCPage() {
             Kaydet
           </button>
         </section>
-
-        {categories.map((category, idx) => (
-          <section key={idx}>
-            <h2 className="text-xl font-black text-zinc-400 uppercase tracking-widest mb-6 px-2">
-              {category.title}
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {category.cards.map((card, i) => (
-                <button
-                  key={card.id ?? i}
-                  onClick={() => speak(card.label)}
-                  onContextMenu={(e) => {
-                    e.preventDefault();
-                    toggleFavorite(card.id);
-                  }}
-                  className={cn(
-                    "group flex flex-col items-center gap-6 p-8 rounded-[2.5rem] border-2 transition-all active:scale-90 shadow-sm hover:shadow-xl relative",
-                    card.color,
-                    favorites.includes(card.id) && "ring-4 ring-amber-400/30"
-                  )}
-                >
-                  {customCardIdSet.has(card.id) && (
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (!window.confirm("Bu kartı silmek istiyor musun?")) return;
-                        deleteCustomCard(card.id);
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key !== "Enter" && e.key !== " ") return;
-                        e.preventDefault();
-                        e.stopPropagation();
-                        if (!window.confirm("Bu kartı silmek istiyor musun?")) return;
-                        deleteCustomCard(card.id);
-                      }}
-                      className="absolute top-5 left-5 text-xs font-black tracking-widest opacity-70 bg-white/70 dark:bg-black/20 px-3 py-1.5 rounded-full border border-white/50 dark:border-zinc-700/60 hover:opacity-100"
-                    >
-                      Sil
-                    </div>
-                  )}
-                  <div className="absolute top-5 right-5 text-xs font-black tracking-widest opacity-60">
-                    {favorites.includes(card.id) ? "★" : "☆"}
-                  </div>
-                  <div className="p-6 rounded-3xl bg-white/90 dark:bg-black/20 shadow-md group-hover:scale-110 transition-transform">
-                    {card.imageDataUrl ? (
-                      <img src={card.imageDataUrl} alt={card.label} className="w-12 h-12 object-cover rounded-xl" />
-                    ) : card.emoji ? (
-                      <span className="text-5xl leading-none">{card.emoji}</span>
-                    ) : card.icon ? (
-                      <card.icon size={48} />
-                    ) : (
-                      <MessageSquare size={48} />
-                    )}
-                  </div>
-                  <span className="text-xl font-black tracking-tight text-center leading-tight">
-                    {card.label}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </section>
-        ))}
       </main>
 
       <footer className="max-w-5xl mx-auto mt-20 p-8 bg-zinc-100 dark:bg-white rounded-[2rem] text-center">

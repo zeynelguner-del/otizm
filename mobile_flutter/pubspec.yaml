@@ -1,7 +1,7 @@
 name: otizm_destek_app
 description: Otizm Destek Uygulaması (Flutter)
 publish_to: "none"
-version: 0.1.0+1
+version: 1.0.0+3
 
 environment:
   sdk: ">=3.5.0 <4.0.0"
@@ -21,6 +21,9 @@ dependencies:
   timezone: ^0.9.4
   flutter_timezone: ^1.0.8
   image_picker: ^1.1.2
+  audioplayers: ^6.6.0
+  flutter_tts: ^4.2.5
+  url_launcher: ^6.3.0
 
 dev_dependencies:
   flutter_test:
@@ -32,3 +35,15 @@ flutter:
   assets:
     - assets/loogo.png
     - assets/otizeka-logo.png
+    - assets/splash_logo.png
+    - assets/splash_text.png
+    - assets/splash_banner.png
+    - assets/imitation_idle.png
+    - assets/imitation_raise_arms.png
+    - assets/imitation_cross_arms.png
+    - assets/imitation_raise_hands.png
+    - assets/imitation_show_ear.png
+    - assets/imitation_close_eyes.png
+    - assets/imitation_show_nose.png
+    - assets/imitation_clap.png
+    - assets/imitation_jump.png

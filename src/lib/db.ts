@@ -66,5 +66,15 @@ export const ensureSchema = async () => {
     );
   `);
 
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS password_resets (
+      id TEXT PRIMARY KEY,
+      email TEXT NOT NULL,
+      code_hash TEXT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL,
+      expires_at TIMESTAMPTZ NOT NULL
+    );
+  `);
+
   schemaReady = true;
 };

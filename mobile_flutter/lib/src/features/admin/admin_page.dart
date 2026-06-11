@@ -10,27 +10,19 @@ class AdminPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(title: const Text('Yönetim')),
-      body: FutureBuilder(
-        future: ref.read(apiClientProvider.future).then((api) => api.adminStats()),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            return Center(child: Text('Yetkiniz yok veya hata: ${snapshot.error}'));
-          }
-          final s = snapshot.data!;
-          return ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              _kpi('Toplam Kullanıcı', s.usersTotal),
-              _kpi('Aktif Oturum', s.sessionsActive),
-              _kpi('KVKK Kabul', s.kvkkAccepted),
-              _kpi('Kayıtlı Profil', s.profilesSaved),
-              _kpi('Son 7 Gün Kullanıcı', s.usersLast7Days),
-            ],
-          );
-        },
+      body: ref.watch(adminStatsProvider).when(
+        data: (s) => ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            _kpi('Toplam Kullanıcı', s.usersTotal),
+            _kpi('Aktif Oturum', s.sessionsActive),
+            _kpi('KVKK Kabul', s.kvkkAccepted),
+            _kpi('Kayıtlı Profil', s.profilesSaved),
+            _kpi('Son 7 Gün Kullanıcı', s.usersLast7Days),
+          ],
+        ),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, _) => Center(child: Text('Yetkiniz yok veya hata: $err')),
       ),
     );
   }

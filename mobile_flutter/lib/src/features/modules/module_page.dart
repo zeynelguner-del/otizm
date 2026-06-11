@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 import '../../core/notifications/notification_service.dart';
 import '../../core/storage/local_store.dart';
@@ -35,8 +38,51 @@ class ModulePage extends StatelessWidget {
         return 'Eğitim Hatırlatıcı';
       case 'sensory':
         return 'Duyusal Oda';
+      case 'objects':
+        return 'Nesneleri Tanıyalım';
+      case 'sentence_sounds':
+        return 'Cümle Kur - Sesleri Tanıyalım';
+      case 'imitation':
+        return 'Taklit Oyunu';
       default:
         return 'Modül';
+    }
+  }
+
+  Color get moduleColor {
+    switch (moduleKey) {
+      case 'info':
+        return const Color(0xFF2563EB);
+      case 'osb':
+        return const Color(0xFF0891B2);
+      case 'osb_research':
+        return const Color(0xFF0D9488);
+      case 'education':
+        return const Color(0xFF7C3AED);
+      case 'emotions':
+        return const Color(0xFFE11D48);
+      case 'games':
+        return const Color(0xFF0284C7);
+      case 'stories':
+        return const Color(0xFF059669);
+      case 'music':
+        return const Color(0xFF4F46E5);
+      case 'acc':
+        return const Color(0xFFD97706);
+      case 'calendar':
+        return const Color(0xFFEA580C);
+      case 'education_reminder':
+        return const Color(0xFF047857);
+      case 'sensory':
+        return const Color(0xFF0891B2);
+      case 'objects':
+        return const Color(0xFFEC4899);
+      case 'sentence_sounds':
+        return const Color(0xFF8B5CF6);
+      case 'imitation':
+        return const Color(0xFF10B981);
+      default:
+        return const Color(0xFF18181B);
     }
   }
 
@@ -80,12 +126,36 @@ class ModulePage extends StatelessWidget {
       case 'sensory':
         body = const _SensoryModuleBody();
         break;
+      case 'objects':
+        body = const _ObjectsModuleBody();
+        break;
+      case 'sentence_sounds':
+        body = const _SentenceSoundsModuleBody();
+        break;
+      case 'imitation':
+        body = const _ImitationModuleBody();
+        break;
       default:
         body = _ComingSoonBody(title: title);
         break;
     }
 
-    return Scaffold(appBar: AppBar(title: Text(title)), body: body);
+    final color = moduleColor;
+
+    return Scaffold(
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: color),
+        title: Text(
+          title,
+          style: TextStyle(
+            fontWeight: FontWeight.w900,
+            letterSpacing: -0.5,
+            color: color,
+          ),
+        ),
+      ),
+      body: body,
+    );
   }
 }
 
@@ -252,6 +322,7 @@ class _InfoModuleBody extends StatelessWidget {
           title: 'Öne Çıkan Rehber',
           subtitle: featuredTitle,
           onTap: () => _openDetail(context, featuredTitle, featuredContent),
+          showReadMore: true,
         ),
         const SizedBox(height: 16),
         const Text('Kategoriler', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
@@ -263,6 +334,7 @@ class _InfoModuleBody extends StatelessWidget {
               title: c.title,
               subtitle: c.description,
               onTap: () => _openDetail(context, c.title, c.content),
+              showReadMore: true,
             ),
           ),
         ),
@@ -367,6 +439,7 @@ class _OsbModuleBody extends StatelessWidget {
           title: 'Kısa Özet',
           subtitle: summary,
           onTap: () => _openDetail(context, 'Kısa Özet', summary),
+          showReadMore: true,
         ),
         const SizedBox(height: 16),
         const Text('Başlıklar', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
@@ -378,6 +451,7 @@ class _OsbModuleBody extends StatelessWidget {
               title: s.title,
               subtitle: s.description,
               onTap: () => _openDetail(context, s.title, s.content),
+              showReadMore: true,
             ),
           ),
         ),
@@ -386,6 +460,7 @@ class _OsbModuleBody extends StatelessWidget {
           title: 'Kaynaklar',
           subtitle: 'Bilgi amaçlı bağlantılar (kopyalayıp tarayıcıda açabilirsiniz).',
           onTap: () => _openDetail(context, 'Kaynaklar', sources),
+          showReadMore: true,
         ),
       ],
     );
@@ -540,6 +615,7 @@ class _OsbResearchModuleBody extends StatelessWidget {
           title: 'Kısa Özet',
           subtitle: summary,
           onTap: () => _openDetail(context, 'Kısa Özet', summary),
+          showReadMore: true,
         ),
         const SizedBox(height: 16),
         const Text('Başlıklar', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
@@ -551,6 +627,7 @@ class _OsbResearchModuleBody extends StatelessWidget {
               title: s.title,
               subtitle: s.description,
               onTap: () => _openDetail(context, s.title, s.content),
+              showReadMore: true,
             ),
           ),
         ),
@@ -647,6 +724,7 @@ class _EducationModuleBody extends StatelessWidget {
           title: 'Kısa Özet',
           subtitle: summary,
           onTap: () => _openDetail(context, 'Kısa Özet', summary),
+          showReadMore: true,
         ),
         const SizedBox(height: 16),
         const Text('Başlıklar', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
@@ -658,6 +736,7 @@ class _EducationModuleBody extends StatelessWidget {
               title: s.title,
               subtitle: s.description,
               onTap: () => _openDetail(context, s.title, s.content),
+              showReadMore: true,
             ),
           ),
         ),
@@ -1264,22 +1343,78 @@ class _MusicModuleBodyState extends State<_MusicModuleBody> {
   Timer? _timer;
   _MusicTrack? _now;
   int _remaining = 0;
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
   static const _tracks = <_MusicTrack>[
-    _MusicTrack(title: 'Sakinleştirici Melodi', duration: '3:45', category: 'Müzik', description: 'Sakinleşme ve gevşeme için.'),
-    _MusicTrack(title: 'Odak Ritmi', duration: '5:20', category: 'Müzik', description: 'Dikkati toplamak için ritim.'),
-    _MusicTrack(title: 'Neşeli Çocuk Melodisi', duration: '2:15', category: 'Müzik', description: 'Hareket ve motivasyon için.'),
-    _MusicTrack(title: 'Deniz Sesi', duration: '10:00', category: 'Uyku', description: 'Uyku öncesi rahatlatıcı ortam sesi.'),
-    _MusicTrack(title: 'Yağmur Sesi', duration: '10:00', category: 'Sakinleşme', description: 'Sakinleşme için arka plan sesi.'),
-    _MusicTrack(title: 'Rüzgar Sesi', duration: '10:00', category: 'Sakinleşme', description: 'Hafif rüzgar ortam sesi.'),
-    _MusicTrack(title: 'Beyaz Gürültü', duration: '10:00', category: 'Odak', description: 'Odak için sabit gürültü.'),
-    _MusicTrack(title: 'Pembe Gürültü', duration: '10:00', category: 'Odak', description: 'Daha yumuşak gürültü profili.'),
-    _MusicTrack(title: 'Kahverengi Gürültü', duration: '10:00', category: 'Uyku', description: 'Derin, düşük frekanslı gürültü.'),
+    _MusicTrack(
+      title: 'Sakinleştirici Melodi',
+      duration: '7:20',
+      category: 'Müzik',
+      description: 'Zihni dinlendiren, sakinleşme ve gevşeme sağlayan huzurlu neoclassical ambient piyano melodisi.',
+      url: 'https://upload.wikimedia.org/wikipedia/commons/9/95/Scott_Buckley_%E2%80%93_The_Long_Dark_%28Ambient_Neoclassical_Piano%29.ogg',
+    ),
+    _MusicTrack(
+      title: 'Odak Ritmi',
+      duration: '2:10',
+      category: 'Müzik',
+      description: 'Bach\'ın meşhur çello süiti prélude eşliğinde dikkati toplayan ve zihinsel odaklanma sağlayan ritmik klasik odak müziği.',
+      url: 'https://upload.wikimedia.org/wikipedia/commons/4/43/JOHN_MICHEL_CELLO-J_S_BACH_CELLO_SUITE_1_in_G_Prelude.ogg',
+    ),
+    _MusicTrack(
+      title: 'Neşeli Çocuk Melodisi',
+      duration: '0:24',
+      category: 'Müzik',
+      description: 'Çocuklar için neşeli, tatlı ve hareketli klasik "Twinkle Twinkle Little Star" çocuk melodisi.',
+      url: 'https://upload.wikimedia.org/wikipedia/commons/b/bd/Twinkle_Twinkle_Little_Star_plain.ogg',
+    ),
+    _MusicTrack(
+      title: 'Deniz ve Dalga Sesi',
+      duration: '5:02',
+      category: 'Uyku',
+      description: 'Derin uyku öncesi sakinleştirici doğal sahil ve dalga sesleri.',
+      url: 'https://upload.wikimedia.org/wikipedia/commons/1/1f/Waves.ogg',
+    ),
+    _MusicTrack(
+      title: 'Hafif Yağmur Sesi',
+      duration: '6:03',
+      category: 'Sakinleşme',
+      description: 'Rahatlatıcı, stresi azaltan doğal orman yağmuru sesi.',
+      url: 'https://upload.wikimedia.org/wikipedia/commons/3/3d/Rain.ogg',
+    ),
+    _MusicTrack(
+      title: 'Rüzgar Esintisi',
+      duration: '1:00',
+      category: 'Sakinleşme',
+      description: 'Doğal dinlendirici, çam ormanı içerisinden hafif ve huzurlu vadi rüzgarları.',
+      url: 'https://upload.wikimedia.org/wikipedia/commons/f/f3/Wind_in_Swedish_pine_forest_at_25_mps.ogg',
+    ),
+    _MusicTrack(
+      title: 'Beyaz Gürültü (White Noise)',
+      duration: '7:42',
+      category: 'Odak',
+      description: 'Uykuyu destekleyen ve arka plan gürültülerini maskeleyen sabit beyaz gürültü.',
+      url: 'https://upload.wikimedia.org/wikipedia/commons/a/aa/White_noise.ogg',
+    ),
+    _MusicTrack(
+      title: 'Pembe Gürültü (Pink Noise)',
+      duration: '5:38',
+      category: 'Odak',
+      description: 'Zihinsel odaklanma ve sakinleşme için daha dengeli, yumuşak gürültü profili.',
+      url: 'https://upload.wikimedia.org/wikipedia/commons/6/6c/Pink_noise.ogg',
+    ),
+    _MusicTrack(
+      title: 'Kahverengi Gürültü (Brown Noise)',
+      duration: '5:07',
+      category: 'Uyku',
+      description: 'Zihni tamamen sakinleştiren, derin bas frekanslı uyku gürültüsü.',
+      url: 'https://upload.wikimedia.org/wikipedia/commons/4/48/Brown_noise.ogg',
+    ),
   ];
 
   @override
   void dispose() {
     _timer?.cancel();
+    _audioPlayer.dispose();
     super.dispose();
   }
 
@@ -1291,8 +1426,14 @@ class _MusicModuleBodyState extends State<_MusicModuleBody> {
     return m * 60 + s;
   }
 
-  void _start(_MusicTrack t) {
+  void _start(_MusicTrack t) async {
     _timer?.cancel();
+    try {
+      await _audioPlayer.stop();
+      await _audioPlayer.play(UrlSource(t.url));
+    } catch (e) {
+      debugPrint("Ses oynatilamadi: $e");
+    }
     setState(() {
       _now = t;
       _remaining = _parseDurationToSeconds(t.duration);
@@ -1303,13 +1444,17 @@ class _MusicModuleBodyState extends State<_MusicModuleBody> {
         _remaining = max(0, _remaining - 1);
         if (_remaining <= 0) {
           _timer?.cancel();
+          _stop();
         }
       });
     });
   }
 
-  void _stop() {
+  void _stop() async {
     _timer?.cancel();
+    try {
+      await _audioPlayer.stop();
+    } catch (_) {}
     setState(() {
       _now = null;
       _remaining = 0;
@@ -1318,78 +1463,228 @@ class _MusicModuleBodyState extends State<_MusicModuleBody> {
 
   @override
   Widget build(BuildContext context) {
-    final now = _now;
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Card(
-          elevation: 0,
-          color: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
-            side: const BorderSide(color: Color(0xFFE4E4E7)),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(14),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Şu an', style: TextStyle(fontWeight: FontWeight.w900)),
-                const SizedBox(height: 8),
-                Text(now?.title ?? 'Seçilmedi', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900)),
-                const SizedBox(height: 6),
-                Text(
-                  now == null ? 'Bir parça seçip başlatabilirsin.' : 'Kalan süre: ${_formatMmSs(_remaining)}',
-                  style: const TextStyle(fontWeight: FontWeight.w800, color: Color(0xFF52525B)),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: now == null ? null : _stop,
-                        icon: const Icon(Icons.stop),
-                        label: const Text('Durdur'),
+        const Text(
+          'Müzik ve Rahatlatıcı Sesler',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+        ),
+        const SizedBox(height: 8),
+        const Text(
+          'Sakinleşme, odaklanma veya uyku öncesi için uygun bir ses seçip başlatabilirsiniz.',
+          style: TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF6B7280)),
+        ),
+        const SizedBox(height: 20),
+        ..._tracks.map((t) {
+          final isPlaying = _now == t;
+          final totalSec = _parseDurationToSeconds(t.duration);
+          final progress = totalSec == 0 ? 0.0 : (totalSec - _remaining) / totalSec;
+
+          // Map categories to beautiful modern icons
+          final IconData categoryIcon;
+          final Color categoryColor;
+          switch (t.category) {
+            case 'Müzik':
+              categoryIcon = Icons.music_note_rounded;
+              categoryColor = const Color(0xFF3B82F6);
+              break;
+            case 'Uyku':
+              categoryIcon = Icons.nightlight_round_rounded;
+              categoryColor = const Color(0xFF6366F1);
+              break;
+            case 'Sakinleşme':
+              categoryIcon = Icons.spa_rounded;
+              categoryColor = const Color(0xFF10B981);
+              break;
+            case 'Odak':
+              categoryIcon = Icons.center_focus_strong_rounded;
+              categoryColor = const Color(0xFFF59E0B);
+              break;
+            default:
+              categoryIcon = Icons.audiotrack_rounded;
+              categoryColor = const Color(0xFF6B7280);
+          }
+
+          return Card(
+            elevation: 0,
+            margin: const EdgeInsets.only(bottom: 14),
+            color: isPlaying ? const Color(0xFFF0FDF4) : Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+              side: BorderSide(
+                color: isPlaying ? const Color(0xFF10B981) : const Color(0xFFE4E4E7),
+                width: isPlaying ? 2.0 : 1.5,
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: isPlaying
+                              ? const Color(0xFFD1FAE5)
+                              : categoryColor.withOpacity(0.08),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          categoryIcon,
+                          color: isPlaying ? const Color(0xFF047857) : categoryColor,
+                          size: 26,
+                        ),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              t.title,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w900,
+                                color: isPlaying
+                                    ? const Color(0xFF065F46)
+                                    : const Color(0xFF1F2937),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '${t.category} • Süre: ${t.duration}',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w800,
+                                color: isPlaying
+                                    ? const Color(0xFF047857).withOpacity(0.8)
+                                    : const Color(0xFF6B7280),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      // Play/Stop Action Button directly on the card
+                      isPlaying
+                          ? ElevatedButton.icon(
+                              onPressed: _stop,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFFFECDD3),
+                                foregroundColor: const Color(0xFF9F1239),
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                  horizontal: 14,
+                                ),
+                              ),
+                              icon: const Icon(Icons.stop_rounded, size: 18),
+                              label: const Text(
+                                'Bitir',
+                                style: TextStyle(fontWeight: FontWeight.w900),
+                              ),
+                            )
+                          : OutlinedButton.icon(
+                              onPressed: () => _start(t),
+                              style: OutlinedButton.styleFrom(
+                                side: const BorderSide(
+                                  color: Color(0xFFE4E4E7),
+                                  width: 1.5,
+                                ),
+                                foregroundColor: const Color(0xFF1F2937),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                  horizontal: 14,
+                                ),
+                              ),
+                              icon: const Icon(
+                                Icons.play_arrow_rounded,
+                                color: Color(0xFF10B981),
+                                size: 18,
+                              ),
+                              label: const Text(
+                                'Başlat',
+                                style: TextStyle(fontWeight: FontWeight.w900),
+                              ),
+                            ),
+                    ],
+                  ),
+                  if (isPlaying) ...[
+                    const SizedBox(height: 14),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: LinearProgressIndicator(
+                        value: progress,
+                        minHeight: 6,
+                        backgroundColor: const Color(0xFFD1FAE5),
+                        color: const Color(0xFF10B981),
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: () => _openDetail(
-                          context,
-                          'Ritim Önerisi',
-                          '3 tur nefes egzersizi:\n'
-                              '- 4 saniye nefes al\n'
-                              '- 4 saniye tut\n'
-                              '- 6 saniye ver\n\n'
-                              'İstersen sevdiğin bir parçayı açıp tekrar edebilirsin.',
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Kalan Süre: ${_formatMmSs(_remaining)}',
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w900,
+                            color: Color(0xFF047857),
+                          ),
                         ),
-                        icon: const Icon(Icons.self_improvement),
-                        label: const Text('Nefes'),
-                      ),
+                        const Row(
+                          children: [
+                            SizedBox(
+                              width: 8,
+                              height: 8,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Color(0xFF10B981),
+                              ),
+                            ),
+                            SizedBox(width: 6),
+                            Text(
+                              'Çalıyor...',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w900,
+                                color: Color(0xFF047857),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ],
-                ),
-              ],
+                  const SizedBox(height: 10),
+                  const Divider(height: 1, color: Color(0xFFF4F4F5)),
+                  const SizedBox(height: 8),
+                  Text(
+                    t.description,
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.w700,
+                      color: isPlaying
+                          ? const Color(0xFF047857).withOpacity(0.8)
+                          : const Color(0xFF6B7280),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ),
-        const SizedBox(height: 16),
-        const Text('Parçalar', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
-        const SizedBox(height: 12),
-        ..._tracks.map(
-          (t) => Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: _SectionCard(
-              title: '${t.title} • ${t.duration}',
-              subtitle: '${t.category} • ${t.description}',
-              onTap: () {
-                _openDetail(context, t.title, '${t.category}\nSüre: ${t.duration}\n\n${t.description}');
-                _start(t);
-              },
-            ),
-          ),
-        ),
+          );
+        }),
       ],
     );
   }
@@ -1408,54 +1703,238 @@ class _AccModuleBodyState extends State<_AccModuleBody> with SingleTickerProvide
   final List<String> _sentence = [];
   bool _loaded = false;
 
+  static const _ttsChannel = MethodChannel('com.otizmdestekapp.otizmfarkindalik/tts');
+
+  Future<void> _speak(String text) async {
+    try {
+      await _ttsChannel.invokeMethod('speak', {'text': text});
+    } catch (e) {
+      debugPrint('TTS Error: $e');
+    }
+  }
+
   static const _categories = <_AccCategory>[
     _AccCategory(
       title: 'Temel İhtiyaçlar',
       cards: [
-        _AccCard(label: 'Su', emoji: '💧'),
-        _AccCard(label: 'Acıktım', emoji: '🍽️'),
-        _AccCard(label: 'Tuvalet', emoji: '🚻'),
-        _AccCard(label: 'Uykum Geldi', emoji: '🌙'),
-        _AccCard(label: 'Ara Vermek', emoji: '⏸️'),
-        _AccCard(label: 'Yardım', emoji: '🆘'),
-        _AccCard(label: 'Sarılmak', emoji: '🫂'),
+        _AccCard(
+          label: 'Su',
+          emoji: '💧',
+          backgroundColor: Color(0xFFDBEAFE),
+          borderColor: Color(0xFFBFDBFE),
+          textColor: Color(0xFF2563EB),
+        ),
+        _AccCard(
+          label: 'Acıktım',
+          emoji: '🍽️',
+          backgroundColor: Color(0xFFFFEDD5),
+          borderColor: Color(0xFFFED7AA),
+          textColor: Color(0xFFEA580C),
+        ),
+        _AccCard(
+          label: 'Tuvalet',
+          emoji: '🚻',
+          backgroundColor: Color(0xFFF4F4F5),
+          borderColor: Color(0xFFE4E4E7),
+          textColor: Color(0xFF52525B),
+        ),
+        _AccCard(
+          label: 'Uykum Geldi',
+          emoji: '🌙',
+          backgroundColor: Color(0xFFE0E7FF),
+          borderColor: Color(0xFFC7D2FE),
+          textColor: Color(0xFF4F46E5),
+        ),
+        _AccCard(
+          label: 'Ara Vermek',
+          emoji: '⏸️',
+          backgroundColor: Color(0xFFD1FAE5),
+          borderColor: Color(0xFFA7F3D0),
+          textColor: Color(0xFF059669),
+        ),
+        _AccCard(
+          label: 'Yardım',
+          emoji: '🆘',
+          backgroundColor: Color(0xFFFEF3C7),
+          borderColor: Color(0xFFFDE68A),
+          textColor: Color(0xFFD97706),
+        ),
+        _AccCard(
+          label: 'Sarılmak',
+          emoji: '🫂',
+          backgroundColor: Color(0xFFFFE4E6),
+          borderColor: Color(0xFFFECDD3),
+          textColor: Color(0xFFE11D48),
+        ),
       ],
     ),
     _AccCategory(
       title: 'Duygular',
       cards: [
-        _AccCard(label: 'Mutluyum', emoji: '😊'),
-        _AccCard(label: 'Üzgünüm', emoji: '😢'),
-        _AccCard(label: 'Korkuyorum', emoji: '😨'),
-        _AccCard(label: 'Heyecanlıyım', emoji: '🤩'),
-        _AccCard(label: 'Kızgınım', emoji: '😠'),
-        _AccCard(label: 'Sakinim', emoji: '🌿'),
-        _AccCard(label: 'Yorgunum', emoji: '😴'),
-        _AccCard(label: 'Şaşkınım', emoji: '😲'),
+        _AccCard(
+          label: 'Mutluyum',
+          emoji: '😊',
+          backgroundColor: Color(0xFFFEF08A),
+          borderColor: Color(0xFFFDE047),
+          textColor: Color(0xFFCA8A04),
+        ),
+        _AccCard(
+          label: 'Üzgünüm',
+          emoji: '😢',
+          backgroundColor: Color(0xFFDBEAFE),
+          borderColor: Color(0xFFBFDBFE),
+          textColor: Color(0xFF2563EB),
+        ),
+        _AccCard(
+          label: 'Korkuyorum',
+          emoji: '😨',
+          backgroundColor: Color(0xFFF3E8FF),
+          borderColor: Color(0xFFE9D5FF),
+          textColor: Color(0xFF9333EA),
+        ),
+        _AccCard(
+          label: 'Heyecanlıyım',
+          emoji: '🤩',
+          backgroundColor: Color(0xFFFFEDD5),
+          borderColor: Color(0xFFFED7AA),
+          textColor: Color(0xFFEA580C),
+        ),
+        _AccCard(
+          label: 'Kızgınım',
+          emoji: '😠',
+          backgroundColor: Color(0xFFFFE4E6),
+          borderColor: Color(0xFFFECDD3),
+          textColor: Color(0xFFE11D48),
+        ),
+        _AccCard(
+          label: 'Sakinim',
+          emoji: '🌿',
+          backgroundColor: Color(0xFFD1FAE5),
+          borderColor: Color(0xFFA7F3D0),
+          textColor: Color(0xFF059669),
+        ),
+        _AccCard(
+          label: 'Yorgunum',
+          emoji: '😴',
+          backgroundColor: Color(0xFFF4F4F5),
+          borderColor: Color(0xFFE4E4E7),
+          textColor: Color(0xFF3F3F46),
+        ),
+        _AccCard(
+          label: 'Şaşkınım',
+          emoji: '😲',
+          backgroundColor: Color(0xFFEDE9FE),
+          borderColor: Color(0xFFDDD6FE),
+          textColor: Color(0xFF6D28D9),
+        ),
       ],
     ),
     _AccCategory(
       title: 'Yer ve Eylem',
       cards: [
-        _AccCard(label: 'Eve Gidelim', emoji: '🏠'),
-        _AccCard(label: 'Dışarı Çıkalım', emoji: '🚪'),
-        _AccCard(label: 'Giyinmek', emoji: '👕'),
-        _AccCard(label: 'Parka Gidelim', emoji: '🌳'),
-        _AccCard(label: 'Okula Gidelim', emoji: '🏫'),
-        _AccCard(label: 'Müzik Aç', emoji: '🎵'),
-        _AccCard(label: 'Oyun Oynamak', emoji: '🎮'),
-        _AccCard(label: 'Takvime Bakalım', emoji: '📅'),
+        _AccCard(
+          label: 'Eve Gidelim',
+          emoji: '🏠',
+          backgroundColor: Color(0xFFD1FAE5),
+          borderColor: Color(0xFFA7F3D0),
+          textColor: Color(0xFF059669),
+        ),
+        _AccCard(
+          label: 'Dışarı Çıkalım',
+          emoji: '🚪',
+          backgroundColor: Color(0xFFFFE4E6),
+          borderColor: Color(0xFFFECDD3),
+          textColor: Color(0xFFE11D48),
+        ),
+        _AccCard(
+          label: 'Giyinmek',
+          emoji: '👕',
+          backgroundColor: Color(0xFFE0F2FE),
+          borderColor: Color(0xFFBAE6FD),
+          textColor: Color(0xFF0284C7),
+        ),
+        _AccCard(
+          label: 'Parka Gidelim',
+          emoji: '🌳',
+          backgroundColor: Color(0xFFFEF3C7),
+          borderColor: Color(0xFFFDE68A),
+          textColor: Color(0xFFD97706),
+        ),
+        _AccCard(
+          label: 'Okula Gidelim',
+          emoji: '🏫',
+          backgroundColor: Color(0xFFE0E7FF),
+          borderColor: Color(0xFFC7D2FE),
+          textColor: Color(0xFF4F46E5),
+        ),
+        _AccCard(
+          label: 'Müzik Aç',
+          emoji: '🎵',
+          backgroundColor: Color(0xFFF3E8FF),
+          borderColor: Color(0xFFE9D5FF),
+          textColor: Color(0xFF9333EA),
+        ),
+        _AccCard(
+          label: 'Oyun Oynamak',
+          emoji: '🎮',
+          backgroundColor: Color(0xFFE0F2FE),
+          borderColor: Color(0xFFBAE6FD),
+          textColor: Color(0xFF0284C7),
+        ),
+        _AccCard(
+          label: 'Takvime Bakalım',
+          emoji: '📅',
+          backgroundColor: Color(0xFFFEF3C7),
+          borderColor: Color(0xFFFDE68A),
+          textColor: Color(0xFFB45309),
+        ),
       ],
     ),
     _AccCategory(
       title: 'İletişim',
       cards: [
-        _AccCard(label: 'Ben', emoji: '🧑'),
-        _AccCard(label: 'Lütfen', emoji: '🙏'),
-        _AccCard(label: 'Teşekkür Ederim', emoji: '💗'),
-        _AccCard(label: 'Evet', emoji: '✅'),
-        _AccCard(label: 'Hayır', emoji: '❌'),
-        _AccCard(label: 'Telefon', emoji: '📞'),
+        _AccCard(
+          label: 'Ben',
+          emoji: '🧑',
+          backgroundColor: Color(0xFFF4F4F5),
+          borderColor: Color(0xFFE4E4E7),
+          textColor: Color(0xFF3F3F46),
+        ),
+        _AccCard(
+          label: 'Lütfen',
+          emoji: '🙏',
+          backgroundColor: Color(0xFFFEF3C7),
+          borderColor: Color(0xFFFDE68A),
+          textColor: Color(0xFFB45309),
+        ),
+        _AccCard(
+          label: 'Teşekkür Ederim',
+          emoji: '💗',
+          backgroundColor: Color(0xFFFFE4E6),
+          borderColor: Color(0xFFFECDD3),
+          textColor: Color(0xFFE11D48),
+        ),
+        _AccCard(
+          label: 'Evet',
+          emoji: '✅',
+          backgroundColor: Color(0xFFD1FAE5),
+          borderColor: Color(0xFFA7F3D0),
+          textColor: Color(0xFF059669),
+        ),
+        _AccCard(
+          label: 'Hayır',
+          emoji: '❌',
+          backgroundColor: Color(0xFFFFE4E6),
+          borderColor: Color(0xFFFECDD3),
+          textColor: Color(0xFFE11D48),
+        ),
+        _AccCard(
+          label: 'Telefon',
+          emoji: '📞',
+          backgroundColor: Color(0xFFD1FAE5),
+          borderColor: Color(0xFFA7F3D0),
+          textColor: Color(0xFF047857),
+        ),
       ],
     ),
   ];
@@ -1516,6 +1995,7 @@ class _AccModuleBodyState extends State<_AccModuleBody> with SingleTickerProvide
       _message = c.label;
       _sentence.add(c.label);
     });
+    _speak(c.label);
     Future.microtask(_persist);
   }
 
@@ -1553,13 +2033,28 @@ class _AccModuleBodyState extends State<_AccModuleBody> with SingleTickerProvide
               ),
               const SizedBox(height: 12),
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                 decoration: BoxDecoration(
                   color: const Color(0xFFF4F4F5),
                   borderRadius: BorderRadius.circular(18),
                   border: Border.all(color: const Color(0xFFE4E4E7)),
                 ),
-                child: Text(sentenceText, style: const TextStyle(fontWeight: FontWeight.w900)),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        sentenceText,
+                        style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 15),
+                      ),
+                    ),
+                    if (_sentence.isNotEmpty)
+                      IconButton(
+                        icon: const Icon(Icons.volume_up, color: Color(0xFFD97706)),
+                        onPressed: () => _speak(_sentence.join(' ')),
+                        tooltip: 'Cümleyi Oku',
+                      ),
+                  ],
+                ),
               ),
               const SizedBox(height: 12),
               Row(
@@ -1596,30 +2091,34 @@ class _AccModuleBodyState extends State<_AccModuleBody> with SingleTickerProvide
               return GridView.count(
                 padding: const EdgeInsets.all(16),
                 crossAxisCount: MediaQuery.of(context).size.width >= 720 ? 4 : 3,
-                mainAxisSpacing: 12,
-                crossAxisSpacing: 12,
-                childAspectRatio: 1.1,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
+                childAspectRatio: 0.92,
                 children: cat.cards.map((c) {
                   return InkWell(
                     borderRadius: BorderRadius.circular(18),
                     onTap: () => _tapCard(c),
                     child: Ink(
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: c.backgroundColor,
                         borderRadius: BorderRadius.circular(18),
-                        border: Border.all(color: const Color(0xFFE4E4E7), width: 2),
+                        border: Border.all(color: c.borderColor, width: 2),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(12),
+                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(c.emoji, style: const TextStyle(fontSize: 34)),
-                            const SizedBox(height: 10),
+                            Text(c.emoji, style: const TextStyle(fontSize: 28)),
+                            const SizedBox(height: 6),
                             Text(
                               c.label,
                               textAlign: TextAlign.center,
-                              style: const TextStyle(fontWeight: FontWeight.w900),
+                              style: TextStyle(
+                                fontWeight: FontWeight.w900,
+                                fontSize: 11.5,
+                                color: c.textColor,
+                              ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -1984,6 +2483,12 @@ class _GamesModuleBody extends StatelessWidget {
         icon: Icons.category,
         open: () => _pushGame(context, const _ShapesGamePage()),
       ),
+      _GameItem(
+        title: 'Boyama Oyunu',
+        description: 'Şekilleri dilediğin renge boya',
+        icon: Icons.brush,
+        open: () => _pushGame(context, const _ColoringGamePage()),
+      ),
     ];
 
     return ListView(
@@ -2093,10 +2598,18 @@ class _EmotionsMatchGamePageState extends State<_EmotionsMatchGamePage> {
     return Scaffold(
       backgroundColor: const Color(0xFFFFF1F2), // rose-50
       appBar: AppBar(
-        title: const Text('Duyguları Eşleştir'),
+        iconTheme: const IconThemeData(color: Color(0xFF0284C7)),
+        title: const Text(
+          'Duyguları Eşleştir',
+          style: TextStyle(
+            fontWeight: FontWeight.w900,
+            letterSpacing: -0.5,
+            color: Color(0xFF0284C7),
+          ),
+        ),
         backgroundColor: Colors.white,
         actions: [
-          IconButton(icon: const Icon(Icons.refresh), onPressed: _resetGame),
+          IconButton(icon: const Icon(Icons.refresh, color: Color(0xFF0284C7)), onPressed: _resetGame),
         ],
       ),
       body: Center(
@@ -2269,7 +2782,17 @@ class _MatchingGamePageState extends State<_MatchingGamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Eşleştirme Oyunu')),
+      appBar: AppBar(
+        iconTheme: const IconThemeData(color: Color(0xFF0284C7)),
+        title: const Text(
+          'Eşleştirme Oyunu',
+          style: TextStyle(
+            fontWeight: FontWeight.w900,
+            letterSpacing: -0.5,
+            color: Color(0xFF0284C7),
+          ),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -2455,7 +2978,17 @@ class _MemoryGamePageState extends State<_MemoryGamePage> {
     final hasNext = done && _level < _maxLevel;
     final hasPrev = _level > 1;
     return Scaffold(
-      appBar: AppBar(title: const Text('Hafıza Kartları')),
+      appBar: AppBar(
+        iconTheme: const IconThemeData(color: Color(0xFF0284C7)),
+        title: const Text(
+          'Hafıza Kartları',
+          style: TextStyle(
+            fontWeight: FontWeight.w900,
+            letterSpacing: -0.5,
+            color: Color(0xFF0284C7),
+          ),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -2574,7 +3107,17 @@ class _CountingGamePageState extends State<_CountingGamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Sayı Saymaca')),
+      appBar: AppBar(
+        iconTheme: const IconThemeData(color: Color(0xFF0284C7)),
+        title: const Text(
+          'Sayı Saymaca',
+          style: TextStyle(
+            fontWeight: FontWeight.w900,
+            letterSpacing: -0.5,
+            color: Color(0xFF0284C7),
+          ),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -2674,7 +3217,17 @@ class _ColorsGamePageState extends State<_ColorsGamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Renkleri Bul')),
+      appBar: AppBar(
+        iconTheme: const IconThemeData(color: Color(0xFF0284C7)),
+        title: const Text(
+          'Renkleri Bul',
+          style: TextStyle(
+            fontWeight: FontWeight.w900,
+            letterSpacing: -0.5,
+            color: Color(0xFF0284C7),
+          ),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -2763,7 +3316,17 @@ class _ShapesGamePageState extends State<_ShapesGamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Şekilleri Tanı')),
+      appBar: AppBar(
+        iconTheme: const IconThemeData(color: Color(0xFF0284C7)),
+        title: const Text(
+          'Şekilleri Tanı',
+          style: TextStyle(
+            fontWeight: FontWeight.w900,
+            letterSpacing: -0.5,
+            color: Color(0xFF0284C7),
+          ),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -2800,6 +3363,239 @@ class _ShapesGamePageState extends State<_ShapesGamePage> {
         ),
       ),
     );
+  }
+}
+
+class _ColoringGamePage extends StatefulWidget {
+  const _ColoringGamePage();
+
+  @override
+  State<_ColoringGamePage> createState() => _ColoringGamePageState();
+}
+
+class _ColoringGamePageState extends State<_ColoringGamePage> {
+  static const _colors = <({String name, Color value})>[
+    (name: 'Kırmızı', value: Color(0xFFEF4444)),
+    (name: 'Sarı', value: Color(0xFFEAB308)),
+    (name: 'Mavi', value: Color(0xFF3B82F6)),
+    (name: 'Yeşil', value: Color(0xFF22C55E)),
+    (name: 'Mor', value: Color(0xFFA855F7)),
+    (name: 'Pembe', value: Color(0xFFEC4899)),
+  ];
+
+  Color _selectedColor = const Color(0xFFEF4444);
+  final Map<String, Color> _paintedColors = {
+    'circle': Colors.white,
+    'square': Colors.white,
+    'triangle': Colors.white,
+  };
+
+  void _paint(String shapeId) {
+    setState(() {
+      _paintedColors[shapeId] = _selectedColor;
+    });
+  }
+
+  void _reset() {
+    setState(() {
+      _paintedColors['circle'] = Colors.white;
+      _paintedColors['square'] = Colors.white;
+      _paintedColors['triangle'] = Colors.white;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFF1F2), // rose-50
+      appBar: AppBar(
+        iconTheme: const IconThemeData(color: Color(0xFF0284C7)),
+        title: const Text(
+          'Renkleri Boya',
+          style: TextStyle(
+            fontWeight: FontWeight.w900,
+            letterSpacing: -0.5,
+            color: Color(0xFF0284C7),
+          ),
+        ),
+        backgroundColor: Colors.white,
+        actions: [
+          IconButton(icon: const Icon(Icons.refresh, color: Color(0xFF0284C7)), onPressed: _reset),
+        ],
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          Card(
+            elevation: 0,
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(24),
+              side: BorderSide(color: Colors.grey.shade200, width: 1.5),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Row(
+                    children: [
+                      Icon(Icons.palette, color: Color(0xFFEC4899)),
+                      SizedBox(width: 8),
+                      Text(
+                        'Renk Seç',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: _colors.map((c) {
+                      final selected = _selectedColor == c.value;
+                      return ChoiceChip(
+                        label: Text(c.name, style: TextStyle(fontWeight: FontWeight.w800, color: selected ? Colors.white : Colors.black87)),
+                        selected: selected,
+                        selectedColor: c.value,
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          side: BorderSide(color: selected ? c.value : Colors.grey.shade300, width: 1.5),
+                        ),
+                        onSelected: (v) {
+                          if (v) setState(() => _selectedColor = c.value);
+                        },
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Şekle dokun ve boya',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 16),
+          Wrap(
+            spacing: 16,
+            runSpacing: 16,
+            alignment: WrapAlignment.center,
+            children: [
+              _buildShapeCard(
+                label: 'Daire',
+                onTap: () => _paint('circle'),
+                child: Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: _paintedColors['circle'],
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.grey.shade300, width: 4),
+                  ),
+                ),
+              ),
+              _buildShapeCard(
+                label: 'Kare',
+                onTap: () => _paint('square'),
+                child: Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: _paintedColors['square'],
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey.shade300, width: 4),
+                  ),
+                ),
+              ),
+              _buildShapeCard(
+                label: 'Üçgen',
+                onTap: () => _paint('triangle'),
+                child: SizedBox(
+                  width: 80,
+                  height: 80,
+                  child: CustomPaint(
+                    painter: _TrianglePainter(_paintedColors['triangle']!),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildShapeCard({required String label, required Widget child, required VoidCallback onTap}) {
+    return SizedBox(
+      width: (MediaQuery.of(context).size.width - 16 * 2 - 16) / 2 - 8,
+      child: Card(
+        elevation: 0,
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+          side: BorderSide(color: Colors.grey.shade200, width: 1.5),
+        ),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(24),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  height: 90,
+                  alignment: Alignment.center,
+                  child: child,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  label,
+                  style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TrianglePainter extends CustomPainter {
+  final Color color;
+  _TrianglePainter(this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+
+    final path = Path()
+      ..moveTo(size.width / 2, 0)
+      ..lineTo(size.width, size.height)
+      ..lineTo(0, size.height)
+      ..close();
+
+    canvas.drawPath(path, paint);
+
+    final strokePaint = Paint()
+      ..color = Colors.grey.shade300
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4
+      ..strokeJoin = StrokeJoin.round;
+
+    canvas.drawPath(path, strokePaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _TrianglePainter oldDelegate) {
+    return oldDelegate.color != color;
   }
 }
 
@@ -3069,26 +3865,24 @@ class _EducationReminderModuleBodyState extends State<_EducationReminderModuleBo
                 style: const TextStyle(fontWeight: FontWeight.w700),
               ),
               isThreeLine: d.enabled,
-              leading: Switch(
-                value: d.enabled,
-                onChanged: (v) => _setEnabled(index, v),
-              ),
-              trailing: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextButton.icon(
-                    onPressed: d.enabled ? () => _pickTime(index) : null,
-                    icon: const Icon(Icons.access_time),
-                    label: const Text('Saat'),
-                  ),
-                  TextButton.icon(
-                    onPressed: d.enabled ? () => _pickMessage(index) : null,
-                    icon: const Icon(Icons.text_fields),
-                    label: const Text('Metin'),
-                  ),
-                ],
-              ),
-              onTap: () => _pickTime(index),
+              trailing: d.enabled
+                  ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.access_time, color: Color(0xFF10B981)),
+                          onPressed: () => _pickTime(index),
+                          tooltip: 'Saat Seç',
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.text_fields, color: Color(0xFF10B981)),
+                          onPressed: () => _pickMessage(index),
+                          tooltip: 'Metin Seç',
+                        ),
+                      ],
+                    )
+                  : null,
+              onTap: d.enabled ? () => _pickTime(index) : null,
             ),
           );
         }),
@@ -3261,7 +4055,14 @@ class _MusicTrack {
   final String duration;
   final String category;
   final String description;
-  const _MusicTrack({required this.title, required this.duration, required this.category, required this.description});
+  final String url;
+  const _MusicTrack({
+    required this.title,
+    required this.duration,
+    required this.category,
+    required this.description,
+    required this.url,
+  });
 }
 
 class _AccCategory {
@@ -3273,7 +4074,17 @@ class _AccCategory {
 class _AccCard {
   final String label;
   final String emoji;
-  const _AccCard({required this.label, required this.emoji});
+  final Color backgroundColor;
+  final Color borderColor;
+  final Color textColor;
+
+  const _AccCard({
+    required this.label,
+    required this.emoji,
+    this.backgroundColor = Colors.white,
+    this.borderColor = const Color(0xFFE4E4E7),
+    this.textColor = const Color(0xFF1F2937),
+  });
 }
 
 class _ScheduleItem {
@@ -3399,7 +4210,13 @@ class _SectionCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final VoidCallback onTap;
-  const _SectionCard({required this.title, required this.subtitle, required this.onTap});
+  final bool showReadMore;
+  const _SectionCard({
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+    this.showReadMore = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -3426,14 +4243,17 @@ class _SectionCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF52525B)),
               ),
-              const SizedBox(height: 10),
-              const Row(
-                children: [
-                  Text('Devamını oku', style: TextStyle(fontWeight: FontWeight.w900, color: Color(0xFF2563EB))),
-                  SizedBox(width: 6),
-                  Icon(Icons.chevron_right, color: Color(0xFF2563EB)),
-                ],
-              ),
+              if (showReadMore) ...[
+                const SizedBox(height: 8),
+                const Text(
+                  'Devamını Oku',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
+                ),
+              ],
             ],
           ),
         ),
@@ -3449,25 +4269,25 @@ class _SensoryModuleBody extends StatefulWidget {
   State<_SensoryModuleBody> createState() => _SensoryModuleBodyState();
 }
 
-class _SensoryModuleBodyState extends State<_SensoryModuleBody> with TickerProviderStateMixin {
-  late AnimationController _breathingController;
-  late Animation<double> _breathingAnimation;
-  bool _showBreathing = false;
+class _SensoryModuleBodyState extends State<_SensoryModuleBody> {
   Color _bgColor = const Color(0xFF0C4A6E);
   final List<_Bubble> _bubbles = [];
   final Random _random = Random();
+  final AudioPlayer _audioPlayer = AudioPlayer();
+
+  Future<void> _playSensorySound(String url) async {
+    try {
+      await _audioPlayer.stop();
+      await _audioPlayer.setReleaseMode(ReleaseMode.loop);
+      await _audioPlayer.play(UrlSource(url));
+    } catch (e) {
+      debugPrint("Sensory room audio play error: $e");
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    _breathingController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 4),
-    )..repeat(reverse: true);
-
-    _breathingAnimation = Tween<double>(begin: 1.0, end: 1.8).animate(
-      CurvedAnimation(parent: _breathingController, curve: Curves.easeInOut),
-    );
 
     // Initial bubbles
     for (int i = 0; i < 15; i++) {
@@ -3489,6 +4309,9 @@ class _SensoryModuleBodyState extends State<_SensoryModuleBody> with TickerProvi
         timer.cancel();
       }
     });
+
+    // Default play sea waves ambient loop in the background!
+    _playSensorySound('https://upload.wikimedia.org/wikipedia/commons/1/1f/Waves.ogg');
   }
 
   void _addBubble() {
@@ -3503,7 +4326,7 @@ class _SensoryModuleBodyState extends State<_SensoryModuleBody> with TickerProvi
 
   @override
   void dispose() {
-    _breathingController.dispose();
+    _audioPlayer.dispose();
     super.dispose();
   }
 
@@ -3544,40 +4367,7 @@ class _SensoryModuleBodyState extends State<_SensoryModuleBody> with TickerProvi
                   ),
                 )),
 
-            // Breathing Guide
-            if (_showBreathing)
-              Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ScaleTransition(
-                      scale: _breathingAnimation,
-                      child: Container(
-                        width: 100,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white38, width: 4),
-                        ),
-                        child: Center(
-                          child: Container(
-                            width: 10,
-                            height: 10,
-                            decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 40),
-                    const Text(
-                      'Nefes Al ... Nefes Ver',
-                      style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w300, letterSpacing: 4),
-                    ),
-                  ],
-                ),
-              ),
-
-            // Controls
+             // Controls
             Positioned(
               bottom: 40,
               left: 20,
@@ -3586,28 +4376,40 @@ class _SensoryModuleBodyState extends State<_SensoryModuleBody> with TickerProvi
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _SensoryButton(
-                    icon: Icons.wind_power,
-                    label: 'Nefes',
-                    isActive: _showBreathing,
-                    onTap: () => setState(() => _showBreathing = !_showBreathing),
+                    icon: Icons.flutter_dash,
+                    label: 'Kuşlar',
+                    isActive: _bgColor == const Color(0xFF14532D),
+                    onTap: () {
+                      setState(() => _bgColor = const Color(0xFF14532D));
+                      _playSensorySound('https://upload.wikimedia.org/wikipedia/commons/f/f5/XN_Luscinia_megarhynchos_017.ogg');
+                    },
                   ),
                   _SensoryButton(
                     icon: Icons.waves,
                     label: 'Deniz',
                     isActive: _bgColor == const Color(0xFF0C4A6E),
-                    onTap: () => setState(() => _bgColor = const Color(0xFF0C4A6E)),
+                    onTap: () {
+                      setState(() => _bgColor = const Color(0xFF0C4A6E));
+                      _playSensorySound('https://upload.wikimedia.org/wikipedia/commons/1/1f/Waves.ogg');
+                    },
                   ),
                   _SensoryButton(
                     icon: Icons.forest,
                     label: 'Orman',
                     isActive: _bgColor == const Color(0xFF064E3B),
-                    onTap: () => setState(() => _bgColor = const Color(0xFF064E3B)),
+                    onTap: () {
+                      setState(() => _bgColor = const Color(0xFF064E3B));
+                      _playSensorySound('https://upload.wikimedia.org/wikipedia/commons/f/f3/Wind_in_Swedish_pine_forest_at_25_mps.ogg');
+                    },
                   ),
                   _SensoryButton(
                     icon: Icons.wb_sunny,
                     label: 'Güneş',
                     isActive: _bgColor == const Color(0xFF7C2D12),
-                    onTap: () => setState(() => _bgColor = const Color(0xFF7C2D12)),
+                    onTap: () {
+                      setState(() => _bgColor = const Color(0xFF7C2D12));
+                      _playSensorySound('https://upload.wikimedia.org/wikipedia/commons/9/95/Scott_Buckley_%E2%80%93_The_Long_Dark_%28Ambient_Neoclassical_Piano%29.ogg');
+                    },
                   ),
                 ],
               ),
@@ -3705,3 +4507,1989 @@ void _openDetail(BuildContext context, String title, String content) {
     },
   );
 }
+
+class _ObjectsModuleBody extends StatefulWidget {
+  const _ObjectsModuleBody();
+
+  @override
+  State<_ObjectsModuleBody> createState() => _ObjectsModuleBodyState();
+}
+
+class _ObjectItem {
+  final String name;
+  final String emoji;
+  const _ObjectItem({required this.name, required this.emoji});
+}
+
+class _ObjectCategory {
+  final String title;
+  final String emoji;
+  final Color color;
+  final List<_ObjectItem> items;
+  const _ObjectCategory({
+    required this.title,
+    required this.emoji,
+    required this.color,
+    required this.items,
+  });
+}
+
+class _ObjectsModuleBodyState extends State<_ObjectsModuleBody> {
+  final FlutterTts _flutterTts = FlutterTts();
+  _ObjectCategory? _selectedCategory;
+  List<_ObjectItem> _options = [];
+  _ObjectItem? _targetItem;
+  _ObjectItem? _selectedOption;
+  bool _isAnsweredCorrectly = false;
+  List<_ObjectItem> _wrongAnswers = [];
+
+  final List<_ObjectCategory> _categories = const [
+    _ObjectCategory(
+      title: 'Meyveler',
+      emoji: '🍎',
+      color: Color(0xFFFEE2E2),
+      items: [
+        _ObjectItem(name: 'Elma', emoji: '🍎'),
+        _ObjectItem(name: 'Armut', emoji: '🍐'),
+        _ObjectItem(name: 'Muz', emoji: '🍌'),
+        _ObjectItem(name: 'Çilek', emoji: '🍓'),
+        _ObjectItem(name: 'Portakal', emoji: '🍊'),
+        _ObjectItem(name: 'Karpuz', emoji: '🍉'),
+        _ObjectItem(name: 'Üzüm', emoji: '🍇'),
+        _ObjectItem(name: 'Kiraz', emoji: '🍒'),
+        _ObjectItem(name: 'Ananas', emoji: '🍍'),
+        _ObjectItem(name: 'Limon', emoji: '🍋'),
+      ],
+    ),
+    _ObjectCategory(
+      title: 'Sebzeler',
+      emoji: '🥕',
+      color: Color(0xFFFEF3C7),
+      items: [
+        _ObjectItem(name: 'Havuç', emoji: '🥕'),
+        _ObjectItem(name: 'Domates', emoji: '🍅'),
+        _ObjectItem(name: 'Patates', emoji: '🥔'),
+        _ObjectItem(name: 'Mısır', emoji: '🌽'),
+        _ObjectItem(name: 'Biber', emoji: '🌶️'),
+        _ObjectItem(name: 'Patlıcan', emoji: '🍆'),
+        _ObjectItem(name: 'Brokoli', emoji: '🥦'),
+        _ObjectItem(name: 'Salatalık', emoji: '🥒'),
+        _ObjectItem(name: 'Soğan', emoji: '🧅'),
+        _ObjectItem(name: 'Sarımsak', emoji: '🧄'),
+      ],
+    ),
+    _ObjectCategory(
+      title: 'İçecekler',
+      emoji: '🥛',
+      color: Color(0xFFE0F2FE),
+      items: [
+        _ObjectItem(name: 'Süt', emoji: '🥛'),
+        _ObjectItem(name: 'Su', emoji: '💧'),
+        _ObjectItem(name: 'Meyve Suyu', emoji: '🍹'),
+        _ObjectItem(name: 'Çay', emoji: '🍵'),
+        _ObjectItem(name: 'Kahve', emoji: '☕'),
+        _ObjectItem(name: 'Limonata', emoji: '🍋'),
+      ],
+    ),
+    _ObjectCategory(
+      title: 'Ev Eşyaları',
+      emoji: '🛋️',
+      color: Color(0xFFEDE9FE),
+      items: [
+        _ObjectItem(name: 'Koltuk', emoji: '🛋️'),
+        _ObjectItem(name: 'Yatak', emoji: '🛏️'),
+        _ObjectItem(name: 'Lamba', emoji: '💡'),
+        _ObjectItem(name: 'Televizyon', emoji: '📺'),
+        _ObjectItem(name: 'Kapı', emoji: '🚪'),
+        _ObjectItem(name: 'Saat', emoji: '⏰'),
+        _ObjectItem(name: 'Ayna', emoji: '🪞'),
+        _ObjectItem(name: 'Sandalye', emoji: '🪑'),
+      ],
+    ),
+    _ObjectCategory(
+      title: 'Oyuncaklar',
+      emoji: '🧸',
+      color: Color(0xFFFCE7F3),
+      items: [
+        _ObjectItem(name: 'Oyuncak Ayı', emoji: '🧸'),
+        _ObjectItem(name: 'Balon', emoji: '🎈'),
+        _ObjectItem(name: 'Uçurtma', emoji: '🪁'),
+        _ObjectItem(name: 'Oyuncak Araba', emoji: '🚗'),
+        _ObjectItem(name: 'Yapboz', emoji: '🧩'),
+        _ObjectItem(name: 'Top', emoji: '⚽'),
+        _ObjectItem(name: 'Oyun Konsolu', emoji: '🎮'),
+      ],
+    ),
+    _ObjectCategory(
+      title: 'Giysiler',
+      emoji: '👕',
+      color: Color(0xFFE0F2FE),
+      items: [
+        _ObjectItem(name: 'Tişört', emoji: '👕'),
+        _ObjectItem(name: 'Pantolon', emoji: '👖'),
+        _ObjectItem(name: 'Mont', emoji: '🧥'),
+        _ObjectItem(name: 'Çorap', emoji: '🧦'),
+        _ObjectItem(name: 'Elbise', emoji: '👗'),
+        _ObjectItem(name: 'Şapka', emoji: '🧢'),
+        _ObjectItem(name: 'Ayakkabı', emoji: '👟'),
+      ],
+    ),
+    _ObjectCategory(
+      title: 'Aksesuarlar',
+      emoji: '🕶️',
+      color: Color(0xFFF5F5F4),
+      items: [
+        _ObjectItem(name: 'Gözlük', emoji: '🕶️'),
+        _ObjectItem(name: 'Çanta', emoji: '🎒'),
+        _ObjectItem(name: 'Şemsiye', emoji: '☂️'),
+        _ObjectItem(name: 'Kol Saati', emoji: '⌚'),
+        _ObjectItem(name: 'Yüzük', emoji: '💍'),
+        _ObjectItem(name: 'Atkı', emoji: '🧣'),
+      ],
+    ),
+    _ObjectCategory(
+      title: 'Mutfak Gereçleri',
+      emoji: '🍴',
+      color: Color(0xFFFEF3C7),
+      items: [
+        _ObjectItem(name: 'Çatal', emoji: '🍴'),
+        _ObjectItem(name: 'Kaşık', emoji: '🥄'),
+        _ObjectItem(name: 'Tabak', emoji: '🍽️'),
+        _ObjectItem(name: 'Bardak', emoji: '🥛'),
+        _ObjectItem(name: 'Tencere', emoji: '🍲'),
+        _ObjectItem(name: 'Bıçak', emoji: '🔪'),
+        _ObjectItem(name: 'Fincan', emoji: '☕'),
+      ],
+    ),
+    _ObjectCategory(
+      title: 'Taşıtlar',
+      emoji: '🚗',
+      color: Color(0xFFFFEDD5),
+      items: [
+        _ObjectItem(name: 'Araba', emoji: '🚗'),
+        _ObjectItem(name: 'Bisiklet', emoji: '🚲'),
+        _ObjectItem(name: 'Otobüs', emoji: '🚌'),
+        _ObjectItem(name: 'Tren', emoji: '🚂'),
+        _ObjectItem(name: 'Uçak', emoji: '✈️'),
+        _ObjectItem(name: 'Gemi', emoji: '🚢'),
+        _ObjectItem(name: 'İtfaiye', emoji: '🚒'),
+        _ObjectItem(name: 'Ambulans', emoji: '🚑'),
+        _ObjectItem(name: 'Helikopter', emoji: '🚁'),
+      ],
+    ),
+    _ObjectCategory(
+      title: 'Hayvanlar',
+      emoji: '🐱',
+      color: Color(0xFFDCFCE7),
+      items: [
+        _ObjectItem(name: 'Kedi', emoji: '🐱'),
+        _ObjectItem(name: 'Köpek', emoji: '🐶'),
+        _ObjectItem(name: 'Aslan', emoji: '🦁'),
+        _ObjectItem(name: 'Kuş', emoji: '🐦'),
+        _ObjectItem(name: 'Balık', emoji: '🐟'),
+        _ObjectItem(name: 'Tavşan', emoji: '🐰'),
+        _ObjectItem(name: 'Fil', emoji: '🐘'),
+        _ObjectItem(name: 'Maymun', emoji: '🐵'),
+        _ObjectItem(name: 'Ayı', emoji: '🐻'),
+        _ObjectItem(name: 'Kurbağa', emoji: '🐸'),
+      ],
+    ),
+    _ObjectCategory(
+      title: 'Aile Üyeleri',
+      emoji: '👩',
+      color: Color(0xFFF3E8FF),
+      items: [
+        _ObjectItem(name: 'Anne', emoji: '👩'),
+        _ObjectItem(name: 'Baba', emoji: '🧔'),
+        _ObjectItem(name: 'Bebek', emoji: '👶'),
+        _ObjectItem(name: 'Dede', emoji: '👴'),
+        _ObjectItem(name: 'Anneanne', emoji: '👵'),
+        _ObjectItem(name: 'Kız Kardeş', emoji: '👧'),
+        _ObjectItem(name: 'Erkek Kardeş', emoji: '👦'),
+      ],
+    ),
+    _ObjectCategory(
+      title: 'Bitkiler',
+      emoji: '🌸',
+      color: Color(0xFFE8F5E9),
+      items: [
+        _ObjectItem(name: 'Çiçek', emoji: '🌸'),
+        _ObjectItem(name: 'Ağaç', emoji: '🌳'),
+        _ObjectItem(name: 'Kaktüs', emoji: '🌵'),
+        _ObjectItem(name: 'Gül', emoji: '🌹'),
+        _ObjectItem(name: 'Yaprak', emoji: '🍃'),
+        _ObjectItem(name: 'Mantar', emoji: '🍄'),
+      ],
+    ),
+    _ObjectCategory(
+      title: 'Okul ve Ofis Gereçleri',
+      emoji: '📚',
+      color: Color(0xFFE0F2FE),
+      items: [
+        _ObjectItem(name: 'Kitap', emoji: '📚'),
+        _ObjectItem(name: 'Kalem', emoji: '✏️'),
+        _ObjectItem(name: 'Defter', emoji: '📓'),
+        _ObjectItem(name: 'Makas', emoji: '✂️'),
+        _ObjectItem(name: 'Cetvel', emoji: '📏'),
+        _ObjectItem(name: 'Okul Çantası', emoji: '🎒'),
+        _ObjectItem(name: 'Bilgisayar', emoji: '💻'),
+      ],
+    ),
+    _ObjectCategory(
+      title: 'Vücudun Bölümleri',
+      emoji: '👁️',
+      color: Color(0xFFFFE4E6),
+      items: [
+        _ObjectItem(name: 'Göz', emoji: '👁️'),
+        _ObjectItem(name: 'Kulak', emoji: '👂'),
+        _ObjectItem(name: 'El', emoji: '✋'),
+        _ObjectItem(name: 'Ayak', emoji: '👣'),
+        _ObjectItem(name: 'Burun', emoji: '👃'),
+        _ObjectItem(name: 'Diş', emoji: '🦷'),
+        _ObjectItem(name: 'Ağız', emoji: '👄'),
+        _ObjectItem(name: 'Saç', emoji: '💇'),
+      ],
+    ),
+    _ObjectCategory(
+      title: 'Meslekler',
+      emoji: '👨‍⚕️',
+      color: Color(0xFFF1F5F9),
+      items: [
+        _ObjectItem(name: 'Doktor', emoji: '👨‍⚕️'),
+        _ObjectItem(name: 'Öğretmen', emoji: '👩‍🏫'),
+        _ObjectItem(name: 'Polis', emoji: '👮'),
+        _ObjectItem(name: 'İtfaiyeci', emoji: '👨‍🚒'),
+        _ObjectItem(name: 'Şef', emoji: '👨‍🍳'),
+        _ObjectItem(name: 'Astronot', emoji: '👨‍🚀'),
+        _ObjectItem(name: 'Pilot', emoji: '👨‍✈️'),
+      ],
+    ),
+    _ObjectCategory(
+      title: 'Mekanlar ve Odalar',
+      emoji: '🏠',
+      color: Color(0xFFECFDF5),
+      items: [
+        _ObjectItem(name: 'Ev', emoji: '🏠'),
+        _ObjectItem(name: 'Okul', emoji: '🏫'),
+        _ObjectItem(name: 'Park', emoji: '🏞️'),
+        _ObjectItem(name: 'Hastane', emoji: '🏥'),
+        _ObjectItem(name: 'Yatak Odası', emoji: '🛏️'),
+        _ObjectItem(name: 'Mutfak', emoji: '🍳'),
+        _ObjectItem(name: 'Orman', emoji: '🌲'),
+      ],
+    ),
+    _ObjectCategory(
+      title: 'Doğal Yapılar ve Uzay',
+      emoji: '☀️',
+      color: Color(0xFFFFF7ED),
+      items: [
+        _ObjectItem(name: 'Güneş', emoji: '☀️'),
+        _ObjectItem(name: 'Ay', emoji: '🌙'),
+        _ObjectItem(name: 'Yıldız', emoji: '⭐'),
+        _ObjectItem(name: 'Bulut', emoji: '☁️'),
+        _ObjectItem(name: 'Dağ', emoji: '🏔️'),
+        _ObjectItem(name: 'Dünya', emoji: '🌍'),
+        _ObjectItem(name: 'Roket', emoji: '🚀'),
+      ],
+    ),
+    _ObjectCategory(
+      title: 'Aletler ve Müzik Aletleri',
+      emoji: '🔨',
+      color: Color(0xFFF3F4F6),
+      items: [
+        _ObjectItem(name: 'Çekiç', emoji: '🔨'),
+        _ObjectItem(name: 'Tornavida', emoji: '🪛'),
+        _ObjectItem(name: 'Gitar', emoji: '🎸'),
+        _ObjectItem(name: 'Piyano', emoji: '🎹'),
+        _ObjectItem(name: 'Davul', emoji: '🥁'),
+        _ObjectItem(name: 'Trompet', emoji: '🎺'),
+        _ObjectItem(name: 'Testere', emoji: '🪚'),
+      ],
+    ),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _initTts();
+  }
+
+  void _initTts() async {
+    try {
+      await _flutterTts.setLanguage("tr-TR");
+      await _flutterTts.setSpeechRate(0.45);
+      await _flutterTts.setPitch(1.0);
+    } catch (_) {}
+  }
+
+  void _speak(String text) async {
+    try {
+      await _flutterTts.stop();
+      await _flutterTts.speak(text);
+    } catch (_) {}
+  }
+
+  void _selectCategory(_ObjectCategory cat) {
+    setState(() {
+      _selectedCategory = cat;
+      _wrongAnswers = [];
+      _selectedOption = null;
+      _isAnsweredCorrectly = false;
+      _setupQuestion();
+    });
+  }
+
+  void _setupQuestion() {
+    if (_selectedCategory == null) return;
+    final allItems = List<_ObjectItem>.from(_selectedCategory!.items);
+    if (allItems.length < 4) return;
+
+    final rand = Random();
+    final chosen = <_ObjectItem>[];
+    while (chosen.length < 4) {
+      final item = allItems[rand.nextInt(allItems.length)];
+      if (!chosen.any((c) => c.name == item.name)) {
+        chosen.add(item);
+      }
+    }
+
+    setState(() {
+      _options = chosen;
+      _targetItem = chosen[rand.nextInt(chosen.length)];
+      _wrongAnswers = [];
+      _selectedOption = null;
+      _isAnsweredCorrectly = false;
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _speakQuestion();
+    });
+  }
+
+  void _speakQuestion() {
+    if (_targetItem == null) return;
+    _speak("${_targetItem!.name} hangisi?");
+  }
+
+  void _onOptionSelected(_ObjectItem item) {
+    if (_isAnsweredCorrectly) return;
+    setState(() {
+      _selectedOption = item;
+    });
+
+    if (item.name == _targetItem!.name) {
+      setState(() {
+        _isAnsweredCorrectly = true;
+      });
+      _speak("Evet, bu ${_targetItem!.name}!");
+      HapticFeedback.mediumImpact();
+    } else {
+      if (!_wrongAnswers.any((w) => w.name == item.name)) {
+        setState(() {
+          _wrongAnswers.add(item);
+        });
+      }
+      _speak("Hayır, bu ${_targetItem!.name} değil.");
+      HapticFeedback.vibrate();
+    }
+  }
+
+  @override
+  void dispose() {
+    _flutterTts.stop();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_selectedCategory == null) {
+      return _buildCategorySelector();
+    }
+    return _buildGameBoard();
+  }
+
+  Widget _buildCategorySelector() {
+    return GridView.builder(
+      padding: const EdgeInsets.all(16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+        childAspectRatio: 0.9,
+      ),
+      itemCount: _categories.length,
+      itemBuilder: (context, idx) {
+        final cat = _categories[idx];
+        return Card(
+          elevation: 0,
+          color: cat.color,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+            side: BorderSide(color: Colors.white.withOpacity(0.6), width: 1.5),
+          ),
+          child: InkWell(
+            onTap: () => _selectCategory(cat),
+            borderRadius: BorderRadius.circular(24),
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    cat.emoji,
+                    style: const TextStyle(fontSize: 48),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    cat.title,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xFF1F2937),
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildGameBoard() {
+    if (_targetItem == null || _options.length < 4) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    return Container(
+      color: const Color(0xFFF9FAFB),
+      child: Column(
+        children: [
+          // Sub-Header
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            color: Colors.white,
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _selectedCategory = null;
+                    });
+                  },
+                  icon: const Icon(Icons.arrow_back_ios_rounded, color: Color(0xFF4B5563)),
+                ),
+                Text(
+                  _selectedCategory!.title,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900,
+                    color: Color(0xFF1F2937),
+                  ),
+                ),
+                const Spacer(),
+                IconButton(
+                  onPressed: _speakQuestion,
+                  icon: const Icon(Icons.volume_up_rounded, color: Color(0xFFEC4899), size: 30),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Question Card
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(28),
+              border: Border.all(color: Colors.grey.shade200, width: 1.5),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.02),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Center(
+              child: Text(
+                '${_targetItem!.name} hangisi?',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xFF111827),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+
+          // 4 Grid Options
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: GridView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  childAspectRatio: 1.0,
+                ),
+                itemCount: 4,
+                itemBuilder: (context, idx) {
+                  final item = _options[idx];
+                  final isWrong = _wrongAnswers.any((w) => w.name == item.name);
+                  final isCorrect = _isAnsweredCorrectly && item.name == _targetItem!.name;
+
+                  Color cardBg = Colors.white;
+                  Color borderColor = Colors.grey.shade200;
+                  double borderWidth = 1.5;
+
+                  if (isCorrect) {
+                    cardBg = const Color(0xFFECFDF5);
+                    borderColor = const Color(0xFF10B981);
+                    borderWidth = 3.0;
+                  } else if (isWrong) {
+                    cardBg = const Color(0xFFFEF2F2);
+                    borderColor = const Color(0xFFEF4444);
+                    borderWidth = 2.0;
+                  }
+
+                  return Card(
+                    elevation: isCorrect ? 4 : 0,
+                    color: cardBg,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(32),
+                      side: BorderSide(color: borderColor, width: borderWidth),
+                    ),
+                    child: InkWell(
+                      onTap: () => _onOptionSelected(item),
+                      borderRadius: BorderRadius.circular(32),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                item.emoji,
+                                style: const TextStyle(fontSize: 72),
+                              ),
+                              if (isCorrect) ...[
+                                const SizedBox(height: 8),
+                                Text(
+                                  item.name,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w900,
+                                    color: Color(0xFF10B981),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                          if (isCorrect)
+                            const Positioned(
+                              top: 12,
+                              right: 12,
+                              child: CircleAvatar(
+                                radius: 14,
+                                backgroundColor: Color(0xFF10B981),
+                                child: Icon(Icons.check, color: Colors.white, size: 16),
+                              ),
+                            ),
+                          if (isWrong)
+                            const Positioned(
+                              top: 12,
+                              right: 12,
+                              child: CircleAvatar(
+                                radius: 14,
+                                backgroundColor: Color(0xFFEF4444),
+                                child: Icon(Icons.close, color: Colors.white, size: 16),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+
+          // Success Celebration & Next Button
+          if (_isAnsweredCorrectly)
+            Padding(
+              padding: const EdgeInsets.all(24),
+              child: SizedBox(
+                width: double.infinity,
+                height: 60,
+                child: ElevatedButton(
+                  onPressed: _setupQuestion,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF10B981),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    elevation: 2,
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.navigate_next_rounded, color: Colors.white, size: 28),
+                      SizedBox(width: 8),
+                      Text(
+                        'Sonraki Soru',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
+          else
+            const SizedBox(height: 108),
+        ],
+      ),
+    );
+  }
+}
+
+class _SentenceSoundsModuleBody extends StatefulWidget {
+  const _SentenceSoundsModuleBody();
+
+  @override
+  State<_SentenceSoundsModuleBody> createState() => _SentenceSoundsModuleBodyState();
+}
+
+class _LetterGameObject {
+  final String letter;
+  final String emoji;
+  final String word;
+  const _LetterGameObject({
+    required this.letter,
+    required this.emoji,
+    required this.word,
+  });
+}
+
+class _SentenceSoundsModuleBodyState extends State<_SentenceSoundsModuleBody> with SingleTickerProviderStateMixin {
+  late final TabController _tabController;
+  final FlutterTts _flutterTts = FlutterTts();
+
+  // Sounds state
+  String? _pressedLetter;
+
+  // Game state
+  final List<String> _shuffledLetters = [];
+  String? _activeGameLetter;
+
+  // Sentence Builder state
+  String? _sentenceWho = 'Ben';
+  String? _sentenceWhat;
+  String? _sentenceWhere;
+  String? _sentenceWhen;
+  String? _sentenceVerb = 'istiyorum';
+
+  static const _turkishAlphabet = [
+    'A', 'B', 'C', 'Ç', 'D', 'E', 'F', 'G', 'Ğ', 'H',
+    'I', 'İ', 'J', 'K', 'L', 'M', 'N', 'O', 'Ö', 'P',
+    'R', 'S', 'Ş', 'T', 'U', 'Ü', 'V', 'Y', 'Z'
+  ];
+
+  static const _letterColors = <Color>[
+    Color(0xFFFEE2E2), // Rose
+    Color(0xFFFEF3C7), // Amber
+    Color(0xFFD1FAE5), // Emerald
+    Color(0xFFDBEAFE), // Blue
+    Color(0xFFE0E7FF), // Indigo
+    Color(0xFFF3E8FF), // Purple
+    Color(0xFFFCE7F3), // Pink
+    Color(0xFFE0F2FE), // Sky Blue
+    Color(0xFFFFF7ED), // Orange
+    Color(0xFFECFDF5), // Mint
+  ];
+
+  static const _gameObjects = <String, _LetterGameObject>{
+    'A': _LetterGameObject(letter: 'A', emoji: '🍎', word: 'Elma'),
+    'B': _LetterGameObject(letter: 'B', emoji: '🎈', word: 'Balon'),
+    'C': _LetterGameObject(letter: 'C', emoji: '☕', word: 'Fincan'),
+    'Ç': _LetterGameObject(letter: 'Ç', emoji: '🍓', word: 'Çilek'),
+    'D': _LetterGameObject(letter: 'D', emoji: '🐶', word: 'Köpek'),
+    'E': _LetterGameObject(letter: 'E', emoji: '🐘', word: 'Fil'),
+    'F': _LetterGameObject(letter: 'F', emoji: '🐟', word: 'Balık'),
+    'G': _LetterGameObject(letter: 'G', emoji: '🕶️', word: 'Gözlük'),
+    'Ğ': _LetterGameObject(letter: 'Ğ', emoji: '🌳', word: 'Ağaç'),
+    'H': _LetterGameObject(letter: 'H', emoji: '🥕', word: 'Havuç'),
+    'I': _LetterGameObject(letter: 'I', emoji: '🪵', word: 'Odun'),
+    'İ': _LetterGameObject(letter: 'İ', emoji: '🥛', word: 'Süt'),
+    'J': _LetterGameObject(letter: 'J', emoji: '🐆', word: 'Jaguar'),
+    'K': _LetterGameObject(letter: 'K', emoji: '🐱', word: 'Kedi'),
+    'L': _LetterGameObject(letter: 'L', emoji: '🍋', word: 'Limon'),
+    'M': _LetterGameObject(letter: 'M', emoji: '🍌', word: 'Muz'),
+    'N': _LetterGameObject(letter: 'N', emoji: '🍍', word: 'Ananas'),
+    'O': _LetterGameObject(letter: 'O', emoji: '🚌', word: 'Otobüs'),
+    'Ö': _LetterGameObject(letter: 'Ö', emoji: '🦆', word: 'Ördek'),
+    'P': _LetterGameObject(letter: 'P', emoji: '🥔', word: 'Patates'),
+    'R': _LetterGameObject(letter: 'R', emoji: '🚗', word: 'Araba'),
+    'S': _LetterGameObject(letter: 'S', emoji: '⌚', word: 'Saat'),
+    'Ş': _LetterGameObject(letter: 'Ş', emoji: '👗', word: 'Elbise'),
+    'T': _LetterGameObject(letter: 'T', emoji: '🍅', word: 'Domates'),
+    'U': _LetterGameObject(letter: 'U', emoji: '🪁', word: 'Uçurtma'),
+    'Ü': _LetterGameObject(letter: 'Ü', emoji: '🍇', word: 'Üzüm'),
+    'V': _LetterGameObject(letter: 'V', emoji: '🏠', word: 'Ev'),
+    'Y': _LetterGameObject(letter: 'Y', emoji: '🍳', word: 'Yumurta'),
+    'Z': _LetterGameObject(letter: 'Z', emoji: '🦓', word: 'Zebra'),
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+    _initTts();
+
+    // Prepare shuffled game letters
+    _shuffledLetters.addAll(_turkishAlphabet);
+    _shuffledLetters.shuffle();
+  }
+
+  void _initTts() async {
+    try {
+      await _flutterTts.setLanguage("tr-TR");
+      await _flutterTts.setSpeechRate(0.45);
+      await _flutterTts.setPitch(1.0);
+    } catch (_) {}
+  }
+
+  void _speak(String text) async {
+    try {
+      await _flutterTts.stop();
+      await _flutterTts.speak(text);
+    } catch (_) {}
+  }
+
+  void _onLetterTap(String letter) {
+    setState(() {
+      _pressedLetter = letter;
+    });
+    _speak(letter);
+    HapticFeedback.mediumImpact();
+    Timer(const Duration(milliseconds: 250), () {
+      if (mounted) {
+        setState(() {
+          _pressedLetter = null;
+        });
+      }
+    });
+  }
+
+  void _onGameLetterTap(String letter, String emoji, String word) {
+    setState(() {
+      _activeGameLetter = letter;
+    });
+    HapticFeedback.mediumImpact();
+
+    // Custom voice confirmation
+    _speak("Evet, bu $letter! $letter harfi $word kelimesinde geçer. $word.");
+
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "Evet, bu $letter!",
+                style: const TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xFF8B5CF6),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                width: 140,
+                height: 140,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF5F3FF),
+                  borderRadius: BorderRadius.circular(28),
+                  border: Border.all(color: const Color(0xFFDDD6FE), width: 2),
+                ),
+                child: Text(
+                  emoji,
+                  style: const TextStyle(fontSize: 80),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                word,
+                style: const TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xFF1F2937),
+                ),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF8B5CF6),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
+                  elevation: 2,
+                ),
+                child: const Text(
+                  'Kapat',
+                  style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 16),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _flutterTts.stop();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          color: Colors.white,
+          child: TabBar(
+            controller: _tabController,
+            indicatorColor: const Color(0xFF8B5CF6),
+            labelColor: const Color(0xFF8B5CF6),
+            unselectedLabelColor: const Color(0xFF6B7280),
+            labelStyle: const TextStyle(fontWeight: FontWeight.w900, fontSize: 13.5),
+            tabs: const [
+              Tab(icon: Icon(Icons.chat_bubble_outline_rounded), text: 'Cümle Kur'),
+              Tab(icon: Icon(Icons.translate_rounded), text: 'Sesleri Tanıyalım'),
+              Tab(icon: Icon(Icons.extension_rounded), text: 'Harf Oyunu'),
+            ],
+          ),
+        ),
+        Expanded(
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              _buildSentenceBuilder(),
+              _buildSoundsTable(),
+              _buildGameSection(),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSentenceBuilder() {
+    final sentenceText = [
+      if (_sentenceWho != null) _sentenceWho,
+      if (_sentenceWhat != null) _sentenceWhat,
+      if (_sentenceWhere != null) _sentenceWhere,
+      if (_sentenceWhen != null) _sentenceWhen,
+      if (_sentenceVerb != null) _sentenceVerb,
+    ].join(' ');
+
+    return Container(
+      color: const Color(0xFFF9FAFB),
+      child: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          // Selected Message Display
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: const Color(0xFF1F2937), width: 3),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Text(
+              sentenceText.isEmpty ? 'Bir kelime seç...' : '$sentenceText.',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w900,
+                color: Color(0xFF1F2937),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Who (Kim?)
+          _buildSentenceSection(
+            title: 'KİM?',
+            options: const ['Ben', 'Sen', 'O'],
+            selected: _sentenceWho,
+            onSelected: (val) => setState(() => _sentenceWho = _sentenceWho == val ? null : val),
+            activeColor: const Color(0xFFD1FAE5),
+            activeTextColor: const Color(0xFF065F46),
+          ),
+          const SizedBox(height: 16),
+
+          // What (Ne?)
+          _buildSentenceSection(
+            title: 'NE?',
+            options: const ['Su', 'Yemek', 'Tuvalet', 'Sarılmak', 'Müzik', 'Oyun'],
+            selected: _sentenceWhat,
+            onSelected: (val) => setState(() => _sentenceWhat = _sentenceWhat == val ? null : val),
+            activeColor: const Color(0xFFFEF3C7),
+            activeTextColor: const Color(0xFF92400E),
+          ),
+          const SizedBox(height: 16),
+
+          // Nerede / Ne Zaman?
+          _buildSentenceSection(
+            title: 'NEREDE / NE ZAMAN?',
+            options: const ['Evde', 'Okulda', 'Parkta', 'Şimdi', 'Birazdan'],
+            selected: _sentenceWhere ?? _sentenceWhen,
+            onSelected: (val) => setState(() {
+              if (const ['Evde', 'Okulda', 'Parkta'].contains(val)) {
+                _sentenceWhere = _sentenceWhere == val ? null : val;
+                _sentenceWhen = null;
+              } else {
+                _sentenceWhen = _sentenceWhen == val ? null : val;
+                _sentenceWhere = null;
+              }
+            }),
+            activeColor: const Color(0xFFE0E7FF),
+            activeTextColor: const Color(0xFF3730A3),
+          ),
+          const SizedBox(height: 16),
+
+          // Verb (Ne Yapıyorum?)
+          _buildSentenceSection(
+            title: 'NE YAPIYORUM?',
+            options: const ['istiyorum', 'istemiyorum', 'istiyor', 'istemiyor', 'ara vermek istiyorum'],
+            selected: _sentenceVerb,
+            onSelected: (val) => setState(() => _sentenceVerb = _sentenceVerb == val ? null : val),
+            activeColor: const Color(0xFFD1FAE5),
+            activeTextColor: const Color(0xFF065F46),
+          ),
+          const SizedBox(height: 20),
+
+          // Hızlı Kelime
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 4),
+            child: Text(
+              'HIZLI KELİME',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w900,
+                color: Color(0xFF9CA3AF),
+                letterSpacing: 1.0,
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            children: [
+              ActionChip(
+                label: const Text(
+                  'yardım istiyorum',
+                  style: TextStyle(fontWeight: FontWeight.w900, color: Color(0xFF991B1B)),
+                ),
+                backgroundColor: const Color(0xFFFEE2E2),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                side: BorderSide(color: const Color(0xFFFCA5A5).withOpacity(0.5)),
+                onPressed: () {
+                  setState(() {
+                    _sentenceWho = 'Ben';
+                    _sentenceWhat = null;
+                    _sentenceWhere = null;
+                    _sentenceWhen = null;
+                    _sentenceVerb = 'yardım istiyorum';
+                  });
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: 28),
+
+          // Speak & Clear Actions
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: sentenceText.isEmpty ? null : () => _speak(sentenceText),
+                  icon: const Icon(Icons.volume_up_rounded, color: Colors.white, size: 24),
+                  label: const Text('KONUŞ', style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 16)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF1F2937),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    elevation: 2,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    setState(() {
+                      _sentenceWho = null;
+                      _sentenceWhat = null;
+                      _sentenceWhere = null;
+                      _sentenceWhen = null;
+                      _sentenceVerb = null;
+                    });
+                  },
+                  icon: const Icon(Icons.refresh_rounded, color: Color(0xFF4B5563), size: 24),
+                  label: const Text('TEMİZLE', style: TextStyle(fontWeight: FontWeight.w900, color: Color(0xFF4B5563), fontSize: 16)),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    side: const BorderSide(color: Color(0xFFD1D5DB), width: 2),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 48),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSentenceSection({
+    required String title,
+    required List<String> options,
+    required String? selected,
+    required ValueChanged<String> onSelected,
+    required Color activeColor,
+    required Color activeTextColor,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w900,
+              color: Color(0xFF9CA3AF),
+              letterSpacing: 1.0,
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: options.map((opt) {
+            final isSel = selected == opt;
+            return ChoiceChip(
+              label: Text(
+                opt,
+                style: TextStyle(
+                  fontWeight: FontWeight.w900,
+                  color: isSel ? activeTextColor : const Color(0xFF4B5563),
+                ),
+              ),
+              selected: isSel,
+              selectedColor: activeColor,
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+                side: BorderSide(
+                  color: isSel ? activeTextColor.withOpacity(0.5) : const Color(0xFFE5E7EB),
+                  width: 1.5,
+                ),
+              ),
+              onSelected: (_) => onSelected(opt),
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSoundsTable() {
+    return Container(
+      color: const Color(0xFFF9FAFB),
+      child: GridView.builder(
+        padding: const EdgeInsets.all(16),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 4,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+          childAspectRatio: 1.0,
+        ),
+        itemCount: _turkishAlphabet.length,
+        itemBuilder: (context, idx) {
+          final letter = _turkishAlphabet[idx];
+          final color = _letterColors[idx % _letterColors.length];
+          final isPressed = _pressedLetter == letter;
+
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            curve: Curves.easeOut,
+            transform: isPressed ? Matrix4.diagonal3Values(1.12, 1.12, 1.0) : Matrix4.identity(),
+            decoration: BoxDecoration(
+              color: isPressed ? color.withOpacity(0.4) : color,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: isPressed ? const Color(0xFF8B5CF6) : color.withOpacity(0.6),
+                width: isPressed ? 4.0 : 1.5,
+              ),
+              boxShadow: isPressed
+                  ? [BoxShadow(color: const Color(0xFF8B5CF6).withOpacity(0.4), blurRadius: 12, spreadRadius: 2)]
+                  : [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 4, offset: const Offset(0, 2))],
+            ),
+            child: InkWell(
+              onTap: () => _onLetterTap(letter),
+              borderRadius: BorderRadius.circular(20),
+              child: Center(
+                child: Text(
+                  letter,
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.w900,
+                    color: isPressed ? const Color(0xFF8B5CF6) : const Color(0xFF1F2937),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildGameSection() {
+    return Container(
+      color: const Color(0xFFF9FAFB),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            color: Colors.white,
+            width: double.infinity,
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Harf Bulma Oyunu',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Color(0xFF1F2937)),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  'Kutulardan bir harfe bas ve o harfle başlayan kelimeyi bul!',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF6B7280)),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: GridView.builder(
+              padding: const EdgeInsets.all(16),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                childAspectRatio: 1.0,
+              ),
+              itemCount: _shuffledLetters.length,
+              itemBuilder: (context, idx) {
+                final letter = _shuffledLetters[idx];
+                final color = _letterColors[(idx + 3) % _letterColors.length];
+                final gameObj = _gameObjects[letter];
+
+                return Card(
+                  elevation: 0,
+                  color: color,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: BorderSide(color: color.withOpacity(0.6), width: 1.5),
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      if (gameObj != null) {
+                        _onGameLetterTap(letter, gameObj.emoji, gameObj.word);
+                      }
+                    },
+                    borderRadius: BorderRadius.circular(20),
+                    child: Center(
+                      child: Text(
+                        letter,
+                        style: const TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.w900,
+                          color: Color(0xFF1F2937),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ImitationModuleBody extends StatefulWidget {
+  const _ImitationModuleBody();
+
+  @override
+  State<_ImitationModuleBody> createState() => _ImitationModuleBodyState();
+}
+
+class _ImitationModuleBodyState extends State<_ImitationModuleBody> {
+  final FlutterTts _flutterTts = FlutterTts();
+  int _currentStepIdx = -1;
+  String _currentAction = 'idle';
+  double _verticalOffset = 0.0;
+  bool _eyesClosed = false;
+  double _leftArmTurns = 0.0; // 0.0 down, -0.5 up
+  double _rightArmTurns = 0.0; // 0.0 down, 0.5 up
+  bool _isClapping = false;
+
+  final String _idleImageAsset = 'assets/imitation_idle.png';
+
+  final List<Map<String, dynamic>> _steps = [
+    {
+      'title': 'Kolları Kaldır',
+      'voice': 'Kolları kaldır!',
+      'action': 'raiseArms',
+      'imageAsset': 'assets/imitation_raise_arms.png',
+    },
+    {
+      'title': 'Kolları Bağla',
+      'voice': 'Kolları bağla!',
+      'action': 'crossArms',
+      'imageAsset': 'assets/imitation_cross_arms.png',
+    },
+    {
+      'title': 'Elleri Kaldır',
+      'voice': 'Elleri kaldır!',
+      'action': 'raiseHands',
+      'imageAsset': 'assets/imitation_raise_hands.png',
+    },
+    {
+      'title': 'Kulağını Göster',
+      'voice': 'Sağ elinle sol kulağını göster!',
+      'action': 'showEar',
+      'imageAsset': 'assets/imitation_show_ear.png',
+    },
+    {
+      'title': 'Gözlerini Kapat',
+      'voice': 'Gözlerini kapat!',
+      'action': 'closeEyes',
+      'imageAsset': 'assets/imitation_close_eyes.png',
+    },
+    {
+      'title': 'Burnunu Göster',
+      'voice': 'Sol elinle burnunu göster!',
+      'action': 'showNose',
+      'imageAsset': 'assets/imitation_show_nose.png',
+    },
+    {
+      'title': 'El Çırp',
+      'voice': 'Ellerini hızlıca çırp!',
+      'action': 'clap',
+      'imageAsset': 'assets/imitation_clap.png',
+    },
+    {
+      'title': 'Zıpla',
+      'voice': 'Yukarı doğru zıpla!',
+      'action': 'jump',
+      'imageAsset': 'assets/imitation_jump.png',
+    },
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _initTts();
+  }
+
+  void _initTts() async {
+    try {
+      await _flutterTts.setLanguage("tr-TR");
+      await _flutterTts.setSpeechRate(0.45);
+      await _flutterTts.setPitch(1.0);
+    } catch (_) {}
+  }
+
+  void _speak(String text) async {
+    try {
+      await _flutterTts.stop();
+      await _flutterTts.speak(text);
+    } catch (_) {}
+  }
+
+  void _nextStep() {
+    if (_isClapping) return; // Clapping is in progress, ignore clicks
+
+    setState(() {
+      _currentStepIdx = (_currentStepIdx + 1) % _steps.length;
+      final step = _steps[_currentStepIdx];
+      _currentAction = step['action'];
+      
+      // Reset defaults
+      _eyesClosed = false;
+      _verticalOffset = 0.0;
+      _leftArmTurns = 0.0;
+      _rightArmTurns = 0.0;
+
+      // Speak command
+      _speak(step['voice']);
+      HapticFeedback.mediumImpact();
+
+      // Set arm/body values based on action
+      if (_currentAction == 'raiseArms') {
+        _leftArmTurns = -0.38; // Up-outward
+        _rightArmTurns = 0.38;
+      } else if (_currentAction == 'crossArms') {
+        _leftArmTurns = 0.12; // Cross over chest
+        _rightArmTurns = -0.12;
+      } else if (_currentAction == 'raiseHands') {
+        _leftArmTurns = -0.45; // Straight up
+        _rightArmTurns = 0.45;
+      } else if (_currentAction == 'showEar') {
+        _leftArmTurns = 0.0;
+        _rightArmTurns = 0.32; // Reach left ear
+      } else if (_currentAction == 'closeEyes') {
+        _eyesClosed = true;
+      } else if (_currentAction == 'showNose') {
+        _leftArmTurns = -0.32; // Reach nose
+        _rightArmTurns = 0.0;
+      } else if (_currentAction == 'jump') {
+        _leftArmTurns = -0.25;
+        _rightArmTurns = 0.25;
+        // Jump animation trigger
+        _verticalOffset = -60.0;
+        Timer(const Duration(milliseconds: 300), () {
+          if (mounted) {
+            setState(() {
+              _verticalOffset = 0.0;
+            });
+          }
+        });
+      } else if (_currentAction == 'clap') {
+        _isClapping = true;
+        _runClappingAnimation();
+      }
+    });
+  }
+
+  void _runClappingAnimation() {
+    int count = 0;
+    Timer.periodic(const Duration(milliseconds: 150), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      setState(() {
+        if (count % 2 == 0) {
+          _leftArmTurns = 0.12; // Inside
+          _rightArmTurns = -0.12;
+        } else {
+          _leftArmTurns = -0.10; // Open
+          _rightArmTurns = 0.10;
+        }
+        count++;
+        if (count >= 6) {
+          timer.cancel();
+          _isClapping = false;
+          _leftArmTurns = 0.0;
+          _rightArmTurns = 0.0;
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _flutterTts.stop();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final step = _currentStepIdx == -1 ? null : _steps[_currentStepIdx];
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFF9FAFB),
+      body: InkWell(
+        onTap: _nextStep,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            children: [
+              // Info Banner
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFECFDF5),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: const Color(0xFFA7F3D0), width: 1.5),
+                ),
+                child: const Row(
+                  children: [
+                    Icon(Icons.touch_app_rounded, color: Color(0xFF10B981), size: 28),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'Ekrana herhangi bir yere dokunarak sıradaki taklit hareketine geçebilirsin!',
+                        style: TextStyle(
+                          fontSize: 13.5,
+                          fontWeight: FontWeight.w900,
+                          color: Color(0xFF065F46),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Step Title Card
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(28),
+                  border: Border.all(color: Colors.grey.shade200, width: 1.5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.02),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      step != null ? step['title'].toUpperCase() : 'OYUNU BAŞLAT',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w900,
+                        color: step != null ? const Color(0xFF10B981) : Colors.grey,
+                        letterSpacing: 1.5,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      step != null ? step['voice'] : 'Ekranın herhangi bir yerine dokunarak başla!',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w900,
+                        color: Color(0xFF1F2937),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Spacer(),
+
+              // Video / Live Action Panel (Real Child with Fallback)
+              Center(
+                child: Container(
+                  width: 320,
+                  height: 380,
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(32),
+                    border: Border.all(color: const Color(0xFF1F2937), width: 6),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF10B981).withOpacity(0.15),
+                        blurRadius: 20,
+                        spreadRadius: 2,
+                        offset: const Offset(0, 8),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(26),
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        // The actual real-child AI Photo
+                        Image.asset(
+                          step != null ? step['imageAsset'] : _idleImageAsset,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            // Offline fallback to 2D animated boy
+                            return _buildFallbackBoy();
+                          },
+                        ),
+
+                        // Vignette overlay for premium movie/video feel
+                        IgnorePointer(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: RadialGradient(
+                                colors: [
+                                  Colors.transparent,
+                                  Colors.black.withOpacity(0.45),
+                                ],
+                                radius: 1.1,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        // LIVE Red Badge overlay
+                        Positioned(
+                          top: 16,
+                          left: 16,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: Colors.red.shade600,
+                              borderRadius: BorderRadius.circular(30),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.red.withOpacity(0.5),
+                                  blurRadius: 8,
+                                  spreadRadius: 1,
+                                ),
+                              ],
+                            ),
+                            child: const Row(
+                              children: [
+                                Icon(Icons.circle, size: 8, color: Colors.white),
+                                SizedBox(width: 6),
+                                Text(
+                                  'CANLI PANEL',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        // HD Badge overlay
+                        Positioned(
+                          top: 16,
+                          right: 16,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.6),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: Colors.white24, width: 1),
+                            ),
+                            child: const Text(
+                              '1080p HD',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 9,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        // Bottom Action Name overlay
+                        Positioned(
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter,
+                                colors: [
+                                  Colors.black.withOpacity(0.85),
+                                  Colors.transparent,
+                                ],
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    step != null ? 'Taklit: ${step['title']}' : 'Hazır mısın?',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xFF10B981),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.play_arrow_rounded,
+                                    color: Colors.white,
+                                    size: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const Spacer(),
+
+              // Next Button Banner
+              Container(
+                width: double.infinity,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF10B981),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.play_arrow_rounded, color: Colors.white, size: 28),
+                      SizedBox(width: 8),
+                      Text(
+                        'SONRAKİ HAREKET',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white,
+                          letterSpacing: 1.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFallbackBoy() {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        // Shadows under feet
+        AnimatedPositioned(
+          duration: const Duration(milliseconds: 200),
+          top: 320 + (_verticalOffset * 0.15), // Shadow changes height slightly when jumping
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            width: _verticalOffset != 0.0 ? 60 : 100,
+            height: 12,
+            decoration: BoxDecoration(
+              color: Colors.grey.shade300.withOpacity(_verticalOffset != 0.0 ? 0.4 : 0.8),
+              borderRadius: BorderRadius.all(Radius.elliptical(_verticalOffset != 0.0 ? 30 : 50, 6)),
+            ),
+          ),
+        ),
+
+        // Legs (Left & Right)
+        AnimatedPositioned(
+          duration: const Duration(milliseconds: 200),
+          top: 240 + _verticalOffset,
+          left: 125,
+          child: _buildLeg(),
+        ),
+        AnimatedPositioned(
+          duration: const Duration(milliseconds: 200),
+          top: 240 + _verticalOffset,
+          right: 125,
+          child: _buildLeg(),
+        ),
+
+        // Left Arm (Animated Rotation and Position)
+        AnimatedPositioned(
+          duration: const Duration(milliseconds: 200),
+          top: 140 + _verticalOffset,
+          left: 65,
+          child: AnimatedRotation(
+            turns: _leftArmTurns,
+            duration: const Duration(milliseconds: 200),
+            alignment: Alignment.topRight,
+            child: _buildArm(isLeft: true),
+          ),
+        ),
+
+        // Right Arm (Animated Rotation and Position)
+        AnimatedPositioned(
+          duration: const Duration(milliseconds: 200),
+          top: 140 + _verticalOffset,
+          right: 65,
+          child: AnimatedRotation(
+            turns: _rightArmTurns,
+            duration: const Duration(milliseconds: 200),
+            alignment: Alignment.topLeft,
+            child: _buildArm(isLeft: false),
+          ),
+        ),
+
+        // Torso / Body (T-Shirt)
+        AnimatedPositioned(
+          duration: const Duration(milliseconds: 200),
+          top: 130 + _verticalOffset,
+          child: Container(
+            width: 100,
+            height: 120,
+            decoration: BoxDecoration(
+              color: const Color(0xFF3B82F6), // Blue T-Shirt
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(28),
+                topRight: Radius.circular(28),
+                bottomLeft: Radius.circular(16),
+                bottomRight: Radius.circular(16),
+              ),
+              border: Border.all(color: const Color(0xFF1D4ED8), width: 3),
+              boxShadow: [
+                BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 4, offset: const Offset(0, 3)),
+              ],
+            ),
+            child: Center(
+              child: Icon(
+                Icons.star_rounded,
+                color: const Color(0xFFFBBF24), // Yellow Star emblem
+                size: 40,
+                shadows: [
+                  Shadow(color: Colors.black.withOpacity(0.1), offset: const Offset(0, 2), blurRadius: 4),
+                ],
+              ),
+            ),
+          ),
+        ),
+
+        // Head with Facial Features
+        AnimatedPositioned(
+          duration: const Duration(milliseconds: 200),
+          top: 50 + _verticalOffset,
+          child: Container(
+            width: 96,
+            height: 96,
+            decoration: BoxDecoration(
+              color: const Color(0xFFFED7AA), // Peach Skin tone
+              shape: BoxShape.circle,
+              border: Border.all(color: const Color(0xFFEA580C), width: 3),
+              boxShadow: [
+                BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 4, offset: const Offset(0, 3)),
+              ],
+            ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                // Hair
+                Positioned(
+                  top: -2,
+                  child: Container(
+                    width: 80,
+                    height: 24,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF78350F), // Brown Hair
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(40),
+                        topRight: Radius.circular(40),
+                        bottomLeft: Radius.circular(10),
+                        bottomRight: Radius.circular(10),
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Eyes
+                Positioned(
+                  top: 38,
+                  left: 24,
+                  child: _buildEye(_eyesClosed),
+                ),
+                Positioned(
+                  top: 38,
+                  right: 24,
+                  child: _buildEye(_eyesClosed),
+                ),
+
+                // Nose
+                Positioned(
+                  top: 48,
+                  child: Container(
+                    width: 8,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFDBA74),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+
+                // Mouth (Smiley)
+                Positioned(
+                  top: 58,
+                  child: Container(
+                    width: 32,
+                    height: 16,
+                    decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(16),
+                        bottomRight: Radius.circular(16),
+                      ),
+                      border: Border.all(color: const Color(0xFF991B1B), width: 3),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEye(bool closed) {
+    if (closed) {
+      return Container(
+        width: 14,
+        height: 3,
+        color: const Color(0xFF1F2937),
+      );
+    }
+    return Container(
+      width: 12,
+      height: 12,
+      decoration: const BoxDecoration(
+        color: Color(0xFF1F2937),
+        shape: BoxShape.circle,
+      ),
+      child: Stack(
+        children: [
+          // Eye shine (pupil white reflex)
+          Positioned(
+            top: 2,
+            left: 2,
+            child: Container(
+              width: 4,
+              height: 4,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildArm({required bool isLeft}) {
+    return Container(
+      width: 20,
+      height: 90,
+      decoration: BoxDecoration(
+        color: const Color(0xFFFED7AA), // Peach Skin tone
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFFEA580C), width: 2.5),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          // Hand
+          Container(
+            width: 14,
+            height: 14,
+            margin: const EdgeInsets.only(bottom: 2),
+            decoration: const BoxDecoration(
+              color: Color(0xFFFDBA74),
+              shape: BoxShape.circle,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLeg() {
+    return Container(
+      width: 24,
+      height: 90,
+      decoration: BoxDecoration(
+        color: const Color(0xFFFED7AA), // Skin Tone
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(8),
+          topRight: Radius.circular(8),
+          bottomLeft: Radius.circular(16),
+          bottomRight: Radius.circular(16),
+        ),
+        border: Border.all(color: const Color(0xFFEA580C), width: 2.5),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          // Shoe
+          Container(
+            width: 32,
+            height: 16,
+            decoration: const BoxDecoration(
+              color: Color(0xFFEF4444), // Red shoes
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+

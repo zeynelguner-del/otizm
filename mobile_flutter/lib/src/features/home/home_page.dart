@@ -18,103 +18,307 @@ class _HomePageState extends ConsumerState<HomePage> {
   Widget build(BuildContext context) {
     final session = ref.watch(sessionControllerProvider);
     return Scaffold(
-      backgroundColor: const Color(0xFFF9FAFB),
+      backgroundColor: const Color(0xFFF3F4F6), // Cleaner light gray background
       appBar: AppBar(
         scrolledUnderElevation: 0,
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: false,
-        title: Image.asset(
-          'assets/otizeka-logo.png',
-          height: 46,
-          fit: BoxFit.contain,
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey.shade100, width: 1.5),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.04),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Image.asset(
+                'assets/otizeka-logo.png',
+                height: 32,
+                fit: BoxFit.contain,
+              ),
+            ),
+            const SizedBox(width: 10),
+            RichText(
+              text: const TextSpan(
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -0.5,
+                ),
+                children: [
+                  TextSpan(
+                    text: 'Oti',
+                    style: TextStyle(color: Color(0xFF1D5CDB)), // Brand Royal Blue
+                  ),
+                  TextSpan(
+                    text: 'Zeka',
+                    style: TextStyle(color: Color(0xFF00B4D8)), // Brand Turquoise/Cyan
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
         actions: [
           IconButton(
             onPressed: () => context.push('/family'),
             icon: const Icon(Icons.tune_outlined, color: Color(0xFF3F3F46)),
+            tooltip: 'Profil Ayarları',
           ),
           IconButton(
             onPressed: () async {
               await ref.read(sessionControllerProvider.notifier).logout();
             },
             icon: const Icon(Icons.power_settings_new_rounded, color: Color(0xFFF43F5E)),
+            tooltip: 'Çıkış Yap',
           ),
           const SizedBox(width: 8),
         ],
       ),
       body: session.when(
         data: (s) {
-          return ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              _ProfileSummary(email: s.email ?? '-'),
-              const SizedBox(height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Aktif Modüller'.toUpperCase(),
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 1.2,
-                      color: Colors.grey.shade400,
-                    ),
-                  ),
-                  Text(
-                    '12 Modül',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w900,
-                      color: Color(0xFF059669),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              const Wrap(
-                spacing: 12,
-                runSpacing: 12,
-                children: [
-                  _ModuleTile(title: 'Otizm Bilgilendirme', keyName: 'info', icon: Icons.info, color: Color(0xFFEFF6FF), iconColor: Color(0xFF2563EB)),
-                  _ModuleTile(title: 'OSB', keyName: 'osb', icon: Icons.help, color: Color(0xFFECFEFF), iconColor: Color(0xFF0891B2)),
-                  _ModuleTile(title: 'Eğitim', keyName: 'education', icon: Icons.menu_book, color: Color(0xFFF5F3FF), iconColor: Color(0xFF7C3AED)),
-                  _ModuleTile(title: 'OSB Araştırmaları', keyName: 'osb_research', icon: Icons.public, color: Color(0xFFF0FDF4), iconColor: Color(0xFF0D9488)),
-                  _ModuleTile(title: 'Duygularım', keyName: 'emotions', icon: Icons.favorite, color: Color(0xFFFFF1F2), iconColor: Color(0xFFE11D48)),
-                  _ModuleTile(title: 'Eğitici Oyunlar', keyName: 'games', icon: Icons.sports_esports, color: Color(0xFFF0F9FF), iconColor: Color(0xFF0284C7)),
-                  _ModuleTile(title: 'Sosyal Öyküler', keyName: 'stories', icon: Icons.auto_stories, color: Color(0xFFECFDF5), iconColor: Color(0xFF059669)),
-                  _ModuleTile(title: 'Müzik ve Ses', keyName: 'music', icon: Icons.music_note, color: Color(0xFFEEF2FF), iconColor: Color(0xFF4F46E5)),
-                  _ModuleTile(title: 'İletişim Kartları', keyName: 'acc', icon: Icons.chat, color: Color(0xFFFFFBEB), iconColor: Color(0xFFD97706)),
-                  _ModuleTile(title: 'Takvim ve Program', keyName: 'calendar', icon: Icons.calendar_month, color: Color(0xFFFFF7ED), iconColor: Color(0xFFEA580C)),
-                  _ModuleTile(title: 'Eğitim Hatırlatıcı', keyName: 'education_reminder', icon: Icons.alarm, color: Color(0xFFE6FDF5), iconColor: Color(0xFF047857)),
-                  _ModuleTile(title: 'Duyusal Oda', keyName: 'sensory', icon: Icons.waves, color: Color(0xFFF0FDF4), iconColor: Color(0xFF0891B2)),
-                ],
-              ),
-              const SizedBox(height: 24),
-              FutureBuilder(
-                future: ref.read(apiClientProvider.future).then((api) => api.adminStats()),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) return const SizedBox.shrink();
-                  if (!snapshot.hasData) return const SizedBox.shrink();
-                  return SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton.icon(
-                      onPressed: () => context.push('/admin'),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+          return CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              // Welcome Banner & Child Profile Summary Card
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Personalized welcome
+                      ref.watch(userMetaProvider).when(
+                            data: (meta) {
+                              final displayName = (meta?.userFullName != null && meta!.userFullName.isNotEmpty)
+                                  ? meta.userFullName.split(' ').first
+                                  : 'Veli';
+                              return Text(
+                                'Merhaba $displayName 👋',
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w900,
+                                  color: Color(0xFF1F2937),
+                                  letterSpacing: -0.5,
+                                ),
+                              );
+                            },
+                            loading: () => const Text(
+                              'Merhaba Veli 👋',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w900,
+                                color: Color(0xFF1F2937),
+                                letterSpacing: -0.5,
+                              ),
+                            ),
+                            error: (_, __) => const Text(
+                              'Merhaba Veli 👋',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w900,
+                                color: Color(0xFF1F2937),
+                                letterSpacing: -0.5,
+                              ),
+                            ),
+                          ),
+                      const SizedBox(height: 4),
+                      const Text(
+                        'Çocuğunuzun bugünkü zeka ve gelişim yolculuğuna hoş geldiniz.',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF6B7280),
                         ),
-                        side: const BorderSide(color: Colors.amber, width: 1.5),
-                        foregroundColor: Colors.amber.shade900,
                       ),
-                      icon: const Icon(Icons.admin_panel_settings),
-                      label: const Text('Yönetim', style: TextStyle(fontWeight: FontWeight.w900)),
-                    ),
-                  );
-                },
+                      const SizedBox(height: 16),
+
+                      // Gorgeous upgraded Profile Card
+                      _ProfileSummary(email: s.email ?? '-'),
+                    ],
+                  ),
+                ),
               ),
+
+              // CATEGORY 1: 🧠 Zeka ve Gelişim (Zeka & Learning)
+              const SliverToBoxAdapter(
+                child: _SectionHeader(
+                  title: 'Zeka ve Gelişim',
+                  subtitle: 'Eğitici oyunlar, taklit becerileri ve kelime dağarcığı',
+                  icon: Icons.psychology_rounded,
+                  iconColor: Color(0xFF8B5CF6),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 136,
+                  child: ListView(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    children: const [
+                      _ModuleCarouselTile(
+                        title: 'Nesneleri Tanıyalım',
+                        keyName: 'objects',
+                        icon: Icons.category,
+                        gradientColors: [Color(0xFFEC4899), Color(0xFFF472B6)],
+                      ),
+                      _ModuleCarouselTile(
+                        title: 'Taklit Oyunu',
+                        keyName: 'imitation',
+                        icon: Icons.accessibility_new_rounded,
+                        gradientColors: [Color(0xFF10B981), Color(0xFF34D399)],
+                      ),
+                      _ModuleCarouselTile(
+                        title: 'Cümle Kur & Sesler',
+                        keyName: 'sentence_sounds',
+                        icon: Icons.record_voice_over,
+                        gradientColors: [Color(0xFF8B5CF6), Color(0xFFA78BFA)],
+                      ),
+                      _ModuleCarouselTile(
+                        title: 'Eğitim Hatırlatıcı',
+                        keyName: 'education_reminder',
+                        icon: Icons.alarm,
+                        gradientColors: [Color(0xFF047857), Color(0xFF059669)],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SliverToBoxAdapter(child: SizedBox(height: 20)),
+
+              // CATEGORY 2: 🎮 Terapi ve Oyun (Therapy & Games)
+              const SliverToBoxAdapter(
+                child: _SectionHeader(
+                  title: 'Terapi ve Oyun',
+                  subtitle: 'Müzik terapisi, duyusal odalar ve sosyal hikayeler',
+                  icon: Icons.sports_esports_rounded,
+                  iconColor: Color(0xFF0284C7),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 136,
+                  child: ListView(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    children: const [
+                      _ModuleCarouselTile(
+                        title: 'Eğitici Oyunlar',
+                        keyName: 'games',
+                        icon: Icons.sports_esports,
+                        gradientColors: [Color(0xFF0284C7), Color(0xFF38BDF8)],
+                      ),
+                      _ModuleCarouselTile(
+                        title: 'Duyusal Oda',
+                        keyName: 'sensory',
+                        icon: Icons.waves,
+                        gradientColors: [Color(0xFF06B6D4), Color(0xFF22D3EE)],
+                      ),
+                      _ModuleCarouselTile(
+                        title: 'Müzik ve Ses',
+                        keyName: 'music',
+                        icon: Icons.music_note,
+                        gradientColors: [Color(0xFF4F46E5), Color(0xFF818CF8)],
+                      ),
+                      _ModuleCarouselTile(
+                        title: 'Sosyal Öyküler',
+                        keyName: 'stories',
+                        icon: Icons.auto_stories,
+                        gradientColors: [Color(0xFF059669), Color(0xFF10B981)],
+                      ),
+                      _ModuleCarouselTile(
+                        title: 'Duygularım',
+                        keyName: 'emotions',
+                        icon: Icons.favorite,
+                        gradientColors: [Color(0xFFE11D48), Color(0xFFFB7185)],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SliverToBoxAdapter(child: SizedBox(height: 20)),
+
+              // CATEGORY 3: 📚 Rehberlik ve Takip (Guidance & Track)
+              const SliverToBoxAdapter(
+                child: _SectionHeader(
+                  title: 'Rehberlik ve Takip',
+                  subtitle: 'Otizm hakkında bilgi, takvim ve tıbbi araştırmalar',
+                  icon: Icons.menu_book_rounded,
+                  iconColor: Color(0xFFEA580C),
+                ),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                sliver: SliverGrid(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    childAspectRatio: 1.45,
+                  ),
+                  delegate: SliverChildListDelegate(
+                    const [
+                      _ModuleGridTile(
+                        title: 'İletişim Kartları',
+                        keyName: 'acc',
+                        icon: Icons.chat,
+                        color: Color(0xFFFFFBEB),
+                        iconColor: Color(0xFFD97706),
+                      ),
+                      _ModuleGridTile(
+                        title: 'Takvim ve Program',
+                        keyName: 'calendar',
+                        icon: Icons.calendar_month,
+                        color: Color(0xFFFFF7ED),
+                        iconColor: Color(0xFFEA580C),
+                      ),
+                      _ModuleGridTile(
+                        title: 'Otizm Bilgilendirme',
+                        keyName: 'info',
+                        icon: Icons.info,
+                        color: Color(0xFFEFF6FF),
+                        iconColor: Color(0xFF2563EB),
+                      ),
+                      _ModuleGridTile(
+                        title: 'OSB Tanısı Nedir?',
+                        keyName: 'osb',
+                        icon: Icons.help,
+                        color: Color(0xFFECFEFF),
+                        iconColor: Color(0xFF0891B2),
+                      ),
+                      _ModuleGridTile(
+                        title: 'Eğitim Rehberi',
+                        keyName: 'education',
+                        icon: Icons.menu_book,
+                        color: Color(0xFFF5F3FF),
+                        iconColor: Color(0xFF7C3AED),
+                      ),
+                      _ModuleGridTile(
+                        title: 'OSB Araştırmaları',
+                        keyName: 'osb_research',
+                        icon: Icons.public,
+                        color: Color(0xFFF0FDF4),
+                        iconColor: Color(0xFF0D9488),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SliverToBoxAdapter(child: SizedBox(height: 32)),
             ],
           );
         },
@@ -125,142 +329,54 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 }
 
-class _ProfileSummary extends ConsumerWidget {
-  final String email;
-  const _ProfileSummary({required this.email});
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final Color iconColor;
+
+  const _SectionHeader({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.iconColor,
+  });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Card(
-      elevation: 0,
-      color: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-        side: BorderSide(color: Colors.grey.shade200, width: 1.5),
-      ),
-      child: Stack(
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+      child: Row(
         children: [
-          Positioned.fill(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(24),
-              child: Opacity(
-                opacity: 0.05,
-                child: Image.asset(
-                  'assets/loogo.png',
-                  fit: BoxFit.cover,
-                ),
-              ),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: iconColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
             ),
+            child: Icon(icon, color: iconColor, size: 20),
           ),
-          Padding(
-            padding: const EdgeInsets.all(20),
+          const SizedBox(width: 12),
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 6,
-                      height: 6,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFF10B981),
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      'OtiZeka Portalı Aktif'.toUpperCase(),
-                      style: const TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 1.1,
-                        color: Color(0xFF10B981),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                const Text(
-                  'Aile Yönetim Paneli',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w900,
-                    color: Color(0xFF18181B),
-                  ),
-                ),
-                const SizedBox(height: 4),
                 Text(
-                  'Veli: ${email.toLowerCase()}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.grey.shade500,
+                  title,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                    color: Color(0xFF111827),
+                    letterSpacing: -0.3,
                   ),
                 ),
-                const SizedBox(height: 16),
-                const Divider(height: 1, color: Color(0xFFF4F4F5)),
-                const SizedBox(height: 16),
-                FutureBuilder(
-                  future: ref.read(apiClientProvider.future).then((api) => api.getProfile()),
-                  builder: (context, snapshot) {
-                    final env = snapshot.data;
-                    if (env == null) {
-                      return const Text('Aktif çocuk profili: Belirtilmedi', style: TextStyle(fontWeight: FontWeight.w700));
-                    }
-                    final active = env.profiles.where((p) => p.id == env.activeProfileId).cast().toList();
-                    final profile = active.isNotEmpty ? active.first : (env.profiles.isNotEmpty ? env.profiles.first : null);
-                    if (profile == null) {
-                      return const Text('Aktif çocuk profili: Belirtilmedi', style: TextStyle(fontWeight: FontWeight.w700));
-                    }
-                    final bytes = decodeDataUrlImage(profile.photoDataUrl);
-                    return Row(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(18),
-                            border: Border.all(color: Colors.grey.shade200, width: 2),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(16),
-                            child: bytes != null
-                                ? Image.memory(bytes, width: 56, height: 56, fit: BoxFit.cover)
-                                : Container(
-                                    width: 56,
-                                    height: 56,
-                                    color: Colors.grey.shade100,
-                                    alignment: Alignment.center,
-                                    child: Icon(Icons.person, color: Colors.grey.shade400, size: 28),
-                                  ),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                profile.name.isEmpty ? 'İsimsiz' : profile.name,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w900,
-                                  color: Color(0xFF18181B),
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                profile.birthDate.isEmpty ? 'Doğum tarihi: -' : 'Doğum tarihi: ${profile.birthDate}',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w800,
-                                  color: Colors.grey.shade600,
-                                  fontSize: 13,
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    );
-                  },
+                Text(
+                  subtitle,
+                  style: const TextStyle(
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF6B7280),
+                  ),
                 ),
               ],
             ),
@@ -271,14 +387,378 @@ class _ProfileSummary extends ConsumerWidget {
   }
 }
 
-class _ModuleTile extends StatelessWidget {
+class _ProfileSummary extends ConsumerWidget {
+  final String email;
+  const _ProfileSummary({required this.email});
+
+  DateTime? _parseFlexibleDate(String dateStr) {
+    dateStr = dateStr.trim();
+    if (dateStr.isEmpty) return null;
+
+    final isoParse = DateTime.tryParse(dateStr);
+    if (isoParse != null) return isoParse;
+
+    final separators = ['.', '/', '-'];
+    for (final sep in separators) {
+      if (dateStr.contains(sep)) {
+        final parts = dateStr.split(sep);
+        if (parts.length == 3) {
+          if (parts[0].length <= 2 && parts[2].length == 4) {
+            final day = int.tryParse(parts[0]);
+            final month = int.tryParse(parts[1]);
+            final year = int.tryParse(parts[2]);
+            if (day != null && month != null && year != null) {
+              return DateTime(year, month, day);
+            }
+          } else if (parts[0].length == 4 && parts[2].length <= 2) {
+            final year = int.tryParse(parts[0]);
+            final month = int.tryParse(parts[1]);
+            final day = int.tryParse(parts[2]);
+            if (day != null && month != null && year != null) {
+              return DateTime(year, month, day);
+            }
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  String _calculateAge(String birthDateStr) {
+    if (birthDateStr.isEmpty) return 'Yaş: -';
+    try {
+      final birthDate = _parseFlexibleDate(birthDateStr);
+      if (birthDate == null) {
+        return 'Yaş: -';
+      }
+      final now = DateTime.now();
+      if (birthDate.isAfter(now)) {
+        return 'Yeni doğan';
+      }
+
+      int years = now.year - birthDate.year;
+      int months = now.month - birthDate.month;
+      int days = now.day - birthDate.day;
+
+      if (days < 0) {
+        final prevMonth = DateTime(now.year, now.month, 0);
+        days += prevMonth.day;
+        months -= 1;
+      }
+
+      if (months < 0) {
+        months += 12;
+        years -= 1;
+      }
+
+      final List<String> parts = [];
+      if (years > 0) {
+        parts.add('$years yaş');
+      }
+      if (months > 0) {
+        parts.add('$months ay');
+      }
+      if (days > 0 || parts.isEmpty) {
+        parts.add('$days gün');
+      }
+
+      return parts.join(' ');
+    } catch (e) {
+      return 'Yaş: -';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF1E3A8A), // Deep Royal Blue
+            Color(0xFF1D4ED8), // Vibrant Royal Blue
+            Color(0xFF0284C7), // Sky Blue Accent
+          ],
+        ),
+        borderRadius: BorderRadius.circular(28),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF1E3A8A).withOpacity(0.18),
+            blurRadius: 15,
+            spreadRadius: 2,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: ref.watch(profileProvider).when(
+        data: (env) {
+          if (env == null) {
+            return const Padding(
+              padding: EdgeInsets.all(24),
+              child: Center(
+                child: Text(
+                  'Profil Bilgisi Bulunamadı',
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              ),
+            );
+          }
+          final active = env.profiles.where((p) => p.id == env.activeProfileId).cast().toList();
+          final profile = active.isNotEmpty ? active.first : (env.profiles.isNotEmpty ? env.profiles.first : null);
+          if (profile == null) {
+            return const Padding(
+              padding: EdgeInsets.all(24),
+              child: Center(
+                child: Text(
+                  'Aktif Çocuk Profili Belirtilmedi',
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              ),
+            );
+          }
+          final bytes = decodeDataUrlImage(profile.photoDataUrl);
+          return Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.white24, width: 3),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(17),
+                        child: bytes != null
+                            ? Image.memory(bytes, width: 64, height: 64, fit: BoxFit.cover)
+                            : Container(
+                                width: 64,
+                                height: 64,
+                                color: Colors.white10,
+                                alignment: Alignment.center,
+                                child: const Icon(Icons.person, color: Colors.white60, size: 32),
+                              ),
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            profile.name.isEmpty ? 'İsimsiz' : profile.name,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white,
+                              letterSpacing: -0.3,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            _calculateAge(profile.birthDate),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white70,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.white12, width: 1),
+                      ),
+                      child: const Row(
+                        children: [
+                          Icon(Icons.stars_rounded, color: Color(0xFFFBBF24), size: 16),
+                          SizedBox(width: 4),
+                          Text(
+                            'AKTİF PROFiL',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 9,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                const Divider(height: 1, color: Colors.white12),
+                const SizedBox(height: 16),
+
+                // Gamified educational progress bar dashboard
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '${profile.name.split(' ').first} İçin Günlük İlerleme'.toUpperCase(),
+                      style: const TextStyle(
+                        color: Colors.white60,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 1.0,
+                      ),
+                    ),
+                    const Text(
+                      '8 / 12 MODÜL',
+                      style: TextStyle(
+                        color: Color(0xFF00E5FF), // Glowing cyan
+                        fontSize: 11,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    height: 8,
+                    decoration: const BoxDecoration(
+                      color: Colors.white10,
+                    ),
+                    child: FractionallySizedBox(
+                      alignment: Alignment.centerLeft,
+                      widthFactor: 0.66, // 66% progress indicator
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Color(0xFF00B4D8),
+                              Color(0xFF00E5FF),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+        loading: () => const Padding(
+          padding: EdgeInsets.all(24),
+          child: Center(child: CircularProgressIndicator(color: Colors.white)),
+        ),
+        error: (err, _) => Padding(
+          padding: const EdgeInsets.all(24),
+          child: Center(
+            child: Text(
+              'Profil Yüklenemedi: $err',
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+      )
+    );
+  }
+}
+
+class _ModuleCarouselTile extends StatelessWidget {
+  final String title;
+  final String keyName;
+  final IconData icon;
+  final List<Color> gradientColors;
+
+  const _ModuleCarouselTile({
+    required this.title,
+    required this.keyName,
+    required this.icon,
+    required this.gradientColors,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 156,
+      margin: const EdgeInsets.only(right: 12),
+      child: Card(
+        margin: EdgeInsets.zero,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: InkWell(
+          onTap: () => context.push('/module/$keyName'),
+          borderRadius: BorderRadius.circular(24),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: gradientColors,
+              ),
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: gradientColors.first.withOpacity(0.2),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            padding: const EdgeInsets.all(18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Icon(icon, color: Colors.white, size: 24),
+                ),
+                Text(
+                  title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white,
+                    fontSize: 14,
+                    height: 1.15,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ModuleGridTile extends StatelessWidget {
   final String title;
   final String keyName;
   final IconData icon;
   final Color color;
   final Color iconColor;
 
-  const _ModuleTile({
+  const _ModuleGridTile({
     required this.title,
     required this.keyName,
     required this.icon,
@@ -288,65 +768,40 @@ class _ModuleTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: (MediaQuery.of(context).size.width - 16 * 2 - 12) / 2,
-      height: 120,
+    return Card(
+      margin: EdgeInsets.zero,
+      elevation: 0,
+      color: color,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+        side: BorderSide(color: Colors.white.withOpacity(0.6), width: 1.5),
+      ),
       child: InkWell(
         onTap: () => context.push('/module/$keyName'),
         borderRadius: BorderRadius.circular(24),
-        child: Ink(
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: Colors.white.withOpacity(0.6), width: 1.5),
-            boxShadow: [
-              BoxShadow(
-                color: iconColor.withOpacity(0.08),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Stack(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Positioned.fill(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(24),
-                  child: Opacity(
-                    opacity: 0.08,
-                    child: Image.asset(
-                      'assets/loogo.png',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.6),
+                  borderRadius: BorderRadius.circular(12),
                 ),
+                child: Icon(icon, color: iconColor, size: 22),
               ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.6),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(icon, color: iconColor, size: 24),
-                    ),
-                    Text(
-                      title,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        color: iconColor.withOpacity(0.9),
-                        fontSize: 14,
-                        height: 1.1,
-                      ),
-                    ),
-                  ],
+              Text(
+                title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontWeight: FontWeight.w900,
+                  color: iconColor.withOpacity(0.9),
+                  fontSize: 13.5,
+                  height: 1.1,
                 ),
               ),
             ],

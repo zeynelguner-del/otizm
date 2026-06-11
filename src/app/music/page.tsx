@@ -40,33 +40,32 @@ export default function MusicPage() {
 
   const tracks = useMemo(
     (): Track[] => [
-      { title: "Sakinleştirici Melodi", duration: "3:45", category: "Müzik", mode: "melody", kind: "calm" },
-      { title: "Odak Ritmi", duration: "5:20", category: "Müzik", mode: "melody", kind: "focus" },
-      { title: "Neşeli Çocuk Melodisi", duration: "2:15", category: "Müzik", mode: "melody", kind: "happy" },
-      { title: "Deniz Sesi", duration: "10:00", category: "Uyku", mode: "ambient", kind: "ocean" },
-      { title: "Yağmur Sesi", duration: "10:00", category: "Sakinleşme", mode: "ambient", kind: "rain" },
-      { title: "Rüzgar Sesi", duration: "10:00", category: "Sakinleşme", mode: "ambient", kind: "wind" },
-      { title: "Beyaz Gürültü", duration: "10:00", category: "Odak", mode: "ambient", kind: "white" },
-      { title: "Pembe Gürültü", duration: "10:00", category: "Odak", mode: "ambient", kind: "pink" },
-      { title: "Kahverengi Gürültü", duration: "10:00", category: "Uyku", mode: "ambient", kind: "brown" },
+      { title: "Sakinleştirici Melodi", duration: "7:20", category: "Müzik", mode: "melody", kind: "calm" },
+      { title: "Odak Ritmi", duration: "2:10", category: "Müzik", mode: "melody", kind: "focus" },
+      { title: "Neşeli Çocuk Melodisi", duration: "0:24", category: "Müzik", mode: "melody", kind: "happy" },
+      { title: "Deniz ve Dalga Sesi", duration: "5:02", category: "Uyku", mode: "ambient", kind: "ocean" },
+      { title: "Hafif Yağmur Sesi", duration: "6:03", category: "Sakinleşme", mode: "ambient", kind: "rain" },
+      { title: "Rüzgar Esintisi", duration: "1:00", category: "Sakinleşme", mode: "ambient", kind: "wind" },
+      { title: "Beyaz Gürültü (White Noise)", duration: "7:42", category: "Odak", mode: "ambient", kind: "white" },
+      { title: "Pembe Gürültü (Pink Noise)", duration: "5:38", category: "Odak", mode: "ambient", kind: "pink" },
+      { title: "Kahverengi Gürültü (Brown Noise)", duration: "5:07", category: "Uyku", mode: "ambient", kind: "brown" },
     ],
     []
   );
 
-  const remoteAmbientUrls: Partial<Record<AmbientKind, string>> = {
-    ocean: "https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8a/Water_on_Rocks.ogg/Water_on_Rocks.ogg.mp3",
-    rain: "https://upload.wikimedia.org/wikipedia/commons/transcoded/c/cb/Heavy_rain_in_Glenshaw%2C_PA.ogg/Heavy_rain_in_Glenshaw%2C_PA.ogg.mp3",
-    wind: "https://upload.wikimedia.org/wikipedia/commons/transcoded/6/6c/Gentle_wind_after_shower_accompanied_by_thunders.ogg/Gentle_wind_after_shower_accompanied_by_thunders.ogg.mp3",
-    white: "https://upload.wikimedia.org/wikipedia/commons/transcoded/a/aa/White_noise.ogg/White_noise.ogg.mp3",
-    pink: "https://upload.wikimedia.org/wikipedia/commons/transcoded/6/6c/Pink_noise.ogg/Pink_noise.ogg.mp3",
-    brown: "https://upload.wikimedia.org/wikipedia/commons/transcoded/4/48/Brown_noise.ogg/Brown_noise.ogg.mp3",
+  const remoteAmbientUrls: Record<AmbientKind, string> = {
+    ocean: "https://upload.wikimedia.org/wikipedia/commons/1/1f/Waves.ogg",
+    rain: "https://upload.wikimedia.org/wikipedia/commons/3/3d/Rain.ogg",
+    wind: "https://upload.wikimedia.org/wikipedia/commons/f/f3/Wind_in_Swedish_pine_forest_at_25_mps.ogg",
+    white: "https://upload.wikimedia.org/wikipedia/commons/a/aa/White_noise.ogg",
+    pink: "https://upload.wikimedia.org/wikipedia/commons/6/6c/Pink_noise.ogg",
+    brown: "https://upload.wikimedia.org/wikipedia/commons/4/48/Brown_noise.ogg",
   };
 
-  const remoteMelodyUrls: Partial<Record<MelodyKind, string>> = {
-    calm: "https://upload.wikimedia.org/wikipedia/commons/transcoded/d/d7/02_-_Breezy_May_Acoustic.ogg/02_-_Breezy_May_Acoustic.ogg.mp3",
-    focus:
-      "https://upload.wikimedia.org/wikipedia/commons/transcoded/8/89/Axle_-_01_-_A_Mist_On_Hinksey_Stream.ogg/Axle_-_01_-_A_Mist_On_Hinksey_Stream.ogg.mp3",
-    happy: "https://upload.wikimedia.org/wikipedia/commons/transcoded/e/e8/Axle_-_02_-_The_Curious_Roe.ogg/Axle_-_02_-_The_Curious_Roe.ogg.mp3",
+  const remoteMelodyUrls: Record<MelodyKind, string> = {
+    calm: "https://upload.wikimedia.org/wikipedia/commons/9/95/Scott_Buckley_%E2%80%93_The_Long_Dark_%28Ambient_Neoclassical_Piano%29.ogg",
+    focus: "https://upload.wikimedia.org/wikipedia/commons/4/43/JOHN_MICHEL_CELLO-J_S_BACH_CELLO_SUITE_1_in_G_Prelude.ogg",
+    happy: "https://upload.wikimedia.org/wikipedia/commons/b/bd/Twinkle_Twinkle_Little_Star_plain.ogg",
   };
 
   const cleanupRef = useRef<(() => void)[]>([]);

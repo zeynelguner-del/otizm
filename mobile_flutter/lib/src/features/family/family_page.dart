@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/api/api_models.dart';
 import '../../core/utils/photo_data_url.dart';
@@ -228,6 +229,7 @@ class _ProfilesTabState extends ConsumerState<_ProfilesTab> {
     try {
       final api = await ref.read(apiClientProvider.future);
       await api.saveProfile(nextEnv);
+      ref.invalidate(profileProvider);
       if (mounted) setState(() {});
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -239,6 +241,7 @@ class _ProfilesTabState extends ConsumerState<_ProfilesTab> {
     try {
       final api = await ref.read(apiClientProvider.future);
       await api.saveProfile(ProfileEnvelope(profiles: env.profiles, activeProfileId: id));
+      ref.invalidate(profileProvider);
       if (mounted) setState(() {});
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -247,10 +250,9 @@ class _ProfilesTabState extends ConsumerState<_ProfilesTab> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: ref.read(apiClientProvider.future).then((api) => api.getProfile()),
-      builder: (context, snapshot) {
-        final env = snapshot.data;
+    final profileAsync = ref.watch(profileProvider);
+    return profileAsync.when(
+      data: (env) {
         final profiles = env?.profiles ?? const <Profile>[];
         return ListView(
           padding: const EdgeInsets.all(16),
@@ -271,9 +273,7 @@ class _ProfilesTabState extends ConsumerState<_ProfilesTab> {
               ],
             ),
             const SizedBox(height: 12),
-            if (snapshot.connectionState == ConnectionState.waiting)
-              const Center(child: Padding(padding: EdgeInsets.all(24), child: CircularProgressIndicator()))
-            else if (profiles.isEmpty)
+            if (profiles.isEmpty)
               const Text('Henüz profil yok.', style: TextStyle(fontWeight: FontWeight.w700))
             else
               ...profiles.map((p) {
@@ -309,6 +309,18 @@ class _ProfilesTabState extends ConsumerState<_ProfilesTab> {
           ],
         );
       },
+      loading: () => const Center(
+        child: Padding(
+          padding: EdgeInsets.all(24),
+          child: CircularProgressIndicator(),
+        ),
+      ),
+      error: (err, _) => Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Text('Hata: $err'),
+        ),
+      ),
     );
   }
 }
@@ -338,6 +350,28 @@ class _ContactTabState extends ConsumerState<_ContactTab> {
     _doctor.text = meta?.doctorPhone ?? '';
   }
 
+  Future<void> _launchCaller(String numStr) async {
+    final cleanNum = numStr.replaceAll(RegExp(r'\s+'), '');
+    final uri = Uri(scheme: 'tel', path: cleanNum);
+    try {
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri);
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Arama başlatılamadı.')),
+          );
+        }
+      }
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Arama başlatılırken hata oluştu.')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!_loaded) {
@@ -360,11 +394,43 @@ class _ContactTabState extends ConsumerState<_ContactTab> {
         if (_ok != null) const SizedBox(height: 12),
         TextField(controller: _fullName, decoration: const InputDecoration(labelText: 'Ad Soyad', border: OutlineInputBorder())),
         const SizedBox(height: 12),
-        TextField(controller: _phone, decoration: const InputDecoration(labelText: 'Telefon', border: OutlineInputBorder())),
+        TextField(controller: _phone, keyboardType: TextInputType.phone, decoration: const InputDecoration(labelText: 'Telefon', border: OutlineInputBorder())),
         const SizedBox(height: 12),
-        TextField(controller: _instructor, decoration: const InputDecoration(labelText: 'Eğitmen Telefonu', border: OutlineInputBorder())),
+        TextField(
+          controller: _instructor,
+          keyboardType: TextInputType.phone,
+          decoration: InputDecoration(
+            labelText: 'Eğitmen Telefonu',
+            border: const OutlineInputBorder(),
+            suffixIcon: IconButton(
+              icon: const Icon(Icons.phone, color: Color(0xFF10B981)),
+              onPressed: () {
+                final num = _instructor.text.trim();
+                if (num.isNotEmpty) {
+                  _launchCaller(num);
+                }
+              },
+            ),
+          ),
+        ),
         const SizedBox(height: 12),
-        TextField(controller: _doctor, decoration: const InputDecoration(labelText: 'Doktor Telefonu', border: OutlineInputBorder())),
+        TextField(
+          controller: _doctor,
+          keyboardType: TextInputType.phone,
+          decoration: InputDecoration(
+            labelText: 'Doktor Telefonu',
+            border: const OutlineInputBorder(),
+            suffixIcon: IconButton(
+              icon: const Icon(Icons.phone, color: Color(0xFF10B981)),
+              onPressed: () {
+                final num = _doctor.text.trim();
+                if (num.isNotEmpty) {
+                  _launchCaller(num);
+                }
+              },
+            ),
+          ),
+        ),
         const SizedBox(height: 16),
         SizedBox(
           width: double.infinity,
@@ -386,6 +452,7 @@ class _ContactTabState extends ConsumerState<_ContactTab> {
                         doctorPhone: _doctor.text.trim(),
                       );
                       await api.saveUserMeta(meta);
+                      ref.invalidate(userMetaProvider);
                       setState(() => _ok = 'Kaydedildi.');
                     } finally {
                       if (mounted) setState(() => _busy = false);

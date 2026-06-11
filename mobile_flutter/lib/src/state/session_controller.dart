@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../core/api/api_client.dart';
 import '../core/api/api_models.dart';
 import 'api_client_provider.dart';
 
