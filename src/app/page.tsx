@@ -148,6 +148,16 @@ export default function Home() {
   const [kvkkAccepted, setKvkkAccepted] = useState(() => getLocalStorageValue("kvkkAcceptedV1", "0") === "1");
   const [serverError, setServerError] = useState<string | null>(null);
 
+  const [showForgotModal, setShowForgotModal] = useState(false);
+  const [forgotStep, setForgotStep] = useState(1);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotCode, setForgotCode] = useState("");
+  const [forgotNewPassword, setForgotNewPassword] = useState("");
+  const [forgotNewPassword2, setForgotNewPassword2] = useState("");
+  const [forgotBusy, setForgotBusy] = useState(false);
+  const [forgotError, setForgotError] = useState<string | null>(null);
+  const [forgotSuccess, setForgotSuccess] = useState<string | null>(null);
+
   const session = useSyncExternalStore(subscribeToSession, getSessionSnapshot, () => null);
   const kvkkSyncedForEmailRef = useRef<string | null>(null);
 
@@ -490,6 +500,83 @@ export default function Home() {
     }
   };
 
+  const handleForgotSendCode = async () => {
+    setForgotError(null);
+    const email = forgotEmail.trim().toLowerCase();
+    if (!email || !email.includes("@") || !email.includes(".")) {
+      setForgotError("Geçerli bir e-posta girin.");
+      return;
+    }
+
+    setForgotBusy(true);
+    try {
+      const res = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = (await res.json().catch(() => ({}))) as { error?: string; message?: string };
+      if (!res.ok) {
+        setForgotError(typeof data.error === "string" ? data.error : "Kod gönderilemedi.");
+        return;
+      }
+      setForgotStep(2);
+    } catch (e) {
+      setForgotError(e instanceof Error ? e.message : "Sistem hatası.");
+    } finally {
+      setForgotBusy(false);
+    }
+  };
+
+  const handleForgotResetPassword = async () => {
+    setForgotError(null);
+    const email = forgotEmail.trim().toLowerCase();
+    const code = forgotCode.trim();
+    const newPassword = forgotNewPassword;
+    const newPassword2 = forgotNewPassword2;
+
+    if (!code || code.length !== 6) {
+      setForgotError("6 haneli doğrulama kodunu girin.");
+      return;
+    }
+    if (!newPassword || newPassword.length < 8) {
+      setForgotError("Yeni şifre en az 8 karakter olmalıdır.");
+      return;
+    }
+    if (newPassword !== newPassword2) {
+      setForgotError("Şifreler eşleşmiyor.");
+      return;
+    }
+
+    setForgotBusy(true);
+    try {
+      const res = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ email, code, newPassword }),
+      });
+      const data = (await res.json().catch(() => ({}))) as { error?: string; message?: string };
+      if (!res.ok) {
+        setForgotError(typeof data.error === "string" ? data.error : "Şifre güncellenemedi.");
+        return;
+      }
+      setForgotSuccess("Şifreniz başarıyla güncellendi. Giriş yapabilirsiniz.");
+      setTimeout(() => {
+        setShowForgotModal(false);
+        setForgotStep(1);
+        setForgotEmail("");
+        setForgotCode("");
+        setForgotNewPassword("");
+        setForgotNewPassword2("");
+        setForgotSuccess(null);
+      }, 2000);
+    } catch (e) {
+      setForgotError(e instanceof Error ? e.message : "Sistem hatası.");
+    } finally {
+      setForgotBusy(false);
+    }
+  };
+
   const handleLogin = async () => {
     setAuthError(null);
     const email = normalizeEmail(authEmail);
@@ -713,7 +800,7 @@ export default function Home() {
                   />
                 </div>
 
-                <div className="space-y-1">
+                 <div className="space-y-1">
                   <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Şifre</label>
                   <input
                     type="password"
@@ -727,6 +814,22 @@ export default function Home() {
                     placeholder="••••••"
                     autoComplete={authMode === "login" ? "current-password" : "new-password"}
                   />
+                  {authMode === "login" && (
+                    <div className="text-right">
+                      <button
+                        onClick={() => {
+                          setForgotError(null);
+                          setForgotSuccess(null);
+                          setForgotStep(1);
+                          setForgotEmail(authEmail);
+                          setShowForgotModal(true);
+                        }}
+                        className="text-xs font-bold text-zinc-400 hover:text-emerald-500 transition-colors"
+                      >
+                        Şifremi Unuttum
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 {authMode === "register" && (
@@ -770,7 +873,7 @@ export default function Home() {
                   <a href="https://apps.apple.com/tr/app/otizeka" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
                     <img src="/badges/app-store-badge.svg" alt="App Store'dan İndir" className="h-10 w-auto" />
                   </a>
-                  <a href="https://play.google.com/store/apps/details?id=com.otizeka" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
+                  <a href="https://play.google.com/store/apps/details?id=com.otizmdestekapp.otizmfarkindalik" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
                     <img src="/badges/google-play-badge.svg" alt="Google Play'den İndir" className="h-10 w-auto animate-pulse-subtle" />
                   </a>
                 </div>
@@ -783,6 +886,118 @@ export default function Home() {
             </div>
           </div>
         </div>
+
+        {/* Şifremi Unuttum Modal */}
+        {showForgotModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+            <div className="bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-[2.5rem] p-8 max-w-md w-full shadow-2xl space-y-6 relative">
+              <button
+                onClick={() => {
+                  setShowForgotModal(false);
+                  setForgotStep(1);
+                  setForgotError(null);
+                  setForgotSuccess(null);
+                }}
+                className="absolute top-6 right-6 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 font-bold text-lg p-1"
+              >
+                ✕
+              </button>
+              <div className="flex items-center gap-3">
+                <div className="p-3 bg-emerald-500/10 text-emerald-500 rounded-2xl">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <h2 className="text-xl font-black text-zinc-800 dark:text-zinc-100 tracking-tight">
+                  {forgotStep === 1 ? "Şifremi Unuttum" : "Şifreyi Sıfırla"}
+                </h2>
+              </div>
+
+              {forgotError && (
+                <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-900/30 text-rose-700 dark:text-rose-200 font-bold text-sm">
+                  {forgotError}
+                </div>
+              )}
+
+              {forgotSuccess && (
+                <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-900/30 text-emerald-700 dark:text-emerald-200 font-bold text-sm">
+                  {forgotSuccess}
+                </div>
+              )}
+
+              {!forgotSuccess && (
+                <div className="space-y-4">
+                  {forgotStep === 1 ? (
+                    <>
+                      <p className="text-sm font-bold text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                        Hesabınıza kayıtlı e-posta adresini girin. Size 6 haneli bir doğrulama kodu göndereceğiz.
+                      </p>
+                      <div className="space-y-1">
+                        <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">E-posta</label>
+                        <input
+                          type="email"
+                          value={forgotEmail}
+                          onChange={(e) => setForgotEmail(e.target.value)}
+                          className="w-full p-3 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 dark:focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100"
+                          placeholder="ornek@mail.com"
+                        />
+                      </div>
+                      <button
+                        onClick={handleForgotSendCode}
+                        disabled={forgotBusy}
+                        className="w-full px-6 py-3.5 bg-emerald-500 hover:bg-emerald-600 disabled:bg-zinc-200 disabled:dark:bg-zinc-800 text-white rounded-2xl font-black uppercase tracking-widest text-sm transition-all shadow-md shadow-emerald-500/15 active:scale-95 cursor-pointer"
+                      >
+                        {forgotBusy ? "Gönderiliyor..." : "Kod Gönder"}
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-sm font-bold text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                        {forgotEmail} adresine gönderilen 6 haneli doğrulama kodunu ve yeni şifrenizi girin.
+                      </p>
+                      <div className="space-y-1">
+                        <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Doğrulama Kodu</label>
+                        <input
+                          type="text"
+                          maxLength={6}
+                          value={forgotCode}
+                          onChange={(e) => setForgotCode(e.target.value)}
+                          className="w-full p-3 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 dark:focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100 text-center tracking-[0.5em] text-lg"
+                          placeholder="000000"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Yeni Şifre</label>
+                        <input
+                          type="password"
+                          value={forgotNewPassword}
+                          onChange={(e) => setForgotNewPassword(e.target.value)}
+                          className="w-full p-3 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 dark:focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100"
+                          placeholder="••••••••"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Yeni Şifre (Tekrar)</label>
+                        <input
+                          type="password"
+                          value={forgotNewPassword2}
+                          onChange={(e) => setForgotNewPassword2(e.target.value)}
+                          className="w-full p-3 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 dark:focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100"
+                          placeholder="••••••••"
+                        />
+                      </div>
+                      <button
+                        onClick={handleForgotResetPassword}
+                        disabled={forgotBusy}
+                        className="w-full px-6 py-3.5 bg-emerald-500 hover:bg-emerald-600 disabled:bg-zinc-200 disabled:dark:bg-zinc-800 text-white rounded-2xl font-black uppercase tracking-widest text-sm transition-all shadow-md shadow-emerald-500/15 active:scale-95 cursor-pointer"
+                      >
+                        {forgotBusy ? "Güncelleniyor..." : "Şifreyi Güncelle"}
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     );
   }
