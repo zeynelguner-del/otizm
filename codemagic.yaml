@@ -1,0 +1,42 @@
+# Codemagic CI/CD configuration for OtiZeka Flutter iOS build
+workflows:
+  ios-app-store:
+    name: OtiZeka iOS Build
+    max_build_duration: 60
+    instance_type: mac_mini_m1
+    working_directory: mobile_flutter
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: '*'
+          include: true
+    scripts:
+      - name: Set up Keychain
+        script: |
+          keychain initialize
+      - name: Fetch signing files (automatic code signing)
+        script: |
+          # Requires App Store Connect integration configured in Codemagic,
+          # or APP_STORE_CONNECT_PRIVATE_KEY, APP_STORE_CONNECT_KEY_IDENTIFIER,
+          # and APP_STORE_CONNECT_ISSUER_ID environment variables set in Codemagic.
+          app-store-connect fetch-signing-files "com.otizmdestekapp.otizmDestekApp" --project-type ios --create
+      - name: Use Developer Profiles
+        script: |
+          xcode-project use-profiles
+      - name: Install dependencies
+        script: |
+          flutter packages pub get
+      - name: Build IPA
+        script: |
+          flutter build ipa --release --export-options-plist=$HOME/export_options.plist
+    artifacts:
+      - build/ios/ipa/*.ipa
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
