@@ -65,6 +65,7 @@
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Çocuğunuzun profil fotoğrafını galeriden seçebilmeniz için galeri erişim izni gerekmektedir.</string>
 	<key>NSCameraUsageDescription</key>
