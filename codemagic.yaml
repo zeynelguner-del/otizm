@@ -8,6 +8,8 @@ workflows:
     integrations:
       app_store_connect: App Store Connect
     environment:
+      groups:
+        - apple_credentials
       flutter: stable
       xcode: latest
       cocoapods: default
