@@ -26,7 +26,7 @@ workflows:
           # Requires App Store Connect integration configured in Codemagic,
           # or APP_STORE_CONNECT_PRIVATE_KEY, APP_STORE_CONNECT_KEY_IDENTIFIER,
           # and APP_STORE_CONNECT_ISSUER_ID environment variables set in Codemagic.
-          app-store-connect fetch-signing-files "com.otizmdestekapp.otizmDestekApp" --project-type ios --create
+          app-store-connect fetch-signing-files "com.otizmdestekapp.otizmDestekApp" --type IOS_APP_STORE --create
       - name: Use Developer Profiles
         script: |
           xcode-project use-profiles
