@@ -23,8 +23,8 @@ class AdHelper {
   /// Swap these with your real AdMob Interstitial Ad Unit IDs when ready for production.
   static String get interstitialAdUnitId {
     if (Platform.isAndroid) {
-      // Android Test Interstitial Ad Unit ID
-      return 'ca-app-pub-3940256099942544/1033173712';
+      // Android Production Interstitial Ad Unit ID
+      return 'ca-app-pub-7473340730819857/3323064268';
     } else if (Platform.isIOS) {
       // iOS Test Interstitial Ad Unit ID
       return 'ca-app-pub-3940256099942544/4411468910';
