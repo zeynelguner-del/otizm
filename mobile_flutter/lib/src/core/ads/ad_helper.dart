@@ -7,8 +7,8 @@ class AdHelper {
   /// Swap these with your real AdMob Banner Ad Unit IDs when ready for production.
   static String get bannerAdUnitId {
     if (Platform.isAndroid) {
-      // Android Test Banner Ad Unit ID
-      return 'ca-app-pub-3940256099942544/6300978111';
+      // Android Production Banner Ad Unit ID
+      return 'ca-app-pub-7473340730819857/5242355449';
     } else if (Platform.isIOS) {
       // iOS Test Banner Ad Unit ID
       return 'ca-app-pub-3940256099942544/2934735716';
