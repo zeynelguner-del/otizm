@@ -18,11 +18,14 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage> {
   BannerAd? _bannerAd;
   bool _isAdLoaded = false;
+  InterstitialAd? _interstitialAd;
+  int _clickCount = 0;
 
   @override
   void initState() {
     super.initState();
     _loadBannerAd();
+    _loadInterstitialAd();
   }
 
   void _loadBannerAd() {
@@ -44,9 +47,57 @@ class _HomePageState extends ConsumerState<HomePage> {
     )..load();
   }
 
+  void _loadInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: AdHelper.interstitialAdUnitId,
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          _interstitialAd = ad;
+        },
+        onAdFailedToLoad: (err) {
+          debugPrint('Failed to load an interstitial ad: ${err.message}');
+          _interstitialAd = null;
+        },
+      ),
+    );
+  }
+
+  void _showInterstitialAd(VoidCallback onAdDismissed) {
+    _clickCount++;
+    // Show ad every 3rd click to balance monetization and user experience
+    if (_clickCount % 3 == 0 && _interstitialAd != null) {
+      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (ad) {
+          ad.dispose();
+          _loadInterstitialAd();
+          onAdDismissed();
+        },
+        onAdFailedToShowFullScreenContent: (ad, err) {
+          ad.dispose();
+          _loadInterstitialAd();
+          onAdDismissed();
+        },
+      );
+      _interstitialAd!.show();
+      _interstitialAd = null;
+    } else {
+      onAdDismissed();
+    }
+  }
+
+  void _navigateToModule(String keyName) {
+    _showInterstitialAd(() {
+      if (mounted) {
+        context.push('/module/$keyName');
+      }
+    });
+  }
+
   @override
   void dispose() {
     _bannerAd?.dispose();
+    _interstitialAd?.dispose();
     super.dispose();
   }
 
@@ -201,30 +252,34 @@ class _HomePageState extends ConsumerState<HomePage> {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     scrollDirection: Axis.horizontal,
                     physics: const BouncingScrollPhysics(),
-                    children: const [
+                    children: [
                       _ModuleCarouselTile(
                         title: 'Nesneleri Tanıyalım',
                         keyName: 'objects',
                         icon: Icons.category,
-                        gradientColors: [Color(0xFFEC4899), Color(0xFFF472B6)],
+                        gradientColors: const [Color(0xFFEC4899), Color(0xFFF472B6)],
+                        onTap: () => _navigateToModule('objects'),
                       ),
                       _ModuleCarouselTile(
                         title: 'Taklit Oyunu',
                         keyName: 'imitation',
                         icon: Icons.accessibility_new_rounded,
-                        gradientColors: [Color(0xFF10B981), Color(0xFF34D399)],
+                        gradientColors: const [Color(0xFF10B981), Color(0xFF34D399)],
+                        onTap: () => _navigateToModule('imitation'),
                       ),
                       _ModuleCarouselTile(
                         title: 'Cümle Kur & Sesler',
                         keyName: 'sentence_sounds',
                         icon: Icons.record_voice_over,
-                        gradientColors: [Color(0xFF8B5CF6), Color(0xFFA78BFA)],
+                        gradientColors: const [Color(0xFF8B5CF6), Color(0xFFA78BFA)],
+                        onTap: () => _navigateToModule('sentence_sounds'),
                       ),
                       _ModuleCarouselTile(
                         title: 'Eğitim Hatırlatıcı',
                         keyName: 'education_reminder',
                         icon: Icons.alarm,
-                        gradientColors: [Color(0xFF047857), Color(0xFF059669)],
+                        gradientColors: const [Color(0xFF047857), Color(0xFF059669)],
+                        onTap: () => _navigateToModule('education_reminder'),
                       ),
                     ],
                   ),
@@ -249,36 +304,41 @@ class _HomePageState extends ConsumerState<HomePage> {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     scrollDirection: Axis.horizontal,
                     physics: const BouncingScrollPhysics(),
-                    children: const [
+                    children: [
                       _ModuleCarouselTile(
                         title: 'Eğitici Oyunlar',
                         keyName: 'games',
                         icon: Icons.sports_esports,
-                        gradientColors: [Color(0xFF0284C7), Color(0xFF38BDF8)],
+                        gradientColors: const [Color(0xFF0284C7), Color(0xFF38BDF8)],
+                        onTap: () => _navigateToModule('games'),
                       ),
                       _ModuleCarouselTile(
                         title: 'Duyusal Oda',
                         keyName: 'sensory',
                         icon: Icons.waves,
-                        gradientColors: [Color(0xFF06B6D4), Color(0xFF22D3EE)],
+                        gradientColors: const [Color(0xFF06B6D4), Color(0xFF22D3EE)],
+                        onTap: () => _navigateToModule('sensory'),
                       ),
                       _ModuleCarouselTile(
                         title: 'Müzik ve Ses',
                         keyName: 'music',
                         icon: Icons.music_note,
-                        gradientColors: [Color(0xFF4F46E5), Color(0xFF818CF8)],
+                        gradientColors: const [Color(0xFF4F46E5), Color(0xFF818CF8)],
+                        onTap: () => _navigateToModule('music'),
                       ),
                       _ModuleCarouselTile(
                         title: 'Sosyal Öyküler',
                         keyName: 'stories',
                         icon: Icons.auto_stories,
-                        gradientColors: [Color(0xFF059669), Color(0xFF10B981)],
+                        gradientColors: const [Color(0xFF059669), Color(0xFF10B981)],
+                        onTap: () => _navigateToModule('stories'),
                       ),
                       _ModuleCarouselTile(
                         title: 'Duygularım',
                         keyName: 'emotions',
                         icon: Icons.favorite,
-                        gradientColors: [Color(0xFFE11D48), Color(0xFFFB7185)],
+                        gradientColors: const [Color(0xFFE11D48), Color(0xFFFB7185)],
+                        onTap: () => _navigateToModule('emotions'),
                       ),
                     ],
                   ),
@@ -306,48 +366,54 @@ class _HomePageState extends ConsumerState<HomePage> {
                     childAspectRatio: 1.45,
                   ),
                   delegate: SliverChildListDelegate(
-                    const [
+                    [
                       _ModuleGridTile(
                         title: 'İletişim Kartları',
                         keyName: 'acc',
                         icon: Icons.chat,
-                        color: Color(0xFFFFFBEB),
-                        iconColor: Color(0xFFD97706),
+                        color: const Color(0xFFFFFBEB),
+                        iconColor: const Color(0xFFD97706),
+                        onTap: () => _navigateToModule('acc'),
                       ),
                       _ModuleGridTile(
                         title: 'Takvim ve Program',
                         keyName: 'calendar',
                         icon: Icons.calendar_month,
-                        color: Color(0xFFFFF7ED),
-                        iconColor: Color(0xFFEA580C),
+                        color: const Color(0xFFFFF7ED),
+                        iconColor: const Color(0xFFEA580C),
+                        onTap: () => _navigateToModule('calendar'),
                       ),
                       _ModuleGridTile(
                         title: 'Otizm Bilgilendirme',
                         keyName: 'info',
                         icon: Icons.info,
-                        color: Color(0xFFEFF6FF),
-                        iconColor: Color(0xFF2563EB),
+                        color: const Color(0xFFEFF6FF),
+                        iconColor: const Color(0xFF2563EB),
+                        onTap: () => _navigateToModule('info'),
                       ),
                       _ModuleGridTile(
                         title: 'OSB Tanısı Nedir?',
                         keyName: 'osb',
                         icon: Icons.help,
-                        color: Color(0xFFECFEFF),
-                        iconColor: Color(0xFF0891B2),
+                        color: const Color(0xFFECFEFF),
+                        iconColor: const Color(0xFF0891B2),
+                        onTap: () => _navigateToModule('osb'),
                       ),
                       _ModuleGridTile(
                         title: 'Eğitim Rehberi',
                         keyName: 'education',
                         icon: Icons.menu_book,
-                        color: Color(0xFFF5F3FF),
-                        iconColor: Color(0xFF7C3AED),
+                        color: const Color(0xFFF5F3FF),
+                        iconColor: const Color(0xFF7C3AED),
+                        onTap: () => _navigateToModule('education'),
                       ),
                       _ModuleGridTile(
                         title: 'OSB Araştırmaları',
                         keyName: 'osb_research',
                         icon: Icons.public,
-                        color: Color(0xFFF0FDF4),
-                        iconColor: Color(0xFF0D9488),
+                        color: const Color(0xFFF0FDF4),
+                        iconColor: const Color(0xFF0D9488),
+                        onTap: () => _navigateToModule('osb_research'),
                       ),
                     ],
                   ),
@@ -727,12 +793,14 @@ class _ModuleCarouselTile extends StatelessWidget {
   final String keyName;
   final IconData icon;
   final List<Color> gradientColors;
+  final VoidCallback onTap;
 
   const _ModuleCarouselTile({
     required this.title,
     required this.keyName,
     required this.icon,
     required this.gradientColors,
+    required this.onTap,
   });
 
   @override
@@ -747,7 +815,7 @@ class _ModuleCarouselTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(24),
         ),
         child: InkWell(
-          onTap: () => context.push('/module/$keyName'),
+          onTap: onTap,
           borderRadius: BorderRadius.circular(24),
           child: Container(
             decoration: BoxDecoration(
@@ -804,6 +872,7 @@ class _ModuleGridTile extends StatelessWidget {
   final IconData icon;
   final Color color;
   final Color iconColor;
+  final VoidCallback onTap;
 
   const _ModuleGridTile({
     required this.title,
@@ -811,6 +880,7 @@ class _ModuleGridTile extends StatelessWidget {
     required this.icon,
     required this.color,
     required this.iconColor,
+    required this.onTap,
   });
 
   @override
@@ -824,7 +894,7 @@ class _ModuleGridTile extends StatelessWidget {
         side: BorderSide(color: Colors.white.withOpacity(0.6), width: 1.5),
       ),
       child: InkWell(
-        onTap: () => context.push('/module/$keyName'),
+        onTap: onTap,
         borderRadius: BorderRadius.circular(24),
         child: Padding(
           padding: const EdgeInsets.all(16),
