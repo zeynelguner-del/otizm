@@ -74,6 +74,8 @@
 	<array>
 		<string>tel</string>
 	</array>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>Size daha ilgi çekici ve kişiselleştirilmiş reklamlar sunabilmek için bu izne ihtiyacımız var.</string>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-3940256099942544~1458002511</string>
 </dict>

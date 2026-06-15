@@ -38,6 +38,9 @@ workflows:
       - name: Install dependencies
         script: |
           flutter packages pub get
+      - name: Generate App Icons
+        script: |
+          dart run flutter_launcher_icons
       - name: Build IPA
         script: |
           flutter build ipa --release --export-options-plist=$HOME/export_options.plist
