@@ -8,7 +8,7 @@ class AdHelper {
   static String get bannerAdUnitId {
     if (Platform.isAndroid) {
       // Android Production Banner Ad Unit ID
-      return 'ca-app-pub-7473340730819857/5242355449';
+      return 'ca-app-pub-6555296619233151/6468479658';
     } else if (Platform.isIOS) {
       // iOS Production Banner Ad Unit ID
       return 'ca-app-pub-6555296619233151/6839180593';
@@ -24,7 +24,7 @@ class AdHelper {
   static String get interstitialAdUnitId {
     if (Platform.isAndroid) {
       // Android Production Interstitial Ad Unit ID
-      return 'ca-app-pub-7473340730819857/3323064268';
+      return 'ca-app-pub-6555296619233151/1076552175';
     } else if (Platform.isIOS) {
       // iOS Production Interstitial Ad Unit ID
       return 'ca-app-pub-6555296619233151/7148265807';
