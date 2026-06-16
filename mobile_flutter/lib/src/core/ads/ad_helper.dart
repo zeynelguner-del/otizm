@@ -10,8 +10,8 @@ class AdHelper {
       // Android Production Banner Ad Unit ID
       return 'ca-app-pub-7473340730819857/5242355449';
     } else if (Platform.isIOS) {
-      // iOS Test Banner Ad Unit ID
-      return 'ca-app-pub-3940256099942544/2934735716';
+      // iOS Production Banner Ad Unit ID
+      return 'ca-app-pub-6555296619233151/6839180593';
     } else {
       throw UnsupportedError('Unsupported platform');
     }
@@ -26,8 +26,8 @@ class AdHelper {
       // Android Production Interstitial Ad Unit ID
       return 'ca-app-pub-7473340730819857/3323064268';
     } else if (Platform.isIOS) {
-      // iOS Test Interstitial Ad Unit ID
-      return 'ca-app-pub-3940256099942544/4411468910';
+      // iOS Production Interstitial Ad Unit ID
+      return 'ca-app-pub-6555296619233151/7148265807';
     } else {
       throw UnsupportedError('Unsupported platform');
     }
