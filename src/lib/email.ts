@@ -5,7 +5,7 @@ export async function sendResetEmail(email: string, code: string) {
   const port = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587;
   const user = process.env.SMTP_USER;
   const pass = process.env.SMTP_PASS;
-  const from = process.env.SMTP_FROM || '"OtiZeka Destek" <noreply@otizmdestekapp.com>';
+  const from = process.env.SMTP_FROM || '"OtiZeka Destek" <noreply@otizeka.com>';
 
   if (!host || !user || !pass) {
     // Console fallback

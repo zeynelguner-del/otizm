@@ -27,7 +27,7 @@ flutter pub get
 ```
 
 ## Çalıştırma
-Varsayılan backend: `https://www.otizmdestekapp.com`
+Varsayılan backend: `https://www.otizeka.com`
 
 Başka bir ortam için:
 
