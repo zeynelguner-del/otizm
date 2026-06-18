@@ -870,7 +870,7 @@ export default function Home() {
                 </button>
                 <h3 className="text-sm font-bold text-center mt-3">Uygulamamızı İndirin</h3>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-2">
-                  <a href="https://apps.apple.com/tr/app/otizeka" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
+                  <a href="https://apps.apple.com/tr/app/otizeka/id6779704594" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
                     <img src="/badges/app-store-badge.svg" alt="App Store'dan İndir" className="h-10 w-auto" />
                   </a>
                   <a href="https://play.google.com/store/apps/details?id=com.otizmdestekapp.otizmfarkindalik" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
