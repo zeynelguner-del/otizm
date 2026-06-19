@@ -619,6 +619,30 @@ export default function Home() {
     const showKvkkOverlay = typeof window !== "undefined" && !kvkkAccepted;
     return (
       <div className="min-h-screen lg:h-screen lg:overflow-hidden bg-zinc-50 dark:bg-zinc-950 flex flex-col lg:flex-row relative" suppressHydrationWarning>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "OtiZeka",
+              "url": "https://www.otizeka.com",
+              "description": "Çocuklarımızın gelişim yolculuğunu destekleyen eğitsel oyunlar, duygu takibi, görsel rutinler ve özel eğitim araçları sunan dijital yardımcı."
+            })
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "OtiZeka",
+              "url": "https://www.otizeka.com",
+              "logo": "https://www.otizeka.com/otizeka-logo.png"
+            })
+          }}
+        />
         {showKvkkOverlay && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-zinc-950/80 backdrop-blur-md">
             <div className="bg-white dark:bg-zinc-900 w-full max-w-xl rounded-[2.5rem] shadow-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800">
@@ -676,11 +700,11 @@ export default function Home() {
               <span className="px-4 py-1 rounded-full bg-white/10 text-emerald-400 text-xs font-black uppercase tracking-widest inline-block">
                 Otizm Destek Portalı
               </span>
-              <h2 className="text-3xl xl:text-4xl font-black tracking-tight leading-tight">
+              <h1 className="text-3xl xl:text-4xl font-black tracking-tight leading-tight">
                 Çocuklarımızın <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Gelişim Yolculuğu</span> <br />
                 Burada Başlıyor.
-              </h2>
+              </h1>
               <p className="text-zinc-400 font-medium text-sm xl:text-base leading-relaxed max-w-md">
                 OtiZeka; otizm spektrumundaki çocuklarımızın eğitim, sosyal beceri, duygu takibi ve iletişim gelişimlerini modern yöntemlerle destekleyen kapsamlı bir dijital yardımcıdır.
               </p>

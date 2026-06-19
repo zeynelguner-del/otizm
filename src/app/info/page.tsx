@@ -94,6 +94,24 @@ export default function InfoPage() {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-6 md:p-12">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "MedicalWebPage",
+              "name": "Otizm Bilgilendirme ve Aile Rehberi",
+              "description": "Otizm nedir, erken tanı belirtileri, eğitim yöntemleri ve yasal haklar hakkında uzman onaylı pratik rehber.",
+              "url": "https://www.otizeka.com/info",
+              "aspect": [
+                "definition",
+                "symptoms",
+                "treatments",
+                "education"
+              ]
+            })
+          }}
+        />
       <header className="max-w-4xl mx-auto mb-12 flex items-center gap-6">
         <Link
           href="/"

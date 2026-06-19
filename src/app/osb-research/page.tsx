@@ -4,6 +4,30 @@ import { ArrowLeft } from "lucide-react";
 export default function OsbResearchPage() {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-6 md:p-12">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "ScholarlyArticle",
+              "name": "Otizm Spektrum Bozukluğu (OSB) Üzerine Araştırmalar",
+              "description": "Otizm spektrum bozukluğu üzerine küresel ve ulusal düzeyde yapılan en güncel nörolojik, genetik ve hücresel araştırmalar.",
+              "url": "https://www.otizeka.com/osb-research",
+              "author": {
+                "@type": "Organization",
+                "name": "OtiZeka"
+              },
+              "publisher": {
+                "@type": "Organization",
+                "name": "OtiZeka",
+                "logo": {
+                  "@type": "ImageObject",
+                  "url": "https://www.otizeka.com/otizeka-logo.png"
+                }
+              }
+            })
+          }}
+        />
       <header className="max-w-4xl mx-auto mb-12 flex items-center gap-6">
         <Link
           href="/"
