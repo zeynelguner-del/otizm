@@ -250,6 +250,30 @@ export default function StoriesPage() {
       <main className="max-w-2xl mx-auto">
         {!selectedStory ? (
           <div className="space-y-4">
+            {/* SEO Tanıtım Bloğu */}
+            <div className="bg-white dark:bg-zinc-900 p-6 sm:p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-4">
+              <h2 className="text-lg font-black text-zinc-900 dark:text-zinc-50">Otizmli Çocuklar İçin Sosyal Öyküler Nedir?</h2>
+              <p className="text-zinc-600 dark:text-zinc-400 text-sm font-medium leading-relaxed">
+                Sosyal öyküler, otizm spektrum bozukluğu (OSB) olan veya gelişimsel desteğe ihtiyaç duyan çocuklarımıza; günlük rutinleri, toplumsal kuralları ve sosyal etkileşimleri somutlaştırarak öğretmek amacıyla yazılan kısa ve görsel hikayelerdir.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                <div className="space-y-1">
+                  <h3 className="text-xs font-black text-emerald-500 uppercase tracking-wider">Neden Kullanılmalı?</h3>
+                  <p className="text-zinc-500 text-[11px] font-bold leading-normal">
+                    Çocuklardaki belirsizlik kaygısını azaltır, sosyal ipuçlarını anlamalarına yardımcı olur ve beklenen davranışları adım adım görselleştirir.
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <h3 className="text-xs font-black text-emerald-500 uppercase tracking-wider">Nasıl Uygulanmalı?</h3>
+                  <p className="text-zinc-500 text-[11px] font-bold leading-normal">
+                    Hikayeyi çocuk sakin bir ortamdayken okuyun. Hedeflenen aktiviteden (örneğin el yıkama) hemen önce tekrarlayarak süreci somutlaştırın.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <h2 className="text-xs font-black text-zinc-400 uppercase tracking-[0.2em] pl-1 pt-2">Öykü Listesi</h2>
+
             {STORIES.map((story) => (
               <button
                 key={story.id}

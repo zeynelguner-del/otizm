@@ -10,8 +10,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/education',
     '/osb-research',
     '/stories',
-    '/music',
-    '/acc',
     '/gizlilik',
   ];
 
