@@ -5861,7 +5861,7 @@ class _ImitationModuleBodyState extends State<_ImitationModuleBody> {
     },
     {
       'title': 'Burnunu Göster',
-      'voice': 'Sol elinle burnunu göster!',
+      'voice': 'Sağ elinle burnunu göster!',
       'action': 'showNose',
       'imageAsset': 'assets/imitation_show_nose.png',
     },
