@@ -3,3 +3,5 @@ const String appBaseUrl = String.fromEnvironment(
   defaultValue: 'https://www.otizeka.com',
 );
 
+const String appVersion = '1.0.1';
+

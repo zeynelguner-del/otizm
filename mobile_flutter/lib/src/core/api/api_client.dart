@@ -116,6 +116,11 @@ class ApiClient {
     return AdminStats.fromJson(map);
   }
 
+  Future<Map<String, dynamic>> getAppVersion() async {
+    final res = await _dio.get('/api/app-version');
+    return _asJsonMap(res.data);
+  }
+
   Map<String, dynamic> _asJsonMap(dynamic v) {
     if (v is Map<String, dynamic>) return v;
     if (v is Map) return v.cast<String, dynamic>();

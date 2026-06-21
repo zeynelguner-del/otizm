@@ -1,7 +1,11 @@
+import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/config.dart';
+import '../../state/api_client_provider.dart';
 import '../../state/session_controller.dart';
 
 class SplashPage extends ConsumerStatefulWidget {
@@ -77,7 +81,31 @@ class _SplashPageState extends ConsumerState<SplashPage> with SingleTickerProvid
     super.dispose();
   }
 
-  void _navigateToNextScreen() {
+  Future<void> _navigateToNextScreen() async {
+    if (!mounted) return;
+
+    try {
+      final api = await ref.read(apiClientProvider.future);
+      final versionData = await api.getAppVersion();
+      
+      final minAndroid = versionData['minAndroidVersion'] as String? ?? '1.0.0';
+      final minIos = versionData['minIosVersion'] as String? ?? '1.0.0';
+      final androidUrl = versionData['androidUrl'] as String? ?? '';
+      final iosUrl = versionData['iosUrl'] as String? ?? '';
+
+      final isAndroid = Platform.isAndroid;
+      final minVersion = isAndroid ? minAndroid : minIos;
+      final storeUrl = isAndroid ? androidUrl : iosUrl;
+
+      if (_isVersionOlder(appVersion, minVersion)) {
+        if (!mounted) return;
+        _showUpdateDialog(storeUrl);
+        return; // Stop execution to force the update
+      }
+    } catch (e) {
+      debugPrint('Version check failed: $e');
+    }
+
     if (!mounted) return;
     final isLoggedIn = ref.read(sessionControllerProvider).valueOrNull?.email != null;
     if (isLoggedIn) {
@@ -85,6 +113,65 @@ class _SplashPageState extends ConsumerState<SplashPage> with SingleTickerProvid
     } else {
       context.go('/auth');
     }
+  }
+
+  bool _isVersionOlder(String current, String minimum) {
+    try {
+      List<int> currentParts = current.split('.').map(int.parse).toList();
+      List<int> minParts = minimum.split('.').map(int.parse).toList();
+      
+      for (int i = 0; i < minParts.length; i++) {
+        int currentPart = i < currentParts.length ? currentParts[i] : 0;
+        int minPart = minParts[i];
+        if (currentPart < minPart) return true;
+        if (currentPart > minPart) return false;
+      }
+    } catch (_) {}
+    return false;
+  }
+
+  void _showUpdateDialog(String storeUrl) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return PopScope(
+          canPop: false,
+          child: AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            title: const Row(
+              children: [
+                Icon(Icons.system_update_alt, color: Color(0xFF10B981)),
+                SizedBox(width: 10),
+                Text('Güncelleme Gerekli', style: TextStyle(fontWeight: FontWeight.bold)),
+              ],
+            ),
+            content: const Text(
+              'Uygulamayı kullanmaya devam edebilmeniz için yeni bir sürüm yayınlandı. Lütfen devam etmeden önce güncelleyin.',
+              style: TextStyle(height: 1.4),
+            ),
+            actionsPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            actions: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF10B981),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  minimumSize: const Size(double.infinity, 48),
+                ),
+                onPressed: () async {
+                  final uri = Uri.parse(storeUrl);
+                  if (await canLaunchUrl(uri)) {
+                    await launchUrl(uri, mode: LaunchMode.externalApplication);
+                  }
+                },
+                child: const Text('Güncelle', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
