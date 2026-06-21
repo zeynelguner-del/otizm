@@ -5849,7 +5849,7 @@ class _ImitationModuleBodyState extends State<_ImitationModuleBody> {
     },
     {
       'title': 'Kulağını Göster',
-      'voice': 'Sağ elinle sol kulağını göster!',
+      'voice': 'Sağ elinle sağ kulağını göster!',
       'action': 'showEar',
       'imageAsset': 'assets/imitation_show_ear.png',
     },
