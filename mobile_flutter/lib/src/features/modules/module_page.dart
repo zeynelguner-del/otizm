@@ -1081,6 +1081,34 @@ class _StoriesModuleBodyState extends State<_StoriesModuleBody> {
   _Story? _selected;
   int _step = 0;
   String? _quizChoice;
+  final FlutterTts _flutterTts = FlutterTts();
+
+  @override
+  void initState() {
+    super.initState();
+    _initTts();
+  }
+
+  void _initTts() async {
+    try {
+      await _flutterTts.setLanguage("tr-TR");
+      await _flutterTts.setSpeechRate(0.45);
+      await _flutterTts.setPitch(1.0);
+    } catch (_) {}
+  }
+
+  void _speak(String text) async {
+    try {
+      await _flutterTts.stop();
+      await _flutterTts.speak(text);
+    } catch (_) {}
+  }
+
+  @override
+  void dispose() {
+    _flutterTts.stop();
+    super.dispose();
+  }
 
   static const _stories = <_Story>[
     _Story(
@@ -1186,6 +1214,7 @@ class _StoriesModuleBodyState extends State<_StoriesModuleBody> {
       _step = 0;
       _quizChoice = null;
     });
+    _speak(s.steps[0].text);
   }
 
   void _back() {
@@ -1193,7 +1222,9 @@ class _StoriesModuleBodyState extends State<_StoriesModuleBody> {
       if (_step > 0) {
         _step -= 1;
         _quizChoice = null;
+        _speak(_selected!.steps[_step].text);
       } else {
+        _flutterTts.stop();
         _selected = null;
         _step = 0;
         _quizChoice = null;
@@ -1206,12 +1237,14 @@ class _StoriesModuleBodyState extends State<_StoriesModuleBody> {
     if (s == null) return;
     setState(() {
       if (_step >= s.steps.length - 1) {
+        _flutterTts.stop();
         _selected = null;
         _step = 0;
         _quizChoice = null;
       } else {
         _step += 1;
         _quizChoice = null;
+        _speak(s.steps[_step].text);
       }
     });
   }
@@ -1267,6 +1300,11 @@ class _StoriesModuleBodyState extends State<_StoriesModuleBody> {
                 Text(step.emoji, style: const TextStyle(fontSize: 64)),
                 const SizedBox(height: 10),
                 Text(step.text, textAlign: TextAlign.center, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+                const SizedBox(height: 12),
+                IconButton(
+                  icon: const Icon(Icons.volume_up, color: Color(0xFF059669), size: 28),
+                  onPressed: () => _speak(step.text),
+                ),
               ],
             ),
           ),
@@ -1281,7 +1319,14 @@ class _StoriesModuleBodyState extends State<_StoriesModuleBody> {
           return Padding(
             padding: const EdgeInsets.only(bottom: 10),
             child: OutlinedButton(
-              onPressed: () => setState(() => _quizChoice = opt),
+              onPressed: () {
+                setState(() => _quizChoice = opt);
+                if (opt == s.title) {
+                  _speak('Doğru!');
+                } else {
+                  _speak('Tekrar dene.');
+                }
+              },
               style: OutlinedButton.styleFrom(
                 side: BorderSide(color: selected ? const Color(0xFF111827) : const Color(0xFFE4E4E7), width: 2),
                 padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 14),
