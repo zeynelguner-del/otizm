@@ -1,0 +1,750 @@
+{
+  "@@locale": "tr",
+  "appTitle": "OtiZeka",
+  "adminTitle": "Yönetim",
+  "adminNoAuth": "Yetkiniz yok veya hata: ",
+  "adminTotalUsers": "Toplam Kullanıcı",
+  "adminActiveSessions": "Aktif Oturum",
+  "adminKvkkAccepted": "KVKK Kabul",
+  "adminProfilesSaved": "Kayıtlı Profil",
+  "adminUsersLast7Days": "Son 7 Gün Kullanıcı",
+  "homeTitle": "Ana Sayfa",
+  "homeModules": "Modüller",
+  "homeError": "Hata: ",
+  "homeUser": "Kullanıcı: ",
+  "homeNoActiveProfile": "Aktif çocuk profili: Belirtilmedi",
+  "homeUnnamed": "İsimsiz",
+  "homeNoBirthDate": "Doğum tarihi: -",
+  "homeBirthDate": "Doğum tarihi: ",
+  "modInfo": "Otizm Bilgilendirme",
+  "modOsb": "OSB (Otizm Spektrum Bozukluğu)",
+  "modEducation": "Eğitim",
+  "modEmotions": "Duygularım",
+  "modGames": "Eğitici Oyunlar",
+  "modStories": "Sosyal Öyküler",
+  "modMusic": "Müzik ve Ses",
+  "modAcc": "İletişim Kartları (ACC)",
+  "modCalendar": "Takvim ve Program",
+  "modEduReminder": "Eğitim Hatırlatıcı",
+  "authEmailErr": "Geçerli bir e-posta girin.",
+  "authPwdErr": "Şifre en az 8 karakter olmalı.",
+  "authPwdMatchErr": "Şifreler eşleşmiyor.",
+  "authKvkkErr": "Devam etmek için KVKK onayı gerekli.",
+  "authTitle": "Otizm Destek",
+  "authLogin": "Giriş",
+  "authRegister": "Kayıt Ol",
+  "authEmailLabel": "E-posta",
+  "authPwdLabel": "Şifre",
+  "authPwd2Label": "Şifre (Tekrar)",
+  "authKvkkText": "Devam ederek KVKK Açık Rıza metnini kabul etmiş olursunuz.",
+  "authWait": "Lütfen bekleyin...",
+  "authBtnRegister": "Kayıt Ol",
+  "authBtnLogin": "Giriş Yap",
+  "familyTitle": "Aile Paneli",
+  "familyProfile": "Profil",
+  "familyContact": "İletişim",
+  "familyPrivacy": "Gizlilik",
+  "familyNewProfile": "Yeni Profil",
+  "familyEditProfile": "Profili Düzenle",
+  "familyChildName": "Çocuğun adı",
+  "familyBirthDateHint": "Doğum tarihi (YYYY-MM-DD)",
+  "familyAgeOpt": "Yaş (opsiyonel)",
+  "familyNotes": "Aile notları",
+  "familyEduNotes": "Eğitim notları",
+  "btnSave": "Kaydet",
+  "familyProfiles": "Çocuk Profilleri",
+  "welcome": "Hoş Geldiniz",
+  "featuredGuide": "Öne Çıkan Rehber",
+  "categories": "Kategoriler",
+  "headings": "Başlıklar",
+  "moduleInfoTitle": "Otizm Bilgilendirme",
+  "moduleOsbTitle": "OSB (Otizm Spektrum Bozukluğu)",
+  "moduleEducationTitle": "Eğitim",
+  "moduleEmotionsTitle": "Duygularım",
+  "moduleGamesTitle": "Eğitici Oyunlar",
+  "moduleStoriesTitle": "Sosyal Öyküler",
+  "moduleMusicTitle": "Müzik ve Ses",
+  "moduleAccTitle": "İletişim Kartları (ACC)",
+  "moduleCalendarTitle": "Takvim ve Program",
+  "moduleReminderTitle": "Eğitim Hatırlatıcı",
+  "btnNew": "Yeni",
+  "familyNoProfile": "Henüz profil yok.",
+  "familyActive": "Aktif",
+  "familyContactInfo": "İletişim Bilgileri",
+  "familySaved": "Kaydedildi.",
+  "familyNameSurname": "Ad Soyad",
+  "familyPhone": "Telefon",
+  "familyInstructorPhone": "Eğitmen Telefonu",
+  "familyDoctorPhone": "Doktor Telefonu",
+  "familyDeleteAcc": "Hesabı Sil",
+  "familyDeleteAccMsg": "Hesabı silmek için şifrenizi girin.",
+  "btnCancel": "Vazgeç",
+  "btnDelete": "Sil",
+  "familyPwdMinLength": "Şifre gerekli (en az 8 karakter).",
+  "emoNoise": "Gürültü",
+  "emoCrowd": "Kalabalık",
+  "emoChange": "Değişiklik",
+  "emoWaiting": "Beklemek",
+  "emoFatigue": "Yorgunluk",
+  "emoHunger": "Açlık",
+  "emoLight": "Işık",
+  "emoTouch": "Dokunma",
+  "emoScreen": "Ekran",
+  "emoSeparation": "Ayrılma",
+  "emoDeepBreath": "Derin Nefes",
+  "emoBreak": "Ara Vermek",
+  "emoHug": "Sarılma",
+  "emoHeadphones": "Kulaklık",
+  "emoDrinkWater": "Su İçmek",
+  "emoCalmCorner": "Sakin Köşe",
+  "emoMusic": "Müzik",
+  "emoSqueezeBall": "Top Sıkma",
+  "emoHappy": "Mutlu",
+  "emoSad": "Üzgün",
+  "emoAngry": "Kızgın",
+  "emoSurprised": "Şaşırmış",
+  "emoScared": "Korkmuş",
+  "emoExcited": "Heyecanlı",
+  "emoHowDoYouFeel": "Nasıl Hissediyorsun?",
+  "emoIntensity": "Şiddeti:",
+  "emoTriggers": "Tetikleyiciler (Opsiyonel)",
+  "emoWhatHelps": "Sana Ne İyi Gelir? (Opsiyonel)",
+  "emoBefore": "Öncesinde ne oldu?",
+  "emoAction": "Ne hissettin/yaptın?",
+  "emoAfter": "Sonrasında ne oldu?",
+  "emoNotes": "Ek Notlar",
+  "emoPastRecords": "Geçmiş Kayıtlar",
+  "storyGrocery": "Market Alışverişi",
+  "storyGrocery1": "Market kalabalıktı.",
+  "storyGrocery2": "Sesler rahatsız ettiğinde kulaklığımı taktım.",
+  "storyGrocery3": "İstediğim atıştırmalığı bulunca mutlu oldum.",
+  "storyGrocery4": "Kasada sıramı sakince bekledim.",
+  "storyVisit": "Misafirliğe Gitmek",
+  "storyVisit1": "Yeni bir eve gittik.",
+  "storyVisit2": "Önce selam verdim.",
+  "storyVisit3": "Oyuncaklarımı paylaştım.",
+  "storyVisit4": "Ayrılırken hoşça kal dedim.",
+  "storyBarber": "Berbere Gitmek",
+  "storyBarber1": "Saç kesimi için berbere gittik.",
+  "storyBarber2": "Makine sesi biraz yüksekti ama dayandım.",
+  "storyBarber3": "Saçlarım kesilince çok yakışıklı oldum.",
+  "storyBarber4": "Berbere teşekkür edip çıktık.",
+  "storyDoctor": "Doktora Gitmek",
+  "storyDoctor1": "Bugün kontrole gittik.",
+  "storyDoctor2": "Doktor kalbimi dinledi.",
+  "storyDoctor3": "Bana aferin dedi.",
+  "storyDoctor4": "Sağlıklı olmak çok güzel.",
+  "storyTitle": "Sosyal Öykü",
+  "storyRead": "Öyküyü Oku",
+  "btnBack": "Geri",
+  "btnNext": "İleri",
+  "btnFinish": "Bitir",
+  "storyQuestion": "Soru",
+  "storyQuizQ": "Bu öykünün adı hangisi?",
+  "storyQuizCorrect": "Doğru!",
+  "storyQuizWrong": "Tekrar dene.",
+  "musicCalming": "Sakinleştirici Melodi",
+  "musicFocus": "Odak Ritmi",
+  "musicJoyful": "Neşeli Çocuk Melodisi",
+  "musicSea": "Deniz Sesi",
+  "musicRain": "Yağmur Sesi",
+  "musicWind": "Rüzgar Sesi",
+  "musicWhiteNoise": "Beyaz Gürültü",
+  "musicPinkNoise": "Pembe Gürültü",
+  "musicBrownNoise": "Kahverengi Gürültü",
+  "musicSleep": "Uyku",
+  "musicCalmingCat": "Sakinleşme",
+  "musicFocusCat": "Odak",
+  "musicNowPlaying": "Şu an",
+  "musicNotSelected": "Seçilmedi",
+  "musicNotStarted": "Bir parça seçip başlatabilirsin.",
+  "musicTimeRemaining": "Kalan süre:",
+  "btnStop": "Durdur",
+  "btnBreathe": "Nefes",
+  "musicTracks": "Parçalar",
+  "musicRhythmTitle": "Ritim Önerisi",
+  "musicRhythmDesc": "3 tur nefes egzersizi:\\n- 4 saniye nefes al\\n- 4 saniye tut\\n- 6 saniye ver\\n\\nİstersen sevdiğin bir parçayı açıp tekrar edebilirsin.",
+  "musicDesc1": "Sakinleşme ve gevşeme için.",
+  "musicDesc2": "Dikkati toplamak için ritim.",
+  "musicDesc3": "Hareket ve motivasyon için.",
+  "musicDesc4": "Uyku öncesi rahatlatıcı ortam sesi.",
+  "musicDesc5": "Sakinleşme için arka plan sesi.",
+  "musicDesc6": "Hafif rüzgar ortam sesi.",
+  "musicDesc7": "Odak için sabit gürültü.",
+  "musicDesc8": "Daha yumuşak gürültü profili.",
+  "musicDesc9": "Derin, düşük frekanslı gürültü.",
+  "accBasicNeeds": "Temel İhtiyaçlar",
+  "accEmotions": "Duygular",
+  "accPlaceAction": "Yer ve Eylem",
+  "accCommunication": "İletişim",
+  "accWater": "Su",
+  "accHungry": "Acıktım",
+  "accToilet": "Tuvalet",
+  "accSleepy": "Uykum Geldi",
+  "accHelp": "Yardım",
+  "accHug": "Sarılmak",
+  "accHappy": "Mutluyum",
+  "accSad": "Üzgünüm",
+  "accScared": "Korkuyorum",
+  "accExcited": "Heyecanlıyım",
+  "accAngry": "Kızgınım",
+  "accCalm": "Sakinim",
+  "accTired": "Yorgunum",
+  "accSurprised": "Şaşkınım",
+  "accGoHome": "Eve Gidelim",
+  "accGoOut": "Dışarı Çıkalım",
+  "accDressUp": "Giyinmek",
+  "accGoPark": "Parka Gidelim",
+  "accGoSchool": "Okula Gidelim",
+  "accPlayMusic": "Müzik Aç",
+  "accPlayGames": "Oyun Oynamak",
+  "accCheckCalendar": "Takvime Bakalım",
+  "accMe": "Ben",
+  "accPlease": "Lütfen",
+  "accThankYou": "Teşekkür Ederim",
+  "accYes": "Evet",
+  "accNo": "Hayır",
+  "accPhone": "Telefon",
+  "accTapCard": "Bir karta dokun...",
+  "btnClear": "Temizle",
+  "accSentence": "Cümle",
+  "btnShow": "Göster",
+  "calMorning": "Sabah Rutini",
+  "calMorningDesc": "Uyan, yüzünü yıka ve kahvaltı yap.",
+  "calSchool": "Okul Zamanı",
+  "calSchoolDesc": "Okula git ve derslerine katıl.",
+  "calLunch": "Öğle Yemeği",
+  "calLunchDesc": "Yemeğini bitir ve biraz dinlen.",
+  "calFreeTime": "Serbest Zaman",
+  "calFreeTimeDesc": "İstediğin bir oyunu oyna.",
+  "calDinner": "Akşam Yemeği",
+  "calDinnerDesc": "Ailece yemek vakti.",
+  "calBedtime": "Uyku Hazırlığı",
+  "calBedtimeDesc": "Dişlerini fırçala, pijamanı giy, uyu.",
+  "calToday": "Bugünün Programı",
+  "calYesterday": "Dün",
+  "calTomorrow": "Yarın",
+  "calNotCompleted": "Tamamlanmadı",
+  "calCompleted": "Tamamlandı!",
+  "remMedicine": "İlaç Zamanı",
+  "remMedicineDesc": "Vitaminleri unutma.",
+  "remExercise": "Egzersiz",
+  "remExerciseDesc": "15 dk esneme.",
+  "remReading": "Kitap Okuma",
+  "remReadingDesc": "Uyku öncesi hikaye.",
+  "remAddReminder": "Hatırlatıcı Ekle",
+  "remTitleLabel": "Başlık",
+  "remTitleHint": "Örn: Fizyoterapi",
+  "remDescLabel": "Açıklama",
+  "remTimeLabel": "Saat",
+  "remRepeatLabel": "Tekrar",
+  "remNone": "Hiçbiri",
+  "remDaily": "Her Gün",
+  "remWeekly": "Haftalık",
+  "remMonthly": "Aylık",
+  "remTitle": "Hatırlatıcılar",
+  "remNoReminder": "Henüz hatırlatıcı yok.",
+  "gameMemory": "Hafıza Oyunu",
+  "gameMemoryDesc": "Kartları eşleştirerek hafızanı güçlendir.",
+  "gameBalloons": "Renkli Balonlar",
+  "gameBalloonsDesc": "Belirtilen renkteki balonları patlat.",
+  "gameEmotion": "Duygu Eşleştirme",
+  "gameEmotionDesc": "Yüz ifadeleriyle duyguları eşleştir.",
+  "gameShapes": "Şekil Yerleştirme",
+  "gameShapesDesc": "Eksik şekilleri doğru yere koy.",
+  "gameComingSoon": "Yakında gelecek",
+  "authErrKvkkRequired": "Devam etmek için KVKK onayı gerekli.",
+  "authTextKvkk": "Devam ederek KVKK Açık Rıza metnini kabul etmiş olursunuz.",
+  "moduleLabelFeaturedGuide": "Öne Çıkan Rehber",
+  "moduleLabelCategories": "Kategoriler",
+  "moduleLabelReadMore": "Devamını Oku",
+  "homeAgeLabel": "Yaş: -",
+  "homeAgeYears": "{count} yaş",
+  "@homeAgeYears": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeAgeMonths": "{count} ay",
+  "@homeAgeMonths": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeAgeDays": "{count} gün",
+  "@homeAgeDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "authSubtitleAwareness": "Otizm Farkındalık",
+  "moduleTitleInfo": "Otizm Bilgilendirme",
+  "moduleTitleOsb": "OSB (Otizm Spektrum Bozukluğu)",
+  "moduleTitleOsbResearch": "OSB Hakkında Güncel Araştırmalar",
+  "moduleTitleEducation": "Eğitim & ABA",
+  "moduleTitleEmotions": "Duygularım",
+  "moduleTitleGames": "Eğitici Oyunlar",
+  "moduleTitleStories": "Sosyal Öyküler",
+  "moduleTitleMusic": "Müzik & Ses Terapisi",
+  "moduleTitleAcc": "ACC (Alternatif İletişim)",
+  "moduleTitleCalendar": "Görsel Takvim",
+  "moduleTitleEduReminder": "Eğitim Hatırlatıcıları",
+  "moduleTitleSensory": "Duyu Bütünleme",
+  "moduleTitleObjects": "Eşyalarım",
+  "moduleTitleSentenceSounds": "Cümle Sesleri",
+  "moduleTitleImitation": "Taklit Becerileri",
+  "moduleTitleDefault": "Modül",
+  "modSentence": "Cümle Sesleri",
+  "catZeka": "OtiZeka",
+  "catZekaSub": "Yapay Zeka ve Mantık",
+  "catTherapy": "Terapi",
+  "catTherapySub": "Terapi Modülleri",
+  "modEduGames": "Eğitici Oyunlar",
+  "modSensory": "Duyu Bütünleme",
+  "modObjects": "Eşyalarım",
+  "modImitation": "Taklit",
+  "catGuidance": "Rehberlik",
+  "catGuidanceSub": "Ebeveyn Rehberliği",
+  "modEduGuide": "Eğitim Rehberi",
+  "modResearch": "Güncel Araştırmalar",
+  "activeProfile": "Aktif Profil",
+  "dailyProgressTitle": "{name} için Günlük İlerleme",
+  "@dailyProgressTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "moduleProgress": "Tamamlanan {current} / {total}",
+  "@moduleProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "familyTabPrivacy": "Gizlilik",
+  "familyTitleDeleteAccount": "Hesabı Sil",
+  "profileSettings": "Profil Ayarları",
+  "logout": "Çıkış Yap",
+  "helloUser": "Merhaba, {name}",
+  "@helloUser": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "greeting": "Merhaba {name}",
+  "@greeting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeSubtitle": "Hoş Geldiniz",
+  "familyTabSettings": "Ayarlar",
+  "familyErrCallFailed": "Arama başlatılamadı",
+  "familyErrCallError": "Arama başlatılırken hata oluştu",
+  "familyTitleContactInfo": "İletişim Bilgileri",
+  "familyLabelFullName": "Veli/Bakım Veren Ad Soyad",
+  "familyLabelPhone": "Telefon Numarası",
+  "familyLabelInstructorPhone": "Eğitmen Telefonu",
+  "familyLabelDoctorPhone": "Doktor Telefonu",
+  "familyMsgSaved": "Bilgiler kaydedildi.",
+  "familyBtnSave": "Kaydet",
+  "familyDescDeleteAccount": "Hesabınızı silmek istediğinize emin misiniz? Bu işlem geri alınamaz.",
+  "familyBtnCancel": "İptal",
+  "familyBtnDelete": "Sil",
+  "familyErrPasswordRequired": "Hesabı silmek için şifre gereklidir.",
+  "familyTabProfiles": "Profiller",
+  "familyTitleNewProfile": "Yeni Profil",
+  "familyTitleEditProfile": "Profili Düzenle",
+  "familyBtnChangePhoto": "Fotoğrafı Değiştir",
+  "familyLabelChildName": "Çocuk Adı",
+  "familyLabelBirthDate": "Doğum Tarihi",
+  "familyLabelAgeOptional": "Yaş (Opsiyonel)",
+  "familyLabelFamilyNotes": "Aile Notları",
+  "familyLabelEduNotes": "Eğitim Notları",
+  "familyTitleChildProfiles": "Çocuk Profilleri",
+  "familyBtnNew": "Yeni",
+  "familyTxtNoProfile": "Profil bulunamadı.",
+  "familyTxtUnnamed": "İsimsiz",
+  "familyBtnActive": "Aktif",
+  "familyTitlePanel": "Aile Paneli",
+  "familyTabProfile": "Profil",
+  "familyTabContact": "İletişim",
+  "emotionsTitle": "Duygunu seç",
+  "emotionsIntensity": "Şiddet (1-5)",
+  "emotionsTriggers": "Tetikleyiciler",
+  "emotionsAntecedent": "Öncesi (ne oldu?)",
+  "emotionsBehavior": "Davranış",
+  "emotionsConsequence": "Sonuç",
+  "emotionsNotes": "Ek Notlar",
+  "emotionsHelped": "Neler İyi Geldi?",
+  "emotionsSave": "Kaydet",
+  "emotionsEmpty": "Henüz kayıt yok.",
+  "emotionHappy": "Mutlu",
+  "emotionSad": "Üzgün",
+  "emotionAngry": "Kızgın",
+  "emotionSurprised": "Şaşırmış",
+  "emotionScared": "Korkmuş",
+  "emotionExcited": "Heyecanlı",
+  "triggerNoise": "Gürültü",
+  "triggerCrowd": "Kalabalık",
+  "triggerChange": "Değişiklik",
+  "triggerWait": "Beklemek",
+  "triggerFatigue": "Yorgunluk",
+  "triggerHunger": "Açlık",
+  "triggerLight": "Işık",
+  "triggerTouch": "Dokunma",
+  "triggerScreen": "Ekran",
+  "triggerSeparation": "Ayrılma",
+  "helpBreath": "Derin Nefes",
+  "helpBreak": "Ara Vermek",
+  "helpHug": "Sarılma",
+  "helpHeadphones": "Kulaklık",
+  "helpWater": "Su İçmek",
+  "helpCorner": "Sakin Köşe",
+  "helpMusic": "Müzik",
+  "helpBall": "Top Sıkma",
+  "homeAgeNewborn": "Yeni doğan",
+  "storySelect": "Öykü seç",
+  "musicMainTitle": "Müzik ve Rahatlatıcı Sesler",
+  "musicMainSubtitle": "Sakinleşme, odaklanma veya uyku öncesi için uygun bir ses seçip başlatabilirsiniz.",
+  "musicPlaying": "Çalıyor...",
+  "btnStart": "Başlat",
+  "musicDurationPrefix": "Süre",
+  "gameSelect": "Oyun seç",
+  "gameTitleEmotions": "Duyguları Eşleştir",
+  "gameDescEmotions": "Hangi duygu hangi kelime?",
+  "gameTitleMatching": "Eşleştirme Oyunu",
+  "gameDescMatching": "Aynı meyveleri bulup eşleştir",
+  "gameTitleCounting": "Sayı Saymaca",
+  "gameDescCounting": "Eğlenceli sayılarla öğren",
+  "gameTitleColors": "Renkleri Bul",
+  "gameDescColors": "Doğru rengi seç",
+  "gameTitleMemory": "Hafıza Kartları",
+  "gameDescMemory": "Kartların yerini hatırla",
+  "gameTitleShapes": "Şekilleri Tanı",
+  "gameDescShapes": "Doğru şekli seç",
+  "gameTitleColoring": "Boyama Oyunu",
+  "gameDescColoring": "Şekilleri dilediğin renge boya",
+  "gameTargetColorPrefix": "Hedef",
+  "gameSelectCorrectColor": "Doğru rengi seç",
+  "gameSelectCorrectShape": "Doğru şekli seç",
+  "gameHowMany": "Kaç tane var?",
+  "gameNextQuestion": "Yeni Soru",
+  "gameStatusMatch": "Eşleştir",
+  "gameStatusAllMatched": "Tebrikler, hepsi eşleşti!",
+  "gameCongratsLevel": "Tebrikler! • Seviye {level}/{maxLevel}",
+  "@gameCongratsLevel": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      },
+      "maxLevel": {
+        "type": "int"
+      }
+    }
+  },
+  "gameLevelMoves": "Seviye {level}/{maxLevel} • Hamle: {moves}",
+  "@gameLevelMoves": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      },
+      "maxLevel": {
+        "type": "int"
+      },
+      "moves": {
+        "type": "int"
+      }
+    }
+  },
+  "btnPrev": "Önceki",
+  "btnNextLevel": "Sonraki Seviye",
+  "btnRestart": "Yeniden Başlat",
+  "btnTryAgain": "Yeniden",
+  "colorRed": "Kırmızı",
+  "colorBlue": "Mavi",
+  "colorGreen": "Yeşil",
+  "colorYellow": "Sarı",
+  "colorPurple": "Mor",
+  "colorOrange": "Turuncu",
+  "colorPink": "Pembe",
+  "shapeCircle": "Daire",
+  "shapeSquare": "Kare",
+  "shapeTriangle": "Üçgen",
+  "shapeStar": "Yıldız",
+  "shapeHeart": "Kalp",
+  "emotionSleepy": "Uykulu",
+  "gameColoringSelectColor": "Renk Seç",
+  "gameColoringTapAndPaint": "Şekle dokun ve boya",
+  "gameColoringTitle": "Renkleri Boya",
+  "accCatNeeds": "Temel İhtiyaçlar",
+  "accCatEmotions": "Duygular",
+  "accCatActions": "Yer ve Eylem",
+  "accCatComm": "İletişim",
+  "accLabelWater": "Su",
+  "accLabelHungry": "Acıktım",
+  "accLabelToilet": "Tuvalet",
+  "accLabelSleepy": "Uykum Geldi",
+  "accLabelBreak": "Ara Vermek",
+  "accLabelHelp": "Yardım",
+  "accLabelHug": "Sarılmak",
+  "accLabelHappy": "Mutluyum",
+  "accLabelSad": "Üzgünüm",
+  "accLabelScared": "Korkuyorum",
+  "accLabelExcited": "Heyecanlıyım",
+  "accLabelAngry": "Kızgınım",
+  "accLabelCalm": "Sakinim",
+  "accLabelTired": "Yorgunum",
+  "accLabelSurprised": "Şaşkınım",
+  "accLabelGoHome": "Eve Gidelim",
+  "accLabelGoOut": "Dışarı Çıkalım",
+  "accLabelDress": "Giyinmek",
+  "accLabelGoPark": "Parka Gidelim",
+  "accLabelGoSchool": "Okula Gidelim",
+  "accLabelPlayMusic": "Müzik Aç",
+  "accLabelPlayGame": "Oyun Oynamak",
+  "accLabelLookCalendar": "Takvime Bakalım",
+  "accLabelMe": "Ben",
+  "accLabelPlease": "Lütfen",
+  "accLabelThanks": "Teşekkür Ederim",
+  "accLabelYes": "Evet",
+  "accLabelNo": "Hayır",
+  "accLabelPhone": "Telefon",
+  "accPlaceholderCard": "Bir karta dokun...",
+  "accReadSentence": "Cümleyi Oku",
+  "accSentenceDetailTitle": "Cümle",
+  "calendarTaskMorning": "Sabah Rutini",
+  "calendarCatSelfCare": "Özbakım",
+  "calendarTaskEmotion": "Duygu Çalışması",
+  "calendarCatEducation": "Eğitim",
+  "calendarTaskLunch": "Öğle Yemeği",
+  "calendarCatNutrition": "Beslenme",
+  "calendarTaskMatching": "Eşleştirme Oyunu",
+  "calendarCatPlay": "Oyun",
+  "calendarTaskGarden": "Bahçe Saati",
+  "calendarCatActivity": "Aktivite",
+  "calendarCatCustom": "Özel",
+  "calendarProgressPrefix": "İlerleme",
+  "calendarTokenBalance": "Jeton",
+  "calendarTimerTitle": "Zamanlayıcı",
+  "btnPause": "Duraklat",
+  "btnReset": "Sıfırla",
+  "calendarDailySchedule": "Günlük Program",
+  "calendarAddCustomTaskHint": "Özel görev ekle",
+  "btnAdd": "Ekle",
+  "remDefaultMessage": "Eğitim zamanı",
+  "remPresetFloortime": "Floortime zamanı",
+  "remPresetSpeechTherapy": "Dil terapisi zamanı",
+  "remPresetSpecialEducation": "Özel eğitim zamanı",
+  "remPresetErgotherapy": "Ergo terapi zamanı",
+  "remPresetMovement": "Hareket eğitimi zamanı",
+  "remPresetEmotionWork": "Duygu çalışması zamanı",
+  "remPresetSensory": "Duyu bütünleme zamanı",
+  "remPresetHomework": "Ev ödevi zamanı",
+  "remPresetReading": "Okuma saati",
+  "remPresetPlay": "Oyun zamanı",
+  "remPresetStory": "Sosyal öykü zamanı",
+  "remPresetImitation": "Taklit çalışması zamanı",
+  "remPresetAcc": "İletişim kartları zamanı",
+  "remPresetBreak": "Mola zamanı",
+  "remPresetWalk": "Yürüyüş zamanı",
+  "remPresetNutrition": "Beslenme zamanı",
+  "remPresetReward": "Ödül zamanı",
+  "remPresetSleepReady": "Uyku hazırlığı zamanı",
+  "weekdayMonday": "Pazartesi",
+  "weekdayTuesday": "Salı",
+  "weekdayWednesday": "Çarşamba",
+  "weekdayThursday": "Perşembe",
+  "weekdayFriday": "Cuma",
+  "weekdaySaturday": "Cumartesi",
+  "weekdaySunday": "Pazar",
+  "remPermissionDenied": "Bildirim izni verilmedi.",
+  "remReminderTextTitle": "Hatırlatıcı Metni",
+  "remCustom": "Özel...",
+  "remCustomTextTitle": "Özel Metin",
+  "remCustomTextHint": "Örn: Floortime zamanı",
+  "remMainTitle": "7 Günlük Eğitim Hatırlatıcı",
+  "remMainSubtitle": "İstediğin gün ve saati seç. Zaman gelince bildirim gelir.",
+  "remTextLabel": "Metin",
+  "remOffLabel": "Kapalı",
+  "remSelectTimeTooltip": "Saat Seç",
+  "remSelectTextTooltip": "Metin Seç",
+  "remDisableAll": "Tümünü Kapat",
+  "sensoryBirds": "Kuşlar",
+  "sensorySea": "Deniz",
+  "sensoryForest": "Orman",
+  "sensorySun": "Güneş",
+  "objectsQuestion": "{name} hangisi?",
+  "@objectsQuestion": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "objectsCorrectAnswer": "Evet, bu {name}!",
+  "@objectsCorrectAnswer": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "objectsWrongAnswer": "Hayır, bu {name} değil.",
+  "@objectsWrongAnswer": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "objectsNextQuestion": "Sonraki Soru",
+  "tabSentenceBuilder": "Cümle Kur",
+  "tabSoundsTable": "Sesleri Tanıyalım",
+  "tabLetterGame": "Harf Oyunu",
+  "sentenceBuilderPlaceholder": "Bir kelime seç...",
+  "sentenceSpeakButton": "KONUŞ",
+  "sentenceClearButton": "TEMİZLE",
+  "letterGameTitle": "Harf Bulma Oyunu",
+  "letterGameSubtitle": "Kutulardan bir harfe bas ve o harfle başlayan kelimeyi bul!",
+  "letterGameCorrect": "Evet, bu {letter}! {letter} harfi {word} kelimesinde geçer. {word}.",
+  "@letterGameCorrect": {
+    "placeholders": {
+      "letter": {
+        "type": "String"
+      },
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "letterGameCorrectTitle": "Evet, bu {letter}!",
+  "@letterGameCorrectTitle": {
+    "placeholders": {
+      "letter": {
+        "type": "String"
+      }
+    }
+  },
+  "btnClose": "Kapat",
+  "imitationBannerHint": "Ekrana herhangi bir yere dokunarak sıradaki taklit hareketine geçebilirsin!",
+  "imitationStartGame": "OYUNU BAŞLAT",
+  "imitationStartHint": "Ekranın herhangi bir yerine dokunarak başla!",
+  "imitationLivePanel": "CANLI PANEL",
+  "imitationPrefix": "Taklit",
+  "imitationReady": "Hazır mısın?",
+  "moduleComingSoon": "\"{title}\" modülü yakında.\n\nBu ekranda sırayla içerikleri Flutter’a taşıyacağız.",
+  "@moduleComingSoon": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "authForgotPassword": "Şifremi Unuttum",
+  "authResetPassword": "Şifreyi Sıfırla",
+  "authForgotPasswordInstructions": "Hesabınıza kayıtlı e-posta adresini girin. Size 6 haneli bir doğrulama kodu göndereceğiz.",
+  "authEmailAddressLabel": "E-posta Adresi",
+  "authResetPasswordInstructions": "{email} adresine gönderilen 6 haneli kodu ve yeni şifrenizi girin.",
+  "@authResetPasswordInstructions": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "authVerificationCodeLabel": "Doğrulama Kodu",
+  "authNewPasswordLabel": "Yeni Şifre",
+  "authNewPassword2Label": "Yeni Şifre (Tekrar)",
+  "authBtnSendCode": "Kod Gönder",
+  "authBtnUpdatePassword": "Şifreyi Güncelle",
+  "authResetSuccess": "Şifreniz başarıyla sıfırlandı. Giriş yapabilirsiniz.",
+  "authErrVerificationCodeInvalid": "6 haneli doğrulama kodunu girin.",
+  "authPwdMinLengthErr": "Şifre en az 8 karakter olmalıdır.",
+  "homeGreetingParent": "Veli",
+  "homeErrorPrefix": "Hata: {error}",
+  "@homeErrorPrefix": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "emotionsChoose": "Duygunu seç",
+  "emotionsDiary": "Duygu Günlüğü",
+  "emotionsCalming": "Sakinleşme",
+  "emotionsCalmingInstructions": "Sakinleşmek için: 4’e kadar sayarak nefes al, 4’e kadar tut, 6’ya kadar ver. İstersen kısa ara ver ve su iç.",
+  "emotionsSelected": "Seçilen duygu: {emotion}",
+  "@emotionsSelected": {
+    "placeholders": {
+      "emotion": {
+        "type": "String"
+      }
+    }
+  },
+  "emotionsWhatHelped": "Ne yardımcı oldu?",
+  "emotionsNote": "Not",
+  "emotionsRecentLogs": "Son Kayıtlar",
+  "emotionsNoLogs": "Henüz kayıt yok.",
+  "emotionsLogDate": "Tarih: {value}",
+  "@emotionsLogDate": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "emotionsLogEmotion": "Duygu: {value}",
+  "@emotionsLogEmotion": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "emotionsLogIntensity": "Şiddet: {value}/5",
+  "@emotionsLogIntensity": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "emotionsLogTriggers": "Tetikleyiciler: {value}",
+  "@emotionsLogTriggers": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "emotionsLogHelped": "Yardımcı olanlar: {value}",
+  "@emotionsLogHelped": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "emotionsLogAntecedent": "Öncesi",
+  "emotionsLogBehavior": "Davranış",
+  "emotionsLogConsequence": "Sonuç",
+  "emotionsLogNote": "Not",
+  "authContinueAsGuest": "Misafir Olarak Devam Et"
+}

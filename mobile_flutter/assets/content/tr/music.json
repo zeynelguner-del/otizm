@@ -1,0 +1,74 @@
+[
+  {
+    "title": "Sakinleştirici Melodi",
+    "duration": "7:20",
+    "category": "Müzik",
+    "categoryKey": "music",
+    "description": "Zihni dinlendiren, sakinleşme ve gevşeme sağlayan huzurlu neoclassical ambient piyano melodisi.",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/9/95/Scott_Buckley_%E2%80%93_The_Long_Dark_%28Ambient_Neoclassical_Piano%29.ogg"
+  },
+  {
+    "title": "Odak Ritmi",
+    "duration": "2:10",
+    "category": "Müzik",
+    "categoryKey": "music",
+    "description": "Bach'ın meşhur çello süiti prélude eşliğinde dikkati toplayan ve zihinsel odaklanma sağlayan ritmik klasik odak müziği.",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/4/43/JOHN_MICHEL_CELLO-J_S_BACH_CELLO_SUITE_1_in_G_Prelude.ogg"
+  },
+  {
+    "title": "Neşeli Çocuk Melodisi",
+    "duration": "0:24",
+    "category": "Müzik",
+    "categoryKey": "music",
+    "description": "Çocuklar için neşeli, tatlı ve hareketli klasik \"Twinkle Twinkle Little Star\" çocuk melodisi.",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/b/bd/Twinkle_Twinkle_Little_Star_plain.ogg"
+  },
+  {
+    "title": "Deniz ve Dalga Sesi",
+    "duration": "5:02",
+    "category": "Uyku",
+    "categoryKey": "sleep",
+    "description": "Derin uyku öncesi sakinleştirici doğal sahil ve dalga sesleri.",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Waves.ogg"
+  },
+  {
+    "title": "Hafif Yağmur Sesi",
+    "duration": "6:03",
+    "category": "Sakinleşme",
+    "categoryKey": "calming",
+    "description": "Rahatlatıcı, stresi azaltan doğal orman yağmuru sesi.",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/3/3d/Rain.ogg"
+  },
+  {
+    "title": "Rüzgar Esintisi",
+    "duration": "1:00",
+    "category": "Sakinleşme",
+    "categoryKey": "calming",
+    "description": "Doğal dinlendirici, çam ormanı içerisinden hafif ve huzurlu vadi rüzgarları.",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Wind_in_Swedish_pine_forest_at_25_mps.ogg"
+  },
+  {
+    "title": "Beyaz Gürültü (White Noise)",
+    "duration": "7:42",
+    "category": "Odak",
+    "categoryKey": "focus",
+    "description": "Uykuyu destekleyen ve arka plan gürültülerini maskeleyen sabit beyaz gürültü.",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/a/aa/White_noise.ogg"
+  },
+  {
+    "title": "Pembe Gürültü (Pink Noise)",
+    "duration": "5:38",
+    "category": "Odak",
+    "categoryKey": "focus",
+    "description": "Zihinsel odaklanma ve sakinleşme için daha dengeli, yumuşak gürültü profili.",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/6/6c/Pink_noise.ogg"
+  },
+  {
+    "title": "Kahverengi Gürültü (Brown Noise)",
+    "duration": "5:07",
+    "category": "Uyku",
+    "categoryKey": "sleep",
+    "description": "Zihni tamamen sakinleştiren, derin bas frekanslı uyku gürültüsü.",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/4/48/Brown_noise.ogg"
+  }
+]

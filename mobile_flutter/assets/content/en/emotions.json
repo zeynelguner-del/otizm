@@ -1,0 +1,56 @@
+{
+  "emotions": [
+    {
+      "name": "Happy",
+      "emoji": "😊",
+      "color": "0xFFFDE68A"
+    },
+    {
+      "name": "Sad",
+      "emoji": "😢",
+      "color": "0xFFBFDBFE"
+    },
+    {
+      "name": "Angry",
+      "emoji": "😠",
+      "color": "0xFFFECACA"
+    },
+    {
+      "name": "Surprised",
+      "emoji": "😲",
+      "color": "0xFFE9D5FF"
+    },
+    {
+      "name": "Scared",
+      "emoji": "😨",
+      "color": "0xFFE4E4E7"
+    },
+    {
+      "name": "Excited",
+      "emoji": "🤩",
+      "color": "0xFFFED7AA"
+    }
+  ],
+  "triggers": [
+    "Noise",
+    "Crowd",
+    "Change",
+    "Waiting",
+    "Fatigue",
+    "Hunger",
+    "Light",
+    "Touch",
+    "Screen",
+    "Separation"
+  ],
+  "helps": [
+    "Deep Breath",
+    "Taking a Break",
+    "Hugging",
+    "Headphones",
+    "Drinking Water",
+    "Calm Corner",
+    "Music",
+    "Squeezing Ball"
+  ]
+}

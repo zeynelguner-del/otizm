@@ -1,0 +1,37 @@
+﻿{
+  "featuredTitle": "Kısa Özet",
+  "featuredContent": "Bu bölüm; OSB’nin ne olduğunu, nasıl değerlendirildiğini, sık görülen belirtileri ve erken tanı/eğitimin neden önemli olduğunu anlaşılır bir dille özetler. Tanı ve tedavi yerine geçmez; şüphede uzman değerlendirmesi gerekir.",
+  "sections": [
+    {
+      "title": "Otizm Spektrum Bozukluğu Nedir?",
+      "description": "OSB’nin ne olduğu, neden “spektrum” dendiği ve temel özellikleri.",
+      "content": "Otizm Spektrum Bozukluğu (OSB), beynin gelişimiyle ilişkili nörogelişimsel bir durumdur. OSB’de sosyal iletişim ve sosyal etkileşimde kalıcı güçlükler ile birlikte, sınırlı/tekrarlayıcı davranışlar ve ilgi alanları görülebilir.\n\nNeden “spektrum” denir?\n- Belirtilerin şiddeti, görünümü ve kişinin destek ihtiyacı çok değişkendir.\n- Bazı bireyler günlük yaşamda daha az destekle bağımsız olabilirken, bazıları daha yoğun ve yapılandırılmış desteğe ihtiyaç duyabilir.\n\nOSB aynı zamanda duyusal farklılıklarla da görülebilir:\n- Ses, ışık, dokunma, koku gibi uyaranlara aşırı veya az duyarlılık olabilir.\n\nNot: OSB bir “kişilik” ya da “tercih” değildir; kişinin gelişimsel profiline ilişkin bir durumdur. Amaç; iletişimi, öğrenmeyi, bağımsızlığı ve yaşam kalitesini desteklemektir."
+    },
+    {
+      "title": "Otizm Spektrum Bozukluğu Nasıl Sınıflandırılır?",
+      "description": "Tanı kriterleri ve destek ihtiyacına göre derecelendirme (DSM-5 yaklaşımı).",
+      "content": "Güncel klinik sınıflandırmada OSB, tek bir “spektrum” tanısı altında değerlendirilir. Tanı; çocuğun/bireyin gelişimi, davranışları ve işlevselliği üzerinden uzman gözlemi ve bakım veren bilgisiyle konur.\n\nDSM-5’e göre OSB tanısında iki ana alan öne çıkar:\n1) Sosyal iletişim ve etkileşimde kalıcı güçlükler\n2) Sınırlı, tekrarlayıcı davranışlar/ilgi alanları ve rutinlere aşırı bağlılık gibi örüntüler (duyusal tepkiler dahil)\n\nDestek ihtiyacına göre “şiddet/düzey” belirtimi yapılabilir:\n- Düzey 1: Destek gerektirir\n- Düzey 2: Belirgin (substantial) destek gerektirir\n- Düzey 3: Çok yoğun (very substantial) destek gerektirir\n\nAyrıca şu eşlik eden durumlar ayrıca belirtilir:\n- Dil gelişimi (eşlik eden dil güçlüğü var/yok)\n- Zihinsel gelişim (eşlik eden zihinsel yetersizlik var/yok)\n- Bilinen tıbbi/genetik durumlar ve eş tanılar (örn. DEHB, kaygı, epilepsi gibi)\n\nNot: Eskiden ayrı isimlerle anılan bazı alt tanılar (örn. Asperger vb.) artık OSB spektrumu içinde ele alınır."
+    },
+    {
+      "title": "Otizm Spektrum Bozukluğunun Nedenleri Nedir?",
+      "description": "Tek bir neden yoktur; genetik ve çevresel etkenler birlikte rol oynar.",
+      "content": "OSB’nin tek bir kanıtlanmış nedeni yoktur. Bilimsel kanıtlar; genetik etkenlerin ve bazı çevresel/biyolojik etkenlerin birlikte, erken beyin gelişimini etkileyerek OSB riskini artırabildiğini gösterir.\n\nBilinen genel çerçeve:\n- Genetik etkenler: Ailede OSB öyküsü ve bazı genetik sendromlar riskle ilişkili olabilir.\n- Çevresel/biyolojik etkenler: Bazı gebelik ve doğumla ilişkili faktörler (örn. ileri ebeveyn yaşı, prematürite, bazı doğum komplikasyonları gibi) riskle ilişkilendirilmiştir.\n\nÖnemli bilgi:\n- Aşıların OSB’ye neden olduğuna dair güvenilir bilimsel kanıt yoktur.\n\nNot: “Risk faktörü” bir şeyin OSB’ye kesin neden olduğu anlamına gelmez; sadece olasılıkla ilişkili bulunmuş olabilir. Her çocuk ve aile için nedenler aynı değildir."
+    },
+    {
+      "title": "Otizm Spektrum Bozukluğunun Belirtileri Nelerdir?",
+      "description": "Sosyal iletişim ve tekrarlayıcı davranış örüntüleri; duyusal farklılıklar.",
+      "content": "Belirtiler kişiden kişiye değişir; ancak OSB’de genellikle iki ana alanda farklılıklar görülür.\n\n1) Sosyal iletişim ve sosyal etkileşimde zorlanmalar\n- Karşılıklı iletişimi başlatma ve sürdürmede güçlük\n- Göz teması, jest/mimik gibi sözel olmayan ipuçlarını kullanmada veya anlamada zorlanma\n- Akran ilişkileri kurma ve sürdürmede güçlük\n\n2) Sınırlı ve tekrarlayıcı davranışlar / ilgi alanları\n- Tekrarlayıcı hareketler veya oyun biçimleri (örn. sallanma, dizme)\n- Rutinlere aşırı bağlılık, değişikliklerde yoğun zorlanma\n- Yoğun ve sınırlı ilgi alanları\n- Duyusal tepkilerde farklılık (ses/ışık/dokunma gibi uyaranlara aşırı veya az tepki)\n\nBazı çocuklarda gelişimde duraksama veya gerileme (özellikle iletişim becerilerinde) görülebilir. Bu tür değişimler fark edilirse bir uzmana başvurmak önemlidir."
+    },
+    {
+      "title": "Erken Tanı ve Erken Eğitimin Önemi",
+      "description": "Erken müdahale; iletişim, sosyal beceriler ve günlük yaşamda belirgin fayda sağlayabilir.",
+      "content": "Erken tanı; çocuğun gelişimsel ihtiyaçlarının daha erken anlaşılmasını ve doğru desteklerin daha erken başlamasını sağlar.\n\nNeden önemlidir?\n- Erken müdahale hizmetleri (özellikle okul öncesi dönemde) çocuğun iletişim, sosyal etkileşim ve öğrenme becerilerini geliştirmede etkili olabilir.\n- Aileye rehberlik ve ev içi düzenlemeler (görsel destekler, rutin planlama, iletişim fırsatları oluşturma) günlük yaşamı daha sürdürülebilir hale getirir.\n- Eşlik eden güçlükler (uyku, beslenme, kaygı, dikkat vb.) daha erken fark edilip uygun yönlendirmeler yapılabilir.\n\nPratik adımlar\n- Gelişimsel dönüm noktalarını takip etme ve şüphede değerlendirme isteme\n- Çocuk gelişimi / çocuk ve ergen psikiyatrisi / çocuk nörolojisi gibi alanlarda değerlendirme\n- Özel eğitim ve dil-konuşma desteği gibi hizmetlerde bireyselleştirilmiş hedeflerle düzenli çalışma\n\nNot: En iyi program; çocuğun güçlü yönlerine ve ihtiyaçlarına göre bireyselleştirilmiş olandır."
+    }
+  ],
+  "sources": "Dünya Sağlık Örgütü (WHO): https://www.who.int/news-room/fact-sheets/detail/autism-spectrum-disorders\nCDC: https://www.cdc.gov/autism/about/\nCDC: Clinical Testing and Diagnosis (DSM-5 kriter özeti): https://www.cdc.gov/autism/hcp/diagnosis/index.html\nNICHD: What are the symptoms of autism?: https://www.nichd.nih.gov/health/topics/autism/conditioninfo/symptoms",
+  "labels": {
+    "sections": "Başlıklar",
+    "sources": "Kaynaklar",
+    "sourcesDesc": "Bilgi amaçlı bağlantılar (kopyalayıp tarayıcıda açabilirsiniz)."
+  }
+}

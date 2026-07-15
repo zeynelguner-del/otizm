@@ -1,0 +1,34 @@
+﻿{
+  "featuredTitle": "Quick Summary",
+  "featuredContent": "This section explains the education and therapy approaches frequently used in developmental differences, especially ASD, within a scientific framework. The contents are for informational purposes; an expert evaluation is required for planning according to the child's needs.",
+  "sections": [
+    {
+      "title": "Movement Education",
+      "description": "Support with gross motor skills, balance, coordination, and physical activity.",
+      "content": "Movement education is planned physical activities aiming to support the child's motor areas such as balance, coordination, strength, endurance, and body awareness. Since motor planning, coordination, and postural control difficulties can often be seen in ASD, regular movement exercises can strengthen skills that can be transferred to daily life.\n\nScientific framework\n- Regular physical activity can have positive effects on sleep, emotion regulation, attention, and general health.\n- Motor skill exercises are more effective when linked to functional goals such as climbing stairs, catching/throwing a ball, cycling, or participating in playground activities.\n\nGoal in practice\n- Short and frequent repetitions (5–15 mins distributed throughout the day).\n- Clear start/finish, visual cues, and step-by-step instructions.\n- Play-based activities suited to the child's motivation.\n\nNote: If there is pain, an orthopedic problem, or significant motor delay, a physiotherapist/expert evaluation is recommended."
+    },
+    {
+      "title": "Occupational Therapy",
+      "description": "Occupational therapy support in daily living skills, sensory regulation, and fine motor areas.",
+      "content": "Occupational therapy aims to increase the child's participation in daily living activities (dressing, eating, toileting, play, school activities). Since sensory processing differences, fine motor skills, and planning/organization areas may be affected in ASD, occupational therapy can strengthen functionality with environmental adaptations, skill teaching, and routine planning.\n\nScientific framework\n- The main goal is “participation”: The child participating in daily life more comfortably and independently.\n- Sensory strategies do not have the same effect on every child. Therefore, it is important to proceed with individualized evaluation and measurable goals.\n\nFrequent target areas\n- Fine motor: holding a pencil, cutting, buttoning/zipping.\n- Self-care: washing hands, dressing, feeding.\n- Sensory regulation: adaptation and coping strategies in sound/light/touch sensitivities.\n\nNote: Ensuring consistency between home-school-therapy facilitates the generalization of gains."
+    },
+    {
+      "title": "Special Education",
+      "description": "Individualized goals, structured teaching, and generalization to daily life.",
+      "content": "Special education is a structured teaching process carried out with individualized goals according to the child's developmental level. Since communication, social interaction, play, academic prerequisite skills, and daily living skills can develop at different rates in ASD, it is important that the goals are measurable and functional.\n\nScientific framework\n- Early intervention and regular, structured teaching can support progress in communication and adaptive skills in many children.\n- Effective programs include data-tracked goals, systematic repetition, prompting-gradual fading, and a generalization plan.\n\nCommonly used techniques (general approach)\n- Visual supports: daily routine schedule, “first-then”, step cards.\n- Behavioral teaching principles: reinforcement, task analysis, teaching in small steps.\n- Natural environment teaching: catching opportunities to teach within daily life.\n\nNote: Supporting the program with short practices at home by the family increases sustainability."
+    },
+    {
+      "title": "Speech Therapy",
+      "description": "Comprehension/expression, speech, pragmatic language, and alternative communication (AAC) support.",
+      "content": "Speech and language therapy aims to develop the child's receptive (comprehension) and expressive language skills, speech intelligibility, and social communication (pragmatic language). In ASD, communication encompasses not only speech but also areas such as reciprocal interaction, turn-taking, gesture-facial expression use, and context-appropriate language use.\n\nScientific framework\n- Communication goals should be functional: requesting, rejecting, asking for help, making choices.\n- In speech delay or limited speech, AAC (pictures, signs, devices) can increase communication and does not “prevent” speech; it multiplies communication opportunities for most children.\n\nFrequent target areas\n- Requesting and joint attention.\n- Forming simple sentences, Q&A.\n- Social communication: greeting, turn-taking, expressing emotions.\n\nNote: Using the same target language and visual supports at home accelerates progress."
+    },
+    {
+      "title": "Floortime",
+      "description": "DIR/Floortime: supporting social-communication skills through relationship-based play.",
+      "content": "DIR/Floortime aims to support the child's developmental milestones (emotion regulation, joint attention, reciprocal interaction, problem-solving) with a relationship-based and play-focused approach. The goal is for the parent/practitioner to follow the child's interest, deepen the interaction, and increase “reciprocal communication cycles.”\n\nScientific framework\n- Relationship-based approaches target social interaction and emotion regulation.\n- Effectiveness increases with goals suitable for the child's profile, regular practice, and family involvement.\n\nBasic principles in practice\n- Follow the child's interest and expand the interaction.\n- Plan short, frequent, and enjoyable play sessions.\n- Sustain interaction with a reciprocal play flow instead of a “barrage of questions.”\n\nNote: Floortime can be planned together with approaches like structured teaching and speech therapy; team coordination is beneficial so that goals don't conflict."
+    }
+  ],
+  "labels": {
+    "sections": "Topics"
+  }
+}

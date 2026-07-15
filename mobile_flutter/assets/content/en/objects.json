@@ -1,0 +1,672 @@
+[
+  {
+    "title": "Fruit",
+    "emoji": "🍎",
+    "color": "0xFFFEE2E2",
+    "items": [
+      {
+        "name": "Apple",
+        "emoji": "🍎"
+      },
+      {
+        "name": "Pear",
+        "emoji": "🍐"
+      },
+      {
+        "name": "Banana",
+        "emoji": "🍌"
+      },
+      {
+        "name": "Strawberry",
+        "emoji": "🍓"
+      },
+      {
+        "name": "Orange",
+        "emoji": "🍊"
+      },
+      {
+        "name": "Watermelon",
+        "emoji": "🍉"
+      },
+      {
+        "name": "Grape",
+        "emoji": "🍇"
+      },
+      {
+        "name": "Cherry",
+        "emoji": "🍒"
+      },
+      {
+        "name": "Pineapple",
+        "emoji": "🍍"
+      },
+      {
+        "name": "Lemon",
+        "emoji": "🍋"
+      }
+    ]
+  },
+  {
+    "title": "Vegetables",
+    "emoji": "🥕",
+    "color": "0xFFFEF3C7",
+    "items": [
+      {
+        "name": "Carrot",
+        "emoji": "🥕"
+      },
+      {
+        "name": "Tomato",
+        "emoji": "🍅"
+      },
+      {
+        "name": "Potato",
+        "emoji": "🥔"
+      },
+      {
+        "name": "Corn",
+        "emoji": "🌽"
+      },
+      {
+        "name": "Pepper",
+        "emoji": "🌶️"
+      },
+      {
+        "name": "Eggplant",
+        "emoji": "🍆"
+      },
+      {
+        "name": "Broccoli",
+        "emoji": "🥦"
+      },
+      {
+        "name": "Cucumber",
+        "emoji": "🥒"
+      },
+      {
+        "name": "Onion",
+        "emoji": "🧅"
+      },
+      {
+        "name": "Garlic",
+        "emoji": "🧄"
+      }
+    ]
+  },
+  {
+    "title": "Drinks",
+    "emoji": "🥛",
+    "color": "0xFFE0F2FE",
+    "items": [
+      {
+        "name": "Milk",
+        "emoji": "🥛"
+      },
+      {
+        "name": "Water",
+        "emoji": "💧"
+      },
+      {
+        "name": "Juice",
+        "emoji": "🍹"
+      },
+      {
+        "name": "Tea",
+        "emoji": "🍵"
+      },
+      {
+        "name": "Coffee",
+        "emoji": "☕"
+      },
+      {
+        "name": "Lemonade",
+        "emoji": "🍋"
+      }
+    ]
+  },
+  {
+    "title": "Household Items",
+    "emoji": "🛋️",
+    "color": "0xFFEDE9FE",
+    "items": [
+      {
+        "name": "Sofa",
+        "emoji": "🛋️"
+      },
+      {
+        "name": "Bed",
+        "emoji": "🛏️"
+      },
+      {
+        "name": "Lamp",
+        "emoji": "💡"
+      },
+      {
+        "name": "Television",
+        "emoji": "📺"
+      },
+      {
+        "name": "Door",
+        "emoji": "🚪"
+      },
+      {
+        "name": "Clock",
+        "emoji": "⏰"
+      },
+      {
+        "name": "Mirror",
+        "emoji": "🪞"
+      },
+      {
+        "name": "Chair",
+        "emoji": "🪑"
+      }
+    ]
+  },
+  {
+    "title": "Toys",
+    "emoji": "🧸",
+    "color": "0xFFFCE7F3",
+    "items": [
+      {
+        "name": "Teddy Bear",
+        "emoji": "🧸"
+      },
+      {
+        "name": "Balloon",
+        "emoji": "🎈"
+      },
+      {
+        "name": "Kite",
+        "emoji": "🪁"
+      },
+      {
+        "name": "Toy Car",
+        "emoji": "🚗"
+      },
+      {
+        "name": "Puzzle",
+        "emoji": "🧩"
+      },
+      {
+        "name": "Ball",
+        "emoji": "⚽"
+      },
+      {
+        "name": "Game Console",
+        "emoji": "🎮"
+      }
+    ]
+  },
+  {
+    "title": "Clothes",
+    "emoji": "👕",
+    "color": "0xFFE0F2FE",
+    "items": [
+      {
+        "name": "T-shirt",
+        "emoji": "👕"
+      },
+      {
+        "name": "Pants",
+        "emoji": "👖"
+      },
+      {
+        "name": "Coat",
+        "emoji": "🧥"
+      },
+      {
+        "name": "Socks",
+        "emoji": "🧦"
+      },
+      {
+        "name": "Dress",
+        "emoji": "👗"
+      },
+      {
+        "name": "Hat",
+        "emoji": "🧢"
+      },
+      {
+        "name": "Shoes",
+        "emoji": "👟"
+      }
+    ]
+  },
+  {
+    "title": "Accessories",
+    "emoji": "🕶️",
+    "color": "0xFFF5F5F4",
+    "items": [
+      {
+        "name": "Glasses",
+        "emoji": "🕶️"
+      },
+      {
+        "name": "Bag",
+        "emoji": "🎒"
+      },
+      {
+        "name": "Umbrella",
+        "emoji": "☂️"
+      },
+      {
+        "name": "Watch",
+        "emoji": "⌚"
+      },
+      {
+        "name": "Ring",
+        "emoji": "💍"
+      },
+      {
+        "name": "Scarf",
+        "emoji": "🧣"
+      }
+    ]
+  },
+  {
+    "title": "Kitchenware",
+    "emoji": "🍴",
+    "color": "0xFFFEF3C7",
+    "items": [
+      {
+        "name": "Fork",
+        "emoji": "🍴"
+      },
+      {
+        "name": "Spoon",
+        "emoji": "🥄"
+      },
+      {
+        "name": "Plate",
+        "emoji": "🍽️"
+      },
+      {
+        "name": "Cup",
+        "emoji": "🥛"
+      },
+      {
+        "name": "Pot",
+        "emoji": "🍲"
+      },
+      {
+        "name": "Knife",
+        "emoji": "🔪"
+      },
+      {
+        "name": "Mug",
+        "emoji": "☕"
+      }
+    ]
+  },
+  {
+    "title": "Vehicles",
+    "emoji": "🚗",
+    "color": "0xFFFFEDD5",
+    "items": [
+      {
+        "name": "Car",
+        "emoji": "🚗"
+      },
+      {
+        "name": "Bicycle",
+        "emoji": "🚲"
+      },
+      {
+        "name": "Bus",
+        "emoji": "🚌"
+      },
+      {
+        "name": "Train",
+        "emoji": "🚂"
+      },
+      {
+        "name": "Airplane",
+        "emoji": "✈️"
+      },
+      {
+        "name": "Ship",
+        "emoji": "🚢"
+      },
+      {
+        "name": "Fire Truck",
+        "emoji": "🚒"
+      },
+      {
+        "name": "Ambulance",
+        "emoji": "🚑"
+      },
+      {
+        "name": "Helikopter",
+        "emoji": "🚁"
+      }
+    ]
+  },
+  {
+    "title": "Animals",
+    "emoji": "🐱",
+    "color": "0xFFDCFCE7",
+    "items": [
+      {
+        "name": "Cat",
+        "emoji": "🐱"
+      },
+      {
+        "name": "Dog",
+        "emoji": "🐶"
+      },
+      {
+        "name": "Lion",
+        "emoji": "🦁"
+      },
+      {
+        "name": "Bird",
+        "emoji": "🐦"
+      },
+      {
+        "name": "Fish",
+        "emoji": "🐟"
+      },
+      {
+        "name": "Rabbit",
+        "emoji": "🐰"
+      },
+      {
+        "name": "Elephant",
+        "emoji": "🐘"
+      },
+      {
+        "name": "Monkey",
+        "emoji": "🐵"
+      },
+      {
+        "name": "Bear",
+        "emoji": "🐻"
+      },
+      {
+        "name": "Frog",
+        "emoji": "🐸"
+      }
+    ]
+  },
+  {
+    "title": "Family Members",
+    "emoji": "👩",
+    "color": "0xFFF3E8FF",
+    "items": [
+      {
+        "name": "Mother",
+        "emoji": "👩"
+      },
+      {
+        "name": "Father",
+        "emoji": "🧔"
+      },
+      {
+        "name": "Baby",
+        "emoji": "👶"
+      },
+      {
+        "name": "Grandfather",
+        "emoji": "👴"
+      },
+      {
+        "name": "Grandmother",
+        "emoji": "👵"
+      },
+      {
+        "name": "Sister",
+        "emoji": "👧"
+      },
+      {
+        "name": "Brother",
+        "emoji": "👦"
+      }
+    ]
+  },
+  {
+    "title": "Plants",
+    "emoji": "🌸",
+    "color": "0xFFE8F5E9",
+    "items": [
+      {
+        "name": "Flower",
+        "emoji": "🌸"
+      },
+      {
+        "name": "Tree",
+        "emoji": "🌳"
+      },
+      {
+        "name": "Cactus",
+        "emoji": "🌵"
+      },
+      {
+        "name": "Rose",
+        "emoji": "🌹"
+      },
+      {
+        "name": "Leaf",
+        "emoji": "🍃"
+      },
+      {
+        "name": "Mushroom",
+        "emoji": "🍄"
+      }
+    ]
+  },
+  {
+    "title": "School & Office Supplies",
+    "emoji": "📚",
+    "color": "0xFFE0F2FE",
+    "items": [
+      {
+        "name": "Book",
+        "emoji": "📚"
+      },
+      {
+        "name": "Pencil",
+        "emoji": "✏️"
+      },
+      {
+        "name": "Notebook",
+        "emoji": "📓"
+      },
+      {
+        "name": "Scissors",
+        "emoji": "✂️"
+      },
+      {
+        "name": "Ruler",
+        "emoji": "📏"
+      },
+      {
+        "name": "Backpack",
+        "emoji": "🎒"
+      },
+      {
+        "name": "Computer",
+        "emoji": "💻"
+      }
+    ]
+  },
+  {
+    "title": "Body Parts",
+    "emoji": "👁️",
+    "color": "0xFFFFE4E6",
+    "items": [
+      {
+        "name": "Eye",
+        "emoji": "👁️"
+      },
+      {
+        "name": "Ear",
+        "emoji": "👂"
+      },
+      {
+        "name": "Hand",
+        "emoji": "✋"
+      },
+      {
+        "name": "Foot",
+        "emoji": "👣"
+      },
+      {
+        "name": "Nose",
+        "emoji": "👃"
+      },
+      {
+        "name": "Tooth",
+        "emoji": "🦷"
+      },
+      {
+        "name": "Mouse",
+        "emoji": "👄"
+      },
+      {
+        "name": "Hair",
+        "emoji": "💇"
+      }
+    ]
+  },
+  {
+    "title": "Occupations",
+    "emoji": "👨‍⚕️",
+    "color": "0xFFF1F5F9",
+    "items": [
+      {
+        "name": "Doctor",
+        "emoji": "👨‍⚕️"
+      },
+      {
+        "name": "Teacher",
+        "emoji": "👩‍🏫"
+      },
+      {
+        "name": "Police Officer",
+        "emoji": "👮"
+      },
+      {
+        "name": "Firefighter",
+        "emoji": "👨‍打"
+      },
+      {
+        "name": "Chef",
+        "emoji": "👨‍🍳"
+      },
+      {
+        "name": "Astronaut",
+        "emoji": "👨‍🚀"
+      },
+      {
+        "name": "Pilot",
+        "emoji": "👨‍✈️"
+      }
+    ]
+  },
+  {
+    "title": "Places & Rooms",
+    "emoji": "🏠",
+    "color": "0xFFECFDF5",
+    "items": [
+      {
+        "name": "House",
+        "emoji": "🏠"
+      },
+      {
+        "name": "School",
+        "emoji": "🏫"
+      },
+      {
+        "name": "Park",
+        "emoji": "🏞️"
+      },
+      {
+        "name": "Hospital",
+        "emoji": "🏥"
+      },
+      {
+        "name": "Bedroom",
+        "emoji": "🛏️"
+      },
+      {
+        "name": "Kitchen",
+        "emoji": "🍳"
+      },
+      {
+        "name": "Forest",
+        "emoji": "🌲"
+      }
+    ]
+  },
+  {
+    "title": "Nature & Space",
+    "emoji": "☀️",
+    "color": "0xFFFFF7ED",
+    "items": [
+      {
+        "name": "Sun",
+        "emoji": "☀️"
+      },
+      {
+        "name": "Moon",
+        "emoji": "🌙"
+      },
+      {
+        "name": "Star",
+        "emoji": "⭐"
+      },
+      {
+        "name": "Cloud",
+        "emoji": "☁️"
+      },
+      {
+        "name": "Mountain",
+        "emoji": "🏔️"
+      },
+      {
+        "name": "Earth",
+        "emoji": "🌍"
+      },
+      {
+        "name": "Rocket",
+        "emoji": "🚀"
+      }
+    ]
+  },
+  {
+    "title": "Tools & Instruments",
+    "emoji": "🔨",
+    "color": "0xFFF3F4F6",
+    "items": [
+      {
+        "name": "Hammer",
+        "emoji": "🔨"
+      },
+      {
+        "name": "Screwdriver",
+        "emoji": "🪛"
+      },
+      {
+        "name": "Guitar",
+        "emoji": "🎸"
+      },
+      {
+        "name": "Piano",
+        "emoji": "🎹"
+      },
+      {
+        "name": "Drum",
+        "emoji": "🥁"
+      },
+      {
+        "name": "Trumpet",
+        "emoji": "🎺"
+      },
+      {
+        "name": "Saw",
+        "emoji": "🪚"
+      }
+    ]
+  }
+]

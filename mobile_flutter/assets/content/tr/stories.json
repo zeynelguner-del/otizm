@@ -1,0 +1,214 @@
+[
+  {
+    "id": "hand-washing",
+    "title": "Ellerimi Yıkıyorum",
+    "description": "Temizlik ve sağlık için ellerimizi nasıl yıkarız?",
+    "steps": [
+      {
+        "emoji": "🚰",
+        "text": "Musluğu açıyorum ve ellerimi ıslatıyorum."
+      },
+      {
+        "emoji": "🧼",
+        "text": "Sabun alıyorum ve ellerimi köpürtüyorum."
+      },
+      {
+        "emoji": "🙌",
+        "text": "Ellerimin her yerini iyice ovuyorum."
+      },
+      {
+        "emoji": "💦",
+        "text": "Su ile sabunları duruluyorum."
+      },
+      {
+        "emoji": "🧣",
+        "text": "Havlumla ellerimi kuruluyorum."
+      }
+    ]
+  },
+  {
+    "id": "greeting",
+    "title": "Merhaba Diyorum",
+    "description": "Yeni insanlarla tanışırken ne yaparız?",
+    "steps": [
+      {
+        "emoji": "👀",
+        "text": "Karşımdaki kişinin gözlerine bakıyorum."
+      },
+      {
+        "emoji": "😊",
+        "text": "Yüzüme küçük bir gülümseme yerleştiriyorum."
+      },
+      {
+        "emoji": "👋",
+        "text": "Nazikçe \"Merhaba\" diyorum."
+      },
+      {
+        "emoji": "👂",
+        "text": "Sıramı bekleyip onu dinliyorum."
+      }
+    ]
+  },
+  {
+    "id": "waiting-turn",
+    "title": "Sırada Bekliyorum",
+    "description": "Sıra beklemek nasıl olur?",
+    "steps": [
+      {
+        "emoji": "📍",
+        "text": "Nerede sıraya girmem gerektiğini buluyorum."
+      },
+      {
+        "emoji": "🚶",
+        "text": "Sıranın arkasına geçiyorum."
+      },
+      {
+        "emoji": "↔️",
+        "text": "Öndeki kişiye çok yaklaşmadan bekliyorum."
+      },
+      {
+        "emoji": "👐",
+        "text": "Beklerken ellerimi sakin tutuyorum."
+      },
+      {
+        "emoji": "✅",
+        "text": "Sıram gelince nazikçe öne gidiyorum."
+      }
+    ]
+  },
+  {
+    "id": "sharing-toys",
+    "title": "Oyuncağımı Paylaşıyorum",
+    "description": "Arkadaşlarımla paylaşmayı öğreniyorum.",
+    "steps": [
+      {
+        "emoji": "👂",
+        "text": "Arkadaşımı dinliyorum ve ne istediğini anlıyorum."
+      },
+      {
+        "emoji": "⏳",
+        "text": "İstersem \"Birazdan\" diyebilirim."
+      },
+      {
+        "emoji": "🧸",
+        "text": "Sıra bende bitince oyuncağı uzatıyorum."
+      },
+      {
+        "emoji": "🙂",
+        "text": "Arkadaşım oynarken bekliyorum."
+      },
+      {
+        "emoji": "🔁",
+        "text": "Sıra bana gelince oyuncağı geri alıyorum."
+      }
+    ]
+  },
+  {
+    "id": "going-to-school",
+    "title": "Okula Hazırlanıyorum",
+    "description": "Okula giderken neler yaparım?",
+    "steps": [
+      {
+        "emoji": "👕",
+        "text": "Kıyafetlerimi giyiyorum."
+      },
+      {
+        "emoji": "🎒",
+        "text": "Çantama gerekli eşyaları koyuyorum."
+      },
+      {
+        "emoji": "👟",
+        "text": "Ayakkabılarımı giyiyorum."
+      },
+      {
+        "emoji": "🚻",
+        "text": "Kapıdan çıkmadan önce tuvalete gidebilirim."
+      },
+      {
+        "emoji": "🚦",
+        "text": "Okula giderken yolda güvenli yürüyorum."
+      }
+    ]
+  },
+  {
+    "id": "doctor-visit",
+    "title": "Doktora Gidiyorum",
+    "description": "Doktor kontrolünde neler olur?",
+    "steps": [
+      {
+        "emoji": "👋",
+        "text": "Doktoru selamlıyorum."
+      },
+      {
+        "emoji": "🩺",
+        "text": "Doktor beni dinler ve sorular sorar."
+      },
+      {
+        "emoji": "🌡️",
+        "text": "Gerekirse ölçüm yapılır (ateş, boy, kilo)."
+      },
+      {
+        "emoji": "💬",
+        "text": "Ben de nasıl hissettiğimi söyleyebilirim."
+      },
+      {
+        "emoji": "🙏",
+        "text": "İşimiz bitince teşekkür edip ayrılırım."
+      }
+    ]
+  },
+  {
+    "id": "market-shopping",
+    "title": "Markette Alışveriş",
+    "description": "Markette sakin kalmayı öğreniyorum.",
+    "steps": [
+      {
+        "emoji": "📝",
+        "text": "Alacağımız şeyleri birlikte seçiyoruz."
+      },
+      {
+        "emoji": "🛒",
+        "text": "Raflara bakıp istediğim şeyi gösteriyorum."
+      },
+      {
+        "emoji": "🎧",
+        "text": "Çok ses olursa kulaklarımı koruyabilirim."
+      },
+      {
+        "emoji": "🏷️",
+        "text": "Kasada sırada bekliyorum."
+      },
+      {
+        "emoji": "🏠",
+        "text": "İşimiz bitince eve dönüyoruz."
+      }
+    ]
+  },
+  {
+    "id": "feelings-words",
+    "title": "Duygumu Söylüyorum",
+    "description": "Duygularımı kelimelerle ifade ediyorum.",
+    "steps": [
+      {
+        "emoji": "🫀",
+        "text": "Vücudumu dinliyorum (kalbim hızlı mı, karnım mı ağrıyor?)."
+      },
+      {
+        "emoji": "🤔",
+        "text": "Hangi duyguya benzediğini düşünüyorum."
+      },
+      {
+        "emoji": "💬",
+        "text": "Kısa bir cümle kuruyorum: \"Üzgünüm\", \"Kızgınım\" gibi."
+      },
+      {
+        "emoji": "🆘",
+        "text": "Gerekirse yardım istiyorum."
+      },
+      {
+        "emoji": "🌿",
+        "text": "Sakinleşince tekrar konuşabilirim."
+      }
+    ]
+  }
+]

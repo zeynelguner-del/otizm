@@ -1,0 +1,750 @@
+{
+  "@@locale": "en",
+  "welcome": "Welcome",
+  "featuredGuide": "Featured Guide",
+  "categories": "Categories",
+  "headings": "Headings",
+  "moduleInfoTitle": "Autism Info",
+  "moduleOsbTitle": "ASD (Autism Spectrum Disorder)",
+  "moduleEducationTitle": "Education",
+  "moduleEmotionsTitle": "My Emotions",
+  "moduleGamesTitle": "Educational Games",
+  "moduleStoriesTitle": "Social Stories",
+  "moduleMusicTitle": "Music & Sounds",
+  "moduleAccTitle": "Communication Cards (AAC)",
+  "moduleCalendarTitle": "Calendar & Schedule",
+  "moduleReminderTitle": "Education Reminder",
+  "appTitle": "OtiZeka",
+  "adminTitle": "Admin Panel",
+  "adminNoAuth": "Not authorized or error: ",
+  "adminTotalUsers": "Total Users",
+  "adminActiveSessions": "Active Sessions",
+  "adminKvkkAccepted": "KVKK Accepted",
+  "adminProfilesSaved": "Saved Profiles",
+  "adminUsersLast7Days": "Users in Last 7 Days",
+  "homeTitle": "Home",
+  "homeModules": "Modules",
+  "homeError": "Error: ",
+  "homeUser": "User: ",
+  "homeNoActiveProfile": "Active child profile: Not specified",
+  "homeUnnamed": "Unnamed",
+  "homeNoBirthDate": "Birth date: -",
+  "homeBirthDate": "Birth date: ",
+  "modInfo": "Info",
+  "modOsb": "ASD",
+  "modEducation": "Education",
+  "modEmotions": "Emotions",
+  "modGames": "Educational Games",
+  "modStories": "Stories",
+  "modMusic": "Music",
+  "modAcc": "ACC",
+  "modCalendar": "Calendar",
+  "modEduReminder": "Education Reminder",
+  "authEmailErr": "Enter a valid email.",
+  "authPwdErr": "Password must be at least 8 characters.",
+  "authPwdMatchErr": "Passwords do not match.",
+  "authKvkkErr": "KVKK approval is required to continue.",
+  "authTitle": "Autism Support",
+  "authLogin": "Login",
+  "authRegister": "Register",
+  "authEmailLabel": "Email",
+  "authPwdLabel": "Password",
+  "authPwd2Label": "Password (Repeat)",
+  "authKvkkText": "By continuing, you accept the KVKK Explicit Consent text.",
+  "authWait": "Please wait...",
+  "authBtnRegister": "Register",
+  "authBtnLogin": "Login",
+  "familyTitle": "Family Panel",
+  "familyProfile": "Profile",
+  "familyContact": "Contact",
+  "familyPrivacy": "Privacy",
+  "familyNewProfile": "New Profile",
+  "familyEditProfile": "Edit Profile",
+  "familyChildName": "Child's name",
+  "familyBirthDateHint": "Birth date (YYYY-MM-DD)",
+  "familyAgeOpt": "Age (optional)",
+  "familyNotes": "Family notes",
+  "familyEduNotes": "Education notes",
+  "btnSave": "Save",
+  "familyProfiles": "Child Profiles",
+  "btnNew": "New",
+  "familyNoProfile": "No profiles yet.",
+  "familyActive": "Active",
+  "familyContactInfo": "Contact Information",
+  "familySaved": "Saved.",
+  "familyNameSurname": "Name Surname",
+  "familyPhone": "Phone",
+  "familyInstructorPhone": "Instructor Phone",
+  "familyDoctorPhone": "Doctor Phone",
+  "familyDeleteAcc": "Delete Account",
+  "familyDeleteAccMsg": "Enter your password to delete the account.",
+  "btnCancel": "Cancel",
+  "btnDelete": "Delete",
+  "familyPwdMinLength": "Password required (at least 8 characters).",
+  "emoNoise": "Noise",
+  "emoCrowd": "Crowd",
+  "emoChange": "Change",
+  "emoWaiting": "Waiting",
+  "emoFatigue": "Fatigue",
+  "emoHunger": "Hunger",
+  "emoLight": "Light",
+  "emoTouch": "Touch",
+  "emoScreen": "Screen",
+  "emoSeparation": "Separation",
+  "emoDeepBreath": "Deep Breath",
+  "emoBreak": "Take a Break",
+  "emoHug": "Hug",
+  "emoHeadphones": "Headphones",
+  "emoDrinkWater": "Drink Water",
+  "emoCalmCorner": "Calm Corner",
+  "emoMusic": "Music",
+  "emoSqueezeBall": "Squeeze Ball",
+  "emoHappy": "Happy",
+  "emoSad": "Sad",
+  "emoAngry": "Angry",
+  "emoSurprised": "Surprised",
+  "emoScared": "Scared",
+  "emoExcited": "Excited",
+  "emoHowDoYouFeel": "How do you feel?",
+  "emoIntensity": "Intensity:",
+  "emoTriggers": "Triggers (Optional)",
+  "emoWhatHelps": "What Helps You? (Optional)",
+  "emoBefore": "What happened before?",
+  "emoAction": "What did you feel/do?",
+  "emoAfter": "What happened after?",
+  "emoNotes": "Additional Notes",
+  "emoPastRecords": "Past Records",
+  "storyGrocery": "Grocery Shopping",
+  "storyGrocery1": "The store was crowded.",
+  "storyGrocery2": "I put on my headphones when the sounds bothered me.",
+  "storyGrocery3": "I felt happy when I found the snack I wanted.",
+  "storyGrocery4": "I waited calmly in line at the checkout.",
+  "storyVisit": "Visiting Guests",
+  "storyVisit1": "We went to a new house.",
+  "storyVisit2": "First, I said hello.",
+  "storyVisit3": "I shared my toys.",
+  "storyVisit4": "I said goodbye when leaving.",
+  "storyBarber": "Going to the Barber",
+  "storyBarber1": "We went to the barber for a haircut.",
+  "storyBarber2": "The clipper sound was a bit loud but I endured it.",
+  "storyBarber3": "I looked very handsome when my hair was cut.",
+  "storyBarber4": "We thanked the barber and left.",
+  "storyDoctor": "Going to the Doctor",
+  "storyDoctor1": "We went for a check-up today.",
+  "storyDoctor2": "The doctor listened to my heart.",
+  "storyDoctor3": "He said well done to me.",
+  "storyDoctor4": "Being healthy is wonderful.",
+  "storyTitle": "Social Story",
+  "storyRead": "Read Story",
+  "btnBack": "Back",
+  "btnNext": "Next",
+  "btnFinish": "Finish",
+  "storyQuestion": "Question",
+  "storyQuizQ": "Which one is the name of this story?",
+  "storyQuizCorrect": "Correct!",
+  "storyQuizWrong": "Try again.",
+  "musicCalming": "Calming Melody",
+  "musicFocus": "Focus Rhythm",
+  "musicJoyful": "Joyful Kids Melody",
+  "musicSea": "Sea Sound",
+  "musicRain": "Rain Sound",
+  "musicWind": "Wind Sound",
+  "musicWhiteNoise": "White Noise",
+  "musicPinkNoise": "Pink Noise",
+  "musicBrownNoise": "Brown Noise",
+  "musicSleep": "Sleep",
+  "musicCalmingCat": "Calming",
+  "musicFocusCat": "Focus",
+  "musicNowPlaying": "Now Playing",
+  "musicNotSelected": "Not Selected",
+  "musicNotStarted": "You can select a track and start.",
+  "musicTimeRemaining": "Time remaining:",
+  "btnStop": "Stop",
+  "btnBreathe": "Breathe",
+  "musicTracks": "Tracks",
+  "musicRhythmTitle": "Rhythm Suggestion",
+  "musicRhythmDesc": "3 rounds of breathing exercise:\\n- Inhale for 4 seconds\\n- Hold for 4 seconds\\n- Exhale for 6 seconds\\n\\nYou can play a track you like and repeat.",
+  "musicDesc1": "For calming and relaxation.",
+  "musicDesc2": "Rhythm for gathering attention.",
+  "musicDesc3": "For movement and motivation.",
+  "musicDesc4": "Relaxing ambient sound before sleep.",
+  "musicDesc5": "Background sound for calming.",
+  "musicDesc6": "Light wind ambient sound.",
+  "musicDesc7": "Constant noise for focus.",
+  "musicDesc8": "Softer noise profile.",
+  "musicDesc9": "Deep, low-frequency noise.",
+  "accBasicNeeds": "Basic Needs",
+  "accEmotions": "Emotions",
+  "accPlaceAction": "Place & Action",
+  "accCommunication": "Communication",
+  "accWater": "Water",
+  "accHungry": "I am hungry",
+  "accToilet": "Toilet",
+  "accSleepy": "I am sleepy",
+  "accHelp": "Help",
+  "accHug": "Hug",
+  "accHappy": "I am happy",
+  "accSad": "I am sad",
+  "accScared": "I am scared",
+  "accExcited": "I am excited",
+  "accAngry": "I am angry",
+  "accCalm": "I am calm",
+  "accTired": "I am tired",
+  "accSurprised": "I am surprised",
+  "accGoHome": "Let\\'s go home",
+  "accGoOut": "Let\\'s go out",
+  "accDressUp": "Dress up",
+  "accGoPark": "Let\\'s go to the park",
+  "accGoSchool": "Let\\'s go to school",
+  "accPlayMusic": "Play music",
+  "accPlayGames": "Play games",
+  "accCheckCalendar": "Let\\'s check the calendar",
+  "accMe": "Me",
+  "accPlease": "Please",
+  "accThankYou": "Thank you",
+  "accYes": "Yes",
+  "accNo": "No",
+  "accPhone": "Phone",
+  "accTapCard": "Tap a card...",
+  "btnClear": "Clear",
+  "accSentence": "Sentence",
+  "btnShow": "Show",
+  "calMorning": "Morning Routine",
+  "calMorningDesc": "Wake up, wash your face, and have breakfast.",
+  "calSchool": "School Time",
+  "calSchoolDesc": "Go to school and attend your classes.",
+  "calLunch": "Lunch",
+  "calLunchDesc": "Finish your food and rest a bit.",
+  "calFreeTime": "Free Time",
+  "calFreeTimeDesc": "Play any game you want.",
+  "calDinner": "Dinner",
+  "calDinnerDesc": "Family dinner time.",
+  "calBedtime": "Bedtime Preparation",
+  "calBedtimeDesc": "Brush your teeth, wear pajamas, and sleep.",
+  "calToday": "Today\\'s Schedule",
+  "calYesterday": "Yesterday",
+  "calTomorrow": "Tomorrow",
+  "calNotCompleted": "Not Completed",
+  "calCompleted": "Completed!",
+  "remMedicine": "Medicine Time",
+  "remMedicineDesc": "Don\\'t forget vitamins.",
+  "remExercise": "Exercise",
+  "remExerciseDesc": "15 mins stretching.",
+  "remReading": "Reading Book",
+  "remReadingDesc": "Bedtime story.",
+  "remAddReminder": "Add Reminder",
+  "remTitleLabel": "Title",
+  "remTitleHint": "E.g., Physiotherapy",
+  "remDescLabel": "Description",
+  "remTimeLabel": "Time",
+  "remRepeatLabel": "Repeat",
+  "remNone": "None",
+  "remDaily": "Every Day",
+  "remWeekly": "Weekly",
+  "remMonthly": "Monthly",
+  "remTitle": "Reminders",
+  "remNoReminder": "No reminders yet.",
+  "gameMemory": "Memory Game",
+  "gameMemoryDesc": "Strengthen your memory by matching cards.",
+  "gameBalloons": "Colorful Balloons",
+  "gameBalloonsDesc": "Pop the balloons of the specified color.",
+  "gameEmotion": "Emotion Matching",
+  "gameEmotionDesc": "Match facial expressions with emotions.",
+  "gameShapes": "Shape Placement",
+  "gameShapesDesc": "Put the missing shapes in the right place.",
+  "gameComingSoon": "Coming soon",
+  "authErrKvkkRequired": "Terms & Privacy Policy consent is required to continue.",
+  "authTextKvkk": "By continuing, you accept the Terms & Privacy Policy.",
+  "moduleLabelFeaturedGuide": "Featured Guide",
+  "moduleLabelCategories": "Categories",
+  "moduleLabelReadMore": "Read More",
+  "homeAgeLabel": "Age: -",
+  "homeAgeYears": "{count} years",
+  "@homeAgeYears": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeAgeMonths": "{count} months",
+  "@homeAgeMonths": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeAgeDays": "{count} days",
+  "@homeAgeDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "authSubtitleAwareness": "Autism Awareness",
+  "moduleTitleInfo": "Autism Info",
+  "moduleTitleOsb": "ASD (Autism Spectrum Disorder)",
+  "moduleTitleOsbResearch": "Latest Research on ASD",
+  "moduleTitleEducation": "Education & ABA",
+  "moduleTitleEmotions": "My Emotions",
+  "moduleTitleGames": "Educational Games",
+  "moduleTitleStories": "Social Stories",
+  "moduleTitleMusic": "Music & Sound Therapy",
+  "moduleTitleAcc": "ACC (Alternative Comm.)",
+  "moduleTitleCalendar": "Visual Calendar",
+  "moduleTitleEduReminder": "Education Reminders",
+  "moduleTitleSensory": "Sensory Integration",
+  "moduleTitleObjects": "My Objects",
+  "moduleTitleSentenceSounds": "Sentence Sounds",
+  "moduleTitleImitation": "Imitation Skills",
+  "moduleTitleDefault": "Module",
+  "modSentence": "Sentence Sounds",
+  "catTherapy": "Therapy",
+  "catTherapySub": "Therapy Modules",
+  "modEduGames": "Educational Games",
+  "modSensory": "Sensory",
+  "catGuidance": "Guidance",
+  "catGuidanceSub": "Guidance for Parents",
+  "modEduGuide": "Educational Guide",
+  "modResearch": "Latest Research",
+  "activeProfile": "Active Profile",
+  "dailyProgressTitle": "{name}'s Daily Progress",
+  "@dailyProgressTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "moduleProgress": "Completed {current} / {total}",
+  "@moduleProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "familyTabPrivacy": "Privacy",
+  "familyTitleDeleteAccount": "Delete Account",
+  "profileSettings": "Profile Settings",
+  "logout": "Logout",
+  "helloUser": "Hello, {name}",
+  "@helloUser": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "greeting": "Hi {name}",
+  "@greeting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeSubtitle": "Welcome back",
+  "catZeka": "OtiZeka",
+  "catZekaSub": "AI and Logic Games",
+  "modObjects": "Objects",
+  "modImitation": "Imitation",
+  "familyTabSettings": "Settings",
+  "familyErrCallFailed": "Could not initiate call",
+  "familyErrCallError": "Error initiating call",
+  "familyTitleContactInfo": "Contact Information",
+  "familyLabelFullName": "Parent/Guardian Full Name",
+  "familyLabelPhone": "Phone Number",
+  "familyLabelInstructorPhone": "Instructor Phone",
+  "familyLabelDoctorPhone": "Doctor Phone",
+  "familyMsgSaved": "Information saved.",
+  "familyBtnSave": "Save",
+  "familyDescDeleteAccount": "Are you sure you want to delete your account? This action cannot be undone.",
+  "familyBtnCancel": "Cancel",
+  "familyBtnDelete": "Delete",
+  "familyErrPasswordRequired": "Password is required to delete account.",
+  "familyTabProfiles": "Profiles",
+  "familyTitleNewProfile": "New Profile",
+  "familyTitleEditProfile": "Edit Profile",
+  "familyBtnChangePhoto": "Change Photo",
+  "familyLabelChildName": "Child Name",
+  "familyLabelBirthDate": "Birth Date",
+  "familyLabelAgeOptional": "Age (Optional)",
+  "familyLabelFamilyNotes": "Family Notes",
+  "familyLabelEduNotes": "Educational Notes",
+  "familyTitleChildProfiles": "Child Profiles",
+  "familyBtnNew": "New",
+  "familyTxtNoProfile": "No profiles found.",
+  "familyTxtUnnamed": "Unnamed",
+  "familyBtnActive": "Active",
+  "familyTitlePanel": "Family Panel",
+  "familyTabProfile": "Profile",
+  "familyTabContact": "Contact",
+  "emotionsTitle": "Choose Emotion",
+  "emotionsIntensity": "Intensity (1-5)",
+  "emotionsTriggers": "Triggers",
+  "emotionsAntecedent": "Antecedent (what happened?)",
+  "emotionsBehavior": "Behavior",
+  "emotionsConsequence": "Consequence",
+  "emotionsNotes": "Additional Notes",
+  "emotionsHelped": "What Helped?",
+  "emotionsSave": "Save",
+  "emotionsEmpty": "No logs yet.",
+  "emotionHappy": "Happy",
+  "emotionSad": "Sad",
+  "emotionAngry": "Angry",
+  "emotionSurprised": "Surprised",
+  "emotionScared": "Scared",
+  "emotionExcited": "Excited",
+  "triggerNoise": "Noise",
+  "triggerCrowd": "Crowd",
+  "triggerChange": "Change",
+  "triggerWait": "Waiting",
+  "triggerFatigue": "Fatigue",
+  "triggerHunger": "Hunger",
+  "triggerLight": "Light",
+  "triggerTouch": "Touch",
+  "triggerScreen": "Screen",
+  "triggerSeparation": "Separation",
+  "helpBreath": "Deep Breath",
+  "helpBreak": "Take a Break",
+  "helpHug": "Hug",
+  "helpHeadphones": "Headphones",
+  "helpWater": "Drink Water",
+  "helpCorner": "Quiet Corner",
+  "helpMusic": "Music",
+  "helpBall": "Squeeze Ball",
+  "homeAgeNewborn": "Newborn",
+  "storySelect": "Choose a story",
+  "musicMainTitle": "Music & Relaxing Sounds",
+  "musicMainSubtitle": "You can choose and start a suitable sound for calming, focusing, or bedtime.",
+  "musicPlaying": "Playing...",
+  "btnStart": "Start",
+  "musicDurationPrefix": "Duration",
+  "gameSelect": "Choose a game",
+  "gameTitleEmotions": "Match Emotions",
+  "gameDescEmotions": "Which emotion matches which word?",
+  "gameTitleMatching": "Matching Game",
+  "gameDescMatching": "Find and match the same fruits",
+  "gameTitleCounting": "Counting Game",
+  "gameDescCounting": "Learn numbers with fun",
+  "gameTitleColors": "Find Colors",
+  "gameDescColors": "Select the correct color",
+  "gameTitleMemory": "Memory Cards",
+  "gameDescMemory": "Remember card positions",
+  "gameTitleShapes": "Recognize Shapes",
+  "gameDescShapes": "Select the correct shape",
+  "gameTitleColoring": "Coloring Game",
+  "gameDescColoring": "Color the shapes as you wish",
+  "gameTargetColorPrefix": "Target",
+  "gameSelectCorrectColor": "Select the correct color",
+  "gameSelectCorrectShape": "Select the correct shape",
+  "gameHowMany": "How many are there?",
+  "gameNextQuestion": "New Question",
+  "gameStatusMatch": "Match",
+  "gameStatusAllMatched": "Congratulations, all matched!",
+  "gameCongratsLevel": "Congratulations! • Level {level}/{maxLevel}",
+  "@gameCongratsLevel": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      },
+      "maxLevel": {
+        "type": "int"
+      }
+    }
+  },
+  "gameLevelMoves": "Level {level}/{maxLevel} • Moves: {moves}",
+  "@gameLevelMoves": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      },
+      "maxLevel": {
+        "type": "int"
+      },
+      "moves": {
+        "type": "int"
+      }
+    }
+  },
+  "btnPrev": "Previous",
+  "btnNextLevel": "Next Level",
+  "btnRestart": "Restart",
+  "btnTryAgain": "Retry",
+  "colorRed": "Red",
+  "colorBlue": "Blue",
+  "colorGreen": "Green",
+  "colorYellow": "Yellow",
+  "colorPurple": "Purple",
+  "colorOrange": "Orange",
+  "colorPink": "Pink",
+  "shapeCircle": "Circle",
+  "shapeSquare": "Square",
+  "shapeTriangle": "Triangle",
+  "shapeStar": "Star",
+  "shapeHeart": "Heart",
+  "emotionSleepy": "Sleepy",
+  "gameColoringSelectColor": "Select Color",
+  "gameColoringTapAndPaint": "Tap shape to color",
+  "gameColoringTitle": "Color Shapes",
+  "accCatNeeds": "Basic Needs",
+  "accCatEmotions": "Emotions",
+  "accCatActions": "Places & Actions",
+  "accCatComm": "Communication",
+  "accLabelWater": "Water",
+  "accLabelHungry": "I'm Hungry",
+  "accLabelToilet": "Toilet",
+  "accLabelSleepy": "Tired",
+  "accLabelBreak": "Take a Break",
+  "accLabelHelp": "Help",
+  "accLabelHug": "Hug",
+  "accLabelHappy": "I'm Happy",
+  "accLabelSad": "I'm Sad",
+  "accLabelScared": "I'm Scared",
+  "accLabelExcited": "I'm Excited",
+  "accLabelAngry": "I'm Angry",
+  "accLabelCalm": "I'm Calm",
+  "accLabelTired": "I'm Tired",
+  "accLabelSurprised": "I'm Surprised",
+  "accLabelGoHome": "Let's Go Home",
+  "accLabelGoOut": "Let's Go Outside",
+  "accLabelDress": "Dressing Up",
+  "accLabelGoPark": "Let's Go to the Park",
+  "accLabelGoSchool": "Let's Go to School",
+  "accLabelPlayMusic": "Turn on Music",
+  "accLabelPlayGame": "Play a Game",
+  "accLabelLookCalendar": "Let's Look at the Calendar",
+  "accLabelMe": "Me",
+  "accLabelPlease": "Please",
+  "accLabelThanks": "Thank You",
+  "accLabelYes": "Yes",
+  "accLabelNo": "No",
+  "accLabelPhone": "Phone",
+  "accPlaceholderCard": "Tap a card...",
+  "accReadSentence": "Read Sentence",
+  "accSentenceDetailTitle": "Sentence",
+  "calendarTaskMorning": "Morning Routine",
+  "calendarCatSelfCare": "Self-care",
+  "calendarTaskEmotion": "Emotion Practice",
+  "calendarCatEducation": "Education",
+  "calendarTaskLunch": "Lunch",
+  "calendarCatNutrition": "Nutrition",
+  "calendarTaskMatching": "Matching Game",
+  "calendarCatPlay": "Play",
+  "calendarTaskGarden": "Garden Time",
+  "calendarCatActivity": "Activity",
+  "calendarCatCustom": "Custom",
+  "calendarProgressPrefix": "Progress",
+  "calendarTokenBalance": "Tokens",
+  "calendarTimerTitle": "Timer",
+  "btnPause": "Pause",
+  "btnReset": "Reset",
+  "calendarDailySchedule": "Daily Schedule",
+  "calendarAddCustomTaskHint": "Add custom task",
+  "btnAdd": "Add",
+  "remDefaultMessage": "Education time",
+  "remPresetFloortime": "Floortime time",
+  "remPresetSpeechTherapy": "Speech therapy time",
+  "remPresetSpecialEducation": "Special education time",
+  "remPresetErgotherapy": "Ergotherapy time",
+  "remPresetMovement": "Movement training time",
+  "remPresetEmotionWork": "Emotion practice time",
+  "remPresetSensory": "Sensory integration time",
+  "remPresetHomework": "Homework time",
+  "remPresetReading": "Reading hour",
+  "remPresetPlay": "Play time",
+  "remPresetStory": "Social story time",
+  "remPresetImitation": "Imitation practice time",
+  "remPresetAcc": "Communication cards time",
+  "remPresetBreak": "Break time",
+  "remPresetWalk": "Walking time",
+  "remPresetNutrition": "Nutrition time",
+  "remPresetReward": "Reward time",
+  "remPresetSleepReady": "Sleep prep time",
+  "weekdayMonday": "Monday",
+  "weekdayTuesday": "Tuesday",
+  "weekdayWednesday": "Wednesday",
+  "weekdayThursday": "Thursday",
+  "weekdayFriday": "Friday",
+  "weekdaySaturday": "Saturday",
+  "weekdaySunday": "Sunday",
+  "remPermissionDenied": "Notification permission not granted.",
+  "remReminderTextTitle": "Reminder Text",
+  "remCustom": "Custom...",
+  "remCustomTextTitle": "Custom Text",
+  "remCustomTextHint": "e.g., Floortime time",
+  "remMainTitle": "7-Day Education Reminder",
+  "remMainSubtitle": "Choose the day and time you want. You will be notified when the time comes.",
+  "remTextLabel": "Text",
+  "remOffLabel": "Off",
+  "remSelectTimeTooltip": "Select Time",
+  "remSelectTextTooltip": "Select Text",
+  "remDisableAll": "Turn Off All",
+  "sensoryBirds": "Birds",
+  "sensorySea": "Sea",
+  "sensoryForest": "Forest",
+  "sensorySun": "Sun",
+  "objectsQuestion": "Which one is the {name}?",
+  "@objectsQuestion": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "objectsCorrectAnswer": "Yes, this is {name}!",
+  "@objectsCorrectAnswer": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "objectsWrongAnswer": "No, this is not {name}.",
+  "@objectsWrongAnswer": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "objectsNextQuestion": "Next Question",
+  "tabSentenceBuilder": "Build Sentence",
+  "tabSoundsTable": "Learn Sounds",
+  "tabLetterGame": "Letter Game",
+  "sentenceBuilderPlaceholder": "Select a word...",
+  "sentenceSpeakButton": "SPEAK",
+  "sentenceClearButton": "CLEAR",
+  "letterGameTitle": "Letter Finding Game",
+  "letterGameSubtitle": "Tap on a letter from the boxes and find the word starting with that letter!",
+  "letterGameCorrect": "Yes, this is {letter}! The letter {letter} is in the word {word}. {word}.",
+  "@letterGameCorrect": {
+    "placeholders": {
+      "letter": {
+        "type": "String"
+      },
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "letterGameCorrectTitle": "Yes, this is {letter}!",
+  "@letterGameCorrectTitle": {
+    "placeholders": {
+      "letter": {
+        "type": "String"
+      }
+    }
+  },
+  "btnClose": "Close",
+  "imitationBannerHint": "You can tap anywhere on the screen to switch to the next imitation move!",
+  "imitationStartGame": "START GAME",
+  "imitationStartHint": "Tap anywhere on the screen to start!",
+  "imitationLivePanel": "LIVE PANEL",
+  "imitationPrefix": "Imitation",
+  "imitationReady": "Are you ready?",
+  "moduleComingSoon": "\"{title}\" module is coming soon.\n\nWe will migrate the content to Flutter step-by-step on this screen.",
+  "@moduleComingSoon": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "authForgotPassword": "Forgot Password",
+  "authResetPassword": "Reset Password",
+  "authForgotPasswordInstructions": "Enter the email address registered to your account. We will send you a 6-digit verification code.",
+  "authEmailAddressLabel": "Email Address",
+  "authResetPasswordInstructions": "Enter the 6-digit code sent to {email} and your new password.",
+  "@authResetPasswordInstructions": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "authVerificationCodeLabel": "Verification Code",
+  "authNewPasswordLabel": "New Password",
+  "authNewPassword2Label": "Confirm New Password",
+  "authBtnSendCode": "Send Code",
+  "authBtnUpdatePassword": "Update Password",
+  "authResetSuccess": "Your password has been successfully reset. You can now login.",
+  "authErrVerificationCodeInvalid": "Enter the 6-digit verification code.",
+  "authPwdMinLengthErr": "Password must be at least 8 characters.",
+  "homeGreetingParent": "Parent",
+  "homeErrorPrefix": "Error: {error}",
+  "@homeErrorPrefix": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "emotionsChoose": "Choose your emotion",
+  "emotionsDiary": "Emotion Diary",
+  "emotionsCalming": "Calming Techniques",
+  "emotionsCalmingInstructions": "To calm down: breathe in for 4 seconds, hold for 4 seconds, breathe out for 6 seconds. Take a short break and drink water if you'd like.",
+  "emotionsSelected": "Selected emotion: {emotion}",
+  "@emotionsSelected": {
+    "placeholders": {
+      "emotion": {
+        "type": "String"
+      }
+    }
+  },
+  "emotionsWhatHelped": "What helped?",
+  "emotionsNote": "Note",
+  "emotionsRecentLogs": "Recent Logs",
+  "emotionsNoLogs": "No logs yet.",
+  "emotionsLogDate": "Date: {value}",
+  "@emotionsLogDate": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "emotionsLogEmotion": "Emotion: {value}",
+  "@emotionsLogEmotion": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "emotionsLogIntensity": "Intensity: {value}/5",
+  "@emotionsLogIntensity": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "emotionsLogTriggers": "Triggers: {value}",
+  "@emotionsLogTriggers": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "emotionsLogHelped": "Helped: {value}",
+  "@emotionsLogHelped": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "emotionsLogAntecedent": "Antecedent",
+  "emotionsLogBehavior": "Behavior",
+  "emotionsLogConsequence": "Consequence",
+  "emotionsLogNote": "Note",
+  "authContinueAsGuest": "Continue as Guest"
+}

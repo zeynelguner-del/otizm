@@ -1,0 +1,47 @@
+{
+  "whoTitle": "KİM?",
+  "whoOptions": [
+    "Ben",
+    "Sen",
+    "O"
+  ],
+  "whatTitle": "NE?",
+  "whatOptions": [
+    "Su",
+    "Yemek",
+    "Tuvalet",
+    "Sarılmak",
+    "Müzik",
+    "Oyun"
+  ],
+  "whereWhenTitle": "NEREDE / NE ZAMAN?",
+  "whereWhenOptions": [
+    "Evde",
+    "Okulda",
+    "Parkta",
+    "Şimdi",
+    "Birazdan"
+  ],
+  "whereValues": [
+    "Evde",
+    "Okulda",
+    "Parkta"
+  ],
+  "verbTitle": "NE YAPIYORUM?",
+  "verbOptions": [
+    "istiyorum",
+    "istemiyorum",
+    "istiyor",
+    "istemiyor",
+    "ara vermek istiyorum"
+  ],
+  "quickWordTitle": "HIZLI KELİME",
+  "quickWordLabel": "yardım istiyorum",
+  "quickWordState": {
+    "who": "Ben",
+    "what": null,
+    "where": null,
+    "when": null,
+    "verb": "yardım istiyorum"
+  }
+}

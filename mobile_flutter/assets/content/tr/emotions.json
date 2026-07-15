@@ -1,0 +1,56 @@
+{
+  "emotions": [
+    {
+      "name": "Mutlu",
+      "emoji": "😊",
+      "color": "0xFFFDE68A"
+    },
+    {
+      "name": "Üzgün",
+      "emoji": "😢",
+      "color": "0xFFBFDBFE"
+    },
+    {
+      "name": "Kızgın",
+      "emoji": "😠",
+      "color": "0xFFFECACA"
+    },
+    {
+      "name": "Şaşırmış",
+      "emoji": "😲",
+      "color": "0xFFE9D5FF"
+    },
+    {
+      "name": "Korkmuş",
+      "emoji": "😨",
+      "color": "0xFFE4E4E7"
+    },
+    {
+      "name": "Heyecanlı",
+      "emoji": "🤩",
+      "color": "0xFFFED7AA"
+    }
+  ],
+  "triggers": [
+    "Gürültü",
+    "Kalabalık",
+    "Değişiklik",
+    "Beklemek",
+    "Yorgunluk",
+    "Açlık",
+    "Işık",
+    "Dokunma",
+    "Ekran",
+    "Ayrılma"
+  ],
+  "helps": [
+    "Derin Nefes",
+    "Ara Vermek",
+    "Sarılma",
+    "Kulaklık",
+    "Su İçmek",
+    "Sakin Köşe",
+    "Müzik",
+    "Top Sıkma"
+  ]
+}

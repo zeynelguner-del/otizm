@@ -1,0 +1,132 @@
+[
+  {
+    "letter": "A",
+    "emoji": "🍎",
+    "word": "Apple"
+  },
+  {
+    "letter": "B",
+    "emoji": "🎈",
+    "word": "Balloon"
+  },
+  {
+    "letter": "C",
+    "emoji": "☕",
+    "word": "Cup"
+  },
+  {
+    "letter": "D",
+    "emoji": "🐶",
+    "word": "Dog"
+  },
+  {
+    "letter": "E",
+    "emoji": "🐘",
+    "word": "Elephant"
+  },
+  {
+    "letter": "F",
+    "emoji": "🐟",
+    "word": "Fish"
+  },
+  {
+    "letter": "G",
+    "emoji": "🕶️",
+    "word": "Glasses"
+  },
+  {
+    "letter": "H",
+    "emoji": "🧢",
+    "word": "Hat"
+  },
+  {
+    "letter": "I",
+    "emoji": "🍦",
+    "word": "Ice Cream"
+  },
+  {
+    "letter": "J",
+    "emoji": "🐆",
+    "word": "Jaguar"
+  },
+  {
+    "letter": "K",
+    "emoji": "🔑",
+    "word": "Key"
+  },
+  {
+    "letter": "L",
+    "emoji": "🍋",
+    "word": "Lemon"
+  },
+  {
+    "letter": "M",
+    "emoji": "🐵",
+    "word": "Monkey"
+  },
+  {
+    "letter": "N",
+    "emoji": "🕸️",
+    "word": "Net"
+  },
+  {
+    "letter": "O",
+    "emoji": "🐙",
+    "word": "Octopus"
+  },
+  {
+    "letter": "P",
+    "emoji": "🥔",
+    "word": "Potato"
+  },
+  {
+    "letter": "Q",
+    "emoji": "👑",
+    "word": "Queen"
+  },
+  {
+    "letter": "R",
+    "emoji": "💍",
+    "word": "Ring"
+  },
+  {
+    "letter": "S",
+    "emoji": "☀️",
+    "word": "Sun"
+  },
+  {
+    "letter": "T",
+    "emoji": "🌳",
+    "word": "Tree"
+  },
+  {
+    "letter": "U",
+    "emoji": "🪁",
+    "word": "Kite"
+  },
+  {
+    "letter": "V",
+    "emoji": "🎻",
+    "word": "Violin"
+  },
+  {
+    "letter": "W",
+    "emoji": "🍉",
+    "word": "Watermelon"
+  },
+  {
+    "letter": "X",
+    "emoji": "🪕",
+    "word": "Xylophone"
+  },
+  {
+    "letter": "Y",
+    "emoji": "🍳",
+    "word": "Egg"
+  },
+  {
+    "letter": "Z",
+    "emoji": "🦓",
+    "word": "Zebra"
+  }
+]

@@ -1,0 +1,47 @@
+{
+  "whoTitle": "WHO?",
+  "whoOptions": [
+    "I",
+    "You",
+    "He/She"
+  ],
+  "whatTitle": "WHAT?",
+  "whatOptions": [
+    "Water",
+    "Food",
+    "Toilet",
+    "Hug",
+    "Music",
+    "Game"
+  ],
+  "whereWhenTitle": "WHERE / WHEN?",
+  "whereWhenOptions": [
+    "At home",
+    "At school",
+    "At park",
+    "Now",
+    "Later"
+  ],
+  "whereValues": [
+    "At home",
+    "At school",
+    "At park"
+  ],
+  "verbTitle": "WHAT AM I DOING?",
+  "verbOptions": [
+    "want",
+    "don't want",
+    "wants",
+    "doesn't want",
+    "want a break"
+  ],
+  "quickWordTitle": "QUICK WORD",
+  "quickWordLabel": "I need help",
+  "quickWordState": {
+    "who": "I",
+    "what": null,
+    "where": null,
+    "when": null,
+    "verb": "need help"
+  }
+}

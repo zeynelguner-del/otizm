@@ -1,0 +1,50 @@
+[
+  {
+    "title": "Kolları Kaldır",
+    "voice": "Kolları kaldır!",
+    "action": "raiseArms",
+    "imageAsset": "assets/imitation_raise_arms.png"
+  },
+  {
+    "title": "Kolları Bağla",
+    "voice": "Kolları bağla!",
+    "action": "crossArms",
+    "imageAsset": "assets/imitation_cross_arms.png"
+  },
+  {
+    "title": "Elleri Kaldır",
+    "voice": "Elleri kaldır!",
+    "action": "raiseHands",
+    "imageAsset": "assets/imitation_raise_hands.png"
+  },
+  {
+    "title": "Kulağını Göster",
+    "voice": "Sağ elinle sağ kulağını göster!",
+    "action": "showEar",
+    "imageAsset": "assets/imitation_show_ear.png"
+  },
+  {
+    "title": "Gözlerini Kapat",
+    "voice": "Gözlerini kapat!",
+    "action": "closeEyes",
+    "imageAsset": "assets/imitation_close_eyes.png"
+  },
+  {
+    "title": "Burnunu Göster",
+    "voice": "Sağ elinle burnunu göster!",
+    "action": "showNose",
+    "imageAsset": "assets/imitation_show_nose.png"
+  },
+  {
+    "title": "El Çırp",
+    "voice": "Ellerini hızlıca çırp!",
+    "action": "clap",
+    "imageAsset": "assets/imitation_clap.png"
+  },
+  {
+    "title": "Zıpla",
+    "voice": "Yukarı doğru zıpla!",
+    "action": "jump",
+    "imageAsset": "assets/imitation_jump.png"
+  }
+]

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:otizm_destek_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -38,19 +39,19 @@ class _FamilyPageState extends ConsumerState<FamilyPage> with SingleTickerProvid
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Aile Paneli'),
+        title: Text(AppLocalizations.of(context)!.familyTitlePanel),
         bottom: TabBar(
           controller: _tab,
-          tabs: const [
-            Tab(text: 'Profil'),
-            Tab(text: 'İletişim'),
-            Tab(text: 'Gizlilik'),
+          tabs: [
+            Tab(text: AppLocalizations.of(context)!.familyTabProfile),
+            Tab(text: AppLocalizations.of(context)!.familyTabContact),
+            Tab(text: AppLocalizations.of(context)!.familyTabPrivacy),
           ],
         ),
       ),
       body: TabBarView(
         controller: _tab,
-        children: const [
+        children: [
           _ProfilesTab(),
           _ContactTab(),
           _PrivacyTab(),
@@ -97,7 +98,7 @@ class _ProfilesTabState extends ConsumerState<_ProfilesTab> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      existing == null ? 'Yeni Profil' : 'Profili Düzenle',
+                      existing == null ? AppLocalizations.of(context)!.familyTitleNewProfile : AppLocalizations.of(context)!.familyTitleEditProfile,
                       style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
                     ),
                     const SizedBox(height: 20),
@@ -151,8 +152,8 @@ class _ProfilesTabState extends ConsumerState<_ProfilesTab> {
                                   : Icon(Icons.add_a_photo, size: 36, color: Colors.grey.shade400),
                             ),
                             const SizedBox(height: 8),
-                            const Text(
-                              'Fotoğraf Değiştir / Seç',
+                            Text(
+                              AppLocalizations.of(context)!.familyBtnChangePhoto,
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,
@@ -164,25 +165,25 @@ class _ProfilesTabState extends ConsumerState<_ProfilesTab> {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    TextField(controller: name, decoration: const InputDecoration(labelText: 'Çocuğun adı', border: OutlineInputBorder())),
+                    TextField(controller: name, decoration: InputDecoration(labelText: AppLocalizations.of(context)!.familyLabelChildName, border: OutlineInputBorder())),
                     const SizedBox(height: 12),
                     TextField(
                       controller: birth,
-                      decoration: const InputDecoration(labelText: 'Doğum tarihi (YYYY-MM-DD)', border: OutlineInputBorder()),
+                      decoration: InputDecoration(labelText: AppLocalizations.of(context)!.familyLabelBirthDate, border: OutlineInputBorder()),
                     ),
                     const SizedBox(height: 12),
-                    TextField(controller: legacyAge, decoration: const InputDecoration(labelText: 'Yaş (opsiyonel)', border: OutlineInputBorder())),
+                    TextField(controller: legacyAge, decoration: InputDecoration(labelText: AppLocalizations.of(context)!.familyLabelAgeOptional, border: OutlineInputBorder())),
                     const SizedBox(height: 12),
                     TextField(
                       controller: familyNotes,
                       maxLines: 2,
-                      decoration: const InputDecoration(labelText: 'Aile notları', border: OutlineInputBorder()),
+                      decoration: InputDecoration(labelText: AppLocalizations.of(context)!.familyLabelFamilyNotes, border: OutlineInputBorder()),
                     ),
                     const SizedBox(height: 12),
                     TextField(
                       controller: educationNotes,
                       maxLines: 2,
-                      decoration: const InputDecoration(labelText: 'Eğitim notları', border: OutlineInputBorder()),
+                      decoration: InputDecoration(labelText: AppLocalizations.of(context)!.familyLabelEduNotes, border: OutlineInputBorder()),
                     ),
                     const SizedBox(height: 16),
                     SizedBox(
@@ -194,7 +195,7 @@ class _ProfilesTabState extends ConsumerState<_ProfilesTab> {
                           backgroundColor: const Color(0xFF10B981),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                         ),
-                        child: const Text('Kaydet'),
+                        child: Text(AppLocalizations.of(context)!.familyBtnSave),
                       ),
                     )
                   ],
@@ -259,8 +260,8 @@ class _ProfilesTabState extends ConsumerState<_ProfilesTab> {
           children: [
             Row(
               children: [
-                const Expanded(
-                  child: Text('Çocuk Profilleri', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
+                Expanded(
+                  child: Text(AppLocalizations.of(context)!.familyTitleChildProfiles, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
                 ),
                 OutlinedButton(
                   onPressed: _busy
@@ -268,13 +269,13 @@ class _ProfilesTabState extends ConsumerState<_ProfilesTab> {
                       : () async {
                           await _editProfile(env ?? const ProfileEnvelope(profiles: [], activeProfileId: ''), existing: null);
                         },
-                  child: const Text('Yeni'),
+                  child: Text(AppLocalizations.of(context)!.familyBtnNew),
                 ),
               ],
             ),
             const SizedBox(height: 12),
             if (profiles.isEmpty)
-              const Text('Henüz profil yok.', style: TextStyle(fontWeight: FontWeight.w700))
+              Text(AppLocalizations.of(context)!.familyTxtNoProfile, style: TextStyle(fontWeight: FontWeight.w700))
             else
               ...profiles.map((p) {
                 final isActive = env?.activeProfileId == p.id;
@@ -282,7 +283,7 @@ class _ProfilesTabState extends ConsumerState<_ProfilesTab> {
                   elevation: 0,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20), side: const BorderSide(color: Color(0xFFE4E4E7))),
                   child: ListTile(
-                    title: Text(p.name.isEmpty ? 'İsimsiz' : p.name, style: const TextStyle(fontWeight: FontWeight.w900)),
+                    title: Text(p.name.isEmpty ? AppLocalizations.of(context)!.familyTxtUnnamed : p.name, style: const TextStyle(fontWeight: FontWeight.w900)),
                     subtitle: Text(p.birthDate.isEmpty ? '-' : p.birthDate, style: const TextStyle(fontWeight: FontWeight.w700)),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -294,7 +295,7 @@ class _ProfilesTabState extends ConsumerState<_ProfilesTab> {
                         if (!isActive)
                           TextButton(
                             onPressed: _busy || env == null ? null : () => _setActive(env, p.id),
-                            child: const Text('Aktif'),
+                            child: Text(AppLocalizations.of(context)!.familyBtnActive),
                           )
                         else
                           const Padding(
@@ -359,14 +360,14 @@ class _ContactTabState extends ConsumerState<_ContactTab> {
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Arama başlatılamadı.')),
+            SnackBar(content: Text(AppLocalizations.of(context)!.familyErrCallFailed)),
           );
         }
       }
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Arama başlatılırken hata oluştu.')),
+          SnackBar(content: Text(AppLocalizations.of(context)!.familyErrCallError)),
         );
       }
     }
@@ -383,7 +384,7 @@ class _ContactTabState extends ConsumerState<_ContactTab> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        const Text('İletişim Bilgileri', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
+        Text(AppLocalizations.of(context)!.familyTitleContactInfo, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
         const SizedBox(height: 12),
         if (_ok != null)
           Container(
@@ -392,15 +393,15 @@ class _ContactTabState extends ConsumerState<_ContactTab> {
             child: Text(_ok!, style: const TextStyle(fontWeight: FontWeight.w800, color: Color(0xFF065F46))),
           ),
         if (_ok != null) const SizedBox(height: 12),
-        TextField(controller: _fullName, decoration: const InputDecoration(labelText: 'Ad Soyad', border: OutlineInputBorder())),
+        TextField(controller: _fullName, decoration: InputDecoration(labelText: AppLocalizations.of(context)!.familyLabelFullName, border: OutlineInputBorder())),
         const SizedBox(height: 12),
-        TextField(controller: _phone, keyboardType: TextInputType.phone, decoration: const InputDecoration(labelText: 'Telefon', border: OutlineInputBorder())),
+        TextField(controller: _phone, keyboardType: TextInputType.phone, decoration: InputDecoration(labelText: AppLocalizations.of(context)!.familyLabelPhone, border: OutlineInputBorder())),
         const SizedBox(height: 12),
         TextField(
           controller: _instructor,
           keyboardType: TextInputType.phone,
           decoration: InputDecoration(
-            labelText: 'Eğitmen Telefonu',
+            labelText: AppLocalizations.of(context)!.familyLabelInstructorPhone,
             border: const OutlineInputBorder(),
             suffixIcon: IconButton(
               icon: const Icon(Icons.phone, color: Color(0xFF10B981)),
@@ -418,7 +419,7 @@ class _ContactTabState extends ConsumerState<_ContactTab> {
           controller: _doctor,
           keyboardType: TextInputType.phone,
           decoration: InputDecoration(
-            labelText: 'Doktor Telefonu',
+            labelText: AppLocalizations.of(context)!.familyLabelDoctorPhone,
             border: const OutlineInputBorder(),
             suffixIcon: IconButton(
               icon: const Icon(Icons.phone, color: Color(0xFF10B981)),
@@ -453,12 +454,12 @@ class _ContactTabState extends ConsumerState<_ContactTab> {
                       );
                       await api.saveUserMeta(meta);
                       ref.invalidate(userMetaProvider);
-                      setState(() => _ok = 'Kaydedildi.');
+                      setState(() => _ok = AppLocalizations.of(context)!.familyMsgSaved);
                     } finally {
                       if (mounted) setState(() => _busy = false);
                     }
                   },
-            child: const Text('Kaydet'),
+            child: Text(AppLocalizations.of(context)!.familyBtnSave),
           ),
         ),
       ],
@@ -483,18 +484,18 @@ class _PrivacyTabState extends ConsumerState<_PrivacyTab> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Hesabı Sil'),
+          title: Text(AppLocalizations.of(context)!.familyTitleDeleteAccount),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('Hesabı silmek için şifrenizi girin.'),
+              Text(AppLocalizations.of(context)!.familyDescDeleteAccount),
               const SizedBox(height: 12),
-              TextField(controller: controller, obscureText: true, decoration: const InputDecoration(labelText: 'Şifre')),
+              TextField(controller: controller, obscureText: true, decoration: InputDecoration(labelText: AppLocalizations.of(context)!.authPwdLabel)),
             ],
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(false), child: const Text('Vazgeç')),
-            FilledButton(onPressed: () => Navigator.of(context).pop(true), child: const Text('Sil')),
+            TextButton(onPressed: () => Navigator.of(context).pop(false), child: Text(AppLocalizations.of(context)!.familyBtnCancel)),
+            FilledButton(onPressed: () => Navigator.of(context).pop(true), child: Text(AppLocalizations.of(context)!.familyBtnDelete)),
           ],
         );
       },
@@ -502,7 +503,7 @@ class _PrivacyTabState extends ConsumerState<_PrivacyTab> {
     if (ok != true) return;
     final pwd = controller.text;
     if (pwd.length < 8) {
-      setState(() => _error = 'Şifre gerekli (en az 8 karakter).');
+      setState(() => _error = AppLocalizations.of(context)!.familyErrPasswordRequired);
       return;
     }
     setState(() {
@@ -526,7 +527,7 @@ class _PrivacyTabState extends ConsumerState<_PrivacyTab> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        const Text('Gizlilik', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
+        Text(AppLocalizations.of(context)!.familyTabPrivacy, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
         const SizedBox(height: 12),
         if (_error != null)
           Container(
@@ -540,7 +541,7 @@ class _PrivacyTabState extends ConsumerState<_PrivacyTab> {
           height: 48,
           child: FilledButton.tonal(
             onPressed: _busy ? null : _deleteAccount,
-            child: const Text('Hesabı Sil'),
+            child: Text(AppLocalizations.of(context)!.familyTitleDeleteAccount),
           ),
         ),
       ],

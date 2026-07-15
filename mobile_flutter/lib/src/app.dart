@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:otizm_destek_app/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 
 import 'features/admin/admin_page.dart';
@@ -56,6 +58,25 @@ class App extends ConsumerWidget {
         useMaterial3: true,
         colorSchemeSeed: const Color(0xFF10B981),
       ),
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en'),
+        Locale('tr'),
+      ],
+      localeListResolutionCallback: (locales, supportedLocales) {
+        if (locales != null && locales.isNotEmpty) {
+          final firstLocale = locales.first;
+          if (firstLocale.languageCode == 'tr') {
+            return const Locale('tr');
+          }
+        }
+        return const Locale('en'); // Default to English for all other languages
+      },
       routerConfig: router,
     );
   }

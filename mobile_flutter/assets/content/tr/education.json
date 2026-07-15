@@ -1,0 +1,34 @@
+﻿{
+  "featuredTitle": "Kısa Özet",
+  "featuredContent": "Bu bölüm; OSB başta olmak üzere gelişimsel farklılıklarda sık kullanılan eğitim ve terapi yaklaşımlarını bilimsel çerçevede açıklar. İçerikler bilgi amaçlıdır; çocuğun ihtiyacına göre planlama için uzman değerlendirmesi gerekir.",
+  "sections": [
+    {
+      "title": "Hareket Eğitimi",
+      "description": "Kaba motor beceriler, denge, koordinasyon ve fiziksel aktivite ile destek.",
+      "content": "Hareket eğitimi; çocuğun denge, koordinasyon, kuvvet, dayanıklılık ve vücut farkındalığı gibi motor alanlarını desteklemeyi hedefleyen planlı fiziksel aktivitelerdir. OSB’de motor planlama, koordinasyon ve postüral kontrol güçlükleri sık görülebildiği için, düzenli hareket çalışmaları günlük yaşama aktarılabilen becerileri güçlendirebilir.\n\nBilimsel çerçeve\n- Düzenli fiziksel aktivite; uyku, duygu düzenleme, dikkat ve genel sağlık üzerinde olumlu etkiler gösterebilir.\n- Motor beceri çalışmaları; merdiven inip çıkma, top yakalama/atma, bisiklet, oyun parkı aktivitelerine katılım gibi işlevsel hedeflere bağlandığında daha etkilidir.\n\nUygulamada amaç\n- Kısa ve sık tekrarlar (gün içine dağıtılmış 5–15 dk).\n- Net başlangıç/bitiş, görsel ipuçları ve adım adım yönergeler.\n- Çocuğun motivasyonuna uygun oyun temelli etkinlikler.\n\nNot: Ağrı, ortopedik sorun veya belirgin motor gecikme varsa fizyoterapist/uzman değerlendirmesi önerilir."
+    },
+    {
+      "title": "Ergo Terapi",
+      "description": "Günlük yaşam becerileri, duyusal düzenleme ve ince motor alanlarında ergoterapi desteği.",
+      "content": "Ergoterapi (iş ve uğraşı terapisi); çocuğun günlük yaşam aktivitelerine (giyinme, yemek, tuvalet, oyun, okul etkinlikleri) katılımını artırmayı hedefler. OSB’de duyusal işlemleme farklılıkları, ince motor beceriler ve planlama/organizasyon alanları etkilenebileceği için ergoterapi; çevresel uyarlamalar, beceri öğretimi ve rutin planlama ile işlevselliği güçlendirebilir.\n\nBilimsel çerçeve\n- Temel hedef “katılım”dır: Çocuğun günlük yaşama daha rahat ve bağımsız katılması.\n- Duyusal stratejiler; her çocukta aynı etkiyi göstermez. Bu nedenle bireysel değerlendirme ve ölçülebilir hedeflerle ilerlemek önemlidir.\n\nSık hedef alanları\n- İnce motor: kalem tutma, kesme, düğme/fermuar.\n- Öz bakım: el yıkama, giyinme, beslenme.\n- Duyusal düzenleme: ses/ışık/dokunma hassasiyetlerinde uyarlama ve baş etme stratejileri.\n\nNot: Ev-okul-terapi arasında tutarlılık sağlamak, kazanımların genellenmesini kolaylaştırır."
+    },
+    {
+      "title": "Özel Eğitim",
+      "description": "Bireyselleştirilmiş hedefler, yapılandırılmış öğretim ve günlük yaşama genelleme.",
+      "content": "Özel eğitim; çocuğun gelişim düzeyine göre bireyselleştirilmiş hedeflerle yürütülen yapılandırılmış öğretim sürecidir. OSB’de iletişim, sosyal etkileşim, oyun, akademik öncül beceriler ve günlük yaşam becerileri farklı hızlarda gelişebildiği için, hedeflerin ölçülebilir ve işlevsel olması önemlidir.\n\nBilimsel çerçeve\n- Erken müdahale ve düzenli, yapılandırılmış öğretim birçok çocukta iletişim ve uyum becerilerinde ilerlemeyi destekleyebilir.\n- Etkili programlar; veriyle izlenen hedefler, sistemli tekrar, ipucu-kademeli azaltma ve genelleme planı içerir.\n\nSık kullanılan teknikler (genel yaklaşım)\n- Görsel destekler: günlük rutin çizelgesi, “önce-sonra”, adım kartları.\n- Davranışsal öğretim ilkeleri: pekiştirme, görev analizi, küçük adımlarla öğretim.\n- Doğal ortam öğretimi: günlük yaşam içinde fırsat yakalayıp öğretmek.\n\nNot: Programın aile tarafından evde kısa uygulamalarla desteklenmesi sürdürülebilirliği artırır."
+    },
+    {
+      "title": "Dil Terapisi",
+      "description": "Anlama/ifade, konuşma, pragmatik dil ve alternatif iletişim (AAC) desteği.",
+      "content": "Dil ve konuşma terapisi; çocuğun alıcı (anlama) ve ifade edici dil becerilerini, konuşma anlaşılırlığını ve sosyal iletişimi (pragmatik dil) geliştirmeyi hedefler. OSB’de iletişim; yalnızca konuşma değil, karşılıklı etkileşim, sıra alma, jest-mimik kullanımı ve bağlama uygun dil kullanımı gibi alanları da kapsar.\n\nBilimsel çerçeve\n- İletişim hedefleri işlevsel olmalıdır: istek bildirme, reddetme, yardım isteme, seçim yapma.\n- Konuşma gecikmesinde veya sınırlı konuşmada, AAC (resim, işaret, cihaz) iletişimi artırabilir ve konuşmayı “engellemez”; çoğu çocukta iletişim fırsatlarını çoğaltır.\n\nSık hedef alanları\n- İstek bildirme ve ortak dikkat.\n- Basit cümle kurma, soru-cevap.\n- Sosyal iletişim: selamlaşma, sıra alma, duygu ifade etme.\n\nNot: Evde aynı hedef dili ve görsel destekleri kullanmak ilerlemeyi hızlandırır."
+    },
+    {
+      "title": "Floortime",
+      "description": "DIR/Floortime: ilişki temelli, oyun üzerinden sosyal-iletişim becerilerini destekleme.",
+      "content": "DIR/Floortime; çocuğun gelişim basamaklarını (duygu düzenleme, ortak dikkat, karşılıklı etkileşim, problem çözme) ilişki temelli ve oyun odaklı bir yaklaşımla desteklemeyi amaçlar. Ebeveynin/uygulayıcının çocuğun ilgisini takip ederek etkileşimi derinleştirmesi ve “karşılıklı iletişim döngülerini” artırması hedeflenir.\n\nBilimsel çerçeve\n- İlişki temelli yaklaşımlar; sosyal etkileşimi ve duygu düzenlemeyi hedefler.\n- Etkinlik; çocuğun profiline uygun hedefler, düzenli uygulama ve aile katılımıyla artar.\n\nUygulamada temel prensipler\n- Çocuğun ilgisini takip et ve etkileşimi genişlet.\n- Kısa, sık ve keyifli oyun seansları planla.\n- Etkileşimi “soru yağmuru” yerine karşılıklı oyun akışıyla sürdür.\n\nNot: Floortime, yapılandırılmış öğretim ve dil terapisi gibi yaklaşımlarla birlikte planlanabilir; hedeflerin çakışmaması için ekip koordinasyonu faydalıdır."
+    }
+  ],
+  "labels": {
+    "sections": "Başlıklar"
+  }
+}

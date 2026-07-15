@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:otizm_destek_app/l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -12,40 +14,40 @@ class ModulePage extends StatelessWidget {
   final String moduleKey;
   const ModulePage({super.key, required this.moduleKey});
 
-  String get title {
+  String getTitle(BuildContext context) {
     switch (moduleKey) {
       case 'info':
-        return 'Otizm Bilgilendirme';
+        return AppLocalizations.of(context)!.moduleTitleInfo;
       case 'osb':
-        return 'OSB (Otizm Spektrum Bozukluğu)';
+        return AppLocalizations.of(context)!.moduleTitleOsb;
       case 'osb_research':
-        return 'OSB Araştırmaları';
+        return AppLocalizations.of(context)!.moduleTitleOsbResearch;
       case 'education':
-        return 'Eğitim';
+        return AppLocalizations.of(context)!.moduleTitleEducation;
       case 'emotions':
-        return 'Duygularım';
+        return AppLocalizations.of(context)!.moduleTitleEmotions;
       case 'games':
-        return 'Eğitici Oyunlar';
+        return AppLocalizations.of(context)!.moduleTitleGames;
       case 'stories':
-        return 'Sosyal Öyküler';
+        return AppLocalizations.of(context)!.moduleTitleStories;
       case 'music':
-        return 'Müzik ve Ses';
+        return AppLocalizations.of(context)!.moduleTitleMusic;
       case 'acc':
-        return 'İletişim Kartları (ACC)';
+        return AppLocalizations.of(context)!.moduleTitleAcc;
       case 'calendar':
-        return 'Takvim ve Program';
+        return AppLocalizations.of(context)!.moduleTitleCalendar;
       case 'education_reminder':
-        return 'Eğitim Hatırlatıcı';
+        return AppLocalizations.of(context)!.moduleTitleEduReminder;
       case 'sensory':
-        return 'Duyusal Oda';
+        return AppLocalizations.of(context)!.moduleTitleSensory;
       case 'objects':
-        return 'Nesneleri Tanıyalım';
+        return AppLocalizations.of(context)!.moduleTitleObjects;
       case 'sentence_sounds':
-        return 'Cümle Kur - Sesleri Tanıyalım';
+        return AppLocalizations.of(context)!.moduleTitleSentenceSounds;
       case 'imitation':
-        return 'Taklit Oyunu';
+        return AppLocalizations.of(context)!.moduleTitleImitation;
       default:
-        return 'Modül';
+        return AppLocalizations.of(context)!.moduleTitleDefault;
     }
   }
 
@@ -136,7 +138,7 @@ class ModulePage extends StatelessWidget {
         body = const _ImitationModuleBody();
         break;
       default:
-        body = _ComingSoonBody(title: title);
+        body = _ComingSoonBody(title: getTitle(context));
         break;
     }
 
@@ -146,7 +148,7 @@ class ModulePage extends StatelessWidget {
       appBar: AppBar(
         iconTheme: IconThemeData(color: color),
         title: Text(
-          title,
+          getTitle(context),
           style: TextStyle(
             fontWeight: FontWeight.w900,
             letterSpacing: -0.5,
@@ -162,183 +164,63 @@ class ModulePage extends StatelessWidget {
 class _InfoModuleBody extends StatelessWidget {
   const _InfoModuleBody();
 
+  Future<Map<String, dynamic>> _loadData(BuildContext context) async {
+    final locale = Localizations.localeOf(context).languageCode;
+    final path = 'assets/content/${locale}/info.json';
+    try {
+      final jsonString = await DefaultAssetBundle.of(context).loadString(path);
+      return json.decode(jsonString);
+    } catch (e) {
+      final fallbackString = await DefaultAssetBundle.of(context).loadString('assets/content/tr/info.json');
+      return json.decode(fallbackString);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    const featuredTitle = 'Yeni Tanı Alan Aileler İçin İlk Adımlar';
-    const featuredContent = 'Tanı sonrası süreç, aileler için hem duygusal hem de bilgilendirici bir yolculuğun başlangıcıdır. İşte ilk adımlar:\n\n'
-        '1. Kabullenme ve Duygusal Destek: Kendinize zaman tanıyın. Bu sürecin bir yas süreci gibi hissettirmesi normaldir. Uzman bir psikologdan destek almak, ailenin direncini artırır.\n\n'
-        '2. Özel Eğitim Planlaması: Erken müdahale en kritik adımdır. Çocuğunuzun bireysel ihtiyaçlarına uygun bir eğitim programı (BEP) hazırlanması için uzmanlarla iş birliği yapın.\n\n'
-        '3. Sağlık ve Raporlama: RAM (Rehberlik Araştırma Merkezi) ve hastane süreçlerini tamamlayarak çocuğunuzun yasal haklarından (destek eğitimi, rehabilitasyon vb.) yararlanmasını sağlayın.\n\n'
-        '4. Ev Ortamı Düzenlemesi: Çocuğunuzun duyusal ihtiyaçlarına göre evi sadeleştirin. Görsel çizelgeler kullanarak günlük rutini anlamasına yardımcı olun.\n\n'
-        '5. Sosyal Çevre Bilgilendirmesi: Yakın çevrenizi ve akrabalarınızı durum hakkında bilgilendirerek doğru bir destek ağı oluşturun.';
+    return FutureBuilder<Map<String, dynamic>>(
+      future: _loadData(context),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        final data = snapshot.data!;
+        final featuredTitle = data['featuredTitle'] ?? '';
+        final featuredContent = data['featuredContent'] ?? '';
+        final List<dynamic> sections = data['sections'] ?? [];
 
-    final categories = <_ModuleSection>[
-      const _ModuleSection(
-        title: 'Otizm Nedir?',
-        description:
-            'Otizm Spektrum Bozukluğu’nun ne olduğu, nasıl göründüğü ve neden “spektrum” dendiğine dair anlaşılır bir özet.',
-        content:
-            'Otizm Spektrum Bozukluğu (OSB), gelişimin erken dönemlerinden itibaren sosyal iletişim, davranış ve öğrenme biçiminde farklılıklarla kendini gösterebilen bir nöro-gelişimsel durumdur.\n\n'
-            'Neden “spektrum” denir?\n'
-            '- Çünkü belirtiler ve destek ihtiyaçları kişiden kişiye çok değişebilir.\n'
-            '- Bazı bireyler günlük yaşamda daha az destekle bağımsız olabilirken, bazıları daha yoğun yapılandırılmış destek gerektirebilir.\n\n'
-            'Sık görülen alanlar\n'
-            '- Sosyal iletişim: karşılıklı sohbet başlatma/sürdürme, jest-mimikleri anlama, ortak dikkat kurma.\n'
-            '- Davranış örüntüleri: rutin ihtiyacı, tekrar eden davranışlar, sınırlı ilgi alanları.\n'
-            '- Duyusal farklılıklar: ses, ışık, dokunma, koku gibi uyaranlara aşırı/az duyarlılık.\n\n'
-            'Önemli notlar\n'
-            '- Otizm tek bir “kalıp” değildir; aynı tanıyı alan iki çocuğun güçlü yönleri ve zorlandığı alanlar farklı olabilir.\n'
-            '- Erken ve düzenli destek (özel eğitim, dil-konuşma, ergoterapi/duyu bütünleme gibi) çocuğun gelişimini ve günlük yaşam becerilerini güçlendirebilir.\n'
-            '- Amaç “otizmi yok etmek” değil; iletişimi artırmak, bağımsızlığı desteklemek, zorlanmaları azaltmak ve aile yaşamını sürdürülebilir hale getirmektir.',
-      ),
-      const _ModuleSection(
-        title: 'Otizmde Eğitim',
-        description: 'Erken müdahale, sınıf içi uyarlamalar ve bireyselleştirilmiş hedeflerle eğitim planlaması.',
-        content:
-            'Otizmde eğitim; çocuğun iletişim, sosyal etkileşim, oyun/öğrenme ve günlük yaşam becerilerini desteklemek için yapılandırılmış ve bireyselleştirilmiş bir planla yürütülür.\n\n'
-            'Temel ilkeler\n'
-            '- Bireyselleştirme: Hedefler çocuğun gelişim düzeyi, güçlü yönleri ve ihtiyaçlarına göre belirlenir.\n'
-            '- Tutarlılık: Ev-okul-özel eğitim arasında ortak hedef dili ve benzer yöntemler.\n'
-            '- Görsel destekler: Günlük rutin çizelgeleri, adım adım yönerge kartları, “önce-sonra” panosu.\n'
-            '- Yapılandırılmış öğrenme: Net başlangıç/bitiş, kısa ve anlaşılır yönergeler, tekrar ve genelleme.\n\n'
-            'Sık kullanılan eğitim yaklaşımları (genel çerçeve)\n'
-            '- Davranışsal yaklaşımlar: İstenilen becerileri öğretme ve problem davranışları azaltma (örn. ABA temelli teknikler).\n'
-            '- Gelişimsel yaklaşımlar: Oyun ve etkileşim üzerinden sosyal-iletişim becerilerini güçlendirme.\n'
-            '- Sınıf temelli düzenlemeler: Görsel ipuçları, görevleri küçük adımlara bölme, duyusal düzenleme, geçişleri kolaylaştırma.\n\n'
-            'Pratik kontrol listesi\n'
-            '- Ölçülebilir hedef belirle (örn. “istek bildirme”, “sıra alma”, “tuvalet rutini”).\n'
-            '- Hedefleri günlük rutine yerleştir (evde ve okulda kısa tekrarlar).\n'
-            '- İlerlemeyi basit kayıtla takip et (hangi ipucu ile başardı?).\n\n'
-            'Kaynaklar\n'
-            '- CDC: https://www.cdc.gov/autism/treatment/\n'
-            '- WHO: https://www.who.int/news-room/fact-sheets/detail/autism-spectrum-disorders',
-      ),
-      const _ModuleSection(
-        title: 'Sosyal İletişim',
-        description:
-            'Göz teması, ortak dikkat, sırayla oynama ve duygu ifade etme gibi becerileri günlük hayatta desteklemek için pratik öneriler.',
-        content:
-            'Sosyal iletişim; yalnızca konuşmak değil, karşılıklı etkileşim kurmak, sıra almak, ipuçlarını okumak ve duygu paylaşmak gibi birçok becerinin birleşimidir. Otizmli çocuklarda bu beceriler farklı hızlarda gelişebilir.\n\n'
-            'Günlük hayatta işe yarayan yaklaşımlar\n'
-            '- Ortak dikkat: Çocuğun ilgisini çeken şeyi birlikte “paylaşma” hedeflenir (ör. oyuncağa bak → sen de bak → kısa bir kelime/işaret). Bu, iletişimin temelidir.\n'
-            '- Göz teması: Zorlamadan; oyun, şarkı, baloncuk, sevdiği nesne gibi motivasyon veren anlarda çok kısa ve doğal temaslar hedeflenir.\n'
-            '- İstek belirtme: “İstemek” iletişimi artırır. Çocuğun bir şeyi istemesi için küçük fırsatlar oluştur (ör. bisküviyi kutuda tut, yardım istemesi için bekle).\n'
-            '- Duygu farkındalığı: Resimler, aynada mimik çalışmaları, kısa videolar ve basit duygu kartları ile “mutlu/üzgün/kızgın/şaşkın” gibi kavramlar pekiştirilebilir.\n'
-            '- Sıra alma ve paylaşma: “Sıra bende / sıra sende” oyunları (top atma, blok dizme, kart çekme) sosyal etkileşimi güçlendirir.\n\n'
-            'İletişimi kolaylaştıran destekler\n'
-            '- Görsel destek: Resimli rutin, adım adım yönerge kartları, “önce-sonra” panosu.\n'
-            '- Basit ve tutarlı dil: Kısa cümle, net yönerge, aynı kelimeleri tekrar eden rutin ifadeler.\n'
-            '- Sosyal öyküler: Zor sosyal durumları (market, misafir, oyun parkı) kısa ve somut cümlelerle anlatır; beklenen davranışı netleştirir.\n\n'
-            'Hedef: Çocuğun kendi ihtiyacını anlatabilmesi, zorlandığında destek isteyebilmesi ve küçük ama sürdürülebilir sosyal etkileşimler kurabilmesidir.',
-      ),
-      const _ModuleSection(
-        title: 'Otizmde Terapi',
-        description: 'Dil-konuşma, ergoterapi, davranışsal ve gelişimsel müdahalelerle beceri geliştirme.',
-        content:
-            'Otizmde terapi; “tek bir yöntem” değil, çocuğun ihtiyaçlarına göre seçilen birden fazla desteğin (iletişim, duyusal düzenleme, davranış, günlük yaşam becerileri) birlikte planlanmasıdır.\n\n'
-            'Sık kullanılan terapi alanları\n'
-            '- Dil ve konuşma terapisi: Anlama/ifade, karşılıklı iletişim, alternatif iletişim yöntemleri (işaret, resim, cihaz) dahil.\n'
-            '- Ergoterapi: Günlük yaşam becerileri (giyinme, yemek, öz bakım) ve duyusal düzenleme ihtiyaçları.\n'
-            '- Davranışsal ve gelişimsel müdahaleler: Beceri öğretimi, problem davranışların işlevine göre desteklenmesi, oyun ve sosyal etkileşimin güçlendirilmesi.\n'
-            '- Sosyal beceri çalışmaları: Yapılandırılmış grup veya bireysel çalışmalar.\n'
-            '- Psikolojik destek: Kaygı, duygu düzenleme gibi eşlik eden alanlarda (özellikle daha büyük çocuk/ergenlerde) uyarlanmış terapi yaklaşımları.\n\n'
-            'İyi bir terapi planı nasıl görünür?\n'
-            '- Hedefler nettir ve günlük yaşama bağlanır (örn. “istek bildirme”, “geçişlerde zorlanmayı azaltma”).\n'
-            '- Aileye ev uygulaması verilir (kısa, sürdürülebilir).\n'
-            '- İlerleme veriyle takip edilir ve hedefler güncellenir.\n\n'
-            'Kaynaklar\n'
-            '- CDC: https://www.cdc.gov/autism/treatment/\n'
-            '- WHO: https://www.who.int/news-room/fact-sheets/detail/autism-spectrum-disorders',
-      ),
-      const _ModuleSection(
-        title: 'Duyu Bütünleme',
-        description:
-            'Ses, ışık, dokunma ve hareket gibi duyularda hassasiyet olduğunda evde ve dışarıda uygulanabilecek basit düzenlemeler.',
-        content:
-            'Duyu bütünleme, çevreden gelen duyusal bilgilerin (ses, ışık, dokunma, koku, hareket, denge) beyin tarafından organize edilmesidir. Otizmli çocuklarda duyular bazen “fazla” (aşırı hassas) bazen “az” (az duyarlı) çalışabilir.\n\n'
-            'Sık görülen örnekler\n'
-            '- Ses: Süpürge, kalabalık, zil gibi seslere aşırı tepki veya tam tersi çok yüksek ses arama.\n'
-            '- Dokunma: Etiket, dikiş, saç kesimi, tırnak kesimi gibi temaslara hassasiyet.\n'
-            '- Görsel: Parlak ışıklar, kalabalık görüntü, ekran hassasiyeti.\n'
-            '- Hareket/denge: Sürekli sallanma/zıplama ihtiyacı veya bazı hareketlerden kaçınma.\n\n'
-            'Evde uygulanabilecek küçük düzenlemeler\n'
-            '- “Sakin köşe”: Gürültüyü azaltan, loş ışıklı, yumuşak minderli bir alan.\n'
-            '- Önceden hazırlık: Yeni bir ortama gitmeden önce kısa açıklama + görsel (nereye, ne kadar, ne olacak).\n'
-            '- Kademeli alıştırma: Rahatsız eden uyaranla kısa süre + ödül, süreyi yavaş yavaş artırma.\n\n'
-            'Dışarıda pratik çözümler\n'
-            '- Gürültü engelleyici kulaklık veya kulak tıkacı.\n'
-            '- Kalabalık saatlerden kaçınma (market/AVM için sakin saatleri seçme).\n'
-            '- Kıyafet seçiminde etiketsiz/rahat kumaş tercih etme.\n\n'
-            'Beslenme ve doku seçiciliği\n'
-            '- “Tek seferde büyük değişim” yerine çok küçük adımlarla ilerlemek daha sürdürülebilirdir (dokunma-koklama-yalama-tatma gibi basamaklar).\n\n'
-            'Duyusal destekler bireyseldir. En iyi yaklaşım; çocuğun hangi uyaranlarda zorlandığını gözlemlemek, tetikleyicileri azaltmak ve düzenli bir rutinle güvenli alanlar oluşturmaktır.',
-      ),
-      const _ModuleSection(
-        title: 'Otizmde Tedavi',
-        description: 'Otizmde “tedavi” yaklaşımı: çekirdek özellikler için eğitim/terapi, eşlik eden durumlar için tıbbi destek.',
-        content:
-            'Otizm yaşam boyu sürebilen bir nörogelişimsel durumdur. Bu nedenle “tek bir tedaviyle tamamen ortadan kaldırma” şeklinde bir yaklaşım bilimsel olarak doğru değildir.\n\n'
-            'Güncel, bilimsel yaklaşım\n'
-            '- Çekirdek alanlarda destek: İletişim, sosyal etkileşim, uyum becerileri ve günlük yaşam için eğitim ve terapiler (davranışsal, gelişimsel, eğitimsel ve sosyal-ilişkisel yaklaşımlar).\n'
-            '- Eşlik eden durumların değerlendirilmesi: Uyku sorunları, anksiyete, DEHB belirtileri, epilepsi, gastrointestinal sorunlar gibi alanlarda hekim değerlendirmesi.\n'
-            '- İlaçlar hakkında önemli bilgi: Otizmin çekirdek özelliklerini “tedavi eden” bir ilaç yoktur; ancak bazı ilaçlar eşlik eden belirtileri azaltıp işlevselliği artırmaya yardımcı olabilir. İlaç kararı mutlaka hekim tarafından, yarar-zarar dengesiyle verilir.\n\n'
-            'Dikkat edilmesi gerekenler\n'
-            '- “Mucize tedavi” iddialarına temkinli yaklaşın.\n'
-            '- Kanıtı zayıf veya riskli uygulamalar için (yüksek maliyetli, zarar potansiyeli olan) mutlaka uzman görüşü alın.\n\n'
-            'Kaynaklar\n'
-            '- CDC: https://www.cdc.gov/autism/treatment/\n'
-            '- WHO: https://www.who.int/news-room/fact-sheets/detail/autism-spectrum-disorders',
-      ),
-      const _ModuleSection(
-        title: 'Yasal Haklar',
-        description:
-            'RAM, ÇÖZGER ve rehabilitasyon süreçlerinde hangi haklara başvurulabileceğini ve hangi adımlarla ilerlenebileceğini anlatan pratik rehber.',
-        content:
-            'Türkiye’de otizmli çocuklar ve aileleri için eğitim, sağlık ve sosyal destek alanlarında çeşitli haklar bulunur. Başvuru süreçleri şehirden şehire değişebilse de temel yol haritası benzerdir.\n\n'
-            'Sık kullanılan rapor ve kurumlar\n'
-            '- ÇÖZGER: Çocuklar için özel gereksinim raporu; birçok başvuruda temel belgedir.\n'
-            '- RAM (Rehberlik ve Araştırma Merkezi): Eğitim değerlendirmesi ve yönlendirme süreçlerini yürütür.\n\n'
-            'Eğitimle ilgili haklar (genel çerçeve)\n'
-            '- Kaynaştırma/bütünleştirme uygulamaları ve uygun destekler.\n'
-            '- Özel eğitim hizmetlerinden yararlanma ve uygun planlamalar.\n'
-            '- Okulda uyarlama: sınıf içi düzenlemeler, görsel destekler, bireyselleştirilmiş hedefler.\n\n'
-            'Destek eğitim (rehabilitasyon)\n'
-            '- Raporlara bağlı olarak belirli süre/saatlerde destek eğitim hizmeti.\n'
-            '- Eğitim programının çocuğun ihtiyacına göre şekillenmesi (iletişim, sosyal beceri, davranış, akademik öncül beceriler).\n\n'
-            'Sağlık ve sosyal destekler\n'
-            '- Bazı durumlarda hastanelerde öncelik uygulamaları.\n'
-            '- Sosyal destekler/yardımlar (gelir kriterlerine göre değişebilir).\n\n'
-            'Pratik öneri\n'
-            '- Belgeleri tek bir klasörde topla (rapor, sevk, randevu çıktıları, okul yazışmaları).\n'
-            '- Süreçte en çok ihtiyaç duyulan şey “takip”tir: randevu, rapor yenileme, okul/merkez görüşmeleri.\n\n'
-            'Not: Hakların kapsamı ve koşulları zamanla değişebilir; en güncel bilgi için bulunduğun il/ilçedeki RAM ve ilgili kamu kurumlarından doğrulama yapmak en güvenlisidir.',
-      ),
-    ];
+        final categories = sections.map((s) => _ModuleSection(
+          title: s['title'] ?? '',
+          description: s['description'] ?? '',
+          content: s['content'] ?? '',
+        )).toList();
 
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        _SectionCard(
-          title: 'Öne Çıkan Rehber',
-          subtitle: featuredTitle,
-          onTap: () => _openDetail(context, featuredTitle, featuredContent),
-          showReadMore: true,
-        ),
-        const SizedBox(height: 16),
-        const Text('Kategoriler', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
-        const SizedBox(height: 12),
-        ...categories.map(
-          (c) => Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: _SectionCard(
-              title: c.title,
-              subtitle: c.description,
-              onTap: () => _openDetail(context, c.title, c.content),
+        return ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            _SectionCard(
+              title: AppLocalizations.of(context)!.moduleLabelFeaturedGuide,
+              subtitle: featuredTitle,
+              onTap: () => _openDetail(context, featuredTitle, featuredContent),
               showReadMore: true,
             ),
-          ),
-        ),
-      ],
+            const SizedBox(height: 16),
+            Text(AppLocalizations.of(context)!.moduleLabelCategories, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+            const SizedBox(height: 12),
+            ...categories.map(
+              (c) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _SectionCard(
+                  title: c.title,
+                  subtitle: c.description,
+                  onTap: () => _openDetail(context, c.title, c.content),
+                  showReadMore: true,
+                ),
+              ),
+            ),
+          ],
+        );
+      }
     );
   }
 }
@@ -346,123 +228,74 @@ class _InfoModuleBody extends StatelessWidget {
 class _OsbModuleBody extends StatelessWidget {
   const _OsbModuleBody();
 
+  Future<Map<String, dynamic>> _loadData(BuildContext context) async {
+    final locale = Localizations.localeOf(context).languageCode;
+    final path = 'assets/content/' + locale + '/osb.json';
+    try {
+      final jsonString = await DefaultAssetBundle.of(context).loadString(path);
+      return json.decode(jsonString);
+    } catch (e) {
+      final fallbackString = await DefaultAssetBundle.of(context).loadString('assets/content/tr/osb.json');
+      return json.decode(fallbackString);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    const summary =
-        'Bu bölüm; OSB’nin ne olduğunu, nasıl değerlendirildiğini, sık görülen belirtileri ve erken tanı/eğitimin neden önemli olduğunu anlaşılır bir dille özetler. Tanı ve tedavi yerine geçmez; şüphede uzman değerlendirmesi gerekir.';
+    return FutureBuilder<Map<String, dynamic>>(
+      future: _loadData(context),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        final data = snapshot.data!;
+        final featuredTitle = data['featuredTitle'] ?? '';
+        final featuredContent = data['featuredContent'] ?? '';
+        final sources = data['sources'] ?? '';
+        final labels = data['labels'] ?? {};
+        final List<dynamic> sections = data['sections'] ?? [];
 
-    final sections = <_ModuleSection>[
-      const _ModuleSection(
-        title: 'Otizm Spektrum Bozukluğu Nedir?',
-        description: 'OSB’nin ne olduğu, neden “spektrum” dendiği ve temel özellikleri.',
-        content:
-            'Otizm Spektrum Bozukluğu (OSB), beynin gelişimiyle ilişkili nörogelişimsel bir durumdur. OSB’de sosyal iletişim ve sosyal etkileşimde kalıcı güçlükler ile birlikte, sınırlı/tekrarlayıcı davranışlar ve ilgi alanları görülebilir.\n\n'
-            'Neden “spektrum” denir?\n'
-            '- Belirtilerin şiddeti, görünümü ve kişinin destek ihtiyacı çok değişkendir.\n'
-            '- Bazı bireyler günlük yaşamda daha az destekle bağımsız olabilirken, bazıları daha yoğun ve yapılandırılmış desteğe ihtiyaç duyabilir.\n\n'
-            'OSB aynı zamanda duyusal farklılıklarla da görülebilir:\n'
-            '- Ses, ışık, dokunma, koku gibi uyaranlara aşırı veya az duyarlılık olabilir.\n\n'
-            'Not: OSB bir “kişilik” ya da “tercih” değildir; kişinin gelişimsel profiline ilişkin bir durumdur. Amaç; iletişimi, öğrenmeyi, bağımsızlığı ve yaşam kalitesini desteklemektir.',
-      ),
-      const _ModuleSection(
-        title: 'Otizm Spektrum Bozukluğu Nasıl Sınıflandırılır?',
-        description: 'Tanı kriterleri ve destek ihtiyacına göre derecelendirme (DSM-5 yaklaşımı).',
-        content:
-            'Güncel klinik sınıflandırmada OSB, tek bir “spektrum” tanısı altında değerlendirilir. Tanı; çocuğun/bireyin gelişimi, davranışları ve işlevselliği üzerinden uzman gözlemi ve bakım veren bilgisiyle konur.\n\n'
-            'DSM-5’e göre OSB tanısında iki ana alan öne çıkar:\n'
-            '1) Sosyal iletişim ve etkileşimde kalıcı güçlükler\n'
-            '2) Sınırlı, tekrarlayıcı davranışlar/ilgi alanları ve rutinlere aşırı bağlılık gibi örüntüler (duyusal tepkiler dahil)\n\n'
-            'Destek ihtiyacına göre “şiddet/düzey” belirtimi yapılabilir:\n'
-            '- Düzey 1: Destek gerektirir\n'
-            '- Düzey 2: Belirgin (substantial) destek gerektirir\n'
-            '- Düzey 3: Çok yoğun (very substantial) destek gerektirir\n\n'
-            'Ayrıca şu eşlik eden durumlar ayrıca belirtilir:\n'
-            '- Dil gelişimi (eşlik eden dil güçlüğü var/yok)\n'
-            '- Zihinsel gelişim (eşlik eden zihinsel yetersizlik var/yok)\n'
-            '- Bilinen tıbbi/genetik durumlar ve eş tanılar (örn. DEHB, kaygı, epilepsi gibi)\n\n'
-            'Not: Eskiden ayrı isimlerle anılan bazı alt tanılar (örn. Asperger vb.) artık OSB spektrumu içinde ele alınır.',
-      ),
-      const _ModuleSection(
-        title: 'Otizm Spektrum Bozukluğunun Nedenleri Nedir?',
-        description: 'Tek bir neden yoktur; genetik ve çevresel etkenler birlikte rol oynar.',
-        content:
-            'OSB’nin tek bir kanıtlanmış nedeni yoktur. Bilimsel kanıtlar; genetik etkenlerin ve bazı çevresel/biyolojik etkenlerin birlikte, erken beyin gelişimini etkileyerek OSB riskini artırabildiğini gösterir.\n\n'
-            'Bilinen genel çerçeve:\n'
-            '- Genetik etkenler: Ailede OSB öyküsü ve bazı genetik sendromlar riskle ilişkili olabilir.\n'
-            '- Çevresel/biyolojik etkenler: Bazı gebelik ve doğumla ilişkili faktörler (örn. ileri ebeveyn yaşı, prematürite, bazı doğum komplikasyonları gibi) riskle ilişkilendirilmiştir.\n\n'
-            'Önemli bilgi:\n'
-            '- Aşıların OSB’ye neden olduğuna dair güvenilir bilimsel kanıt yoktur.\n\n'
-            'Not: “Risk faktörü” bir şeyin OSB’ye kesin neden olduğu anlamına gelmez; sadece olasılıkla ilişkili bulunmuş olabilir. Her çocuk ve aile için nedenler aynı değildir.',
-      ),
-      const _ModuleSection(
-        title: 'Otizm Spektrum Bozukluğunun Belirtileri Nelerdir?',
-        description: 'Sosyal iletişim ve tekrarlayıcı davranış örüntüleri; duyusal farklılıklar.',
-        content:
-            'Belirtiler kişiden kişiye değişir; ancak OSB’de genellikle iki ana alanda farklılıklar görülür.\n\n'
-            '1) Sosyal iletişim ve sosyal etkileşimde zorlanmalar\n'
-            '- Karşılıklı iletişimi başlatma ve sürdürmede güçlük\n'
-            '- Göz teması, jest/mimik gibi sözel olmayan ipuçlarını kullanmada veya anlamada zorlanma\n'
-            '- Akran ilişkileri kurma ve sürdürmede güçlük\n\n'
-            '2) Sınırlı ve tekrarlayıcı davranışlar / ilgi alanları\n'
-            '- Tekrarlayıcı hareketler veya oyun biçimleri (örn. sallanma, dizme)\n'
-            '- Rutinlere aşırı bağlılık, değişikliklerde yoğun zorlanma\n'
-            '- Yoğun ve sınırlı ilgi alanları\n'
-            '- Duyusal tepkilerde farklılık (ses/ışık/dokunma gibi uyaranlara aşırı veya az tepki)\n\n'
-            'Bazı çocuklarda gelişimde duraksama veya gerileme (özellikle iletişim becerilerinde) görülebilir. Bu tür değişimler fark edilirse bir uzmana başvurmak önemlidir.',
-      ),
-      const _ModuleSection(
-        title: 'Erken Tanı ve Erken Eğitimin Önemi',
-        description: 'Erken müdahale; iletişim, sosyal beceriler ve günlük yaşamda belirgin fayda sağlayabilir.',
-        content:
-            'Erken tanı; çocuğun gelişimsel ihtiyaçlarının daha erken anlaşılmasını ve doğru desteklerin daha erken başlamasını sağlar.\n\n'
-            'Neden önemlidir?\n'
-            '- Erken müdahale hizmetleri (özellikle okul öncesi dönemde) çocuğun iletişim, sosyal etkileşim ve öğrenme becerilerini geliştirmede etkili olabilir.\n'
-            '- Aileye rehberlik ve ev içi düzenlemeler (görsel destekler, rutin planlama, iletişim fırsatları oluşturma) günlük yaşamı daha sürdürülebilir hale getirir.\n'
-            '- Eşlik eden güçlükler (uyku, beslenme, kaygı, dikkat vb.) daha erken fark edilip uygun yönlendirmeler yapılabilir.\n\n'
-            'Pratik adımlar\n'
-            '- Gelişimsel dönüm noktalarını takip etme ve şüphede değerlendirme isteme\n'
-            '- Çocuk gelişimi / çocuk ve ergen psikiyatrisi / çocuk nörolojisi gibi alanlarda değerlendirme\n'
-            '- Özel eğitim ve dil-konuşma desteği gibi hizmetlerde bireyselleştirilmiş hedeflerle düzenli çalışma\n\n'
-            'Not: En iyi program; çocuğun güçlü yönlerine ve ihtiyaçlarına göre bireyselleştirilmiş olandır.',
-      ),
-    ];
+        final categories = sections.map((s) => _ModuleSection(
+          title: s['title'] ?? '',
+          description: s['description'] ?? '',
+          content: s['content'] ?? '',
+        )).toList();
 
-    const sources = 'Dünya Sağlık Örgütü (WHO): https://www.who.int/news-room/fact-sheets/detail/autism-spectrum-disorders\n'
-        'CDC: https://www.cdc.gov/autism/about/\n'
-        'CDC: Clinical Testing and Diagnosis (DSM-5 kriter özeti): https://www.cdc.gov/autism/hcp/diagnosis/index.html\n'
-        'NICHD: What are the symptoms of autism?: https://www.nichd.nih.gov/health/topics/autism/conditioninfo/symptoms';
-
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        _SectionCard(
-          title: 'Kısa Özet',
-          subtitle: summary,
-          onTap: () => _openDetail(context, 'Kısa Özet', summary),
-          showReadMore: true,
-        ),
-        const SizedBox(height: 16),
-        const Text('Başlıklar', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
-        const SizedBox(height: 12),
-        ...sections.map(
-          (s) => Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: _SectionCard(
-              title: s.title,
-              subtitle: s.description,
-              onTap: () => _openDetail(context, s.title, s.content),
+        return ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            _SectionCard(
+              title: AppLocalizations.of(context)!.moduleLabelFeaturedGuide,
+              subtitle: featuredTitle,
+              onTap: () => _openDetail(context, featuredTitle, featuredContent),
               showReadMore: true,
             ),
-          ),
-        ),
-        const SizedBox(height: 16),
-        _SectionCard(
-          title: 'Kaynaklar',
-          subtitle: 'Bilgi amaçlı bağlantılar (kopyalayıp tarayıcıda açabilirsiniz).',
-          onTap: () => _openDetail(context, 'Kaynaklar', sources),
-          showReadMore: true,
-        ),
-      ],
+            const SizedBox(height: 16),
+            Text(AppLocalizations.of(context)!.moduleLabelCategories, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+            const SizedBox(height: 12),
+            ...categories.map(
+              (c) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _SectionCard(
+                  title: c.title,
+                  subtitle: c.description,
+                  onTap: () => _openDetail(context, c.title, c.content),
+                  showReadMore: true,
+                ),
+              ),
+            ),
+            if (sources.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              _SectionCard(
+                title: labels['sources'] ?? 'Kaynaklar',
+                subtitle: labels['sourcesDesc'] ?? 'Bilgi amaçlı bağlantılar',
+                onTap: () => _openDetail(context, labels['sources'] ?? 'Kaynaklar', sources),
+                showReadMore: true,
+              ),
+            ],
+          ],
+        );
+      }
     );
   }
 }
@@ -470,168 +303,64 @@ class _OsbModuleBody extends StatelessWidget {
 class _OsbResearchModuleBody extends StatelessWidget {
   const _OsbResearchModuleBody();
 
+  Future<Map<String, dynamic>> _loadData(BuildContext context) async {
+    final locale = Localizations.localeOf(context).languageCode;
+    final path = 'assets/content/' + locale + '/osb_research.json';
+    try {
+      final jsonString = await DefaultAssetBundle.of(context).loadString(path);
+      return json.decode(jsonString);
+    } catch (e) {
+      final fallbackString = await DefaultAssetBundle.of(context).loadString('assets/content/tr/osb_research.json');
+      return json.decode(fallbackString);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    const summary =
-        'Bu bölüm; web tarafındaki “OSB araştırmaları” içeriğini mobil uygulamaya taşır. Metinler bilgi amaçlıdır; tanı/tedavi yerine geçmez.';
+    return FutureBuilder<Map<String, dynamic>>(
+      future: _loadData(context),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        final data = snapshot.data!;
+        final featuredTitle = data['featuredTitle'] ?? '';
+        final featuredContent = data['featuredContent'] ?? '';
+        final labels = data['labels'] ?? {};
+        final List<dynamic> sections = data['sections'] ?? [];
 
-    final sections = <_ModuleSection>[
-      const _ModuleSection(
-        title: 'Küresel ve Ulusal Araştırmalar (Özet)',
-        description: 'Beyin içi iletişim, genetik mekanizmalar, çevresel tetikleyiciler, alt tipler ve erken tanı başlıkları.',
-        content: '1) Beyin İçi İletişim ve Hücresel Yapı Farklılıkları\n\n'
-            'University of Aberdeen (İskoçya - 2025): Nature Communications dergisinde yayımlanan çalışmada, beyindeki hücreler arası destek ve sinyal ağı olan Ekstrasellüler Matriks (ECM) haritalandırılmıştır. Araştırma, otizmle ilişkili genlerin bu hücresel iskele (matrizom) sistemindeki “kablolama” talimatlarını nasıl değiştirdiğini göstermiştir. Bu durum, beynin erken gelişim aşamalarında sinirsel bölgeler arası veri iletiminde yapısal hız ve bant genişliği farklılıklarına yol açmaktadır.\n\n'
-            'Harvard University (Tan Yang Autism Center - 2025): Nörotransmitter mekanizmaları üzerine yoğunlaşan merkez, sinapslar arası kimyasal iletimde (özellikle serotonin ve glutamat dengesinde) yaşanan düzensizliklerin spektrumdaki duyusal hassasiyetleri ve tekrarlayıcı davranış biçimlerini tetiklediğini hücresel düzeyde raporlamıştır.\n\n'
-            '2) Genetik Mekanizmalar, Yapay Zeka ve Cinsiyet Faktörü\n\n'
-            'Princeton University & Simons Foundation (ABD - 2025): Makine öğrenmesi ve yapay zeka algoritmalarıyla 65 genin ötesinde 2.500 yeni risk geni tanımlanmıştır.\n\n'
-            'Baylor College of Medicine (ABD - 2025/2026): Kız çocuklarında “dişi koruyucu etkisi” moleküler düzeyde incelenmiş; benzer semptomların ortaya çıkması için erkek çocuklara kıyasla daha yoğun ve birikimli genetik mutasyon yükü gerektiği raporlanmıştır.\n\n'
-            'Üsküdar Üniversitesi (Türkiye): TNFα düzey artışının GRID2 genini baskıladığı ve bunun glutamat reseptör mekanizması üzerinden OSB patogenezinde rol oynadığına dair bulgular yayımlanmıştır.\n\n'
-            '3) Çevresel Tetikleyiciler, Epigenetik ve Yanılgılar\n\n'
-            'UC Davis MIND Institute (ABD - 2025/2026): Genetik yatkınlığı olan bebeklerin tarım ilaçları (pestisitler), plastik türevleri (PCB) ve ağır metallere maruziyetinin epigenetik mekanizmaları tetikleyebileceği raporlanmıştır.\n\n'
-            'Ege Üniversitesi (Türkiye - 2026): “Ekran maruziyeti veya ilgisizlik otizme yol açar” algısının yanlış olduğu; tablonun genetik temelli nörogelişimsel bir süreç olduğu vurgulanmıştır.\n\n'
-            '4) Biyolojik Alt Tiplerin Keşfi (Kişiselleştirilmiş Tıp)\n\n'
-            'Princeton University & Simons Foundation (2025): 5.000’den fazla otizmli çocuğun klinik ve biyolojik verileriyle yapılan analizler sonucunda OSB’nin 4 farklı biyolojik alt tipe ayrıldığı; her alt tipin farklı mekanizmalar, gelişimsel gidişat ve tedavi yanıtları gösterebildiği bildirilmiştir.\n\n'
-            '5) Erken Tanı ve Bilimsel Eğitim Modelleri\n\n'
-            'University of Toronto (Kanada - 2025): Bilgisayarlı görme ve ses analitiği ile bebeklerin motor hareketleri, ağlama frekansları ve sosyal yönelimleri izlenerek erken risk skorlaması hedeflenmektedir.\n\n'
-            'İstinye Üniversitesi & Hacettepe Üniversitesi (Türkiye): Otizmin çekirdek semptomlarını tamamen ortadan kaldıracak bir ilaç formülünün bulunmadığı; etkinliği kanıtlanmış yaklaşımın erken yaşta başlayan, yoğun ve bireyselleştirilmiş özel eğitim olduğu belirtilmiştir.',
-      ),
-      const _ModuleSection(
-        title: 'Teknik Detaylar (Princeton • Üsküdar • UC Davis)',
-        description: '4 biyolojik alt tipin özellikleri, GRID2/glutamat mekanizması ve yetişkinlik-yaşlanma bulguları.',
-        content: '1) Princeton Üniversitesi ve Simons Foundation: 4 Biyolojik Alt Tipin Klinik Özellikleri\n\n'
-            'Princeton Üniversitesi; fMRG, gen dizileme ve klinik davranış verilerini yapay zeka tabanlı kümeleme (clustering) algoritmalarıyla analiz ederek otizmi 4 ana biyolojik alt tipe ayırmıştır.\n\n'
-            'Tip 1: Sosyal ve İletişimsel Odaklı Küme\n'
-            '- Moleküler altyapı: Dil gelişimi ve sosyal bağlanma ile ilişkili gen varyasyonları (örn. FOXP2 ve OXT oksitosin reseptör yolları).\n'
-            '- Klinik görünüm: Motor beceriler ve genel zeka düzeyi tipik sınırlarda olabilir; göz teması, sosyal ipuçları, empati ve karşılıklı konuşmada senkronizasyon güçlükleri görülebilir.\n\n'
-            'Tip 2: Duyusal-Motor ve Stereotipik Küme\n'
-            '- Moleküler altyapı: Motor planlama ve duyusal entegrasyon merkezlerini (bazal ganglionlar ve talamus) yöneten genlerde mutasyonlar.\n'
-            '- Klinik görünüm: Tekrarlayıcı hareketler ve duyusal hassasiyetler ön planda olabilir.\n\n'
-            'Tip 3: Gelişimsel Gecikme ve Bilişsel Etkilenme Kümesi\n'
-            '- Moleküler altyapı: Korteks tabakalaşmasını etkileyen kromozomal kopya sayısı varyasyonları (CNV).\n'
-            '- Klinik görünüm: Konuşmada ciddi gecikme, motor becerilerde yavaşlık ve ek destek ihtiyacı.\n\n'
-            'Tip 4: Geniş Kapsamlı ve Medikal Komorbidite Kümesi\n'
-            '- Moleküler altyapı: Sinir sistemi yanında bağışıklık/sindirim sistemini de etkileyen yolaklar (örn. PTEN, TSC).\n'
-            '- Klinik görünüm: Epilepsi, uyku bozukluğu, gastrointestinal sorunlar ve kronik nöro-enflamasyon eşlik edebilir.\n\n'
-            '2) Üsküdar Üniversitesi: GRID2 Geni ve Glutamat Mekanizması\n\n'
-            'Eksitasyon/İnhibisyon (Uyarılma/Baskılanma) dengesizliği çerçevesinde:\n'
-            'Sistemik Enflamasyon (TNFα artışı) → GRID2 geninin baskılanması → Glutamat reseptör kusuru → Beyinde aşırı elektriksel uyarılma (duyusal aşırı yüklenme)\n\n'
-            'GRID2 geninin rolü: Beyincikte (serebellum) Purkinje hücrelerindeki İyonotropik Glutamat Reseptörü Delta-2 proteinini kodlar.\n\n'
-            'TNFα tetiklemesi: TNFα yükseldiğinde GRID2 gen ifadesi baskılanabilir.\n\n'
-            'Nöral sonuç: Glutamat dengesi bozulabilir; bu durum duyusal bilgilerin filtrelenmesinde güçlüğe, motor koordinasyon sorunlarına ve öğrenme süreçlerinde farklılıklara yol açabilir.\n\n'
-            '3) UC Davis MIND Institute: Yaşlanma ve Yetişkinlik Dönemi Araştırmaları\n\n'
-            'Otizmin yaşam boyu süren bir nörobiyolojik süreç olduğu; bazı bölgelerde (özellikle prefrontal korteks) yaşlanma ile daha hızlı hacim kaybı olabileceği, telomer kısalması ve hücresel stres göstergelerinin daha yüksek olabildiği bildirilmiştir.\n\n'
-            'Geç tanı almış bireylerde (özellikle kadınlarda) sosyal “maskeleme” stratejilerinin orta/ileri yaşlarda tükenmişlik (autistic burnout), depresyon ve anksiyete ile ilişkili olabileceği raporlanmıştır.',
-      ),
-      const _ModuleSection(
-        title: 'Kişiselleştirilmiş Model (Tanıdan Yetişkinliğe)',
-        description: 'Alt tiplere göre eğitim/terapi, ilaç araştırmalarına etkiler ve erken klinik sinyaller.',
-        content: 'I) Princeton 4 Alt Tipi İçin Kişiye Özel Eğitim ve Terapi Modelleri\n\n'
-            'Tip 1 terapi modeli\n'
-            '- Odak: Akran etkileşimi, sosyal semantika, jest-mimik okuma.\n'
-            '- Model: DIR/Floortime ve Sosyal Öyküler.\n\n'
-            'Tip 2 terapi modeli\n'
-            '- Odak: Duyusal bütünleme, talamik filtreleme, motor planlama.\n'
-            '- Model: Ayres Duyusal Bütünleme (ASI) ve ABA modifikasyonu.\n'
-            '- Not: Stereotipiler doğrudan engellenmeden, altında yatan duyusal ihtiyaç belirlenip sinir sistemi regüle edilerek beceri öğretimine geçilir.\n\n'
-            'Tip 3 terapi modeli\n'
-            '- Odak: Alternatif iletişim kanalları ve fonksiyonel yaşam becerileri.\n'
-            '- Model: PECS ve Erken Başlangıç Denver Modeli (EDM).\n'
-            '- Not: Haftalık yoğun ve yapılandırılmış eğitim (örn. 20–40 saat) hedeflenebilir.\n\n'
-            'Tip 4 terapi modeli\n'
-            '- Odak: Önce tıbbi stabilizasyon, sonra multidisipliner destek.\n'
-            '- Model: Medikal-biyolojik destekli özel eğitim.\n\n'
-            'II) Üsküdar Üniversitesi Glutamat Keşfinin İlaç Araştırmalarına Etkisi\n\n'
-            '1. Hedefli glutamat regülatörleri: Glutamatın aşırı birikimini (eksitotoksisite) önlemeyi hedefler.\n'
-            '2. Antienflamatuar ve sitokin engelleyici terapiler: Nöro-enflamasyonu hedefleyen ajanlar araştırma adaylarıdır.\n'
-            '3. Gen tedavileri ve mRNA teknolojisi: GRID2 fonksiyon kaybı yaşayan bireylerde hedefli yaklaşımlar araştırılmaktadır.\n\n'
-            'III) Erken Çocukluk Döneminde İlk Klinik Sinyaller\n\n'
-            '0–9 ay\n'
-            '- İsme tepkisizlik: Ses işitilse de “sosyal uyaran” olarak önceliklendirilmemesi.\n'
-            '- Sosyal gülümseme gecikmesi.\n\n'
-            '9–12 ay\n'
-            '- Duyusal aşırı reaksiyon veya tepkisizlik.\n'
-            '- Göz takibinde sapma: işaret edilen nesne yerine parmağa kilitlenme.\n\n'
-            '12–18 ay\n'
-            '- Taklit becerilerinde belirgin zorluk.\n'
-            '- Dönen nesnelere/tekerleğe fiksasyon.\n'
-            '- Babıldama/kelime gerilemesi (regresyon) olasılığı.',
-      ),
-      const _ModuleSection(
-        title: 'Mekanizmaların Pratik Takibi',
-        description: 'M-CHAT-R/F taraması, duyusal diyet planı ve aile katılımının yapılandırılması.',
-        content: 'I) Evde M-CHAT-R/F Tarama Ölçeği ve Puanlama\n\n'
-            'M-CHAT-R, 16–30 ay arası çocuklarda riski belirleyen 20 soruluk bir tarama aracıdır. Tanı koymaz; risk seviyesini ölçer.\n\n'
-            'Kritik maddeler (özet)\n'
-            '1. Havaya kaldırma/dizde sallama ile eğlenir mi? (Normal: Evet)\n'
-            '2. Diğer çocuklarla ilgilenir mi? (Normal: Evet)\n'
-            '3. Eşyalara tırmanmaktan hoşlanır mı? (Normal: Evet)\n'
-            '4. Ce-e / saklambaç oynar mı? (Normal: Evet)\n'
-            '5. İşaret parmağıyla bir şeyi rica eder mi? (Normal: Evet)\n'
-            '6. İşaret parmağıyla ilginç bir şeyi gösterir mi? (Normal: Evet)\n'
-            '7. Oyuncak arabalar/küplerle amaca uygun oynar mı? (Normal: Evet)\n'
-            '8. Size bir nesne getirip gösterir mi? (Normal: Evet)\n'
-            '9. 1–2 saniyeden uzun göz teması kurar mı? (Normal: Evet)\n'
-            '10. Aşırı hassas görünür mü? (Normal: Hayır)\n'
-            '11. Siz gülümseyince karşılık verir mi? (Normal: Evet)\n'
-            '12. İsmine hemen tepki verir mi? (Normal: Evet)\n'
-            '13. Uzak bir oyuncağı işaret edince oyuncağa bakar mı? (Normal: Evet)\n'
-            '14. Yürüyebiliyor mu? (Normal: Evet)\n'
-            '15. Sizin baktığınız şeye bakar mı? (Normal: Evet)\n'
-            '16. Yüzünün yakınında garip parmak hareketleri yapar mı? (Normal: Hayır)\n'
-            '17. İnsanları taklit etmeye çalışır mı? (Normal: Evet)\n'
-            '18. Seslenince duymuyor gibi olduğu olur mu? (Normal: Hayır)\n'
-            '19. Söylenenleri anlar mı? (Normal: Evet)\n'
-            '20. Bazen boşluğa bakar mı / amaçsızca dolanır mı? (Normal: Hayır)\n\n'
-            'Puanlama\n'
-            '- “Normal” dışındaki her cevap 1 puan.\n'
-            '- 0–2: Düşük risk\n'
-            '- 3–7: Orta risk (takip görüşmesi)\n'
-            '- 8–20: Yüksek risk (uzmana başvuru)\n\n'
-            'II) Ev Ortamında Duyusal Diyet (Sensory Diet)\n\n'
-            'Propriyoseptif (derin basınç) aktiviteler\n'
-            '- Sandviç oyunu (minderle ritmik baskı)\n'
-            '- Ağır işler (sepet itme, ağırlık taşıma taklidi)\n'
-            '- Sakız/sert gıda çiğneme\n\n'
-            'Vestibüler regülasyon\n'
-            '- Yavaş ritmik sallanma (sakinleştirici)\n'
-            '- Yerçekimi değişimi (baş sarkıtma/takla gibi kontrollü hareketler)\n\n'
-            'Çevresel modifikasyon\n'
-            '- Sakinleşme köşesi (loş ışık, yumuşak alan, kulaklık)\n'
-            '- Görsel/işitsel sadeleşme (arka plan TV sesi kapatma)\n\n'
-            'III) Özel Eğitim Seanslarında Aile Katılımı\n'
-            '[Seansı izleme/not alma] → [Uzman eşliğinde canlı deneme] → [Ev rutinine entegrasyon] → [Video ile geri bildirim]\n\n'
-            'Öneriler (özet)\n'
-            '- Seansı sadece izlemek yerine teknikleri not alma.\n'
-            '- Son bölümde ebeveynin uygulamalı koçlukla çalışması.\n'
-            '- NET ile günlük rutinlere öğretimi yerleştirme.\n'
-            '- Kısa videolarla geri bildirim döngüsü kurma.',
-      ),
-    ];
+        final categories = sections.map((s) => _ModuleSection(
+          title: s['title'] ?? '',
+          description: s['description'] ?? '',
+          content: s['content'] ?? '',
+        )).toList();
 
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        _SectionCard(
-          title: 'Kısa Özet',
-          subtitle: summary,
-          onTap: () => _openDetail(context, 'Kısa Özet', summary),
-          showReadMore: true,
-        ),
-        const SizedBox(height: 16),
-        const Text('Başlıklar', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
-        const SizedBox(height: 12),
-        ...sections.map(
-          (s) => Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: _SectionCard(
-              title: s.title,
-              subtitle: s.description,
-              onTap: () => _openDetail(context, s.title, s.content),
+        return ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            _SectionCard(
+              title: AppLocalizations.of(context)!.moduleLabelFeaturedGuide,
+              subtitle: featuredTitle,
+              onTap: () => _openDetail(context, featuredTitle, featuredContent),
               showReadMore: true,
             ),
-          ),
-        ),
-      ],
+            const SizedBox(height: 16),
+            Text(AppLocalizations.of(context)!.moduleLabelCategories, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+            const SizedBox(height: 12),
+            ...categories.map(
+              (c) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _SectionCard(
+                  title: c.title,
+                  subtitle: c.description,
+                  onTap: () => _openDetail(context, c.title, c.content),
+                  showReadMore: true,
+                ),
+              ),
+            ),
+          ],
+        );
+      }
     );
   }
 }
@@ -639,108 +368,64 @@ class _OsbResearchModuleBody extends StatelessWidget {
 class _EducationModuleBody extends StatelessWidget {
   const _EducationModuleBody();
 
+  Future<Map<String, dynamic>> _loadData(BuildContext context) async {
+    final locale = Localizations.localeOf(context).languageCode;
+    final path = 'assets/content/' + locale + '/education.json';
+    try {
+      final jsonString = await DefaultAssetBundle.of(context).loadString(path);
+      return json.decode(jsonString);
+    } catch (e) {
+      final fallbackString = await DefaultAssetBundle.of(context).loadString('assets/content/tr/education.json');
+      return json.decode(fallbackString);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    const summary =
-        'Bu bölüm; OSB başta olmak üzere gelişimsel farklılıklarda sık kullanılan eğitim ve terapi yaklaşımlarını bilimsel çerçevede açıklar. İçerikler bilgi amaçlıdır; çocuğun ihtiyacına göre planlama için uzman değerlendirmesi gerekir.';
+    return FutureBuilder<Map<String, dynamic>>(
+      future: _loadData(context),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        final data = snapshot.data!;
+        final featuredTitle = data['featuredTitle'] ?? '';
+        final featuredContent = data['featuredContent'] ?? '';
+        final labels = data['labels'] ?? {};
+        final List<dynamic> sections = data['sections'] ?? [];
 
-    final sections = <_ModuleSection>[
-      const _ModuleSection(
-        title: 'Hareket Eğitimi',
-        description: 'Kaba motor beceriler, denge, koordinasyon ve fiziksel aktivite ile destek.',
-        content:
-            'Hareket eğitimi; çocuğun denge, koordinasyon, kuvvet, dayanıklılık ve vücut farkındalığı gibi motor alanlarını desteklemeyi hedefleyen planlı fiziksel aktivitelerdir. OSB’de motor planlama, koordinasyon ve postüral kontrol güçlükleri sık görülebildiği için, düzenli hareket çalışmaları günlük yaşama aktarılabilen becerileri güçlendirebilir.\n\n'
-            'Bilimsel çerçeve\n'
-            '- Düzenli fiziksel aktivite; uyku, duygu düzenleme, dikkat ve genel sağlık üzerinde olumlu etkiler gösterebilir.\n'
-            '- Motor beceri çalışmaları; merdiven inip çıkma, top yakalama/atma, bisiklet, oyun parkı aktivitelerine katılım gibi işlevsel hedeflere bağlandığında daha etkilidir.\n\n'
-            'Uygulamada amaç\n'
-            '- Kısa ve sık tekrarlar (gün içine dağıtılmış 5–15 dk).\n'
-            '- Net başlangıç/bitiş, görsel ipuçları ve adım adım yönergeler.\n'
-            '- Çocuğun motivasyonuna uygun oyun temelli etkinlikler.\n\n'
-            'Not: Ağrı, ortopedik sorun veya belirgin motor gecikme varsa fizyoterapist/uzman değerlendirmesi önerilir.',
-      ),
-      const _ModuleSection(
-        title: 'Ergo Terapi',
-        description: 'Günlük yaşam becerileri, duyusal düzenleme ve ince motor alanlarında ergoterapi desteği.',
-        content:
-            'Ergoterapi (iş ve uğraşı terapisi); çocuğun günlük yaşam aktivitelerine (giyinme, yemek, tuvalet, oyun, okul etkinlikleri) katılımını artırmayı hedefler. OSB’de duyusal işlemleme farklılıkları, ince motor beceriler ve planlama/organizasyon alanları etkilenebileceği için ergoterapi; çevresel uyarlamalar, beceri öğretimi ve rutin planlama ile işlevselliği güçlendirebilir.\n\n'
-            'Bilimsel çerçeve\n'
-            '- Temel hedef “katılım”dır: Çocuğun günlük yaşama daha rahat ve bağımsız katılması.\n'
-            '- Duyusal stratejiler; her çocukta aynı etkiyi göstermez. Bu nedenle bireysel değerlendirme ve ölçülebilir hedeflerle ilerlemek önemlidir.\n\n'
-            'Sık hedef alanları\n'
-            '- İnce motor: kalem tutma, kesme, düğme/fermuar.\n'
-            '- Öz bakım: el yıkama, giyinme, beslenme.\n'
-            '- Duyusal düzenleme: ses/ışık/dokunma hassasiyetlerinde uyarlama ve baş etme stratejileri.\n\n'
-            'Not: Ev-okul-terapi arasında tutarlılık sağlamak, kazanımların genellenmesini kolaylaştırır.',
-      ),
-      const _ModuleSection(
-        title: 'Özel Eğitim',
-        description: 'Bireyselleştirilmiş hedefler, yapılandırılmış öğretim ve günlük yaşama genelleme.',
-        content:
-            'Özel eğitim; çocuğun gelişim düzeyine göre bireyselleştirilmiş hedeflerle yürütülen yapılandırılmış öğretim sürecidir. OSB’de iletişim, sosyal etkileşim, oyun, akademik öncül beceriler ve günlük yaşam becerileri farklı hızlarda gelişebildiği için, hedeflerin ölçülebilir ve işlevsel olması önemlidir.\n\n'
-            'Bilimsel çerçeve\n'
-            '- Erken müdahale ve düzenli, yapılandırılmış öğretim birçok çocukta iletişim ve uyum becerilerinde ilerlemeyi destekleyebilir.\n'
-            '- Etkili programlar; veriyle izlenen hedefler, sistemli tekrar, ipucu-kademeli azaltma ve genelleme planı içerir.\n\n'
-            'Sık kullanılan teknikler (genel yaklaşım)\n'
-            '- Görsel destekler: günlük rutin çizelgesi, “önce-sonra”, adım kartları.\n'
-            '- Davranışsal öğretim ilkeleri: pekiştirme, görev analizi, küçük adımlarla öğretim.\n'
-            '- Doğal ortam öğretimi: günlük yaşam içinde fırsat yakalayıp öğretmek.\n\n'
-            'Not: Programın aile tarafından evde kısa uygulamalarla desteklenmesi sürdürülebilirliği artırır.',
-      ),
-      const _ModuleSection(
-        title: 'Dil Terapisi',
-        description: 'Anlama/ifade, konuşma, pragmatik dil ve alternatif iletişim (AAC) desteği.',
-        content:
-            'Dil ve konuşma terapisi; çocuğun alıcı (anlama) ve ifade edici dil becerilerini, konuşma anlaşılırlığını ve sosyal iletişimi (pragmatik dil) geliştirmeyi hedefler. OSB’de iletişim; yalnızca konuşma değil, karşılıklı etkileşim, sıra alma, jest-mimik kullanımı ve bağlama uygun dil kullanımı gibi alanları da kapsar.\n\n'
-            'Bilimsel çerçeve\n'
-            '- İletişim hedefleri işlevsel olmalıdır: istek bildirme, reddetme, yardım isteme, seçim yapma.\n'
-            '- Konuşma gecikmesinde veya sınırlı konuşmada, AAC (resim, işaret, cihaz) iletişimi artırabilir ve konuşmayı “engellemez”; çoğu çocukta iletişim fırsatlarını çoğaltır.\n\n'
-            'Sık hedef alanları\n'
-            '- İstek bildirme ve ortak dikkat.\n'
-            '- Basit cümle kurma, soru-cevap.\n'
-            '- Sosyal iletişim: selamlaşma, sıra alma, duygu ifade etme.\n\n'
-            'Not: Evde aynı hedef dili ve görsel destekleri kullanmak ilerlemeyi hızlandırır.',
-      ),
-      const _ModuleSection(
-        title: 'Floortime',
-        description: 'DIR/Floortime: ilişki temelli, oyun üzerinden sosyal-iletişim becerilerini destekleme.',
-        content:
-            'DIR/Floortime; çocuğun gelişim basamaklarını (duygu düzenleme, ortak dikkat, karşılıklı etkileşim, problem çözme) ilişki temelli ve oyun odaklı bir yaklaşımla desteklemeyi amaçlar. Ebeveynin/uygulayıcının çocuğun ilgisini takip ederek etkileşimi derinleştirmesi ve “karşılıklı iletişim döngülerini” artırması hedeflenir.\n\n'
-            'Bilimsel çerçeve\n'
-            '- İlişki temelli yaklaşımlar; sosyal etkileşimi ve duygu düzenlemeyi hedefler.\n'
-            '- Etkinlik; çocuğun profiline uygun hedefler, düzenli uygulama ve aile katılımıyla artar.\n\n'
-            'Uygulamada temel prensipler\n'
-            '- Çocuğun ilgisini takip et ve etkileşimi genişlet.\n'
-            '- Kısa, sık ve keyifli oyun seansları planla.\n'
-            '- Etkileşimi “soru yağmuru” yerine karşılıklı oyun akışıyla sürdür.\n\n'
-            'Not: Floortime, yapılandırılmış öğretim ve dil terapisi gibi yaklaşımlarla birlikte planlanabilir; hedeflerin çakışmaması için ekip koordinasyonu faydalıdır.',
-      ),
-    ];
+        final categories = sections.map((s) => _ModuleSection(
+          title: s['title'] ?? '',
+          description: s['description'] ?? '',
+          content: s['content'] ?? '',
+        )).toList();
 
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        _SectionCard(
-          title: 'Kısa Özet',
-          subtitle: summary,
-          onTap: () => _openDetail(context, 'Kısa Özet', summary),
-          showReadMore: true,
-        ),
-        const SizedBox(height: 16),
-        const Text('Başlıklar', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
-        const SizedBox(height: 12),
-        ...sections.map(
-          (s) => Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: _SectionCard(
-              title: s.title,
-              subtitle: s.description,
-              onTap: () => _openDetail(context, s.title, s.content),
+        return ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            _SectionCard(
+              title: AppLocalizations.of(context)!.moduleLabelFeaturedGuide,
+              subtitle: featuredTitle,
+              onTap: () => _openDetail(context, featuredTitle, featuredContent),
               showReadMore: true,
             ),
-          ),
-        ),
-      ],
+            const SizedBox(height: 16),
+            Text(AppLocalizations.of(context)!.moduleLabelCategories, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+            const SizedBox(height: 12),
+            ...categories.map(
+              (c) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _SectionCard(
+                  title: c.title,
+                  subtitle: c.description,
+                  onTap: () => _openDetail(context, c.title, c.content),
+                  showReadMore: true,
+                ),
+              ),
+            ),
+          ],
+        );
+      }
     );
   }
 }
@@ -766,10 +451,53 @@ class _EmotionsModuleBodyState extends State<_EmotionsModuleBody> {
   final List<_EmotionLogEntry> _log = [];
   bool _loaded = false;
 
+  List<String> _triggerOptions = [];
+  List<String> _helpOptions = [];
+  List<({String name, String emoji, Color color})> _emotions = [];
+  bool _jsonLoaded = false;
+
   @override
   void initState() {
     super.initState();
     Future.microtask(_load);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadJsonData();
+  }
+
+  Future<void> _loadJsonData() async {
+    if (_jsonLoaded) return;
+    final locale = Localizations.localeOf(context).languageCode;
+    try {
+      final jsonStr = await DefaultAssetBundle.of(context).loadString('assets/content/$locale/emotions.json');
+      final data = json.decode(jsonStr) as Map<String, dynamic>;
+
+      final listEmotions = data['emotions'] as List;
+      final parsedEmotions = listEmotions.map((item) {
+        final colorStr = item['color'] as String;
+        final colorVal = int.parse(colorStr);
+        return (
+          name: item['name'] as String,
+          emoji: item['emoji'] as String,
+          color: Color(colorVal),
+        );
+      }).toList();
+
+      final listTriggers = (data['triggers'] as List).cast<String>();
+      final listHelps = (data['helps'] as List).cast<String>();
+
+      setState(() {
+        _emotions = parsedEmotions;
+        _triggerOptions = listTriggers;
+        _helpOptions = listHelps;
+        _jsonLoaded = true;
+      });
+    } catch (e) {
+      debugPrint("Error loading emotions: $e");
+    }
   }
 
   Future<void> _load() async {
@@ -801,39 +529,6 @@ class _EmotionsModuleBodyState extends State<_EmotionsModuleBody> {
     final payload = _log.map((e) => e.toJson()).toList(growable: false);
     await LocalStore.instance.writeJson('emotions_log_v1.json', payload);
   }
-
-  static const _triggerOptions = <String>[
-    'Gürültü',
-    'Kalabalık',
-    'Değişiklik',
-    'Beklemek',
-    'Yorgunluk',
-    'Açlık',
-    'Işık',
-    'Dokunma',
-    'Ekran',
-    'Ayrılma',
-  ];
-
-  static const _helpOptions = <String>[
-    'Derin Nefes',
-    'Ara Vermek',
-    'Sarılma',
-    'Kulaklık',
-    'Su İçmek',
-    'Sakin Köşe',
-    'Müzik',
-    'Top Sıkma',
-  ];
-
-  static const _emotions = <({String name, String emoji, Color color})>[
-    (name: 'Mutlu', emoji: '😊', color: Color(0xFFFDE68A)),
-    (name: 'Üzgün', emoji: '😢', color: Color(0xFFBFDBFE)),
-    (name: 'Kızgın', emoji: '😠', color: Color(0xFFFECACA)),
-    (name: 'Şaşırmış', emoji: '😲', color: Color(0xFFE9D5FF)),
-    (name: 'Korkmuş', emoji: '😨', color: Color(0xFFE4E4E7)),
-    (name: 'Heyecanlı', emoji: '🤩', color: Color(0xFFFED7AA)),
-  ];
 
   @override
   void dispose() {
@@ -886,6 +581,11 @@ class _EmotionsModuleBodyState extends State<_EmotionsModuleBody> {
 
   @override
   Widget build(BuildContext context) {
+    if (! _jsonLoaded) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    final loc = AppLocalizations.of(context)!;
     final disabled = _selectedEmotion == null;
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -895,7 +595,7 @@ class _EmotionsModuleBodyState extends State<_EmotionsModuleBody> {
             padding: EdgeInsets.only(bottom: 12),
             child: LinearProgressIndicator(),
           ),
-        const Text('Duygunu seç', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
+        Text(loc.emotionsChoose, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
         const SizedBox(height: 12),
         Wrap(
           spacing: 12,
@@ -949,25 +649,23 @@ class _EmotionsModuleBodyState extends State<_EmotionsModuleBody> {
               children: [
                 Row(
                   children: [
-                    const Expanded(
-                      child: Text('Duygu Günlüğü', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900)),
+                    Expanded(
+                      child: Text(loc.emotionsDiary, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900)),
                     ),
                     OutlinedButton(
                       onPressed: disabled
                           ? null
                           : () {
-                              const t = 'Sakinleşmek için: 4’e kadar sayarak nefes al, 4’e kadar tut, 6’ya kadar ver. '
-                                  'İstersen kısa ara ver ve su iç.';
-                              _openDetail(context, 'Sakinleşme', t);
+                              _openDetail(context, loc.emotionsCalming, loc.emotionsCalmingInstructions);
                             },
-                      child: const Text('Sakinleşme'),
+                      child: Text(loc.emotionsCalming),
                     ),
                   ],
                 ),
                 const SizedBox(height: 12),
-                Text('Seçilen duygu: ${_selectedEmotion ?? '-'}', style: const TextStyle(fontWeight: FontWeight.w800)),
+                Text(loc.emotionsSelected(_selectedEmotion ?? '-'), style: const TextStyle(fontWeight: FontWeight.w800)),
                 const SizedBox(height: 10),
-                const Text('Şiddet (1-5)', style: TextStyle(fontWeight: FontWeight.w800)),
+                Text(loc.emotionsIntensity, style: const TextStyle(fontWeight: FontWeight.w800)),
                 Slider(
                   value: _intensity.toDouble(),
                   min: 1,
@@ -977,7 +675,7 @@ class _EmotionsModuleBodyState extends State<_EmotionsModuleBody> {
                   onChanged: disabled ? null : (v) => setState(() => _intensity = v.round()),
                 ),
                 const SizedBox(height: 10),
-                const Text('Tetikleyiciler', style: TextStyle(fontWeight: FontWeight.w800)),
+                Text(loc.emotionsTriggers, style: const TextStyle(fontWeight: FontWeight.w800)),
                 const SizedBox(height: 8),
                 Wrap(
                   spacing: 8,
@@ -993,7 +691,7 @@ class _EmotionsModuleBodyState extends State<_EmotionsModuleBody> {
                       .toList(),
                 ),
                 const SizedBox(height: 12),
-                const Text('Ne yardımcı oldu?', style: TextStyle(fontWeight: FontWeight.w800)),
+                Text(loc.emotionsWhatHelped, style: const TextStyle(fontWeight: FontWeight.w800)),
                 const SizedBox(height: 8),
                 Wrap(
                   spacing: 8,
@@ -1012,28 +710,28 @@ class _EmotionsModuleBodyState extends State<_EmotionsModuleBody> {
                 TextField(
                   controller: _antecedentCtrl,
                   enabled: !disabled,
-                  decoration: const InputDecoration(labelText: 'Öncesi (ne oldu?)', border: OutlineInputBorder()),
+                  decoration: InputDecoration(labelText: loc.emotionsAntecedent, border: const OutlineInputBorder()),
                   maxLines: 2,
                 ),
                 const SizedBox(height: 10),
                 TextField(
                   controller: _behaviorCtrl,
                   enabled: !disabled,
-                  decoration: const InputDecoration(labelText: 'Davranış', border: OutlineInputBorder()),
+                  decoration: InputDecoration(labelText: loc.emotionsBehavior, border: const OutlineInputBorder()),
                   maxLines: 2,
                 ),
                 const SizedBox(height: 10),
                 TextField(
                   controller: _consequenceCtrl,
                   enabled: !disabled,
-                  decoration: const InputDecoration(labelText: 'Sonuç', border: OutlineInputBorder()),
+                  decoration: InputDecoration(labelText: loc.emotionsConsequence, border: const OutlineInputBorder()),
                   maxLines: 2,
                 ),
                 const SizedBox(height: 10),
                 TextField(
                   controller: _noteCtrl,
                   enabled: !disabled,
-                  decoration: const InputDecoration(labelText: 'Not', border: OutlineInputBorder()),
+                  decoration: InputDecoration(labelText: loc.emotionsNote, border: const OutlineInputBorder()),
                   maxLines: 2,
                 ),
                 const SizedBox(height: 12),
@@ -1042,7 +740,7 @@ class _EmotionsModuleBodyState extends State<_EmotionsModuleBody> {
                   child: ElevatedButton.icon(
                     onPressed: disabled ? null : _save,
                     icon: const Icon(Icons.save),
-                    label: const Text('Kaydet'),
+                    label: Text(loc.btnSave),
                   ),
                 ),
               ],
@@ -1050,10 +748,10 @@ class _EmotionsModuleBodyState extends State<_EmotionsModuleBody> {
           ),
         ),
         const SizedBox(height: 16),
-        const Text('Son Kayıtlar', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
+        Text(loc.emotionsRecentLogs, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
         const SizedBox(height: 12),
         if (_log.isEmpty)
-          const Text('Henüz kayıt yok.', style: TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF52525B)))
+          Text(loc.emotionsNoLogs, style: const TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF52525B)))
         else
           ..._log.take(12).map(
                 (e) => Padding(
@@ -1061,7 +759,7 @@ class _EmotionsModuleBodyState extends State<_EmotionsModuleBody> {
                   child: _SectionCard(
                     title: '${e.emotion} (${e.intensity}/5)',
                     subtitle: '${_formatDateTimeTr(e.at)}${e.note.isNotEmpty ? ' • ${e.note}' : ''}',
-                    onTap: () => _openDetail(context, e.emotion, e.toLongText()),
+                    onTap: () => _openDetail(context, e.emotion, e.toLongText(context)),
                   ),
                 ),
               ),
@@ -1082,24 +780,79 @@ class _StoriesModuleBodyState extends State<_StoriesModuleBody> {
   int _step = 0;
   String? _quizChoice;
   final FlutterTts _flutterTts = FlutterTts();
+  List<_Story> _stories = [];
+  bool _loaded = false;
 
   @override
   void initState() {
     super.initState();
-    _initTts();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_loaded) {
+      _initTts();
+      _loadStories();
+    }
   }
 
   void _initTts() async {
     try {
-      await _flutterTts.setLanguage("tr-TR");
+      final locale = Localizations.localeOf(context).languageCode;
+      await _flutterTts.setLanguage(locale == 'tr' ? 'tr-TR' : 'en-US');
       await _flutterTts.setSpeechRate(0.45);
       await _flutterTts.setPitch(1.0);
     } catch (_) {}
   }
 
+  Future<void> _loadStories() async {
+    final locale = Localizations.localeOf(context).languageCode;
+    final path = 'assets/content/' + locale + '/stories.json';
+    try {
+      final jsonString = await DefaultAssetBundle.of(context).loadString(path);
+      final List<dynamic> list = json.decode(jsonString);
+      setState(() {
+        _stories = list.map((item) {
+          final stepsList = item['steps'] as List<dynamic>;
+          final stepsParsed = stepsList.map((s) {
+            return (emoji: s['emoji'] as String, text: s['text'] as String);
+          }).toList();
+          return _Story(
+            id: item['id'] as String,
+            title: item['title'] as String,
+            description: item['description'] as String,
+            steps: stepsParsed,
+          );
+        }).toList();
+        _loaded = true;
+      });
+    } catch (e) {
+      final trString = await DefaultAssetBundle.of(context).loadString('assets/content/tr/stories.json');
+      final List<dynamic> list = json.decode(trString);
+      setState(() {
+        _stories = list.map((item) {
+          final stepsList = item['steps'] as List<dynamic>;
+          final stepsParsed = stepsList.map((s) {
+            return (emoji: s['emoji'] as String, text: s['text'] as String);
+          }).toList();
+          return _Story(
+            id: item['id'] as String,
+            title: item['title'] as String,
+            description: item['description'] as String,
+            steps: stepsParsed,
+          );
+        }).toList();
+        _loaded = true;
+      });
+    }
+  }
+
   void _speak(String text) async {
     try {
       await _flutterTts.stop();
+      final locale = Localizations.localeOf(context).languageCode;
+      await _flutterTts.setLanguage(locale == 'en' ? 'en-US' : 'tr-TR');
       await _flutterTts.speak(text);
     } catch (_) {}
   }
@@ -1109,104 +862,6 @@ class _StoriesModuleBodyState extends State<_StoriesModuleBody> {
     _flutterTts.stop();
     super.dispose();
   }
-
-  static const _stories = <_Story>[
-    _Story(
-      id: 'hand-washing',
-      title: 'Ellerimi Yıkıyorum',
-      description: 'Temizlik ve sağlık için ellerimizi nasıl yıkarız?',
-      steps: [
-        (emoji: '🚰', text: 'Musluğu açıyorum ve ellerimi ıslatıyorum.'),
-        (emoji: '🧼', text: 'Sabun alıyorum ve ellerimi köpürtüyorum.'),
-        (emoji: '🙌', text: 'Ellerimin her yerini iyice ovuyorum.'),
-        (emoji: '💦', text: 'Su ile sabunları duruluyorum.'),
-        (emoji: '🧣', text: 'Havlumla ellerimi kuruluyorum.'),
-      ],
-    ),
-    _Story(
-      id: 'greeting',
-      title: 'Merhaba Diyorum',
-      description: 'Yeni insanlarla tanışırken ne yaparız?',
-      steps: [
-        (emoji: '👀', text: 'Karşımdaki kişinin gözlerine bakıyorum.'),
-        (emoji: '😊', text: 'Yüzüme küçük bir gülümseme yerleştiriyorum.'),
-        (emoji: '👋', text: 'Nazikçe "Merhaba" diyorum.'),
-        (emoji: '👂', text: 'Sıramı bekleyip onu dinliyorum.'),
-      ],
-    ),
-    _Story(
-      id: 'waiting-turn',
-      title: 'Sırada Bekliyorum',
-      description: 'Sıra beklemek nasıl olur?',
-      steps: [
-        (emoji: '📍', text: 'Nerede sıraya girmem gerektiğini buluyorum.'),
-        (emoji: '🚶', text: 'Sıranın arkasına geçiyorum.'),
-        (emoji: '↔️', text: 'Öndeki kişiye çok yaklaşmadan bekliyorum.'),
-        (emoji: '👐', text: 'Beklerken ellerimi sakin tutuyorum.'),
-        (emoji: '✅', text: 'Sıram gelince nazikçe öne gidiyorum.'),
-      ],
-    ),
-    _Story(
-      id: 'sharing-toys',
-      title: 'Oyuncağımı Paylaşıyorum',
-      description: 'Arkadaşlarımla paylaşmayı öğreniyorum.',
-      steps: [
-        (emoji: '👂', text: 'Arkadaşımı dinliyorum ve ne istediğini anlıyorum.'),
-        (emoji: '⏳', text: 'İstersem "Birazdan" diyebilirim.'),
-        (emoji: '🧸', text: 'Sıra bende bitince oyuncağı uzatıyorum.'),
-        (emoji: '🙂', text: 'Arkadaşım oynarken bekliyorum.'),
-        (emoji: '🔁', text: 'Sıra bana gelince oyuncağı geri alıyorum.'),
-      ],
-    ),
-    _Story(
-      id: 'going-to-school',
-      title: 'Okula Hazırlanıyorum',
-      description: 'Okula giderken neler yaparım?',
-      steps: [
-        (emoji: '👕', text: 'Kıyafetlerimi giyiyorum.'),
-        (emoji: '🎒', text: 'Çantama gerekli eşyaları koyuyorum.'),
-        (emoji: '👟', text: 'Ayakkabılarımı giyiyorum.'),
-        (emoji: '🚻', text: 'Kapıdan çıkmadan önce tuvalete gidebilirim.'),
-        (emoji: '🚦', text: 'Okula giderken yolda güvenli yürüyorum.'),
-      ],
-    ),
-    _Story(
-      id: 'doctor-visit',
-      title: 'Doktora Gidiyorum',
-      description: 'Doktor kontrolünde neler olur?',
-      steps: [
-        (emoji: '👋', text: 'Doktoru selamlıyorum.'),
-        (emoji: '🩺', text: 'Doktor beni dinler ve sorular sorar.'),
-        (emoji: '🌡️', text: 'Gerekirse ölçüm yapılır (ateş, boy, kilo).'),
-        (emoji: '💬', text: 'Ben de nasıl hissettiğimi söyleyebilirim.'),
-        (emoji: '🙏', text: 'İşimiz bitince teşekkür edip ayrılırım.'),
-      ],
-    ),
-    _Story(
-      id: 'market-shopping',
-      title: 'Markette Alışveriş',
-      description: 'Markette sakin kalmayı öğreniyorum.',
-      steps: [
-        (emoji: '📝', text: 'Alacağımız şeyleri birlikte seçiyoruz.'),
-        (emoji: '🛒', text: 'Raflara bakıp istediğim şeyi gösteriyorum.'),
-        (emoji: '🎧', text: 'Çok ses olursa kulaklarımı koruyabilirim.'),
-        (emoji: '🏷️', text: 'Kasada sırada bekliyorum.'),
-        (emoji: '🏠', text: 'İşimiz bitince eve dönüyoruz.'),
-      ],
-    ),
-    _Story(
-      id: 'feelings-words',
-      title: 'Duygumu Söylüyorum',
-      description: 'Duygularımı kelimelerle ifade ediyorum.',
-      steps: [
-        (emoji: '🫀', text: 'Vücudumu dinliyorum (kalbim hızlı mı, karnım mı ağrıyor?).'),
-        (emoji: '🤔', text: 'Hangi duyguya benzediğini düşünüyorum.'),
-        (emoji: '💬', text: 'Kısa bir cümle kuruyorum: "Üzgünüm", "Kızgınım" gibi.'),
-        (emoji: '🆘', text: 'Gerekirse yardım istiyorum.'),
-        (emoji: '🌿', text: 'Sakinleşince tekrar konuşabilirim.'),
-      ],
-    ),
-  ];
 
   void _openStory(_Story s) {
     setState(() {
@@ -1249,24 +904,106 @@ class _StoriesModuleBodyState extends State<_StoriesModuleBody> {
     });
   }
 
+  final List<List<Color>> _storyGradients = const [
+    [Color(0xFF3B82F6), Color(0xFF60A5FA)], // Blue
+    [Color(0xFFEC4899), Color(0xFFF43F5E)], // Pink
+    [Color(0xFF10B981), Color(0xFF34D399)], // Green
+    [Color(0xFFF59E0B), Color(0xFFFBBF24)], // Amber
+    [Color(0xFF8B5CF6), Color(0xFFA78BFA)], // Purple
+    [Color(0xFF06B6D4), Color(0xFF22D3EE)], // Cyan
+  ];
+
   @override
   Widget build(BuildContext context) {
+    if (!_loaded) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     final s = _selected;
+    final loc = AppLocalizations.of(context)!;
     if (s == null) {
       return ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          const Text('Öykü seç', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
+          Text(loc.storySelect, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
           const SizedBox(height: 12),
           ..._stories.map(
-            (st) => Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: _SectionCard(
-                title: st.title,
-                subtitle: st.description,
-                onTap: () => _openStory(st),
-              ),
-            ),
+            (st) {
+              final idx = _stories.indexOf(st);
+              final grad = _storyGradients[idx % _storyGradients.length];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Card(
+                  margin: EdgeInsets.zero,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: InkWell(
+                    onTap: () => _openStory(st),
+                    borderRadius: BorderRadius.circular(24),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: grad,
+                        ),
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                            color: grad.first.withOpacity(0.2),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      padding: const EdgeInsets.all(20),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: const Icon(Icons.auto_stories, color: Colors.white, size: 28),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  st.title,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w900,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  st.description,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white.withOpacity(0.9),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Icon(Icons.chevron_right, color: Colors.white, size: 24),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         ],
       );
@@ -1275,6 +1012,10 @@ class _StoriesModuleBodyState extends State<_StoriesModuleBody> {
     final step = s.steps[_step];
     final options = _quizOptionsFor(s);
     final progress = '${_step + 1}/${s.steps.length}';
+    final activeIdx = _stories.indexOf(s);
+    final grad = _storyGradients[activeIdx != -1 ? (activeIdx % _storyGradients.length) : 0];
+    final themeColor = grad.first;
+
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -1282,7 +1023,14 @@ class _StoriesModuleBodyState extends State<_StoriesModuleBody> {
           children: [
             IconButton(onPressed: _back, icon: const Icon(Icons.arrow_back)),
             Expanded(child: Text(s.title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900))),
-            Text(progress, style: const TextStyle(fontWeight: FontWeight.w900)),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: themeColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(progress, style: TextStyle(fontWeight: FontWeight.w900, color: themeColor)),
+            ),
           ],
         ),
         const SizedBox(height: 12),
@@ -1290,78 +1038,169 @@ class _StoriesModuleBodyState extends State<_StoriesModuleBody> {
           elevation: 0,
           color: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
-            side: const BorderSide(color: Color(0xFFE4E4E7)),
+            borderRadius: BorderRadius.circular(24),
+            side: BorderSide(color: themeColor.withOpacity(0.2), width: 2),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(24),
             child: Column(
               children: [
-                Text(step.emoji, style: const TextStyle(fontSize: 64)),
-                const SizedBox(height: 10),
-                Text(step.text, textAlign: TextAlign.center, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
-                const SizedBox(height: 12),
-                IconButton(
-                  icon: const Icon(Icons.volume_up, color: Color(0xFF059669), size: 28),
-                  onPressed: () => _speak(step.text),
+                Container(
+                  width: 120,
+                  height: 120,
+                  decoration: BoxDecoration(
+                    color: themeColor.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                    border: Border.all(color: themeColor.withOpacity(0.2), width: 4),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(step.emoji, style: const TextStyle(fontSize: 64)),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  step.text,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                    color: Color(0xFF1E293B),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                InkWell(
+                  onTap: () => _speak(step.text),
+                  borderRadius: BorderRadius.circular(30),
+                  child: Ink(
+                    width: 56,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(colors: grad),
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: themeColor.withOpacity(0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(Icons.volume_up, color: Colors.white, size: 28),
+                  ),
                 ),
               ],
             ),
           ),
         ),
         const SizedBox(height: 16),
-        const Text('Soru', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900)),
-        const SizedBox(height: 8),
-        const Text('Bu öykünün adı hangisi?', style: TextStyle(fontWeight: FontWeight.w800)),
-        const SizedBox(height: 10),
-        ...options.map((opt) {
-          final selected = _quizChoice == opt;
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: OutlinedButton(
-              onPressed: () {
-                setState(() => _quizChoice = opt);
-                if (opt == s.title) {
-                  _speak('Doğru!');
-                } else {
-                  _speak('Tekrar dene.');
-                }
-              },
-              style: OutlinedButton.styleFrom(
-                side: BorderSide(color: selected ? const Color(0xFF111827) : const Color(0xFFE4E4E7), width: 2),
-                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                backgroundColor: selected ? const Color(0xFFF4F4F5) : Colors.white,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(opt, style: const TextStyle(fontWeight: FontWeight.w900)),
-              ),
-            ),
-          );
-        }),
-        if (_quizChoice != null)
-          Padding(
-            padding: const EdgeInsets.only(top: 6),
-            child: Text(
-              _quizChoice == s.title ? 'Doğru!' : 'Tekrar dene.',
-              style: TextStyle(fontWeight: FontWeight.w900, color: _quizChoice == s.title ? const Color(0xFF059669) : const Color(0xFFDC2626)),
+        Card(
+          elevation: 0,
+          color: const Color(0xFFF8FAFC),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+            side: const BorderSide(color: Color(0xFFE2E8F0)),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  loc.storyQuestion,
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: themeColor),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  loc.storyQuizQ,
+                  style: const TextStyle(fontWeight: FontWeight.w800, color: Color(0xFF475569)),
+                ),
+                const SizedBox(height: 12),
+                ...options.map((opt) {
+                  final selected = _quizChoice == opt;
+                  final isCorrect = opt == s.title;
+                  Color btnBg = Colors.white;
+                  Color btnBorder = const Color(0xFFE2E8F0);
+                  Color textCol = const Color(0xFF1E293B);
+
+                  if (selected) {
+                    if (isCorrect) {
+                      btnBg = const Color(0xFFDCFCE7);
+                      btnBorder = const Color(0xFF22C55E);
+                      textCol = const Color(0xFF15803D);
+                    } else {
+                      btnBg = const Color(0xFFFEE2E2);
+                      btnBorder = const Color(0xFFEF4444);
+                      textCol = const Color(0xFFB91C1C);
+                    }
+                  }
+
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: OutlinedButton(
+                      onPressed: () {
+                        setState(() => _quizChoice = opt);
+                        if (isCorrect) {
+                          _speak(loc.storyQuizCorrect);
+                        } else {
+                          _speak(loc.storyQuizWrong);
+                        }
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: btnBorder, width: 2),
+                        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        backgroundColor: btnBg,
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              opt,
+                              style: TextStyle(fontWeight: FontWeight.w900, color: textCol),
+                            ),
+                          ),
+                          if (selected)
+                            Icon(
+                              isCorrect ? Icons.check_circle : Icons.cancel,
+                              color: isCorrect ? const Color(0xFF22C55E) : const Color(0xFFEF4444),
+                            ),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
+              ],
             ),
           ),
+        ),
         const SizedBox(height: 16),
         Row(
           children: [
             Expanded(
               child: OutlinedButton(
                 onPressed: _back,
-                child: const Text('Geri'),
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: themeColor, width: 2),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                ),
+                child: Text(loc.btnBack, style: TextStyle(fontWeight: FontWeight.w900, color: themeColor)),
               ),
             ),
             const SizedBox(width: 12),
             Expanded(
               child: ElevatedButton(
                 onPressed: _next,
-                child: Text(_step >= s.steps.length - 1 ? 'Bitir' : 'İleri'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: themeColor,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  elevation: 0,
+                ),
+                child: Text(
+                  _step >= s.steps.length - 1 ? loc.btnFinish : loc.btnNext,
+                  style: const TextStyle(fontWeight: FontWeight.w900),
+                ),
               ),
             ),
           ],
@@ -1377,6 +1216,7 @@ class _StoriesModuleBodyState extends State<_StoriesModuleBody> {
   }
 }
 
+
 class _MusicModuleBody extends StatefulWidget {
   const _MusicModuleBody();
 
@@ -1389,72 +1229,55 @@ class _MusicModuleBodyState extends State<_MusicModuleBody> {
   _MusicTrack? _now;
   int _remaining = 0;
   final AudioPlayer _audioPlayer = AudioPlayer();
+  List<_MusicTrack> _tracks = [];
+  bool _loaded = false;
 
-  static const _tracks = <_MusicTrack>[
-    _MusicTrack(
-      title: 'Sakinleştirici Melodi',
-      duration: '7:20',
-      category: 'Müzik',
-      description: 'Zihni dinlendiren, sakinleşme ve gevşeme sağlayan huzurlu neoclassical ambient piyano melodisi.',
-      url: 'https://upload.wikimedia.org/wikipedia/commons/9/95/Scott_Buckley_%E2%80%93_The_Long_Dark_%28Ambient_Neoclassical_Piano%29.ogg',
-    ),
-    _MusicTrack(
-      title: 'Odak Ritmi',
-      duration: '2:10',
-      category: 'Müzik',
-      description: 'Bach\'ın meşhur çello süiti prélude eşliğinde dikkati toplayan ve zihinsel odaklanma sağlayan ritmik klasik odak müziği.',
-      url: 'https://upload.wikimedia.org/wikipedia/commons/4/43/JOHN_MICHEL_CELLO-J_S_BACH_CELLO_SUITE_1_in_G_Prelude.ogg',
-    ),
-    _MusicTrack(
-      title: 'Neşeli Çocuk Melodisi',
-      duration: '0:24',
-      category: 'Müzik',
-      description: 'Çocuklar için neşeli, tatlı ve hareketli klasik "Twinkle Twinkle Little Star" çocuk melodisi.',
-      url: 'https://upload.wikimedia.org/wikipedia/commons/b/bd/Twinkle_Twinkle_Little_Star_plain.ogg',
-    ),
-    _MusicTrack(
-      title: 'Deniz ve Dalga Sesi',
-      duration: '5:02',
-      category: 'Uyku',
-      description: 'Derin uyku öncesi sakinleştirici doğal sahil ve dalga sesleri.',
-      url: 'https://upload.wikimedia.org/wikipedia/commons/1/1f/Waves.ogg',
-    ),
-    _MusicTrack(
-      title: 'Hafif Yağmur Sesi',
-      duration: '6:03',
-      category: 'Sakinleşme',
-      description: 'Rahatlatıcı, stresi azaltan doğal orman yağmuru sesi.',
-      url: 'https://upload.wikimedia.org/wikipedia/commons/3/3d/Rain.ogg',
-    ),
-    _MusicTrack(
-      title: 'Rüzgar Esintisi',
-      duration: '1:00',
-      category: 'Sakinleşme',
-      description: 'Doğal dinlendirici, çam ormanı içerisinden hafif ve huzurlu vadi rüzgarları.',
-      url: 'https://upload.wikimedia.org/wikipedia/commons/f/f3/Wind_in_Swedish_pine_forest_at_25_mps.ogg',
-    ),
-    _MusicTrack(
-      title: 'Beyaz Gürültü (White Noise)',
-      duration: '7:42',
-      category: 'Odak',
-      description: 'Uykuyu destekleyen ve arka plan gürültülerini maskeleyen sabit beyaz gürültü.',
-      url: 'https://upload.wikimedia.org/wikipedia/commons/a/aa/White_noise.ogg',
-    ),
-    _MusicTrack(
-      title: 'Pembe Gürültü (Pink Noise)',
-      duration: '5:38',
-      category: 'Odak',
-      description: 'Zihinsel odaklanma ve sakinleşme için daha dengeli, yumuşak gürültü profili.',
-      url: 'https://upload.wikimedia.org/wikipedia/commons/6/6c/Pink_noise.ogg',
-    ),
-    _MusicTrack(
-      title: 'Kahverengi Gürültü (Brown Noise)',
-      duration: '5:07',
-      category: 'Uyku',
-      description: 'Zihni tamamen sakinleştiren, derin bas frekanslı uyku gürültüsü.',
-      url: 'https://upload.wikimedia.org/wikipedia/commons/4/48/Brown_noise.ogg',
-    ),
-  ];
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_loaded) {
+      _loadTracks();
+    }
+  }
+
+  Future<void> _loadTracks() async {
+    final locale = Localizations.localeOf(context).languageCode;
+    final path = 'assets/content/' + locale + '/music.json';
+    try {
+      final jsonString = await DefaultAssetBundle.of(context).loadString(path);
+      final List<dynamic> list = json.decode(jsonString);
+      setState(() {
+        _tracks = list.map((item) => _MusicTrack(
+          title: item['title'] as String,
+          duration: item['duration'] as String,
+          category: item['category'] as String,
+          categoryKey: item['categoryKey'] as String,
+          description: item['description'] as String,
+          url: item['url'] as String,
+        )).toList();
+        _loaded = true;
+      });
+    } catch (e) {
+      final trString = await DefaultAssetBundle.of(context).loadString('assets/content/tr/music.json');
+      final List<dynamic> list = json.decode(trString);
+      setState(() {
+        _tracks = list.map((item) => _MusicTrack(
+          title: item['title'] as String,
+          duration: item['duration'] as String,
+          category: item['category'] as String,
+          categoryKey: item['categoryKey'] as String,
+          description: item['description'] as String,
+          url: item['url'] as String,
+        )).toList();
+        _loaded = true;
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -1506,19 +1329,30 @@ class _MusicModuleBodyState extends State<_MusicModuleBody> {
     });
   }
 
+  String _formatMmSs(int seconds) {
+    final m = seconds ~/ 60;
+    final s = seconds % 60;
+    return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (! _loaded) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    final loc = AppLocalizations.of(context)!;
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        const Text(
-          'Müzik ve Rahatlatıcı Sesler',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+        Text(
+          loc.musicMainTitle,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
         ),
         const SizedBox(height: 8),
-        const Text(
-          'Sakinleşme, odaklanma veya uyku öncesi için uygun bir ses seçip başlatabilirsiniz.',
-          style: TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF6B7280)),
+        Text(
+          loc.musicMainSubtitle,
+          style: const TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF6B7280)),
         ),
         const SizedBox(height: 20),
         ..._tracks.map((t) {
@@ -1529,20 +1363,20 @@ class _MusicModuleBodyState extends State<_MusicModuleBody> {
           // Map categories to beautiful modern icons
           final IconData categoryIcon;
           final Color categoryColor;
-          switch (t.category) {
-            case 'Müzik':
+          switch (t.categoryKey) {
+            case 'music':
               categoryIcon = Icons.music_note_rounded;
               categoryColor = const Color(0xFF3B82F6);
               break;
-            case 'Uyku':
+            case 'sleep':
               categoryIcon = Icons.nightlight_round_rounded;
               categoryColor = const Color(0xFF6366F1);
               break;
-            case 'Sakinleşme':
+            case 'calming':
               categoryIcon = Icons.spa_rounded;
               categoryColor = const Color(0xFF10B981);
               break;
-            case 'Odak':
+            case 'focus':
               categoryIcon = Icons.center_focus_strong_rounded;
               categoryColor = const Color(0xFFF59E0B);
               break;
@@ -1601,7 +1435,7 @@ class _MusicModuleBodyState extends State<_MusicModuleBody> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              '${t.category} • Süre: ${t.duration}',
+                              t.category + ' • ' + loc.musicDurationPrefix + ': ' + t.duration,
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w800,
@@ -1631,9 +1465,9 @@ class _MusicModuleBodyState extends State<_MusicModuleBody> {
                                 ),
                               ),
                               icon: const Icon(Icons.stop_rounded, size: 18),
-                              label: const Text(
-                                'Bitir',
-                                style: TextStyle(fontWeight: FontWeight.w900),
+                              label: Text(
+                                loc.btnFinish,
+                                style: const TextStyle(fontWeight: FontWeight.w900),
                               ),
                             )
                           : OutlinedButton.icon(
@@ -1657,9 +1491,9 @@ class _MusicModuleBodyState extends State<_MusicModuleBody> {
                                 color: Color(0xFF10B981),
                                 size: 18,
                               ),
-                              label: const Text(
-                                'Başlat',
-                                style: TextStyle(fontWeight: FontWeight.w900),
+                              label: Text(
+                                loc.btnStart,
+                                style: const TextStyle(fontWeight: FontWeight.w900),
                               ),
                             ),
                     ],
@@ -1680,16 +1514,16 @@ class _MusicModuleBodyState extends State<_MusicModuleBody> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Kalan Süre: ${_formatMmSs(_remaining)}',
+                          loc.musicTimeRemaining + ' ' + _formatMmSs(_remaining),
                           style: const TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w900,
                             color: Color(0xFF047857),
                           ),
                         ),
-                        const Row(
+                        Row(
                           children: [
-                            SizedBox(
+                            const SizedBox(
                               width: 8,
                               height: 8,
                               child: CircularProgressIndicator(
@@ -1697,10 +1531,10 @@ class _MusicModuleBodyState extends State<_MusicModuleBody> {
                                 color: Color(0xFF10B981),
                               ),
                             ),
-                            SizedBox(width: 6),
+                            const SizedBox(width: 6),
                             Text(
-                              'Çalıyor...',
-                              style: TextStyle(
+                              loc.musicPlaying,
+                              style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w900,
                                 color: Color(0xFF047857),
@@ -1758,236 +1592,239 @@ class _AccModuleBodyState extends State<_AccModuleBody> with SingleTickerProvide
     }
   }
 
-  static const _categories = <_AccCategory>[
-    _AccCategory(
-      title: 'Temel İhtiyaçlar',
-      cards: [
-        _AccCard(
-          label: 'Su',
-          emoji: '💧',
-          backgroundColor: Color(0xFFDBEAFE),
-          borderColor: Color(0xFFBFDBFE),
-          textColor: Color(0xFF2563EB),
-        ),
-        _AccCard(
-          label: 'Acıktım',
-          emoji: '🍽️',
-          backgroundColor: Color(0xFFFFEDD5),
-          borderColor: Color(0xFFFED7AA),
-          textColor: Color(0xFFEA580C),
-        ),
-        _AccCard(
-          label: 'Tuvalet',
-          emoji: '🚻',
-          backgroundColor: Color(0xFFF4F4F5),
-          borderColor: Color(0xFFE4E4E7),
-          textColor: Color(0xFF52525B),
-        ),
-        _AccCard(
-          label: 'Uykum Geldi',
-          emoji: '🌙',
-          backgroundColor: Color(0xFFE0E7FF),
-          borderColor: Color(0xFFC7D2FE),
-          textColor: Color(0xFF4F46E5),
-        ),
-        _AccCard(
-          label: 'Ara Vermek',
-          emoji: '⏸️',
-          backgroundColor: Color(0xFFD1FAE5),
-          borderColor: Color(0xFFA7F3D0),
-          textColor: Color(0xFF059669),
-        ),
-        _AccCard(
-          label: 'Yardım',
-          emoji: '🆘',
-          backgroundColor: Color(0xFFFEF3C7),
-          borderColor: Color(0xFFFDE68A),
-          textColor: Color(0xFFD97706),
-        ),
-        _AccCard(
-          label: 'Sarılmak',
-          emoji: '🫂',
-          backgroundColor: Color(0xFFFFE4E6),
-          borderColor: Color(0xFFFECDD3),
-          textColor: Color(0xFFE11D48),
-        ),
-      ],
-    ),
-    _AccCategory(
-      title: 'Duygular',
-      cards: [
-        _AccCard(
-          label: 'Mutluyum',
-          emoji: '😊',
-          backgroundColor: Color(0xFFFEF08A),
-          borderColor: Color(0xFFFDE047),
-          textColor: Color(0xFFCA8A04),
-        ),
-        _AccCard(
-          label: 'Üzgünüm',
-          emoji: '😢',
-          backgroundColor: Color(0xFFDBEAFE),
-          borderColor: Color(0xFFBFDBFE),
-          textColor: Color(0xFF2563EB),
-        ),
-        _AccCard(
-          label: 'Korkuyorum',
-          emoji: '😨',
-          backgroundColor: Color(0xFFF3E8FF),
-          borderColor: Color(0xFFE9D5FF),
-          textColor: Color(0xFF9333EA),
-        ),
-        _AccCard(
-          label: 'Heyecanlıyım',
-          emoji: '🤩',
-          backgroundColor: Color(0xFFFFEDD5),
-          borderColor: Color(0xFFFED7AA),
-          textColor: Color(0xFFEA580C),
-        ),
-        _AccCard(
-          label: 'Kızgınım',
-          emoji: '😠',
-          backgroundColor: Color(0xFFFFE4E6),
-          borderColor: Color(0xFFFECDD3),
-          textColor: Color(0xFFE11D48),
-        ),
-        _AccCard(
-          label: 'Sakinim',
-          emoji: '🌿',
-          backgroundColor: Color(0xFFD1FAE5),
-          borderColor: Color(0xFFA7F3D0),
-          textColor: Color(0xFF059669),
-        ),
-        _AccCard(
-          label: 'Yorgunum',
-          emoji: '😴',
-          backgroundColor: Color(0xFFF4F4F5),
-          borderColor: Color(0xFFE4E4E7),
-          textColor: Color(0xFF3F3F46),
-        ),
-        _AccCard(
-          label: 'Şaşkınım',
-          emoji: '😲',
-          backgroundColor: Color(0xFFEDE9FE),
-          borderColor: Color(0xFFDDD6FE),
-          textColor: Color(0xFF6D28D9),
-        ),
-      ],
-    ),
-    _AccCategory(
-      title: 'Yer ve Eylem',
-      cards: [
-        _AccCard(
-          label: 'Eve Gidelim',
-          emoji: '🏠',
-          backgroundColor: Color(0xFFD1FAE5),
-          borderColor: Color(0xFFA7F3D0),
-          textColor: Color(0xFF059669),
-        ),
-        _AccCard(
-          label: 'Dışarı Çıkalım',
-          emoji: '🚪',
-          backgroundColor: Color(0xFFFFE4E6),
-          borderColor: Color(0xFFFECDD3),
-          textColor: Color(0xFFE11D48),
-        ),
-        _AccCard(
-          label: 'Giyinmek',
-          emoji: '👕',
-          backgroundColor: Color(0xFFE0F2FE),
-          borderColor: Color(0xFFBAE6FD),
-          textColor: Color(0xFF0284C7),
-        ),
-        _AccCard(
-          label: 'Parka Gidelim',
-          emoji: '🌳',
-          backgroundColor: Color(0xFFFEF3C7),
-          borderColor: Color(0xFFFDE68A),
-          textColor: Color(0xFFD97706),
-        ),
-        _AccCard(
-          label: 'Okula Gidelim',
-          emoji: '🏫',
-          backgroundColor: Color(0xFFE0E7FF),
-          borderColor: Color(0xFFC7D2FE),
-          textColor: Color(0xFF4F46E5),
-        ),
-        _AccCard(
-          label: 'Müzik Aç',
-          emoji: '🎵',
-          backgroundColor: Color(0xFFF3E8FF),
-          borderColor: Color(0xFFE9D5FF),
-          textColor: Color(0xFF9333EA),
-        ),
-        _AccCard(
-          label: 'Oyun Oynamak',
-          emoji: '🎮',
-          backgroundColor: Color(0xFFE0F2FE),
-          borderColor: Color(0xFFBAE6FD),
-          textColor: Color(0xFF0284C7),
-        ),
-        _AccCard(
-          label: 'Takvime Bakalım',
-          emoji: '📅',
-          backgroundColor: Color(0xFFFEF3C7),
-          borderColor: Color(0xFFFDE68A),
-          textColor: Color(0xFFB45309),
-        ),
-      ],
-    ),
-    _AccCategory(
-      title: 'İletişim',
-      cards: [
-        _AccCard(
-          label: 'Ben',
-          emoji: '🧑',
-          backgroundColor: Color(0xFFF4F4F5),
-          borderColor: Color(0xFFE4E4E7),
-          textColor: Color(0xFF3F3F46),
-        ),
-        _AccCard(
-          label: 'Lütfen',
-          emoji: '🙏',
-          backgroundColor: Color(0xFFFEF3C7),
-          borderColor: Color(0xFFFDE68A),
-          textColor: Color(0xFFB45309),
-        ),
-        _AccCard(
-          label: 'Teşekkür Ederim',
-          emoji: '💗',
-          backgroundColor: Color(0xFFFFE4E6),
-          borderColor: Color(0xFFFECDD3),
-          textColor: Color(0xFFE11D48),
-        ),
-        _AccCard(
-          label: 'Evet',
-          emoji: '✅',
-          backgroundColor: Color(0xFFD1FAE5),
-          borderColor: Color(0xFFA7F3D0),
-          textColor: Color(0xFF059669),
-        ),
-        _AccCard(
-          label: 'Hayır',
-          emoji: '❌',
-          backgroundColor: Color(0xFFFFE4E6),
-          borderColor: Color(0xFFFECDD3),
-          textColor: Color(0xFFE11D48),
-        ),
-        _AccCard(
-          label: 'Telefon',
-          emoji: '📞',
-          backgroundColor: Color(0xFFD1FAE5),
-          borderColor: Color(0xFFA7F3D0),
-          textColor: Color(0xFF047857),
-        ),
-      ],
-    ),
-  ];
+  List<_AccCategory> _getCategories(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    return [
+      _AccCategory(
+        title: loc.accCatNeeds,
+        cards: [
+          _AccCard(
+            label: loc.accLabelWater,
+            emoji: '💧',
+            backgroundColor: const Color(0xFFDBEAFE),
+            borderColor: const Color(0xFFBFDBFE),
+            textColor: const Color(0xFF2563EB),
+          ),
+          _AccCard(
+            label: loc.accLabelHungry,
+            emoji: '🍽️',
+            backgroundColor: const Color(0xFFFFEDD5),
+            borderColor: const Color(0xFFFED7AA),
+            textColor: const Color(0xFFEA580C),
+          ),
+          _AccCard(
+            label: loc.accLabelToilet,
+            emoji: '🚻',
+            backgroundColor: const Color(0xFFF4F4F5),
+            borderColor: const Color(0xFFE4E4E7),
+            textColor: const Color(0xFF52525B),
+          ),
+          _AccCard(
+            label: loc.accLabelSleepy,
+            emoji: '🌙',
+            backgroundColor: const Color(0xFFE0E7FF),
+            borderColor: const Color(0xFFC7D2FE),
+            textColor: const Color(0xFF4F46E5),
+          ),
+          _AccCard(
+            label: loc.accLabelBreak,
+            emoji: '⏸️',
+            backgroundColor: const Color(0xFFD1FAE5),
+            borderColor: const Color(0xFFA7F3D0),
+            textColor: const Color(0xFF059669),
+          ),
+          _AccCard(
+            label: loc.accLabelHelp,
+            emoji: '🆘',
+            backgroundColor: const Color(0xFFFEF3C7),
+            borderColor: const Color(0xFFFDE68A),
+            textColor: const Color(0xFFD97706),
+          ),
+          _AccCard(
+            label: loc.accLabelHug,
+            emoji: '🫂',
+            backgroundColor: const Color(0xFFFFE4E6),
+            borderColor: const Color(0xFFFECDD3),
+            textColor: const Color(0xFFE11D48),
+          ),
+        ],
+      ),
+      _AccCategory(
+        title: loc.accCatEmotions,
+        cards: [
+          _AccCard(
+            label: loc.accLabelHappy,
+            emoji: '😊',
+            backgroundColor: const Color(0xFFFEF08A),
+            borderColor: const Color(0xFFFDE047),
+            textColor: const Color(0xFFCA8A04),
+          ),
+          _AccCard(
+            label: loc.accLabelSad,
+            emoji: '😢',
+            backgroundColor: const Color(0xFFDBEAFE),
+            borderColor: const Color(0xFFBFDBFE),
+            textColor: const Color(0xFF2563EB),
+          ),
+          _AccCard(
+            label: loc.accLabelScared,
+            emoji: '😨',
+            backgroundColor: const Color(0xFFF3E8FF),
+            borderColor: const Color(0xFFE9D5FF),
+            textColor: const Color(0xFF9333EA),
+          ),
+          _AccCard(
+            label: loc.accLabelExcited,
+            emoji: '🤩',
+            backgroundColor: const Color(0xFFFFEDD5),
+            borderColor: const Color(0xFFFED7AA),
+            textColor: const Color(0xFFEA580C),
+          ),
+          _AccCard(
+            label: loc.accLabelAngry,
+            emoji: '😠',
+            backgroundColor: const Color(0xFFFFE4E6),
+            borderColor: const Color(0xFFFECDD3),
+            textColor: const Color(0xFFE11D48),
+          ),
+          _AccCard(
+            label: loc.accLabelCalm,
+            emoji: '🌿',
+            backgroundColor: const Color(0xFFD1FAE5),
+            borderColor: const Color(0xFFA7F3D0),
+            textColor: const Color(0xFF059669),
+          ),
+          _AccCard(
+            label: loc.accLabelTired,
+            emoji: '😴',
+            backgroundColor: const Color(0xFFF4F4F5),
+            borderColor: const Color(0xFFE4E4E7),
+            textColor: const Color(0xFF3F3F46),
+          ),
+          _AccCard(
+            label: loc.accLabelSurprised,
+            emoji: '😲',
+            backgroundColor: const Color(0xFFEDE9FE),
+            borderColor: const Color(0xFFDDD6FE),
+            textColor: const Color(0xFF6D28D9),
+          ),
+        ],
+      ),
+      _AccCategory(
+        title: loc.accCatActions,
+        cards: [
+          _AccCard(
+            label: loc.accLabelGoHome,
+            emoji: '🏠',
+            backgroundColor: const Color(0xFFD1FAE5),
+            borderColor: const Color(0xFFA7F3D0),
+            textColor: const Color(0xFF059669),
+          ),
+          _AccCard(
+            label: loc.accLabelGoOut,
+            emoji: '🚪',
+            backgroundColor: const Color(0xFFFFE4E6),
+            borderColor: const Color(0xFFFECDD3),
+            textColor: const Color(0xFFE11D48),
+          ),
+          _AccCard(
+            label: loc.accLabelDress,
+            emoji: '👕',
+            backgroundColor: const Color(0xFFE0F2FE),
+            borderColor: const Color(0xFFBAE6FD),
+            textColor: const Color(0xFF0284C7),
+          ),
+          _AccCard(
+            label: loc.accLabelGoPark,
+            emoji: '🌳',
+            backgroundColor: const Color(0xFFFEF3C7),
+            borderColor: const Color(0xFFFDE68A),
+            textColor: const Color(0xFFD97706),
+          ),
+          _AccCard(
+            label: loc.accLabelGoSchool,
+            emoji: '🏫',
+            backgroundColor: const Color(0xFFE0E7FF),
+            borderColor: const Color(0xFFC7D2FE),
+            textColor: const Color(0xFF4F46E5),
+          ),
+          _AccCard(
+            label: loc.accLabelPlayMusic,
+            emoji: '🎵',
+            backgroundColor: const Color(0xFFF3E8FF),
+            borderColor: const Color(0xFFE9D5FF),
+            textColor: const Color(0xFF9333EA),
+          ),
+          _AccCard(
+            label: loc.accLabelPlayGame,
+            emoji: '🎮',
+            backgroundColor: const Color(0xFFE0F2FE),
+            borderColor: const Color(0xFFBAE6FD),
+            textColor: const Color(0xFF0284C7),
+          ),
+          _AccCard(
+            label: loc.accLabelLookCalendar,
+            emoji: '📅',
+            backgroundColor: const Color(0xFFFEF3C7),
+            borderColor: const Color(0xFFFDE68A),
+            textColor: const Color(0xFFB45309),
+          ),
+        ],
+      ),
+      _AccCategory(
+        title: loc.accCatComm,
+        cards: [
+          _AccCard(
+            label: loc.accLabelMe,
+            emoji: '🧑',
+            backgroundColor: const Color(0xFFF4F4F5),
+            borderColor: const Color(0xFFE4E4E7),
+            textColor: const Color(0xFF3F3F46),
+          ),
+          _AccCard(
+            label: loc.accLabelPlease,
+            emoji: '🙏',
+            backgroundColor: const Color(0xFFFEF3C7),
+            borderColor: const Color(0xFFFDE68A),
+            textColor: const Color(0xFFB45309),
+          ),
+          _AccCard(
+            label: loc.accLabelThanks,
+            emoji: '💗',
+            backgroundColor: const Color(0xFFFFE4E6),
+            borderColor: const Color(0xFFFECDD3),
+            textColor: const Color(0xFFE11D48),
+          ),
+          _AccCard(
+            label: loc.accLabelYes,
+            emoji: '✅',
+            backgroundColor: const Color(0xFFD1FAE5),
+            borderColor: const Color(0xFFA7F3D0),
+            textColor: const Color(0xFF059669),
+          ),
+          _AccCard(
+            label: loc.accLabelNo,
+            emoji: '❌',
+            backgroundColor: const Color(0xFFFFE4E6),
+            borderColor: const Color(0xFFFECDD3),
+            textColor: const Color(0xFFE11D48),
+          ),
+          _AccCard(
+            label: loc.accLabelPhone,
+            emoji: '📞',
+            backgroundColor: const Color(0xFFD1FAE5),
+            borderColor: const Color(0xFFA7F3D0),
+            textColor: const Color(0xFF047857),
+          ),
+        ],
+      ),
+    ];
+  }
 
   @override
   void initState() {
     super.initState();
-    _tabs = TabController(length: _categories.length, vsync: this);
+    _tabs = TabController(length: 4, vsync: this);
     _tabs.addListener(() {
       if (_tabs.indexIsChanging) return;
       Future.microtask(_persist);
@@ -2055,6 +1892,9 @@ class _AccModuleBodyState extends State<_AccModuleBody> with SingleTickerProvide
   @override
   Widget build(BuildContext context) {
     final sentenceText = _sentence.isEmpty ? '…' : '${_sentence.join(' ')}.';
+    final categories = _getCategories(context);
+    final loc = AppLocalizations.of(context)!;
+
     return Column(
       children: [
         if (!_loaded) const LinearProgressIndicator(),
@@ -2071,7 +1911,7 @@ class _AccModuleBodyState extends State<_AccModuleBody> with SingleTickerProvide
                   border: Border.all(color: const Color(0xFF111827), width: 3),
                 ),
                 child: Text(
-                  _message.isEmpty ? 'Bir karta dokun...' : _message,
+                  _message.isEmpty ? loc.accPlaceholderCard : _message,
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900),
                 ),
@@ -2096,7 +1936,7 @@ class _AccModuleBodyState extends State<_AccModuleBody> with SingleTickerProvide
                       IconButton(
                         icon: const Icon(Icons.volume_up, color: Color(0xFFD97706)),
                         onPressed: () => _speak(_sentence.join(' ')),
-                        tooltip: 'Cümleyi Oku',
+                        tooltip: loc.accReadSentence,
                       ),
                   ],
                 ),
@@ -2108,15 +1948,15 @@ class _AccModuleBodyState extends State<_AccModuleBody> with SingleTickerProvide
                     child: OutlinedButton.icon(
                       onPressed: _clear,
                       icon: const Icon(Icons.delete_outline),
-                      label: const Text('Temizle'),
+                      label: Text(loc.btnClear),
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: OutlinedButton.icon(
-                      onPressed: _sentence.isEmpty ? null : () => _openDetail(context, 'Cümle', sentenceText),
+                      onPressed: _sentence.isEmpty ? null : () => _openDetail(context, loc.accSentenceDetailTitle, sentenceText),
                       icon: const Icon(Icons.visibility),
-                      label: const Text('Göster'),
+                      label: Text(loc.btnShow),
                     ),
                   ),
                 ],
@@ -2127,12 +1967,12 @@ class _AccModuleBodyState extends State<_AccModuleBody> with SingleTickerProvide
         TabBar(
           controller: _tabs,
           isScrollable: true,
-          tabs: _categories.map((c) => Tab(text: c.title)).toList(),
+          tabs: categories.map((c) => Tab(text: c.title)).toList(),
         ),
         Expanded(
           child: TabBarView(
             controller: _tabs,
-            children: _categories.map((cat) {
+            children: categories.map((cat) {
               return GridView.count(
                 padding: const EdgeInsets.all(16),
                 crossAxisCount: MediaQuery.of(context).size.width >= 720 ? 4 : 3,
@@ -2206,13 +2046,16 @@ class _CalendarModuleBodyState extends State<_CalendarModuleBody> {
     Future.microtask(_load);
   }
 
-  static const _template = <_ScheduleItem>[
-    _ScheduleItem(id: 'morning-routine', time: '09:00', task: 'Sabah Rutini', category: 'Özbakım'),
-    _ScheduleItem(id: 'emotion-work', time: '10:30', task: 'Duygu Çalışması', category: 'Eğitim'),
-    _ScheduleItem(id: 'lunch', time: '12:00', task: 'Öğle Yemeği', category: 'Beslenme'),
-    _ScheduleItem(id: 'matching-game', time: '14:00', task: 'Eşleştirme Oyunu', category: 'Oyun'),
-    _ScheduleItem(id: 'garden-time', time: '16:00', task: 'Bahçe Saati', category: 'Aktivite'),
-  ];
+  List<_ScheduleItem> _getTemplate(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    return [
+      _ScheduleItem(id: 'morning-routine', time: '09:00', task: loc.calendarTaskMorning, category: loc.calendarCatSelfCare),
+      _ScheduleItem(id: 'emotion-work', time: '10:30', task: loc.calendarTaskEmotion, category: loc.calendarCatEducation),
+      _ScheduleItem(id: 'lunch', time: '12:00', task: loc.calendarTaskLunch, category: loc.calendarCatNutrition),
+      _ScheduleItem(id: 'matching-game', time: '14:00', task: loc.calendarTaskMatching, category: loc.calendarCatPlay),
+      _ScheduleItem(id: 'garden-time', time: '16:00', task: loc.calendarTaskGarden, category: loc.calendarCatActivity),
+    ];
+  }
 
   @override
   void dispose() {
@@ -2341,20 +2184,28 @@ class _CalendarModuleBodyState extends State<_CalendarModuleBody> {
   void _addCustomTask() {
     final text = _customTaskCtrl.text.trim();
     if (text.isEmpty) return;
+    final loc = AppLocalizations.of(context)!;
     setState(() {
-      _customTasks.add(_ScheduleItem(id: 'c-${DateTime.now().millisecondsSinceEpoch}', time: '—', task: text, category: 'Özel'));
+      _customTasks.add(_ScheduleItem(id: 'c-${DateTime.now().millisecondsSinceEpoch}', time: '—', task: text, category: loc.calendarCatCustom));
       _customTaskCtrl.clear();
     });
     Future.microtask(_persist);
   }
 
+  String _formatMmSs(int seconds) {
+    final m = seconds ~/ 60;
+    final s = seconds % 60;
+    return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final dayMap = _records[_selectedDateKey] ?? const <String, bool>{};
-    final schedule = [..._template, ..._customTasks].map((i) => i.withDone(dayMap[i.id] ?? false)).toList(growable: false);
+    final schedule = [..._getTemplate(context), ..._customTasks].map((i) => i.withDone(dayMap[i.id] ?? false)).toList(growable: false);
     final doneCount = schedule.where((s) => s.done).length;
     final total = schedule.length;
     final percent = total == 0 ? 0 : ((doneCount / total) * 100).round();
+    final loc = AppLocalizations.of(context)!;
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -2364,86 +2215,193 @@ class _CalendarModuleBodyState extends State<_CalendarModuleBody> {
             padding: EdgeInsets.only(bottom: 12),
             child: LinearProgressIndicator(),
           ),
-        Row(
-          children: [
-            IconButton(onPressed: _prevDay, icon: const Icon(Icons.chevron_left)),
-            Expanded(
-              child: Text(
-                _selectedDateKey,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontWeight: FontWeight.w900),
-              ),
-            ),
-            IconButton(onPressed: _nextDay, icon: const Icon(Icons.chevron_right)),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Card(
-          elevation: 0,
-          color: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
-            side: const BorderSide(color: Color(0xFFE4E4E7)),
+        
+        // Date Selector Header
+        Container(
+          decoration: BoxDecoration(
+            color: const Color(0xFFF1F5F9),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: const Color(0xFFE2E8F0)),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(14),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text('İlerleme: $percent%', style: const TextStyle(fontWeight: FontWeight.w900)),
-                    ),
-                    Text('Jeton: $_tokenBalance', style: const TextStyle(fontWeight: FontWeight.w900)),
-                  ],
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          child: Row(
+            children: [
+              IconButton(
+                onPressed: _prevDay,
+                icon: const Icon(Icons.chevron_left, color: Color(0xFF0F172A), size: 28),
+              ),
+              Expanded(
+                child: Text(
+                  _selectedDateKey,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 16,
+                    color: Color(0xFF0F172A),
+                    letterSpacing: 0.5,
+                  ),
                 ),
-                const SizedBox(height: 10),
-                LinearProgressIndicator(value: total == 0 ? 0 : doneCount / total),
-              ],
-            ),
+              ),
+              IconButton(
+                onPressed: _nextDay,
+                icon: const Icon(Icons.chevron_right, color: Color(0xFF0F172A), size: 28),
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 16),
+
+        // Progress & Tokens Card (Gradient)
+        Container(
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF8B5CF6), Color(0xFF3B82F6)], // Purple/Blue
+            ),
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF8B5CF6).withOpacity(0.2),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(Icons.emoji_events, color: Colors.white, size: 24),
+                      const SizedBox(width: 8),
+                      Text(
+                        '${loc.calendarProgressPrefix}: $percent%',
+                        style: const TextStyle(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 16),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.stars, color: Colors.white, size: 18),
+                        const SizedBox(width: 6),
+                        Text(
+                          '${loc.calendarTokenBalance}: $_tokenBalance',
+                          style: const TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: LinearProgressIndicator(
+                  value: total == 0 ? 0 : doneCount / total,
+                  minHeight: 12,
+                  backgroundColor: Colors.white.withOpacity(0.2),
+                  valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+
+        // Timer Card (Stopwatch Dashboard style)
         Card(
           elevation: 0,
           color: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
-            side: const BorderSide(color: Color(0xFFE4E4E7)),
+            borderRadius: BorderRadius.circular(24),
+            side: const BorderSide(color: Color(0xFFE2E8F0), width: 1.5),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.all(20),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Zamanlayıcı', style: TextStyle(fontWeight: FontWeight.w900)),
-                const SizedBox(height: 8),
-                Text(_formatMmSs(_timerRemaining), style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w900)),
-                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      loc.calendarTimerTitle,
+                      style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: Color(0xFF1E293B)),
+                    ),
+                    const Icon(Icons.timer_outlined, color: Color(0xFF64748B)),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF8FAFC),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: const Color(0xFFF1F5F9)),
+                  ),
+                  child: Text(
+                    _formatMmSs(_timerRemaining),
+                    style: const TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xFF0F172A),
+                      letterSpacing: 2,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
                 Row(
                   children: [
                     Expanded(
                       child: ElevatedButton.icon(
                         onPressed: _timerRunning ? null : _startTimer,
                         icon: const Icon(Icons.play_arrow),
-                        label: const Text('Başlat'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF10B981),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                          elevation: 0,
+                        ),
+                        label: Text(loc.btnStart, style: const TextStyle(fontWeight: FontWeight.w800)),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: OutlinedButton.icon(
                         onPressed: _timerRunning ? _pauseTimer : null,
                         icon: const Icon(Icons.pause),
-                        label: const Text('Duraklat'),
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: Color(0xFFE2E8F0), width: 1.5),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                          foregroundColor: const Color(0xFF64748B),
+                        ),
+                        label: Text(loc.btnPause, style: const TextStyle(fontWeight: FontWeight.w800)),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: OutlinedButton.icon(
                         onPressed: _resetTimer,
                         icon: const Icon(Icons.refresh),
-                        label: const Text('Sıfırla'),
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: Color(0xFFE2E8F0), width: 1.5),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                          foregroundColor: const Color(0xFF64748B),
+                        ),
+                        label: Text(loc.btnReset, style: const TextStyle(fontWeight: FontWeight.w800)),
                       ),
                     ),
                   ],
@@ -2452,33 +2410,143 @@ class _CalendarModuleBodyState extends State<_CalendarModuleBody> {
             ),
           ),
         ),
-        const SizedBox(height: 16),
-        const Text('Günlük Program', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
-        const SizedBox(height: 12),
-        ...schedule.map(
-          (s) => Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: CheckboxListTile(
-              value: s.done,
-              onChanged: (_) => _toggleDone(s.id),
-              title: Text('${s.time} • ${s.task}', style: const TextStyle(fontWeight: FontWeight.w900)),
-              subtitle: Text(s.category, style: const TextStyle(fontWeight: FontWeight.w700)),
-              controlAffinity: ListTileControlAffinity.leading,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            ),
-          ),
+        const SizedBox(height: 20),
+
+        Text(
+          loc.calendarDailySchedule,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 12),
+
+        // Schedule Checklist Items
+        ...schedule.map(
+          (s) {
+            // Category custom colors
+            Color catColor = const Color(0xFF3B82F6); // Blue default
+            if (s.category == loc.calendarCatSelfCare) {
+              catColor = const Color(0xFFF59E0B); // Amber
+            } else if (s.category == loc.calendarCatEducation) {
+              catColor = const Color(0xFF8B5CF6); // Purple
+            } else if (s.category == loc.calendarCatNutrition) {
+              catColor = const Color(0xFF10B981); // Emerald
+            } else if (s.category == loc.calendarCatPlay) {
+              catColor = const Color(0xFFEC4899); // Pink
+            } else if (s.category == loc.calendarCatActivity) {
+              catColor = const Color(0xFF06B6D4); // Cyan
+            }
+
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Card(
+                margin: EdgeInsets.zero,
+                elevation: 0,
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  side: BorderSide(
+                    color: s.done ? catColor.withOpacity(0.5) : const Color(0xFFE2E8F0),
+                    width: s.done ? 2.0 : 1.5,
+                  ),
+                ),
+                child: InkWell(
+                  onTap: () => _toggleDone(s.id),
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        // Left category indicator bar
+                        Container(
+                          width: 6,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: catColor,
+                            borderRadius: BorderRadius.circular(3),
+                          ),
+                        ),
+                        const SizedBox(width: 14),
+                        // Content
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${s.time} • ${s.task}',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 15,
+                                  color: s.done ? const Color(0xFF64748B) : const Color(0xFF0F172A),
+                                  decoration: s.done ? TextDecoration.lineThrough : null,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                s.category,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 12,
+                                  color: catColor.withOpacity(0.85),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // Custom Checkbox representation
+                        Container(
+                          width: 28,
+                          height: 28,
+                          decoration: BoxDecoration(
+                            color: s.done ? catColor : Colors.white,
+                            border: Border.all(
+                              color: s.done ? catColor : const Color(0xFFCBD5E1),
+                              width: 2,
+                            ),
+                            shape: BoxShape.circle,
+                          ),
+                          child: s.done
+                              ? const Icon(Icons.check, color: Colors.white, size: 18)
+                              : null,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+        const SizedBox(height: 12),
+
+        // Add custom task
         Row(
           children: [
             Expanded(
               child: TextField(
                 controller: _customTaskCtrl,
-                decoration: const InputDecoration(labelText: 'Özel görev ekle', border: OutlineInputBorder()),
+                style: const TextStyle(fontWeight: FontWeight.bold),
+                decoration: InputDecoration(
+                  labelText: loc.calendarAddCustomTaskHint,
+                  labelStyle: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF64748B)),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                ),
               ),
             ),
-            const SizedBox(width: 10),
-            ElevatedButton(onPressed: _addCustomTask, child: const Text('Ekle')),
+            const SizedBox(width: 12),
+            SizedBox(
+              height: 48,
+              child: ElevatedButton(
+                onPressed: _addCustomTask,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF0284C7),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  elevation: 0,
+                ),
+                child: Text(loc.btnAdd, style: const TextStyle(fontWeight: FontWeight.w900)),
+              ),
+            ),
           ],
         ),
       ],
@@ -2491,46 +2559,47 @@ class _GamesModuleBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     final games = <_GameItem>[
       _GameItem(
-        title: 'Duyguları Eşleştir',
-        description: 'Hangi duygu hangi kelime?',
+        title: loc.gameTitleEmotions,
+        description: loc.gameDescEmotions,
         icon: Icons.favorite,
         open: () => _pushGame(context, const _EmotionsMatchGamePage()),
       ),
       _GameItem(
-        title: 'Eşleştirme Oyunu',
-        description: 'Aynı meyveleri bulup eşleştir',
+        title: loc.gameTitleMatching,
+        description: loc.gameDescMatching,
         icon: Icons.layers,
         open: () => _pushGame(context, const _MatchingGamePage()),
       ),
       _GameItem(
-        title: 'Sayı Saymaca',
-        description: 'Eğlenceli sayılarla öğren',
+        title: loc.gameTitleCounting,
+        description: loc.gameDescCounting,
         icon: Icons.tag,
         open: () => _pushGame(context, const _CountingGamePage()),
       ),
       _GameItem(
-        title: 'Renkleri Bul',
-        description: 'Doğru rengi seç',
+        title: loc.gameTitleColors,
+        description: loc.gameDescColors,
         icon: Icons.palette,
         open: () => _pushGame(context, const _ColorsGamePage()),
       ),
       _GameItem(
-        title: 'Hafıza Kartları',
-        description: 'Kartların yerini hatırla',
+        title: loc.gameTitleMemory,
+        description: loc.gameDescMemory,
         icon: Icons.star,
         open: () => _pushGame(context, const _MemoryGamePage()),
       ),
       _GameItem(
-        title: 'Şekilleri Tanı',
-        description: 'Doğru şekli seç',
+        title: loc.gameTitleShapes,
+        description: loc.gameDescShapes,
         icon: Icons.category,
         open: () => _pushGame(context, const _ShapesGamePage()),
       ),
       _GameItem(
-        title: 'Boyama Oyunu',
-        description: 'Şekilleri dilediğin renge boya',
+        title: loc.gameTitleColoring,
+        description: loc.gameDescColoring,
         icon: Icons.brush,
         open: () => _pushGame(context, const _ColoringGamePage()),
       ),
@@ -2539,7 +2608,7 @@ class _GamesModuleBody extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        const Text('Oyun seç', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
+        Text(loc.gameSelect, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
         const SizedBox(height: 12),
         ...games.map(
           (g) => Padding(
@@ -2602,6 +2671,19 @@ class _EmotionsMatchGamePageState extends State<_EmotionsMatchGamePage> {
     });
   }
 
+  String _getEmotionLabel(BuildContext context, String id) {
+    final loc = AppLocalizations.of(context)!;
+    switch (id) {
+      case 'happy': return loc.emotionHappy;
+      case 'sad': return loc.emotionSad;
+      case 'angry': return loc.emotionAngry;
+      case 'surprised': return loc.emotionSurprised;
+      case 'scared': return loc.emotionScared;
+      case 'sleepy': return loc.emotionSleepy;
+      default: return '';
+    }
+  }
+
   void _handlePick(String side, String id) {
     if (_disabled || _matched.contains(id)) return;
 
@@ -2621,129 +2703,131 @@ class _EmotionsMatchGamePageState extends State<_EmotionsMatchGamePage> {
         _selectedLeft = null;
         _selectedRight = null;
       });
-      return;
-    }
-
-    setState(() => _disabled = true);
-    Future.delayed(const Duration(milliseconds: 700), () {
-      if (mounted) {
+    } else {
+      setState(() => _disabled = true);
+      Future.delayed(const Duration(milliseconds: 600), () {
+        if (!mounted) return;
         setState(() {
           _selectedLeft = null;
           _selectedRight = null;
           _disabled = false;
         });
-      }
-    });
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final isWon = _matched.length == _items.length;
+    final loc = AppLocalizations.of(context)!;
+    final isDone = _matched.length == _items.length;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF1F2), // rose-50
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Color(0xFF0284C7)),
-        title: const Text(
-          'Duyguları Eşleştir',
-          style: TextStyle(
-            fontWeight: FontWeight.w900,
-            letterSpacing: -0.5,
-            color: Color(0xFF0284C7),
-          ),
+        title: Text(
+          loc.gameTitleEmotions,
+          style: const TextStyle(fontWeight: FontWeight.w900, color: Color(0xFF0284C7)),
         ),
-        backgroundColor: Colors.white,
-        actions: [
-          IconButton(icon: const Icon(Icons.refresh, color: Color(0xFF0284C7)), onPressed: _resetGame),
-        ],
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: isWon
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.emoji_events, size: 80, color: Colors.amber),
-                    const SizedBox(height: 16),
-                    const Text('Harika İşi Çıkardın!', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900)),
-                    const SizedBox(height: 8),
-                    const Text('Tüm duyguları başarıyla eşleştirdin.'),
-                    const SizedBox(height: 24),
-                    FilledButton(
-                      onPressed: _resetGame,
-                      style: FilledButton.styleFrom(backgroundColor: Colors.green),
-                      child: const Text('Tekrar Oyna'),
-                    ),
-                  ],
-                )
-              : Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        children: _left.map((item) {
-                          final isMatched = _matched.contains(item.id);
-                          final isSelected = _selectedLeft == item.id;
-                          return _buildCard(
-                            child: Text(item.emoji!, style: const TextStyle(fontSize: 32)),
-                            isMatched: isMatched,
-                            isSelected: isSelected,
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              isDone ? loc.gameStatusAllMatched : loc.gameStatusMatch,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: _left.length,
+                      itemBuilder: (context, idx) {
+                        final item = _left[idx];
+                        final isMatched = _matched.contains(item.id);
+                        final isSelected = _selectedLeft == item.id;
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: InkWell(
                             onTap: () => _handlePick('left', item.id),
-                          );
-                        }).toList(),
-                      ),
+                            borderRadius: BorderRadius.circular(16),
+                            child: Ink(
+                              height: 64,
+                              decoration: BoxDecoration(
+                                color: isMatched
+                                    ? const Color(0xFFD1FAE5)
+                                    : (isSelected ? const Color(0xFFE0F2FE) : Colors.white),
+                                border: Border.all(
+                                  color: isMatched
+                                      ? const Color(0xFF10B981)
+                                      : (isSelected ? const Color(0xFF0284C7) : const Color(0xFFE4E4E7)),
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Center(
+                                child: Text(item.emoji ?? '', style: const TextStyle(fontSize: 32)),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        children: _right.map((item) {
-                          final isMatched = _matched.contains(item.id);
-                          final isSelected = _selectedRight == item.id;
-                          return _buildCard(
-                            child: Text(item.label, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                            isMatched: isMatched,
-                            isSelected: isSelected,
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: _right.length,
+                      itemBuilder: (context, idx) {
+                        final item = _right[idx];
+                        final isMatched = _matched.contains(item.id);
+                        final isSelected = _selectedRight == item.id;
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: InkWell(
                             onTap: () => _handlePick('right', item.id),
-                          );
-                        }).toList(),
-                      ),
+                            borderRadius: BorderRadius.circular(16),
+                            child: Ink(
+                              height: 64,
+                              decoration: BoxDecoration(
+                                color: isMatched
+                                    ? const Color(0xFFD1FAE5)
+                                    : (isSelected ? const Color(0xFFE0F2FE) : Colors.white),
+                                border: Border.all(
+                                  color: isMatched
+                                      ? const Color(0xFF10B981)
+                                      : (isSelected ? const Color(0xFF0284C7) : const Color(0xFFE4E4E7)),
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  _getEmotionLabel(context, item.id),
+                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  ],
-                ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCard({required Widget child, required bool isMatched, required bool isSelected, required VoidCallback onTap}) {
-    Color bgColor = Colors.white;
-    Color borderColor = Colors.grey.shade300;
-
-    if (isMatched) {
-      bgColor = Colors.green.shade100;
-      borderColor = Colors.green.shade300;
-    } else if (isSelected) {
-      bgColor = Colors.white;
-      borderColor = Colors.blue.shade400;
-    }
-
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        margin: const EdgeInsets.only(bottom: 12),
-        height: 80,
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: borderColor, width: isSelected ? 4 : 2),
-          boxShadow: [
-            if (!isMatched)
-              BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: _resetGame,
+              icon: const Icon(Icons.refresh),
+              label: Text(loc.btnRestart),
+            ),
           ],
         ),
-        alignment: Alignment.center,
-        child: Opacity(opacity: isMatched ? 0.5 : 1.0, child: child),
       ),
     );
   }
@@ -2758,7 +2842,7 @@ class _MatchingGamePage extends StatefulWidget {
 
 class _MatchingGamePageState extends State<_MatchingGamePage> {
   final _rand = Random();
-  final _items = const <({String id, String emoji})>[
+  static const _items = <({String id, String emoji})>[
     (id: 'apple', emoji: '🍎'),
     (id: 'banana', emoji: '🍌'),
     (id: 'grape', emoji: '🍇'),
@@ -2772,7 +2856,7 @@ class _MatchingGamePageState extends State<_MatchingGamePage> {
   String? _pickedLeft;
   String? _pickedRight;
   final Set<String> _solved = {};
-  String _status = 'Eşleştir';
+  String? _statusKey;
 
   @override
   void initState() {
@@ -2787,7 +2871,7 @@ class _MatchingGamePageState extends State<_MatchingGamePage> {
       _pickedLeft = null;
       _pickedRight = null;
       _solved.clear();
-      _status = 'Eşleştir';
+      _statusKey = 'gameStatusMatch';
     });
   }
 
@@ -2811,27 +2895,39 @@ class _MatchingGamePageState extends State<_MatchingGamePage> {
     if (_pickedLeft == null || _pickedRight == null) return;
     if (_pickedLeft == _pickedRight) {
       _solved.add(_pickedLeft!);
-      _status = 'Doğru!';
+      _statusKey = 'storyQuizCorrect';
       _pickedLeft = null;
       _pickedRight = null;
       if (_solved.length == _items.length) {
-        _status = 'Tebrikler, hepsi eşleşti!';
+        _statusKey = 'gameStatusAllMatched';
       }
       return;
     }
-    _status = 'Tekrar dene';
+    _statusKey = 'storyQuizWrong';
     _pickedLeft = null;
     _pickedRight = null;
   }
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final String statusText;
+    if (_statusKey == 'gameStatusMatch') {
+      statusText = loc.gameStatusMatch;
+    } else if (_statusKey == 'storyQuizCorrect') {
+      statusText = loc.storyQuizCorrect;
+    } else if (_statusKey == 'gameStatusAllMatched') {
+      statusText = loc.gameStatusAllMatched;
+    } else {
+      statusText = loc.storyQuizWrong;
+    }
+
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Color(0xFF0284C7)),
-        title: const Text(
-          'Eşleştirme Oyunu',
-          style: TextStyle(
+        title: Text(
+          loc.gameTitleMatching,
+          style: const TextStyle(
             fontWeight: FontWeight.w900,
             letterSpacing: -0.5,
             color: Color(0xFF0284C7),
@@ -2843,7 +2939,7 @@ class _MatchingGamePageState extends State<_MatchingGamePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(_status, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.w900)),
+            Text(statusText, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.w900)),
             const SizedBox(height: 12),
             Expanded(
               child: Row(
@@ -2855,7 +2951,7 @@ class _MatchingGamePageState extends State<_MatchingGamePage> {
               ),
             ),
             const SizedBox(height: 12),
-            OutlinedButton.icon(onPressed: _reset, icon: const Icon(Icons.refresh), label: const Text('Yeniden Başlat')),
+            OutlinedButton.icon(onPressed: _reset, icon: const Icon(Icons.refresh), label: Text(loc.btnRestart)),
           ],
         ),
       ),
@@ -2872,26 +2968,39 @@ class _MatchColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      itemCount: items.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 10),
-      itemBuilder: (context, idx) {
-        final c = items[idx];
+    return ListView(
+      children: items.map((c) {
         final isSolved = solved.contains(c.id);
-        final selected = pickedId == c.id;
-        return SizedBox(
-          height: 64,
-          child: OutlinedButton(
-            onPressed: isSolved ? null : () => onPick(c),
-            style: OutlinedButton.styleFrom(
-              side: BorderSide(color: selected ? const Color(0xFF111827) : const Color(0xFFE4E4E7), width: 2),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              backgroundColor: isSolved ? const Color(0xFFE5E7EB) : Colors.white,
+        final isPicked = pickedId == c.id;
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: InkWell(
+            onTap: () => onPick(c),
+            borderRadius: BorderRadius.circular(18),
+            child: Ink(
+              height: 72,
+              decoration: BoxDecoration(
+                color: isSolved
+                    ? const Color(0xFFD1FAE5)
+                    : (isPicked ? const Color(0xFFE0F2FE) : Colors.white),
+                border: Border.all(
+                  color: isSolved
+                      ? const Color(0xFF10B981)
+                      : (isPicked ? const Color(0xFF0284C7) : const Color(0xFFE4E4E7)),
+                  width: 2.0,
+                ),
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: Center(
+                child: Text(
+                  c.label ?? '',
+                  style: const TextStyle(fontSize: 28),
+                ),
+              ),
             ),
-            child: Text(c.label, style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w900)),
           ),
         );
-      },
+      }).toList(),
     );
   }
 }
@@ -2905,28 +3014,17 @@ class _MemoryGamePage extends StatefulWidget {
 
 class _MemoryGamePageState extends State<_MemoryGamePage> {
   final _rand = Random();
-  final _pairs = const <({String type, String emoji})>[
-    (type: 'apple', emoji: '🍎'),
-    (type: 'banana', emoji: '🍌'),
-    (type: 'grape', emoji: '🍇'),
-    (type: 'strawberry', emoji: '🍓'),
-    (type: 'orange', emoji: '🍊'),
-    (type: 'watermelon', emoji: '🍉'),
-    (type: 'kiwi', emoji: '🥝'),
-    (type: 'pineapple', emoji: '🍍'),
-    (type: 'peach', emoji: '🍑'),
-    (type: 'cherries', emoji: '🍒'),
-  ];
-
-  late List<_MemoryCard> _cards;
+  static const _maxLevel = 3;
+  int _level = 1;
+  int _moves = 0;
+  List<_MemoryCard> _cards = const [];
   final List<int> _flipped = [];
   final Set<int> _solved = {};
   bool _disabled = false;
-  int _moves = 0;
-  int _level = 1;
-  static const int _maxLevel = 5;
   bool _previewing = false;
   Timer? _previewTimer;
+
+  static const _emojis = ['🍎', '🍌', '🍇', '🍓', '🍒', '🍉', '🍍', '🍊'];
 
   @override
   void initState() {
@@ -2940,27 +3038,17 @@ class _MemoryGamePageState extends State<_MemoryGamePage> {
     super.dispose();
   }
 
-  int _pairCountForLevel(int level) {
-    final clamped = level.clamp(1, _maxLevel);
-    return 2 + (clamped - 1) * 2;
-  }
-
-  List<_MemoryCard> _buildCardsForLevel(int level) {
-    final pairCount = _pairCountForLevel(level);
-    final pool = _pairs.take(pairCount).toList();
+  void _startLevel(int nextLevel) {
+    _previewTimer?.cancel();
+    final count = nextLevel == 1 ? 4 : (nextLevel == 2 ? 8 : 12);
+    final pool = List.from(_emojis)..shuffle(_rand);
+    final selected = pool.take(count ~/ 2).toList();
     final items = <_MemoryCard>[];
-    for (final p in pool) {
-      items.add(_MemoryCard(id: items.length, type: p.type, emoji: p.emoji));
-      items.add(_MemoryCard(id: items.length, type: p.type, emoji: p.emoji));
+    for (int i = 0; i < selected.length; i++) {
+      items.add(_MemoryCard(id: items.length, type: '$i', emoji: selected[i]));
+      items.add(_MemoryCard(id: items.length, type: '$i', emoji: selected[i]));
     }
     items.shuffle(_rand);
-    return items;
-  }
-
-  void _startLevel(int level) {
-    _previewTimer?.cancel();
-    final nextLevel = level.clamp(1, _maxLevel);
-    final items = _buildCardsForLevel(nextLevel);
     setState(() {
       _level = nextLevel;
       _cards = items;
@@ -3022,12 +3110,14 @@ class _MemoryGamePageState extends State<_MemoryGamePage> {
     final done = solved == total;
     final hasNext = done && _level < _maxLevel;
     final hasPrev = _level > 1;
+    final loc = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Color(0xFF0284C7)),
-        title: const Text(
-          'Hafıza Kartları',
-          style: TextStyle(
+        title: Text(
+          loc.gameTitleMemory,
+          style: const TextStyle(
             fontWeight: FontWeight.w900,
             letterSpacing: -0.5,
             color: Color(0xFF0284C7),
@@ -3043,20 +3133,22 @@ class _MemoryGamePageState extends State<_MemoryGamePage> {
               children: [
                 Expanded(
                   child: Text(
-                    done ? 'Tebrikler! • Seviye $_level/$_maxLevel' : 'Seviye $_level/$_maxLevel • Hamle: $_moves',
+                    done
+                        ? loc.gameCongratsLevel(_level, _maxLevel)
+                        : loc.gameLevelMoves(_level, _maxLevel, _moves),
                     style: const TextStyle(fontWeight: FontWeight.w900),
                   ),
                 ),
                 if (hasPrev)
                   OutlinedButton(
                     onPressed: () => _startLevel(_level - 1),
-                    child: const Text('Önceki'),
+                    child: Text(loc.btnPrev),
                   ),
                 const SizedBox(width: 10),
                 OutlinedButton.icon(
                   onPressed: () => _startLevel(_level),
                   icon: const Icon(Icons.refresh),
-                  label: const Text('Yeniden'),
+                  label: Text(loc.btnTryAgain),
                 ),
               ],
             ),
@@ -3092,7 +3184,7 @@ class _MemoryGamePageState extends State<_MemoryGamePage> {
               const SizedBox(height: 12),
               ElevatedButton(
                 onPressed: () => _startLevel(_level + 1),
-                child: const Text('Sonraki Seviye'),
+                child: Text(loc.btnNextLevel),
               ),
             ],
           ],
@@ -3113,7 +3205,7 @@ class _CountingGamePageState extends State<_CountingGamePage> {
   final _rand = Random();
   int _target = 3;
   List<int> _options = const [];
-  String _status = 'Seç';
+  String? _statusKey;
 
   @override
   void initState() {
@@ -3131,32 +3223,42 @@ class _CountingGamePageState extends State<_CountingGamePage> {
     setState(() {
       _target = t;
       _options = opts;
-      _status = 'Kaç tane var?';
+      _statusKey = 'gameHowMany';
     });
   }
 
   void _choose(int v) {
     setState(() {
       if (v == _target) {
-        _status = 'Doğru!';
+        _statusKey = 'storyQuizCorrect';
         Future.delayed(const Duration(milliseconds: 500), () {
           if (!mounted) return;
           _next();
         });
         return;
       }
-      _status = 'Tekrar dene';
+      _statusKey = 'storyQuizWrong';
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final String statusText;
+    if (_statusKey == 'gameHowMany') {
+      statusText = loc.gameHowMany;
+    } else if (_statusKey == 'storyQuizCorrect') {
+      statusText = loc.storyQuizCorrect;
+    } else {
+      statusText = loc.storyQuizWrong;
+    }
+
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Color(0xFF0284C7)),
-        title: const Text(
-          'Sayı Saymaca',
-          style: TextStyle(
+        title: Text(
+          loc.gameTitleCounting,
+          style: const TextStyle(
             fontWeight: FontWeight.w900,
             letterSpacing: -0.5,
             color: Color(0xFF0284C7),
@@ -3168,7 +3270,7 @@ class _CountingGamePageState extends State<_CountingGamePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(_status, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.w900)),
+            Text(statusText, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.w900)),
             const SizedBox(height: 12),
             Expanded(
               child: Center(
@@ -3197,7 +3299,7 @@ class _CountingGamePageState extends State<_CountingGamePage> {
                   .toList(),
             ),
             const SizedBox(height: 12),
-            OutlinedButton.icon(onPressed: _next, icon: const Icon(Icons.skip_next), label: const Text('Yeni Soru')),
+            OutlinedButton.icon(onPressed: _next, icon: const Icon(Icons.skip_next), label: Text(loc.gameNextQuestion)),
           ],
         ),
       ),
@@ -3215,7 +3317,7 @@ class _ColorsGamePage extends StatefulWidget {
 class _ColorsGamePageState extends State<_ColorsGamePage> {
   final _rand = Random();
   late _ColorQuestion _q;
-  String _status = 'Seç';
+  String? _statusKey;
 
   static const _pool = <_ColorQuestion>[
     _ColorQuestion(name: 'Kırmızı', color: Colors.red),
@@ -3241,32 +3343,55 @@ class _ColorsGamePageState extends State<_ColorsGamePage> {
     final options = set.toList()..shuffle(_rand);
     setState(() {
       _q = target.copyWith(options: options);
-      _status = 'Doğru rengi seç';
+      _statusKey = 'gameSelectCorrectColor';
     });
   }
 
   void _choose(_ColorQuestion c) {
     setState(() {
       if (c.name == _q.name) {
-        _status = 'Doğru!';
+        _statusKey = 'storyQuizCorrect';
         Future.delayed(const Duration(milliseconds: 450), () {
           if (!mounted) return;
           _next();
         });
         return;
       }
-      _status = 'Tekrar dene';
+      _statusKey = 'storyQuizWrong';
     });
+  }
+
+  String _getColorName(BuildContext context, String name) {
+    final loc = AppLocalizations.of(context)!;
+    switch (name) {
+      case 'Kırmızı': return loc.colorRed;
+      case 'Mavi': return loc.colorBlue;
+      case 'Yeşil': return loc.colorGreen;
+      case 'Sarı': return loc.colorYellow;
+      case 'Mor': return loc.colorPurple;
+      case 'Turuncu': return loc.colorOrange;
+      default: return name;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final String statusText;
+    if (_statusKey == 'gameSelectCorrectColor') {
+      statusText = loc.gameSelectCorrectColor;
+    } else if (_statusKey == 'storyQuizCorrect') {
+      statusText = loc.storyQuizCorrect;
+    } else {
+      statusText = loc.storyQuizWrong;
+    }
+
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Color(0xFF0284C7)),
-        title: const Text(
-          'Renkleri Bul',
-          style: TextStyle(
+        title: Text(
+          loc.gameTitleColors,
+          style: const TextStyle(
             fontWeight: FontWeight.w900,
             letterSpacing: -0.5,
             color: Color(0xFF0284C7),
@@ -3277,9 +3402,9 @@ class _ColorsGamePageState extends State<_ColorsGamePage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            Text('Hedef: ${_q.name}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
+            Text(loc.gameTargetColorPrefix + ': ' + _getColorName(context, _q.name), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
             const SizedBox(height: 6),
-            Text(_status, style: const TextStyle(fontWeight: FontWeight.w900)),
+            Text(statusText, style: const TextStyle(fontWeight: FontWeight.w900)),
             const SizedBox(height: 16),
             Expanded(
               child: GridView.count(
@@ -3297,7 +3422,7 @@ class _ColorsGamePageState extends State<_ColorsGamePage> {
                 }).toList(),
               ),
             ),
-            OutlinedButton.icon(onPressed: _next, icon: const Icon(Icons.skip_next), label: const Text('Yeni Soru')),
+            OutlinedButton.icon(onPressed: _next, icon: const Icon(Icons.skip_next), label: Text(loc.gameNextQuestion)),
           ],
         ),
       ),
@@ -3315,7 +3440,7 @@ class _ShapesGamePage extends StatefulWidget {
 class _ShapesGamePageState extends State<_ShapesGamePage> {
   final _rand = Random();
   late _ShapeQuestion _q;
-  String _status = 'Seç';
+  String? _statusKey;
 
   static const _pool = <_ShapeQuestion>[
     _ShapeQuestion(name: 'Daire', icon: Icons.circle),
@@ -3340,32 +3465,54 @@ class _ShapesGamePageState extends State<_ShapesGamePage> {
     final options = set.toList()..shuffle(_rand);
     setState(() {
       _q = target.copyWith(options: options);
-      _status = 'Doğru şekli seç';
+      _statusKey = 'gameSelectCorrectShape';
     });
   }
 
   void _choose(_ShapeQuestion s) {
     setState(() {
       if (s.name == _q.name) {
-        _status = 'Doğru!';
+        _statusKey = 'storyQuizCorrect';
         Future.delayed(const Duration(milliseconds: 450), () {
           if (!mounted) return;
           _next();
         });
         return;
       }
-      _status = 'Tekrar dene';
+      _statusKey = 'storyQuizWrong';
     });
+  }
+
+  String _getShapeName(BuildContext context, String name) {
+    final loc = AppLocalizations.of(context)!;
+    switch (name) {
+      case 'Daire': return loc.shapeCircle;
+      case 'Kare': return loc.shapeSquare;
+      case 'Üçgen': return loc.shapeTriangle;
+      case 'Yıldız': return loc.shapeStar;
+      case 'Kalp': return loc.shapeHeart;
+      default: return name;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final String statusText;
+    if (_statusKey == 'gameSelectCorrectShape') {
+      statusText = loc.gameSelectCorrectShape;
+    } else if (_statusKey == 'storyQuizCorrect') {
+      statusText = loc.storyQuizCorrect;
+    } else {
+      statusText = loc.storyQuizWrong;
+    }
+
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Color(0xFF0284C7)),
-        title: const Text(
-          'Şekilleri Tanı',
-          style: TextStyle(
+        title: Text(
+          loc.gameTitleShapes,
+          style: const TextStyle(
             fontWeight: FontWeight.w900,
             letterSpacing: -0.5,
             color: Color(0xFF0284C7),
@@ -3376,9 +3523,9 @@ class _ShapesGamePageState extends State<_ShapesGamePage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            Text('Hedef: ${_q.name}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
+            Text(loc.gameTargetColorPrefix + ': ' + _getShapeName(context, _q.name), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
             const SizedBox(height: 6),
-            Text(_status, style: const TextStyle(fontWeight: FontWeight.w900)),
+            Text(statusText, style: const TextStyle(fontWeight: FontWeight.w900)),
             const SizedBox(height: 16),
             Expanded(
               child: GridView.count(
@@ -3403,7 +3550,7 @@ class _ShapesGamePageState extends State<_ShapesGamePage> {
                 }).toList(),
               ),
             ),
-            OutlinedButton.icon(onPressed: _next, icon: const Icon(Icons.skip_next), label: const Text('Yeni Soru')),
+            OutlinedButton.icon(onPressed: _next, icon: const Icon(Icons.skip_next), label: Text(loc.gameNextQuestion)),
           ],
         ),
       ),
@@ -3449,15 +3596,29 @@ class _ColoringGamePageState extends State<_ColoringGamePage> {
     });
   }
 
+  String _getColorName(BuildContext context, String name) {
+    final loc = AppLocalizations.of(context)!;
+    switch (name) {
+      case 'Kırmızı': return loc.colorRed;
+      case 'Mavi': return loc.colorBlue;
+      case 'Yeşil': return loc.colorGreen;
+      case 'Sarı': return loc.colorYellow;
+      case 'Mor': return loc.colorPurple;
+      case 'Pembe': return loc.colorPink;
+      default: return name;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFFFF1F2), // rose-50
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Color(0xFF0284C7)),
-        title: const Text(
-          'Renkleri Boya',
-          style: TextStyle(
+        title: Text(
+          loc.gameColoringTitle,
+          style: const TextStyle(
             fontWeight: FontWeight.w900,
             letterSpacing: -0.5,
             color: Color(0xFF0284C7),
@@ -3483,13 +3644,13 @@ class _ColoringGamePageState extends State<_ColoringGamePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Row(
+                  Row(
                     children: [
-                      Icon(Icons.palette, color: Color(0xFFEC4899)),
-                      SizedBox(width: 8),
+                      const Icon(Icons.palette, color: Color(0xFFEC4899)),
+                      const SizedBox(width: 8),
                       Text(
-                        'Renk Seç',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
+                        loc.gameColoringSelectColor,
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
                       ),
                     ],
                   ),
@@ -3500,7 +3661,7 @@ class _ColoringGamePageState extends State<_ColoringGamePage> {
                     children: _colors.map((c) {
                       final selected = _selectedColor == c.value;
                       return ChoiceChip(
-                        label: Text(c.name, style: TextStyle(fontWeight: FontWeight.w800, color: selected ? Colors.white : Colors.black87)),
+                        label: Text(_getColorName(context, c.name), style: TextStyle(fontWeight: FontWeight.w800, color: selected ? Colors.white : Colors.black87)),
                         selected: selected,
                         selectedColor: c.value,
                         backgroundColor: Colors.white,
@@ -3519,9 +3680,9 @@ class _ColoringGamePageState extends State<_ColoringGamePage> {
             ),
           ),
           const SizedBox(height: 16),
-          const Text(
-            'Şekle dokun ve boya',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+          Text(
+            loc.gameColoringTapAndPaint,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
@@ -3531,7 +3692,7 @@ class _ColoringGamePageState extends State<_ColoringGamePage> {
             alignment: WrapAlignment.center,
             children: [
               _buildShapeCard(
-                label: 'Daire',
+                label: loc.shapeCircle,
                 onTap: () => _paint('circle'),
                 child: Container(
                   width: 80,
@@ -3544,7 +3705,7 @@ class _ColoringGamePageState extends State<_ColoringGamePage> {
                 ),
               ),
               _buildShapeCard(
-                label: 'Kare',
+                label: loc.shapeSquare,
                 onTap: () => _paint('square'),
                 child: Container(
                   width: 80,
@@ -3557,7 +3718,7 @@ class _ColoringGamePageState extends State<_ColoringGamePage> {
                 ),
               ),
               _buildShapeCard(
-                label: 'Üçgen',
+                label: loc.shapeTriangle,
                 onTap: () => _paint('triangle'),
                 child: SizedBox(
                   width: 80,
@@ -3574,36 +3735,24 @@ class _ColoringGamePageState extends State<_ColoringGamePage> {
     );
   }
 
-  Widget _buildShapeCard({required String label, required Widget child, required VoidCallback onTap}) {
-    return SizedBox(
-      width: (MediaQuery.of(context).size.width - 16 * 2 - 16) / 2 - 8,
+  Widget _buildShapeCard({required String label, required VoidCallback onTap, required Widget child}) {
+    return GestureDetector(
+      onTap: onTap,
       child: Card(
         elevation: 0,
         color: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(20),
           side: BorderSide(color: Colors.grey.shade200, width: 1.5),
         ),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(24),
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  height: 90,
-                  alignment: Alignment.center,
-                  child: child,
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  label,
-                  style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
-                ),
-              ],
-            ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              child,
+              const SizedBox(height: 10),
+              Text(label, style: const TextStyle(fontWeight: FontWeight.w800)),
+            ],
           ),
         ),
       ),
@@ -3613,35 +3762,29 @@ class _ColoringGamePageState extends State<_ColoringGamePage> {
 
 class _TrianglePainter extends CustomPainter {
   final Color color;
-  _TrianglePainter(this.color);
+  const _TrianglePainter(this.color);
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = color
       ..style = PaintingStyle.fill;
-
     final path = Path()
       ..moveTo(size.width / 2, 0)
       ..lineTo(size.width, size.height)
       ..lineTo(0, size.height)
       ..close();
-
     canvas.drawPath(path, paint);
 
-    final strokePaint = Paint()
+    final borderPaint = Paint()
       ..color = Colors.grey.shade300
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 4
-      ..strokeJoin = StrokeJoin.round;
-
-    canvas.drawPath(path, strokePaint);
+      ..strokeWidth = 4;
+    canvas.drawPath(path, borderPaint);
   }
 
   @override
-  bool shouldRepaint(covariant _TrianglePainter oldDelegate) {
-    return oldDelegate.color != color;
-  }
+  bool shouldRepaint(_TrianglePainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _EducationReminderModuleBody extends StatefulWidget {
@@ -3654,38 +3797,17 @@ class _EducationReminderModuleBody extends StatefulWidget {
 class _EducationReminderModuleBodyState extends State<_EducationReminderModuleBody> {
   static const _storageName = 'education_reminders_v1.json';
   static const _baseNotificationId = 9100;
-  static const _defaultMessage = 'Eğitim zamanı';
-  static const _messagePresets = <String>[
-    'Floortime zamanı',
-    'Dil terapisi zamanı',
-    'Özel eğitim zamanı',
-    'Ergo terapi zamanı',
-    'Hareket eğitimi zamanı',
-    'Duygu çalışması zamanı',
-    'Duyu bütünleme zamanı',
-    'Ev ödevi zamanı',
-    'Okuma saati',
-    'Oyun zamanı',
-    'Sosyal öykü zamanı',
-    'Taklit çalışması zamanı',
-    'İletişim kartları zamanı',
-    'Mola zamanı',
-    'Yürüyüş zamanı',
-    'Beslenme zamanı',
-    'Ödül zamanı',
-    'Uyku hazırlığı zamanı',
-  ];
 
   final _service = NotificationService.instance;
 
   final _days = <_EducationReminderDay>[
-    _EducationReminderDay(weekday: DateTime.monday, label: 'Pazartesi', message: _defaultMessage),
-    _EducationReminderDay(weekday: DateTime.tuesday, label: 'Salı', message: _defaultMessage),
-    _EducationReminderDay(weekday: DateTime.wednesday, label: 'Çarşamba', message: _defaultMessage),
-    _EducationReminderDay(weekday: DateTime.thursday, label: 'Perşembe', message: _defaultMessage),
-    _EducationReminderDay(weekday: DateTime.friday, label: 'Cuma', message: _defaultMessage),
-    _EducationReminderDay(weekday: DateTime.saturday, label: 'Cumartesi', message: _defaultMessage),
-    _EducationReminderDay(weekday: DateTime.sunday, label: 'Pazar', message: _defaultMessage),
+    _EducationReminderDay(weekday: DateTime.monday, label: '', message: ''),
+    _EducationReminderDay(weekday: DateTime.tuesday, label: '', message: ''),
+    _EducationReminderDay(weekday: DateTime.wednesday, label: '', message: ''),
+    _EducationReminderDay(weekday: DateTime.thursday, label: '', message: ''),
+    _EducationReminderDay(weekday: DateTime.friday, label: '', message: ''),
+    _EducationReminderDay(weekday: DateTime.saturday, label: '', message: ''),
+    _EducationReminderDay(weekday: DateTime.sunday, label: '', message: ''),
   ];
 
   bool _loading = true;
@@ -3694,6 +3816,43 @@ class _EducationReminderModuleBodyState extends State<_EducationReminderModuleBo
   void initState() {
     super.initState();
     Future.microtask(_load);
+  }
+
+  List<String> _getPresets(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    return [
+      loc.remPresetFloortime,
+      loc.remPresetSpeechTherapy,
+      loc.remPresetSpecialEducation,
+      loc.remPresetErgotherapy,
+      loc.remPresetMovement,
+      loc.remPresetEmotionWork,
+      loc.remPresetSensory,
+      loc.remPresetHomework,
+      loc.remPresetReading,
+      loc.remPresetPlay,
+      loc.remPresetStory,
+      loc.remPresetImitation,
+      loc.remPresetAcc,
+      loc.remPresetBreak,
+      loc.remPresetWalk,
+      loc.remPresetReward,
+      loc.remPresetSleepReady,
+    ];
+  }
+
+  String _getWeekdayLabel(BuildContext context, int weekday) {
+    final loc = AppLocalizations.of(context)!;
+    switch (weekday) {
+      case DateTime.monday: return loc.weekdayMonday;
+      case DateTime.tuesday: return loc.weekdayTuesday;
+      case DateTime.wednesday: return loc.weekdayWednesday;
+      case DateTime.thursday: return loc.weekdayThursday;
+      case DateTime.friday: return loc.weekdayFriday;
+      case DateTime.saturday: return loc.weekdaySaturday;
+      case DateTime.sunday: return loc.weekdaySunday;
+      default: return '';
+    }
   }
 
   int _idForWeekday(int weekday) => _baseNotificationId + weekday;
@@ -3705,6 +3864,13 @@ class _EducationReminderModuleBodyState extends State<_EducationReminderModuleBo
   }
 
   Future<void> _load() async {
+    final loc = AppLocalizations.of(context)!;
+    final defaultMsg = loc.remDefaultMessage;
+    
+    for (int i = 0; i < _days.length; i++) {
+      _days[i] = _days[i].copyWith(message: defaultMsg);
+    }
+
     final raw = await LocalStore.instance.readJson(_storageName);
     if (raw is Map) {
       final daysRaw = raw['days'];
@@ -3749,23 +3915,25 @@ class _EducationReminderModuleBodyState extends State<_EducationReminderModuleBo
       return;
     }
 
+    final loc = AppLocalizations.of(context)!;
     await _service.scheduleWeekly(
       id: id,
       weekday: d.weekday,
       hour: d.hour,
       minute: d.minute,
-      title: 'Eğitim Hatırlatıcı',
-      body: '${d.label} ${_formatTime(d.hour, d.minute)} • ${d.message}',
+      title: loc.moduleTitleEduReminder,
+      body: '${_getWeekdayLabel(context, d.weekday)} ${_formatTime(d.hour, d.minute)} • ${d.message}',
     );
   }
 
   Future<void> _setEnabled(int index, bool enabled) async {
+    final loc = AppLocalizations.of(context)!;
     if (enabled) {
       final ok = await _service.requestPermissionIfNeeded();
       if (!ok) {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Bildirim izni verilmedi.')),
+          SnackBar(content: Text(loc.remPermissionDenied)),
         );
         return;
       }
@@ -3779,6 +3947,7 @@ class _EducationReminderModuleBodyState extends State<_EducationReminderModuleBo
   }
 
   Future<void> _pickTime(int index) async {
+    final loc = AppLocalizations.of(context)!;
     final current = _days[index];
     final picked = await showTimePicker(
       context: context,
@@ -3790,7 +3959,7 @@ class _EducationReminderModuleBodyState extends State<_EducationReminderModuleBo
     if (!ok) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Bildirim izni verilmedi.')),
+        SnackBar(content: Text(loc.remPermissionDenied)),
       );
       return;
     }
@@ -3803,7 +3972,11 @@ class _EducationReminderModuleBodyState extends State<_EducationReminderModuleBo
   }
 
   Future<void> _pickMessage(int index) async {
+    final loc = AppLocalizations.of(context)!;
+    final defaultMsg = loc.remDefaultMessage;
     final current = _days[index];
+    final presets = _getPresets(context);
+
     final chosen = await showModalBottomSheet<String>(
       context: context,
       showDragHandle: true,
@@ -3812,9 +3985,9 @@ class _EducationReminderModuleBodyState extends State<_EducationReminderModuleBo
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              const Text('Hatırlatıcı Metni', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
+              Text(loc.remReminderTextTitle, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
               const SizedBox(height: 10),
-              ..._messagePresets.map((m) {
+              ...presets.map((m) {
                 return ListTile(
                   title: Text(m, style: const TextStyle(fontWeight: FontWeight.w800)),
                   onTap: () => Navigator.of(ctx).pop(m),
@@ -3822,7 +3995,7 @@ class _EducationReminderModuleBodyState extends State<_EducationReminderModuleBo
               }),
               const Divider(),
               ListTile(
-                title: const Text('Özel...', style: TextStyle(fontWeight: FontWeight.w900)),
+                title: Text(loc.remCustom, style: const TextStyle(fontWeight: FontWeight.w900)),
                 onTap: () => Navigator.of(ctx).pop('__custom__'),
               ),
             ],
@@ -3836,25 +4009,25 @@ class _EducationReminderModuleBodyState extends State<_EducationReminderModuleBo
 
     String nextMessage = chosen;
     if (chosen == '__custom__') {
-      final controller = TextEditingController(text: _messagePresets.contains(current.message) ? '' : current.message);
+      final controller = TextEditingController(text: presets.contains(current.message) ? '' : current.message);
       final saved = await showDialog<String>(
         context: context,
         builder: (ctx) {
           return AlertDialog(
-            title: const Text('Özel Metin'),
+            title: Text(loc.remCustomTextTitle),
             content: TextField(
               controller: controller,
-              decoration: const InputDecoration(hintText: 'Örn: Floortime zamanı'),
+              decoration: InputDecoration(hintText: loc.remCustomTextHint),
             ),
             actions: [
-              TextButton(onPressed: () => Navigator.of(ctx).pop(null), child: const Text('İptal')),
-              FilledButton(onPressed: () => Navigator.of(ctx).pop(controller.text), child: const Text('Kaydet')),
+              TextButton(onPressed: () => Navigator.of(ctx).pop(null), child: Text(loc.familyBtnCancel)),
+              FilledButton(onPressed: () => Navigator.of(ctx).pop(controller.text), child: Text(loc.familyBtnSave)),
             ],
           );
         },
       );
       if (saved == null) return;
-      nextMessage = saved.trim().isNotEmpty ? saved.trim() : _defaultMessage;
+      nextMessage = saved.trim().isNotEmpty ? saved.trim() : defaultMsg;
     }
 
     setState(() {
@@ -3879,18 +4052,19 @@ class _EducationReminderModuleBodyState extends State<_EducationReminderModuleBo
   @override
   Widget build(BuildContext context) {
     if (_loading) return const Center(child: CircularProgressIndicator());
+    final loc = AppLocalizations.of(context)!;
 
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        const Text(
-          '7 Günlük Eğitim Hatırlatıcı',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+        Text(
+          loc.remMainTitle,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
         ),
         const SizedBox(height: 8),
-        const Text(
-          'İstediğin gün ve saati seç. Zaman gelince bildirim gelir.',
-          style: TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF6B7280)),
+        Text(
+          loc.remMainSubtitle,
+          style: const TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF6B7280)),
         ),
         const SizedBox(height: 16),
         ..._days.asMap().entries.map((e) {
@@ -3904,12 +4078,16 @@ class _EducationReminderModuleBodyState extends State<_EducationReminderModuleBo
               side: const BorderSide(color: Color(0xFFE4E4E7)),
             ),
             child: ListTile(
-              title: Text(d.label, style: const TextStyle(fontWeight: FontWeight.w900)),
+              title: Text(_getWeekdayLabel(context, d.weekday), style: const TextStyle(fontWeight: FontWeight.w900)),
               subtitle: Text(
-                d.enabled ? 'Saat: ${_formatTime(d.hour, d.minute)}\nMetin: ${d.message}' : 'Kapalı',
+                d.enabled ? '${loc.remTimeLabel}: ${_formatTime(d.hour, d.minute)}\n${loc.remTextLabel}: ${d.message}' : loc.remOffLabel,
                 style: const TextStyle(fontWeight: FontWeight.w700),
               ),
               isThreeLine: d.enabled,
+              leading: Switch(
+                value: d.enabled,
+                onChanged: (v) => _setEnabled(index, v),
+              ),
               trailing: d.enabled
                   ? Row(
                       mainAxisSize: MainAxisSize.min,
@@ -3917,12 +4095,12 @@ class _EducationReminderModuleBodyState extends State<_EducationReminderModuleBo
                         IconButton(
                           icon: const Icon(Icons.access_time, color: Color(0xFF10B981)),
                           onPressed: () => _pickTime(index),
-                          tooltip: 'Saat Seç',
+                          tooltip: loc.remSelectTimeTooltip,
                         ),
                         IconButton(
                           icon: const Icon(Icons.text_fields, color: Color(0xFF10B981)),
                           onPressed: () => _pickMessage(index),
-                          tooltip: 'Metin Seç',
+                          tooltip: loc.remSelectTextTooltip,
                         ),
                       ],
                     )
@@ -3935,7 +4113,7 @@ class _EducationReminderModuleBodyState extends State<_EducationReminderModuleBo
         OutlinedButton.icon(
           onPressed: _disableAll,
           icon: const Icon(Icons.notifications_off),
-          label: const Text('Tümünü Kapat'),
+          label: Text(loc.remDisableAll),
         ),
       ],
     );
@@ -3959,7 +4137,12 @@ class _EducationReminderDay {
     required this.message,
   });
 
-  _EducationReminderDay copyWith({bool? enabled, int? hour, int? minute, String? message}) {
+  _EducationReminderDay copyWith({
+    bool? enabled,
+    int? hour,
+    int? minute,
+    String? message,
+  }) {
     return _EducationReminderDay(
       weekday: weekday,
       label: label,
@@ -3970,16 +4153,13 @@ class _EducationReminderDay {
     );
   }
 
-  Map<String, Object?> toJson() {
-    return {
-      'weekday': weekday,
-      'label': label,
-      'enabled': enabled,
-      'hour': hour,
-      'minute': minute,
-      'message': message,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+        'weekday': weekday,
+        'enabled': enabled,
+        'hour': hour,
+        'minute': minute,
+        'message': message,
+      };
 }
 
 class _ComingSoonBody extends StatelessWidget {
@@ -3988,11 +4168,12 @@ class _ComingSoonBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Text(
-          '"$title" modülü yakında.\n\nBu ekranda sırayla içerikleri Flutter’a taşıyacağız.',
+          loc.moduleComingSoon(title),
           textAlign: TextAlign.center,
           style: const TextStyle(fontWeight: FontWeight.w700),
         ),
@@ -4072,17 +4253,18 @@ class _EmotionLogEntry {
     );
   }
 
-  String toLongText() {
+  String toLongText(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     final b = StringBuffer();
-    b.writeln('Tarih: ${_formatDateTimeTr(at)}');
-    b.writeln('Duygu: $emotion');
-    b.writeln('Şiddet: $intensity/5');
-    if (triggers.isNotEmpty) b.writeln('Tetikleyiciler: ${triggers.join(', ')}');
-    if (helped.isNotEmpty) b.writeln('Yardımcı olanlar: ${helped.join(', ')}');
-    if (antecedent.isNotEmpty) b.writeln('\nÖncesi:\n$antecedent');
-    if (behavior.isNotEmpty) b.writeln('\nDavranış:\n$behavior');
-    if (consequence.isNotEmpty) b.writeln('\nSonuç:\n$consequence');
-    if (note.isNotEmpty) b.writeln('\nNot:\n$note');
+    b.writeln(loc.emotionsLogDate(_formatDateTimeTr(at)));
+    b.writeln(loc.emotionsLogEmotion(emotion));
+    b.writeln(loc.emotionsLogIntensity(intensity.toString()));
+    if (triggers.isNotEmpty) b.writeln(loc.emotionsLogTriggers(triggers.join(', ')));
+    if (helped.isNotEmpty) b.writeln(loc.emotionsLogHelped(helped.join(', ')));
+    if (antecedent.isNotEmpty) b.writeln('\n${loc.emotionsLogAntecedent}:\n$antecedent');
+    if (behavior.isNotEmpty) b.writeln('\n${loc.emotionsLogBehavior}:\n$behavior');
+    if (consequence.isNotEmpty) b.writeln('\n${loc.emotionsLogConsequence}:\n$consequence');
+    if (note.isNotEmpty) b.writeln('\n${loc.emotionsLogNote}:\n$note');
     return b.toString().trim();
   }
 }
@@ -4099,12 +4281,14 @@ class _MusicTrack {
   final String title;
   final String duration;
   final String category;
+  final String categoryKey;
   final String description;
   final String url;
   const _MusicTrack({
     required this.title,
     required this.duration,
     required this.category,
+    required this.categoryKey,
     required this.description,
     required this.url,
   });
@@ -4290,8 +4474,8 @@ class _SectionCard extends StatelessWidget {
               ),
               if (showReadMore) ...[
                 const SizedBox(height: 8),
-                const Text(
-                  'Devamını Oku',
+                Text(
+                  AppLocalizations.of(context)!.moduleLabelReadMore,
                   style: TextStyle(
                     color: Colors.blue,
                     fontWeight: FontWeight.bold,
@@ -4355,7 +4539,6 @@ class _SensoryModuleBodyState extends State<_SensoryModuleBody> {
       }
     });
 
-    // Default play sea waves ambient loop in the background!
     _playSensorySound('https://upload.wikimedia.org/wikipedia/commons/1/1f/Waves.ogg');
   }
 
@@ -4377,6 +4560,7 @@ class _SensoryModuleBodyState extends State<_SensoryModuleBody> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return GestureDetector(
       onTapDown: (details) {
         setState(() {
@@ -4422,7 +4606,7 @@ class _SensoryModuleBodyState extends State<_SensoryModuleBody> {
                 children: [
                   _SensoryButton(
                     icon: Icons.flutter_dash,
-                    label: 'Kuşlar',
+                    label: loc.sensoryBirds,
                     isActive: _bgColor == const Color(0xFF14532D),
                     onTap: () {
                       setState(() => _bgColor = const Color(0xFF14532D));
@@ -4431,7 +4615,7 @@ class _SensoryModuleBodyState extends State<_SensoryModuleBody> {
                   ),
                   _SensoryButton(
                     icon: Icons.waves,
-                    label: 'Deniz',
+                    label: loc.sensorySea,
                     isActive: _bgColor == const Color(0xFF0C4A6E),
                     onTap: () {
                       setState(() => _bgColor = const Color(0xFF0C4A6E));
@@ -4440,7 +4624,7 @@ class _SensoryModuleBodyState extends State<_SensoryModuleBody> {
                   ),
                   _SensoryButton(
                     icon: Icons.forest,
-                    label: 'Orman',
+                    label: loc.sensoryForest,
                     isActive: _bgColor == const Color(0xFF064E3B),
                     onTap: () {
                       setState(() => _bgColor = const Color(0xFF064E3B));
@@ -4449,7 +4633,7 @@ class _SensoryModuleBodyState extends State<_SensoryModuleBody> {
                   ),
                   _SensoryButton(
                     icon: Icons.wb_sunny,
-                    label: 'Güneş',
+                    label: loc.sensorySun,
                     isActive: _bgColor == const Color(0xFF7C2D12),
                     onTap: () {
                       setState(() => _bgColor = const Color(0xFF7C2D12));
@@ -4581,277 +4765,14 @@ class _ObjectCategory {
 
 class _ObjectsModuleBodyState extends State<_ObjectsModuleBody> {
   final FlutterTts _flutterTts = FlutterTts();
+  List<_ObjectCategory> _categories = [];
   _ObjectCategory? _selectedCategory;
   List<_ObjectItem> _options = [];
   _ObjectItem? _targetItem;
   _ObjectItem? _selectedOption;
   bool _isAnsweredCorrectly = false;
   List<_ObjectItem> _wrongAnswers = [];
-
-  final List<_ObjectCategory> _categories = const [
-    _ObjectCategory(
-      title: 'Meyveler',
-      emoji: '🍎',
-      color: Color(0xFFFEE2E2),
-      items: [
-        _ObjectItem(name: 'Elma', emoji: '🍎'),
-        _ObjectItem(name: 'Armut', emoji: '🍐'),
-        _ObjectItem(name: 'Muz', emoji: '🍌'),
-        _ObjectItem(name: 'Çilek', emoji: '🍓'),
-        _ObjectItem(name: 'Portakal', emoji: '🍊'),
-        _ObjectItem(name: 'Karpuz', emoji: '🍉'),
-        _ObjectItem(name: 'Üzüm', emoji: '🍇'),
-        _ObjectItem(name: 'Kiraz', emoji: '🍒'),
-        _ObjectItem(name: 'Ananas', emoji: '🍍'),
-        _ObjectItem(name: 'Limon', emoji: '🍋'),
-      ],
-    ),
-    _ObjectCategory(
-      title: 'Sebzeler',
-      emoji: '🥕',
-      color: Color(0xFFFEF3C7),
-      items: [
-        _ObjectItem(name: 'Havuç', emoji: '🥕'),
-        _ObjectItem(name: 'Domates', emoji: '🍅'),
-        _ObjectItem(name: 'Patates', emoji: '🥔'),
-        _ObjectItem(name: 'Mısır', emoji: '🌽'),
-        _ObjectItem(name: 'Biber', emoji: '🌶️'),
-        _ObjectItem(name: 'Patlıcan', emoji: '🍆'),
-        _ObjectItem(name: 'Brokoli', emoji: '🥦'),
-        _ObjectItem(name: 'Salatalık', emoji: '🥒'),
-        _ObjectItem(name: 'Soğan', emoji: '🧅'),
-        _ObjectItem(name: 'Sarımsak', emoji: '🧄'),
-      ],
-    ),
-    _ObjectCategory(
-      title: 'İçecekler',
-      emoji: '🥛',
-      color: Color(0xFFE0F2FE),
-      items: [
-        _ObjectItem(name: 'Süt', emoji: '🥛'),
-        _ObjectItem(name: 'Su', emoji: '💧'),
-        _ObjectItem(name: 'Meyve Suyu', emoji: '🍹'),
-        _ObjectItem(name: 'Çay', emoji: '🍵'),
-        _ObjectItem(name: 'Kahve', emoji: '☕'),
-        _ObjectItem(name: 'Limonata', emoji: '🍋'),
-      ],
-    ),
-    _ObjectCategory(
-      title: 'Ev Eşyaları',
-      emoji: '🛋️',
-      color: Color(0xFFEDE9FE),
-      items: [
-        _ObjectItem(name: 'Koltuk', emoji: '🛋️'),
-        _ObjectItem(name: 'Yatak', emoji: '🛏️'),
-        _ObjectItem(name: 'Lamba', emoji: '💡'),
-        _ObjectItem(name: 'Televizyon', emoji: '📺'),
-        _ObjectItem(name: 'Kapı', emoji: '🚪'),
-        _ObjectItem(name: 'Saat', emoji: '⏰'),
-        _ObjectItem(name: 'Ayna', emoji: '🪞'),
-        _ObjectItem(name: 'Sandalye', emoji: '🪑'),
-      ],
-    ),
-    _ObjectCategory(
-      title: 'Oyuncaklar',
-      emoji: '🧸',
-      color: Color(0xFFFCE7F3),
-      items: [
-        _ObjectItem(name: 'Oyuncak Ayı', emoji: '🧸'),
-        _ObjectItem(name: 'Balon', emoji: '🎈'),
-        _ObjectItem(name: 'Uçurtma', emoji: '🪁'),
-        _ObjectItem(name: 'Oyuncak Araba', emoji: '🚗'),
-        _ObjectItem(name: 'Yapboz', emoji: '🧩'),
-        _ObjectItem(name: 'Top', emoji: '⚽'),
-        _ObjectItem(name: 'Oyun Konsolu', emoji: '🎮'),
-      ],
-    ),
-    _ObjectCategory(
-      title: 'Giysiler',
-      emoji: '👕',
-      color: Color(0xFFE0F2FE),
-      items: [
-        _ObjectItem(name: 'Tişört', emoji: '👕'),
-        _ObjectItem(name: 'Pantolon', emoji: '👖'),
-        _ObjectItem(name: 'Mont', emoji: '🧥'),
-        _ObjectItem(name: 'Çorap', emoji: '🧦'),
-        _ObjectItem(name: 'Elbise', emoji: '👗'),
-        _ObjectItem(name: 'Şapka', emoji: '🧢'),
-        _ObjectItem(name: 'Ayakkabı', emoji: '👟'),
-      ],
-    ),
-    _ObjectCategory(
-      title: 'Aksesuarlar',
-      emoji: '🕶️',
-      color: Color(0xFFF5F5F4),
-      items: [
-        _ObjectItem(name: 'Gözlük', emoji: '🕶️'),
-        _ObjectItem(name: 'Çanta', emoji: '🎒'),
-        _ObjectItem(name: 'Şemsiye', emoji: '☂️'),
-        _ObjectItem(name: 'Kol Saati', emoji: '⌚'),
-        _ObjectItem(name: 'Yüzük', emoji: '💍'),
-        _ObjectItem(name: 'Atkı', emoji: '🧣'),
-      ],
-    ),
-    _ObjectCategory(
-      title: 'Mutfak Gereçleri',
-      emoji: '🍴',
-      color: Color(0xFFFEF3C7),
-      items: [
-        _ObjectItem(name: 'Çatal', emoji: '🍴'),
-        _ObjectItem(name: 'Kaşık', emoji: '🥄'),
-        _ObjectItem(name: 'Tabak', emoji: '🍽️'),
-        _ObjectItem(name: 'Bardak', emoji: '🥛'),
-        _ObjectItem(name: 'Tencere', emoji: '🍲'),
-        _ObjectItem(name: 'Bıçak', emoji: '🔪'),
-        _ObjectItem(name: 'Fincan', emoji: '☕'),
-      ],
-    ),
-    _ObjectCategory(
-      title: 'Taşıtlar',
-      emoji: '🚗',
-      color: Color(0xFFFFEDD5),
-      items: [
-        _ObjectItem(name: 'Araba', emoji: '🚗'),
-        _ObjectItem(name: 'Bisiklet', emoji: '🚲'),
-        _ObjectItem(name: 'Otobüs', emoji: '🚌'),
-        _ObjectItem(name: 'Tren', emoji: '🚂'),
-        _ObjectItem(name: 'Uçak', emoji: '✈️'),
-        _ObjectItem(name: 'Gemi', emoji: '🚢'),
-        _ObjectItem(name: 'İtfaiye', emoji: '🚒'),
-        _ObjectItem(name: 'Ambulans', emoji: '🚑'),
-        _ObjectItem(name: 'Helikopter', emoji: '🚁'),
-      ],
-    ),
-    _ObjectCategory(
-      title: 'Hayvanlar',
-      emoji: '🐱',
-      color: Color(0xFFDCFCE7),
-      items: [
-        _ObjectItem(name: 'Kedi', emoji: '🐱'),
-        _ObjectItem(name: 'Köpek', emoji: '🐶'),
-        _ObjectItem(name: 'Aslan', emoji: '🦁'),
-        _ObjectItem(name: 'Kuş', emoji: '🐦'),
-        _ObjectItem(name: 'Balık', emoji: '🐟'),
-        _ObjectItem(name: 'Tavşan', emoji: '🐰'),
-        _ObjectItem(name: 'Fil', emoji: '🐘'),
-        _ObjectItem(name: 'Maymun', emoji: '🐵'),
-        _ObjectItem(name: 'Ayı', emoji: '🐻'),
-        _ObjectItem(name: 'Kurbağa', emoji: '🐸'),
-      ],
-    ),
-    _ObjectCategory(
-      title: 'Aile Üyeleri',
-      emoji: '👩',
-      color: Color(0xFFF3E8FF),
-      items: [
-        _ObjectItem(name: 'Anne', emoji: '👩'),
-        _ObjectItem(name: 'Baba', emoji: '🧔'),
-        _ObjectItem(name: 'Bebek', emoji: '👶'),
-        _ObjectItem(name: 'Dede', emoji: '👴'),
-        _ObjectItem(name: 'Anneanne', emoji: '👵'),
-        _ObjectItem(name: 'Kız Kardeş', emoji: '👧'),
-        _ObjectItem(name: 'Erkek Kardeş', emoji: '👦'),
-      ],
-    ),
-    _ObjectCategory(
-      title: 'Bitkiler',
-      emoji: '🌸',
-      color: Color(0xFFE8F5E9),
-      items: [
-        _ObjectItem(name: 'Çiçek', emoji: '🌸'),
-        _ObjectItem(name: 'Ağaç', emoji: '🌳'),
-        _ObjectItem(name: 'Kaktüs', emoji: '🌵'),
-        _ObjectItem(name: 'Gül', emoji: '🌹'),
-        _ObjectItem(name: 'Yaprak', emoji: '🍃'),
-        _ObjectItem(name: 'Mantar', emoji: '🍄'),
-      ],
-    ),
-    _ObjectCategory(
-      title: 'Okul ve Ofis Gereçleri',
-      emoji: '📚',
-      color: Color(0xFFE0F2FE),
-      items: [
-        _ObjectItem(name: 'Kitap', emoji: '📚'),
-        _ObjectItem(name: 'Kalem', emoji: '✏️'),
-        _ObjectItem(name: 'Defter', emoji: '📓'),
-        _ObjectItem(name: 'Makas', emoji: '✂️'),
-        _ObjectItem(name: 'Cetvel', emoji: '📏'),
-        _ObjectItem(name: 'Okul Çantası', emoji: '🎒'),
-        _ObjectItem(name: 'Bilgisayar', emoji: '💻'),
-      ],
-    ),
-    _ObjectCategory(
-      title: 'Vücudun Bölümleri',
-      emoji: '👁️',
-      color: Color(0xFFFFE4E6),
-      items: [
-        _ObjectItem(name: 'Göz', emoji: '👁️'),
-        _ObjectItem(name: 'Kulak', emoji: '👂'),
-        _ObjectItem(name: 'El', emoji: '✋'),
-        _ObjectItem(name: 'Ayak', emoji: '👣'),
-        _ObjectItem(name: 'Burun', emoji: '👃'),
-        _ObjectItem(name: 'Diş', emoji: '🦷'),
-        _ObjectItem(name: 'Ağız', emoji: '👄'),
-        _ObjectItem(name: 'Saç', emoji: '💇'),
-      ],
-    ),
-    _ObjectCategory(
-      title: 'Meslekler',
-      emoji: '👨‍⚕️',
-      color: Color(0xFFF1F5F9),
-      items: [
-        _ObjectItem(name: 'Doktor', emoji: '👨‍⚕️'),
-        _ObjectItem(name: 'Öğretmen', emoji: '👩‍🏫'),
-        _ObjectItem(name: 'Polis', emoji: '👮'),
-        _ObjectItem(name: 'İtfaiyeci', emoji: '👨‍🚒'),
-        _ObjectItem(name: 'Şef', emoji: '👨‍🍳'),
-        _ObjectItem(name: 'Astronot', emoji: '👨‍🚀'),
-        _ObjectItem(name: 'Pilot', emoji: '👨‍✈️'),
-      ],
-    ),
-    _ObjectCategory(
-      title: 'Mekanlar ve Odalar',
-      emoji: '🏠',
-      color: Color(0xFFECFDF5),
-      items: [
-        _ObjectItem(name: 'Ev', emoji: '🏠'),
-        _ObjectItem(name: 'Okul', emoji: '🏫'),
-        _ObjectItem(name: 'Park', emoji: '🏞️'),
-        _ObjectItem(name: 'Hastane', emoji: '🏥'),
-        _ObjectItem(name: 'Yatak Odası', emoji: '🛏️'),
-        _ObjectItem(name: 'Mutfak', emoji: '🍳'),
-        _ObjectItem(name: 'Orman', emoji: '🌲'),
-      ],
-    ),
-    _ObjectCategory(
-      title: 'Doğal Yapılar ve Uzay',
-      emoji: '☀️',
-      color: Color(0xFFFFF7ED),
-      items: [
-        _ObjectItem(name: 'Güneş', emoji: '☀️'),
-        _ObjectItem(name: 'Ay', emoji: '🌙'),
-        _ObjectItem(name: 'Yıldız', emoji: '⭐'),
-        _ObjectItem(name: 'Bulut', emoji: '☁️'),
-        _ObjectItem(name: 'Dağ', emoji: '🏔️'),
-        _ObjectItem(name: 'Dünya', emoji: '🌍'),
-        _ObjectItem(name: 'Roket', emoji: '🚀'),
-      ],
-    ),
-    _ObjectCategory(
-      title: 'Aletler ve Müzik Aletleri',
-      emoji: '🔨',
-      color: Color(0xFFF3F4F6),
-      items: [
-        _ObjectItem(name: 'Çekiç', emoji: '🔨'),
-        _ObjectItem(name: 'Tornavida', emoji: '🪛'),
-        _ObjectItem(name: 'Gitar', emoji: '🎸'),
-        _ObjectItem(name: 'Piyano', emoji: '🎹'),
-        _ObjectItem(name: 'Davul', emoji: '🥁'),
-        _ObjectItem(name: 'Trompet', emoji: '🎺'),
-        _ObjectItem(name: 'Testere', emoji: '🪚'),
-      ],
-    ),
-  ];
+  bool _loading = true;
 
   @override
   void initState() {
@@ -4859,16 +4780,63 @@ class _ObjectsModuleBodyState extends State<_ObjectsModuleBody> {
     _initTts();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadCategories();
+  }
+
   void _initTts() async {
     try {
-      await _flutterTts.setLanguage("tr-TR");
+      final locale = Localizations.localeOf(context).languageCode;
+      await _flutterTts.setLanguage(locale == 'tr' ? 'tr-TR' : 'en-US');
       await _flutterTts.setSpeechRate(0.45);
       await _flutterTts.setPitch(1.0);
     } catch (_) {}
   }
 
+  Future<void> _loadCategories() async {
+    final locale = Localizations.localeOf(context).languageCode;
+    final path = 'assets/content/$locale/objects.json';
+    try {
+      final jsonStr = await DefaultAssetBundle.of(context).loadString(path);
+      final list = json.decode(jsonStr) as List;
+      final parsed = list.map((c) {
+        final title = c['title'] as String;
+        final emoji = c['emoji'] as String;
+        final colorHex = c['color'] as String;
+        final color = Color(int.parse(colorHex));
+        final itemsList = c['items'] as List;
+        final items = itemsList.map((item) {
+          return _ObjectItem(
+            name: item['name'] as String,
+            emoji: item['emoji'] as String,
+          );
+        }).toList();
+        return _ObjectCategory(title: title, emoji: emoji, color: color, items: items);
+      }).toList();
+
+      setState(() {
+        _categories = parsed;
+        _loading = false;
+        if (_selectedCategory != null) {
+          final matching = _categories.firstWhere(
+            (cat) => cat.emoji == _selectedCategory!.emoji,
+            orElse: () => _categories.first,
+          );
+          _selectedCategory = matching;
+        }
+      });
+    } catch (e) {
+      debugPrint("Error loading objects.json: $e");
+      setState(() => _loading = false);
+    }
+  }
+
   void _speak(String text) async {
     try {
+      final locale = Localizations.localeOf(context).languageCode;
+      await _flutterTts.setLanguage(locale == 'tr' ? 'tr-TR' : 'en-US');
       await _flutterTts.stop();
       await _flutterTts.speak(text);
     } catch (_) {}
@@ -4913,7 +4881,8 @@ class _ObjectsModuleBodyState extends State<_ObjectsModuleBody> {
 
   void _speakQuestion() {
     if (_targetItem == null) return;
-    _speak("${_targetItem!.name} hangisi?");
+    final loc = AppLocalizations.of(context)!;
+    _speak(loc.objectsQuestion(_targetItem!.name));
   }
 
   void _onOptionSelected(_ObjectItem item) {
@@ -4922,11 +4891,12 @@ class _ObjectsModuleBodyState extends State<_ObjectsModuleBody> {
       _selectedOption = item;
     });
 
+    final loc = AppLocalizations.of(context)!;
     if (item.name == _targetItem!.name) {
       setState(() {
         _isAnsweredCorrectly = true;
       });
-      _speak("Evet, bu ${_targetItem!.name}!");
+      _speak(loc.objectsCorrectAnswer(_targetItem!.name));
       HapticFeedback.mediumImpact();
     } else {
       if (!_wrongAnswers.any((w) => w.name == item.name)) {
@@ -4934,7 +4904,7 @@ class _ObjectsModuleBodyState extends State<_ObjectsModuleBody> {
           _wrongAnswers.add(item);
         });
       }
-      _speak("Hayır, bu ${_targetItem!.name} değil.");
+      _speak(loc.objectsWrongAnswer(item.name));
       HapticFeedback.vibrate();
     }
   }
@@ -4947,6 +4917,9 @@ class _ObjectsModuleBodyState extends State<_ObjectsModuleBody> {
 
   @override
   Widget build(BuildContext context) {
+    if (_loading) {
+      return const Center(child: CircularProgressIndicator());
+    }
     if (_selectedCategory == null) {
       return _buildCategorySelector();
     }
@@ -5009,6 +4982,7 @@ class _ObjectsModuleBodyState extends State<_ObjectsModuleBody> {
     if (_targetItem == null || _options.length < 4) {
       return const Center(child: CircularProgressIndicator());
     }
+    final loc = AppLocalizations.of(context)!;
 
     return Container(
       color: const Color(0xFFF9FAFB),
@@ -5064,7 +5038,7 @@ class _ObjectsModuleBodyState extends State<_ObjectsModuleBody> {
             ),
             child: Center(
               child: Text(
-                '${_targetItem!.name} hangisi?',
+                loc.objectsQuestion(_targetItem!.name),
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 24,
@@ -5186,14 +5160,14 @@ class _ObjectsModuleBodyState extends State<_ObjectsModuleBody> {
                     ),
                     elevation: 2,
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.navigate_next_rounded, color: Colors.white, size: 28),
-                      SizedBox(width: 8),
+                      const Icon(Icons.navigate_next_rounded, color: Colors.white, size: 28),
+                      const SizedBox(width: 8),
                       Text(
-                        'Sonraki Soru',
-                        style: TextStyle(
+                        loc.objectsNextQuestion,
+                        style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w900,
                           color: Colors.white,
@@ -5237,22 +5211,20 @@ class _SentenceSoundsModuleBodyState extends State<_SentenceSoundsModuleBody> wi
   // Sounds state
   String? _pressedLetter;
 
-  // Game state
+  // Alphabet & Game state
+  List<String> _alphabet = [];
+  Map<String, _LetterGameObject> _gameObjects = {};
   final List<String> _shuffledLetters = [];
   String? _activeGameLetter;
 
   // Sentence Builder state
-  String? _sentenceWho = 'Ben';
+  Map<String, dynamic>? _sbData;
+  String? _sentenceWho;
   String? _sentenceWhat;
   String? _sentenceWhere;
   String? _sentenceWhen;
-  String? _sentenceVerb = 'istiyorum';
-
-  static const _turkishAlphabet = [
-    'A', 'B', 'C', 'Ç', 'D', 'E', 'F', 'G', 'Ğ', 'H',
-    'I', 'İ', 'J', 'K', 'L', 'M', 'N', 'O', 'Ö', 'P',
-    'R', 'S', 'Ş', 'T', 'U', 'Ü', 'V', 'Y', 'Z'
-  ];
+  String? _sentenceVerb;
+  bool _loading = true;
 
   static const _letterColors = <Color>[
     Color(0xFFFEE2E2), // Rose
@@ -5267,59 +5239,81 @@ class _SentenceSoundsModuleBodyState extends State<_SentenceSoundsModuleBody> wi
     Color(0xFFECFDF5), // Mint
   ];
 
-  static const _gameObjects = <String, _LetterGameObject>{
-    'A': _LetterGameObject(letter: 'A', emoji: '🍎', word: 'Elma'),
-    'B': _LetterGameObject(letter: 'B', emoji: '🎈', word: 'Balon'),
-    'C': _LetterGameObject(letter: 'C', emoji: '☕', word: 'Fincan'),
-    'Ç': _LetterGameObject(letter: 'Ç', emoji: '🍓', word: 'Çilek'),
-    'D': _LetterGameObject(letter: 'D', emoji: '🐶', word: 'Köpek'),
-    'E': _LetterGameObject(letter: 'E', emoji: '🐘', word: 'Fil'),
-    'F': _LetterGameObject(letter: 'F', emoji: '🐟', word: 'Balık'),
-    'G': _LetterGameObject(letter: 'G', emoji: '🕶️', word: 'Gözlük'),
-    'Ğ': _LetterGameObject(letter: 'Ğ', emoji: '🌳', word: 'Ağaç'),
-    'H': _LetterGameObject(letter: 'H', emoji: '🥕', word: 'Havuç'),
-    'I': _LetterGameObject(letter: 'I', emoji: '🪵', word: 'Odun'),
-    'İ': _LetterGameObject(letter: 'İ', emoji: '🥛', word: 'Süt'),
-    'J': _LetterGameObject(letter: 'J', emoji: '🐆', word: 'Jaguar'),
-    'K': _LetterGameObject(letter: 'K', emoji: '🐱', word: 'Kedi'),
-    'L': _LetterGameObject(letter: 'L', emoji: '🍋', word: 'Limon'),
-    'M': _LetterGameObject(letter: 'M', emoji: '🍌', word: 'Muz'),
-    'N': _LetterGameObject(letter: 'N', emoji: '🍍', word: 'Ananas'),
-    'O': _LetterGameObject(letter: 'O', emoji: '🚌', word: 'Otobüs'),
-    'Ö': _LetterGameObject(letter: 'Ö', emoji: '🦆', word: 'Ördek'),
-    'P': _LetterGameObject(letter: 'P', emoji: '🥔', word: 'Patates'),
-    'R': _LetterGameObject(letter: 'R', emoji: '🚗', word: 'Araba'),
-    'S': _LetterGameObject(letter: 'S', emoji: '⌚', word: 'Saat'),
-    'Ş': _LetterGameObject(letter: 'Ş', emoji: '👗', word: 'Elbise'),
-    'T': _LetterGameObject(letter: 'T', emoji: '🍅', word: 'Domates'),
-    'U': _LetterGameObject(letter: 'U', emoji: '🪁', word: 'Uçurtma'),
-    'Ü': _LetterGameObject(letter: 'Ü', emoji: '🍇', word: 'Üzüm'),
-    'V': _LetterGameObject(letter: 'V', emoji: '🏠', word: 'Ev'),
-    'Y': _LetterGameObject(letter: 'Y', emoji: '🍳', word: 'Yumurta'),
-    'Z': _LetterGameObject(letter: 'Z', emoji: '🦓', word: 'Zebra'),
-  };
-
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     _initTts();
+  }
 
-    // Prepare shuffled game letters
-    _shuffledLetters.addAll(_turkishAlphabet);
-    _shuffledLetters.shuffle();
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadData();
   }
 
   void _initTts() async {
     try {
-      await _flutterTts.setLanguage("tr-TR");
+      final locale = Localizations.localeOf(context).languageCode;
+      await _flutterTts.setLanguage(locale == 'tr' ? 'tr-TR' : 'en-US');
       await _flutterTts.setSpeechRate(0.45);
       await _flutterTts.setPitch(1.0);
     } catch (_) {}
   }
 
+  Future<void> _loadData() async {
+    final locale = Localizations.localeOf(context).languageCode;
+    try {
+      // 1. Load Sentence Builder JSON
+      final sbStr = await DefaultAssetBundle.of(context).loadString('assets/content/$locale/sentence_builder.json');
+      final sbMap = json.decode(sbStr) as Map<String, dynamic>;
+
+      // 2. Load Alphabet JSON
+      final alphaStr = await DefaultAssetBundle.of(context).loadString('assets/content/$locale/alphabet.json');
+      final alphaList = json.decode(alphaStr) as List;
+
+      final List<String> letters = [];
+      final Map<String, _LetterGameObject> gameObjs = {};
+
+      for (final item in alphaList) {
+        final letter = item['letter'] as String;
+        final emoji = item['emoji'] as String;
+        final word = item['word'] as String;
+        letters.add(letter);
+        gameObjs[letter] = _LetterGameObject(letter: letter, emoji: emoji, word: word);
+      }
+
+      setState(() {
+        _sbData = sbMap;
+        _alphabet = letters;
+        _gameObjects = gameObjs;
+        
+        _shuffledLetters.clear();
+        _shuffledLetters.addAll(_alphabet);
+        _shuffledLetters.shuffle();
+
+        // Set default values if first time loading
+        final whoOpts = sbMap['whoOptions'] as List;
+        final verbOpts = sbMap['verbOptions'] as List;
+        if (_sentenceWho == null && whoOpts.isNotEmpty) {
+          _sentenceWho = whoOpts[0] as String;
+        }
+        if (_sentenceVerb == null && verbOpts.isNotEmpty) {
+          _sentenceVerb = verbOpts[0] as String;
+        }
+
+        _loading = false;
+      });
+    } catch (e) {
+      debugPrint("Error loading sentence builder/alphabet data: $e");
+      setState(() => _loading = false);
+    }
+  }
+
   void _speak(String text) async {
     try {
+      final locale = Localizations.localeOf(context).languageCode;
+      await _flutterTts.setLanguage(locale == 'tr' ? 'tr-TR' : 'en-US');
       await _flutterTts.stop();
       await _flutterTts.speak(text);
     } catch (_) {}
@@ -5346,8 +5340,8 @@ class _SentenceSoundsModuleBodyState extends State<_SentenceSoundsModuleBody> wi
     });
     HapticFeedback.mediumImpact();
 
-    // Custom voice confirmation
-    _speak("Evet, bu $letter! $letter harfi $word kelimesinde geçer. $word.");
+    final loc = AppLocalizations.of(context)!;
+    _speak(loc.letterGameCorrect(letter, word));
 
     showDialog(
       context: context,
@@ -5359,7 +5353,7 @@ class _SentenceSoundsModuleBodyState extends State<_SentenceSoundsModuleBody> wi
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                "Evet, bu $letter!",
+                loc.letterGameCorrectTitle(letter),
                 style: const TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.w900,
@@ -5399,9 +5393,9 @@ class _SentenceSoundsModuleBodyState extends State<_SentenceSoundsModuleBody> wi
                   padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
                   elevation: 2,
                 ),
-                child: const Text(
-                  'Kapat',
-                  style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 16),
+                child: Text(
+                  loc.btnClose,
+                  style: const TextStyle(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 16),
                 ),
               )
             ],
@@ -5420,6 +5414,12 @@ class _SentenceSoundsModuleBodyState extends State<_SentenceSoundsModuleBody> wi
 
   @override
   Widget build(BuildContext context) {
+    if (_loading || _sbData == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    final loc = AppLocalizations.of(context)!;
+
     return Column(
       children: [
         Container(
@@ -5430,10 +5430,10 @@ class _SentenceSoundsModuleBodyState extends State<_SentenceSoundsModuleBody> wi
             labelColor: const Color(0xFF8B5CF6),
             unselectedLabelColor: const Color(0xFF6B7280),
             labelStyle: const TextStyle(fontWeight: FontWeight.w900, fontSize: 13.5),
-            tabs: const [
-              Tab(icon: Icon(Icons.chat_bubble_outline_rounded), text: 'Cümle Kur'),
-              Tab(icon: Icon(Icons.translate_rounded), text: 'Sesleri Tanıyalım'),
-              Tab(icon: Icon(Icons.extension_rounded), text: 'Harf Oyunu'),
+            tabs: [
+              Tab(icon: const Icon(Icons.chat_bubble_outline_rounded), text: loc.tabSentenceBuilder),
+              Tab(icon: const Icon(Icons.translate_rounded), text: loc.tabSoundsTable),
+              Tab(icon: const Icon(Icons.extension_rounded), text: loc.tabLetterGame),
             ],
           ),
         ),
@@ -5452,6 +5452,7 @@ class _SentenceSoundsModuleBodyState extends State<_SentenceSoundsModuleBody> wi
   }
 
   Widget _buildSentenceBuilder() {
+    final loc = AppLocalizations.of(context)!;
     final sentenceText = [
       if (_sentenceWho != null) _sentenceWho,
       if (_sentenceWhat != null) _sentenceWhat,
@@ -5459,6 +5460,13 @@ class _SentenceSoundsModuleBodyState extends State<_SentenceSoundsModuleBody> wi
       if (_sentenceWhen != null) _sentenceWhen,
       if (_sentenceVerb != null) _sentenceVerb,
     ].join(' ');
+
+    final whoOptions = List<String>.from(_sbData!['whoOptions']);
+    final whatOptions = List<String>.from(_sbData!['whatOptions']);
+    final whereWhenOptions = List<String>.from(_sbData!['whereWhenOptions']);
+    final whereValues = List<String>.from(_sbData!['whereValues']);
+    final verbOptions = List<String>.from(_sbData!['verbOptions']);
+    final quickWordLabel = _sbData!['quickWordLabel'] as String;
 
     return Container(
       color: const Color(0xFFF9FAFB),
@@ -5481,7 +5489,7 @@ class _SentenceSoundsModuleBodyState extends State<_SentenceSoundsModuleBody> wi
               ],
             ),
             child: Text(
-              sentenceText.isEmpty ? 'Bir kelime seç...' : '$sentenceText.',
+              sentenceText.isEmpty ? loc.sentenceBuilderPlaceholder : '$sentenceText.',
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 22,
@@ -5492,10 +5500,10 @@ class _SentenceSoundsModuleBodyState extends State<_SentenceSoundsModuleBody> wi
           ),
           const SizedBox(height: 20),
 
-          // Who (Kim?)
+          // Who
           _buildSentenceSection(
-            title: 'KİM?',
-            options: const ['Ben', 'Sen', 'O'],
+            title: _sbData!['whoTitle'] as String,
+            options: whoOptions,
             selected: _sentenceWho,
             onSelected: (val) => setState(() => _sentenceWho = _sentenceWho == val ? null : val),
             activeColor: const Color(0xFFD1FAE5),
@@ -5503,10 +5511,10 @@ class _SentenceSoundsModuleBodyState extends State<_SentenceSoundsModuleBody> wi
           ),
           const SizedBox(height: 16),
 
-          // What (Ne?)
+          // What
           _buildSentenceSection(
-            title: 'NE?',
-            options: const ['Su', 'Yemek', 'Tuvalet', 'Sarılmak', 'Müzik', 'Oyun'],
+            title: _sbData!['whatTitle'] as String,
+            options: whatOptions,
             selected: _sentenceWhat,
             onSelected: (val) => setState(() => _sentenceWhat = _sentenceWhat == val ? null : val),
             activeColor: const Color(0xFFFEF3C7),
@@ -5514,13 +5522,13 @@ class _SentenceSoundsModuleBodyState extends State<_SentenceSoundsModuleBody> wi
           ),
           const SizedBox(height: 16),
 
-          // Nerede / Ne Zaman?
+          // Where / When
           _buildSentenceSection(
-            title: 'NEREDE / NE ZAMAN?',
-            options: const ['Evde', 'Okulda', 'Parkta', 'Şimdi', 'Birazdan'],
+            title: _sbData!['whereWhenTitle'] as String,
+            options: whereWhenOptions,
             selected: _sentenceWhere ?? _sentenceWhen,
             onSelected: (val) => setState(() {
-              if (const ['Evde', 'Okulda', 'Parkta'].contains(val)) {
+              if (whereValues.contains(val)) {
                 _sentenceWhere = _sentenceWhere == val ? null : val;
                 _sentenceWhen = null;
               } else {
@@ -5533,10 +5541,10 @@ class _SentenceSoundsModuleBodyState extends State<_SentenceSoundsModuleBody> wi
           ),
           const SizedBox(height: 16),
 
-          // Verb (Ne Yapıyorum?)
+          // Verb
           _buildSentenceSection(
-            title: 'NE YAPIYORUM?',
-            options: const ['istiyorum', 'istemiyorum', 'istiyor', 'istemiyor', 'ara vermek istiyorum'],
+            title: _sbData!['verbTitle'] as String,
+            options: verbOptions,
             selected: _sentenceVerb,
             onSelected: (val) => setState(() => _sentenceVerb = _sentenceVerb == val ? null : val),
             activeColor: const Color(0xFFD1FAE5),
@@ -5544,12 +5552,12 @@ class _SentenceSoundsModuleBodyState extends State<_SentenceSoundsModuleBody> wi
           ),
           const SizedBox(height: 20),
 
-          // Hızlı Kelime
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 4),
+          // Quick Word
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
             child: Text(
-              'HIZLI KELİME',
-              style: TextStyle(
+              _sbData!['quickWordTitle'] as String,
+              style: const TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w900,
                 color: Color(0xFF9CA3AF),
@@ -5562,20 +5570,21 @@ class _SentenceSoundsModuleBodyState extends State<_SentenceSoundsModuleBody> wi
             spacing: 8,
             children: [
               ActionChip(
-                label: const Text(
-                  'yardım istiyorum',
-                  style: TextStyle(fontWeight: FontWeight.w900, color: Color(0xFF991B1B)),
+                label: Text(
+                  quickWordLabel,
+                  style: const TextStyle(fontWeight: FontWeight.w900, color: Color(0xFF991B1B)),
                 ),
                 backgroundColor: const Color(0xFFFEE2E2),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 side: BorderSide(color: const Color(0xFFFCA5A5).withOpacity(0.5)),
                 onPressed: () {
+                  final qwState = _sbData!['quickWordState'] as Map;
                   setState(() {
-                    _sentenceWho = 'Ben';
-                    _sentenceWhat = null;
-                    _sentenceWhere = null;
-                    _sentenceWhen = null;
-                    _sentenceVerb = 'yardım istiyorum';
+                    _sentenceWho = qwState['who'] as String?;
+                    _sentenceWhat = qwState['what'] as String?;
+                    _sentenceWhere = qwState['where'] as String?;
+                    _sentenceWhen = qwState['when'] as String?;
+                    _sentenceVerb = qwState['verb'] as String?;
                   });
                 },
               ),
@@ -5590,7 +5599,7 @@ class _SentenceSoundsModuleBodyState extends State<_SentenceSoundsModuleBody> wi
                 child: ElevatedButton.icon(
                   onPressed: sentenceText.isEmpty ? null : () => _speak(sentenceText),
                   icon: const Icon(Icons.volume_up_rounded, color: Colors.white, size: 24),
-                  label: const Text('KONUŞ', style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 16)),
+                  label: Text(loc.sentenceSpeakButton, style: const TextStyle(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 16)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF1F2937),
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -5612,7 +5621,7 @@ class _SentenceSoundsModuleBodyState extends State<_SentenceSoundsModuleBody> wi
                     });
                   },
                   icon: const Icon(Icons.refresh_rounded, color: Color(0xFF4B5563), size: 24),
-                  label: const Text('TEMİZLE', style: TextStyle(fontWeight: FontWeight.w900, color: Color(0xFF4B5563), fontSize: 16)),
+                  label: Text(loc.sentenceClearButton, style: const TextStyle(fontWeight: FontWeight.w900, color: Color(0xFF4B5563), fontSize: 16)),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     side: const BorderSide(color: Color(0xFFD1D5DB), width: 2),
@@ -5694,9 +5703,9 @@ class _SentenceSoundsModuleBodyState extends State<_SentenceSoundsModuleBody> wi
           mainAxisSpacing: 12,
           childAspectRatio: 1.0,
         ),
-        itemCount: _turkishAlphabet.length,
+        itemCount: _alphabet.length,
         itemBuilder: (context, idx) {
-          final letter = _turkishAlphabet[idx];
+          final letter = _alphabet[idx];
           final color = _letterColors[idx % _letterColors.length];
           final isPressed = _pressedLetter == letter;
 
@@ -5736,6 +5745,7 @@ class _SentenceSoundsModuleBodyState extends State<_SentenceSoundsModuleBody> wi
   }
 
   Widget _buildGameSection() {
+    final loc = AppLocalizations.of(context)!;
     return Container(
       color: const Color(0xFFF9FAFB),
       child: Column(
@@ -5744,17 +5754,17 @@ class _SentenceSoundsModuleBodyState extends State<_SentenceSoundsModuleBody> wi
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             color: Colors.white,
             width: double.infinity,
-            child: const Column(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Harf Bulma Oyunu',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Color(0xFF1F2937)),
+                  loc.letterGameTitle,
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Color(0xFF1F2937)),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
-                  'Kutulardan bir harfe bas ve o harfle başlayan kelimeyi bul!',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF6B7280)),
+                  loc.letterGameSubtitle,
+                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF6B7280)),
                 ),
               ],
             ),
@@ -5782,20 +5792,12 @@ class _SentenceSoundsModuleBodyState extends State<_SentenceSoundsModuleBody> wi
                     side: BorderSide(color: color.withOpacity(0.6), width: 1.5),
                   ),
                   child: InkWell(
-                    onTap: () {
-                      if (gameObj != null) {
-                        _onGameLetterTap(letter, gameObj.emoji, gameObj.word);
-                      }
-                    },
+                    onTap: gameObj == null ? null : () => _onGameLetterTap(letter, gameObj.emoji, gameObj.word),
                     borderRadius: BorderRadius.circular(20),
                     child: Center(
                       child: Text(
                         letter,
-                        style: const TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.w900,
-                          color: Color(0xFF1F2937),
-                        ),
+                        style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: Color(0xFF1F2937)),
                       ),
                     ),
                   ),
@@ -5818,6 +5820,7 @@ class _ImitationModuleBody extends StatefulWidget {
 
 class _ImitationModuleBodyState extends State<_ImitationModuleBody> {
   final FlutterTts _flutterTts = FlutterTts();
+  List<Map<String, dynamic>> _steps = [];
   int _currentStepIdx = -1;
   String _currentAction = 'idle';
   double _verticalOffset = 0.0;
@@ -5825,59 +5828,9 @@ class _ImitationModuleBodyState extends State<_ImitationModuleBody> {
   double _leftArmTurns = 0.0; // 0.0 down, -0.5 up
   double _rightArmTurns = 0.0; // 0.0 down, 0.5 up
   bool _isClapping = false;
+  bool _loading = true;
 
   final String _idleImageAsset = 'assets/imitation_idle.png';
-
-  final List<Map<String, dynamic>> _steps = [
-    {
-      'title': 'Kolları Kaldır',
-      'voice': 'Kolları kaldır!',
-      'action': 'raiseArms',
-      'imageAsset': 'assets/imitation_raise_arms.png',
-    },
-    {
-      'title': 'Kolları Bağla',
-      'voice': 'Kolları bağla!',
-      'action': 'crossArms',
-      'imageAsset': 'assets/imitation_cross_arms.png',
-    },
-    {
-      'title': 'Elleri Kaldır',
-      'voice': 'Elleri kaldır!',
-      'action': 'raiseHands',
-      'imageAsset': 'assets/imitation_raise_hands.png',
-    },
-    {
-      'title': 'Kulağını Göster',
-      'voice': 'Sağ elinle sağ kulağını göster!',
-      'action': 'showEar',
-      'imageAsset': 'assets/imitation_show_ear.png',
-    },
-    {
-      'title': 'Gözlerini Kapat',
-      'voice': 'Gözlerini kapat!',
-      'action': 'closeEyes',
-      'imageAsset': 'assets/imitation_close_eyes.png',
-    },
-    {
-      'title': 'Burnunu Göster',
-      'voice': 'Sağ elinle burnunu göster!',
-      'action': 'showNose',
-      'imageAsset': 'assets/imitation_show_nose.png',
-    },
-    {
-      'title': 'El Çırp',
-      'voice': 'Ellerini hızlıca çırp!',
-      'action': 'clap',
-      'imageAsset': 'assets/imitation_clap.png',
-    },
-    {
-      'title': 'Zıpla',
-      'voice': 'Yukarı doğru zıpla!',
-      'action': 'jump',
-      'imageAsset': 'assets/imitation_jump.png',
-    },
-  ];
 
   @override
   void initState() {
@@ -5885,23 +5838,56 @@ class _ImitationModuleBodyState extends State<_ImitationModuleBody> {
     _initTts();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadSteps();
+  }
+
   void _initTts() async {
     try {
-      await _flutterTts.setLanguage("tr-TR");
+      final locale = Localizations.localeOf(context).languageCode;
+      await _flutterTts.setLanguage(locale == 'tr' ? 'tr-TR' : 'en-US');
       await _flutterTts.setSpeechRate(0.45);
       await _flutterTts.setPitch(1.0);
     } catch (_) {}
   }
 
+  Future<void> _loadSteps() async {
+    final locale = Localizations.localeOf(context).languageCode;
+    try {
+      final jsonStr = await DefaultAssetBundle.of(context).loadString('assets/content/$locale/imitation.json');
+      final list = json.decode(jsonStr) as List;
+      final parsed = list.map((item) {
+        return {
+          'title': item['title'] as String,
+          'voice': item['voice'] as String,
+          'action': item['action'] as String,
+          'imageAsset': item['imageAsset'] as String,
+        };
+      }).toList();
+
+      setState(() {
+        _steps = parsed;
+        _loading = false;
+      });
+    } catch (e) {
+      debugPrint("Error loading imitation steps: $e");
+      setState(() => _loading = false);
+    }
+  }
+
   void _speak(String text) async {
     try {
+      final locale = Localizations.localeOf(context).languageCode;
+      await _flutterTts.setLanguage(locale == 'tr' ? 'tr-TR' : 'en-US');
       await _flutterTts.stop();
       await _flutterTts.speak(text);
     } catch (_) {}
   }
 
   void _nextStep() {
-    if (_isClapping) return; // Clapping is in progress, ignore clicks
+    if (_isClapping || _steps.isEmpty) return; // Clapping is in progress or empty steps, ignore clicks
 
     setState(() {
       _currentStepIdx = (_currentStepIdx + 1) % _steps.length;
@@ -5989,6 +5975,11 @@ class _ImitationModuleBodyState extends State<_ImitationModuleBody> {
 
   @override
   Widget build(BuildContext context) {
+    if (_loading || _steps.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    final loc = AppLocalizations.of(context)!;
     final step = _currentStepIdx == -1 ? null : _steps[_currentStepIdx];
 
     return Scaffold(
@@ -6012,14 +6003,14 @@ class _ImitationModuleBodyState extends State<_ImitationModuleBody> {
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: const Color(0xFFA7F3D0), width: 1.5),
                 ),
-                child: const Row(
+                child: Row(
                   children: [
-                    Icon(Icons.touch_app_rounded, color: Color(0xFF10B981), size: 28),
-                    SizedBox(width: 12),
+                    const Icon(Icons.touch_app_rounded, color: Color(0xFF10B981), size: 28),
+                    const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        'Ekrana herhangi bir yere dokunarak sıradaki taklit hareketine geçebilirsin!',
-                        style: TextStyle(
+                        loc.imitationBannerHint,
+                        style: const TextStyle(
                           fontSize: 13.5,
                           fontWeight: FontWeight.w900,
                           color: Color(0xFF065F46),
@@ -6050,7 +6041,7 @@ class _ImitationModuleBodyState extends State<_ImitationModuleBody> {
                 child: Column(
                   children: [
                     Text(
-                      step != null ? step['title'].toUpperCase() : 'OYUNU BAŞLAT',
+                      step != null ? step['title'].toUpperCase() : loc.imitationStartGame,
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w900,
@@ -6060,7 +6051,7 @@ class _ImitationModuleBodyState extends State<_ImitationModuleBody> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      step != null ? step['voice'] : 'Ekranın herhangi bir yerine dokunarak başla!',
+                      step != null ? step['voice'] : loc.imitationStartHint,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 22,
@@ -6138,13 +6129,13 @@ class _ImitationModuleBodyState extends State<_ImitationModuleBody> {
                                 ),
                               ],
                             ),
-                            child: const Row(
+                            child: Row(
                               children: [
-                                Icon(Icons.circle, size: 8, color: Colors.white),
-                                SizedBox(width: 6),
+                                const Icon(Icons.circle, size: 8, color: Colors.white),
+                                const SizedBox(width: 6),
                                 Text(
-                                  'CANLI PANEL',
-                                  style: TextStyle(
+                                  loc.imitationLivePanel,
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 10,
                                     fontWeight: FontWeight.w900,
@@ -6200,7 +6191,7 @@ class _ImitationModuleBodyState extends State<_ImitationModuleBody> {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    step != null ? 'Taklit: ${step['title']}' : 'Hazır mısın?',
+                                    step != null ? '${loc.imitationPrefix}: ${step['title']}' : loc.imitationReady,
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 14,
@@ -6209,15 +6200,18 @@ class _ImitationModuleBodyState extends State<_ImitationModuleBody> {
                                   ),
                                 ),
                                 Container(
-                                  padding: const EdgeInsets.all(4),
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xFF10B981),
-                                    shape: BoxShape.circle,
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF10B981),
+                                    borderRadius: BorderRadius.circular(6),
                                   ),
-                                  child: const Icon(
-                                    Icons.play_arrow_rounded,
-                                    color: Colors.white,
-                                    size: 16,
+                                  child: const Text(
+                                    'AUTO',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w900,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -6230,35 +6224,6 @@ class _ImitationModuleBodyState extends State<_ImitationModuleBody> {
                 ),
               ),
               const Spacer(),
-
-              // Next Button Banner
-              Container(
-                width: double.infinity,
-                height: 56,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF10B981),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.play_arrow_rounded, color: Colors.white, size: 28),
-                      SizedBox(width: 8),
-                      Text(
-                        'SONRAKİ HAREKET',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white,
-                          letterSpacing: 1.0,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
             ],
           ),
         ),
@@ -6270,32 +6235,32 @@ class _ImitationModuleBodyState extends State<_ImitationModuleBody> {
     return Stack(
       alignment: Alignment.center,
       children: [
-        // Shadows under feet
-        AnimatedPositioned(
-          duration: const Duration(milliseconds: 200),
-          top: 320 + (_verticalOffset * 0.15), // Shadow changes height slightly when jumping
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            width: _verticalOffset != 0.0 ? 60 : 100,
-            height: 12,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade300.withOpacity(_verticalOffset != 0.0 ? 0.4 : 0.8),
-              borderRadius: BorderRadius.all(Radius.elliptical(_verticalOffset != 0.0 ? 30 : 50, 6)),
+        // Background sky/garden gradient
+        Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xFFBAE6FD), // Sky blue
+                Color(0xFFE0F2FE),
+                Color(0xFFDCFCE7), // Light green ground
+              ],
             ),
           ),
         ),
 
-        // Legs (Left & Right)
-        AnimatedPositioned(
-          duration: const Duration(milliseconds: 200),
-          top: 240 + _verticalOffset,
-          left: 125,
+        // Left Leg
+        Positioned(
+          left: 130,
+          top: 230 + _verticalOffset,
           child: _buildLeg(),
         ),
-        AnimatedPositioned(
-          duration: const Duration(milliseconds: 200),
-          top: 240 + _verticalOffset,
-          right: 125,
+
+        // Right Leg
+        Positioned(
+          right: 130,
+          top: 230 + _verticalOffset,
           child: _buildLeg(),
         ),
 
@@ -6536,5 +6501,3 @@ class _ImitationModuleBodyState extends State<_ImitationModuleBody> {
     );
   }
 }
-
-

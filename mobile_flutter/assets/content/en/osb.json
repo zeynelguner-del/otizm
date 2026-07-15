@@ -1,0 +1,37 @@
+﻿{
+  "featuredTitle": "Quick Summary",
+  "featuredContent": "This section summarizes what ASD is, how it's evaluated, common symptoms, and why early diagnosis/education is important in an understandable language. It is not a substitute for diagnosis and treatment; expert evaluation is required if suspected.",
+  "sections": [
+    {
+      "title": "What is Autism Spectrum Disorder?",
+      "description": "What ASD is, why it's called a “spectrum”, and its key features.",
+      "content": "Autism Spectrum Disorder (ASD) is a neurodevelopmental condition related to brain development. In ASD, persistent difficulties in social communication and social interaction can be seen, along with restricted/repetitive behaviors and interests.\n\nWhy is it called a “spectrum”?\n- The severity, appearance of symptoms, and the person's need for support vary greatly.\n- Some individuals may be independent with less support in daily life, while others may require more intensive and structured support.\n\nASD can also be seen with sensory differences:\n- There may be over- or under-sensitivity to stimuli such as sound, light, touch, smell.\n\nNote: ASD is not a “personality” or “choice”; it is a condition related to the person's developmental profile. The goal is to support communication, learning, independence, and quality of life."
+    },
+    {
+      "title": "How is Autism Spectrum Disorder Classified?",
+      "description": "Diagnostic criteria and grading based on support needs (DSM-5 approach).",
+      "content": "In current clinical classification, ASD is evaluated under a single “spectrum” diagnosis. The diagnosis is made through expert observation and caregiver information regarding the child's/individual's development, behaviors, and functioning.\n\nAccording to DSM-5, two main areas stand out in the diagnosis of ASD:\n1) Persistent difficulties in social communication and interaction\n2) Restricted, repetitive patterns of behavior/interests and excessive adherence to routines (including sensory responses)\n\nA “severity/level” specification can be made based on support needs:\n- Level 1: Requires support\n- Level 2: Requires substantial support\n- Level 3: Requires very substantial support\n\nAdditionally, the following co-occurring conditions are specified:\n- Language development (with/without accompanying language impairment)\n- Intellectual development (with/without accompanying intellectual disability)\n- Known medical/genetic conditions and co-diagnoses (e.g., ADHD, anxiety, epilepsy)\n\nNote: Some sub-diagnoses previously known by separate names (e.g., Asperger's, etc.) are now considered within the ASD spectrum."
+    },
+    {
+      "title": "What Are the Causes of Autism Spectrum Disorder?",
+      "description": "There is no single cause; genetic and environmental factors play a role together.",
+      "content": "There is no single proven cause of ASD. Scientific evidence shows that genetic factors and some environmental/biological factors together can increase the risk of ASD by affecting early brain development.\n\nKnown general framework:\n- Genetic factors: A family history of ASD and some genetic syndromes can be associated with risk.\n- Environmental/biological factors: Some pregnancy and birth-related factors (e.g., advanced parental age, prematurity, some birth complications) have been associated with risk.\n\nImportant information:\n- There is no reliable scientific evidence that vaccines cause ASD.\n\nNote: A “risk factor” does not mean that something definitely causes ASD; it may simply be found to be probabilistically associated. The causes are not the same for every child and family."
+    },
+    {
+      "title": "What Are the Symptoms of Autism Spectrum Disorder?",
+      "description": "Social communication and repetitive behavior patterns; sensory differences.",
+      "content": "Symptoms vary from person to person; however, differences in two main areas are typically seen in ASD.\n\n1) Difficulties in social communication and social interaction\n- Difficulty initiating and sustaining reciprocal communication\n- Difficulty using or understanding nonverbal cues such as eye contact, gestures/facial expressions\n- Difficulty making and maintaining peer relationships\n\n2) Restricted and repetitive behaviors / interests\n- Repetitive movements or play patterns (e.g., rocking, lining up objects)\n- Excessive adherence to routines, intense difficulty with changes\n- Intense and restricted interests\n- Differences in sensory responses (over- or under-reacting to stimuli such as sound/light/touch)\n\nSome children may experience a plateau or regression in development (especially in communication skills). It is important to consult a specialist if such changes are noticed."
+    },
+    {
+      "title": "The Importance of Early Diagnosis and Early Education",
+      "description": "Early intervention can provide significant benefits in communication, social skills, and daily life.",
+      "content": "Early diagnosis allows the child's developmental needs to be understood earlier and the right supports to begin sooner.\n\nWhy is it important?\n- Early intervention services (especially in the preschool period) can be effective in developing the child's communication, social interaction, and learning skills.\n- Family guidance and home modifications (visual supports, routine planning, creating communication opportunities) make daily life more sustainable.\n- Co-occurring difficulties (sleep, nutrition, anxiety, attention, etc.) can be noticed earlier and appropriate referrals can be made.\n\nPractical steps\n- Tracking developmental milestones and requesting an evaluation if in doubt\n- Evaluation in fields such as child development / child and adolescent psychiatry / pediatric neurology\n- Regular work with individualized goals in services such as special education and speech-language therapy\n\nNote: The best program is one that is individualized according to the child's strengths and needs."
+    }
+  ],
+  "sources": "World Health Organization (WHO): https://www.who.int/news-room/fact-sheets/detail/autism-spectrum-disorders\nCDC: https://www.cdc.gov/autism/about/\nCDC: Clinical Testing and Diagnosis (DSM-5 criteria summary): https://www.cdc.gov/autism/hcp/diagnosis/index.html\nNICHD: What are the symptoms of autism?: https://www.nichd.nih.gov/health/topics/autism/conditioninfo/symptoms",
+  "labels": {
+    "sections": "Topics",
+    "sources": "References",
+    "sourcesDesc": "Informational links (you can copy and open them in a browser)."
+  }
+}

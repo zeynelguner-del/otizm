@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:otizm_destek_app/l10n/app_localizations.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 
@@ -171,14 +172,14 @@ class _HomePageState extends ConsumerState<HomePage> {
           IconButton(
             onPressed: () => context.push('/family'),
             icon: const Icon(Icons.tune_outlined, color: Color(0xFF3F3F46)),
-            tooltip: 'Profil Ayarları',
+            tooltip: AppLocalizations.of(context)!.profileSettings,
           ),
           IconButton(
             onPressed: () async {
               await ref.read(sessionControllerProvider.notifier).logout();
             },
             icon: const Icon(Icons.power_settings_new_rounded, color: Color(0xFFF43F5E)),
-            tooltip: 'Çıkış Yap',
+            tooltip: AppLocalizations.of(context)!.logout,
           ),
           const SizedBox(width: 8),
         ],
@@ -202,7 +203,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                   ? meta.userFullName.split(' ').first
                                   : 'Veli';
                               return Text(
-                                'Merhaba $displayName 👋',
+                                AppLocalizations.of(context)!.helloUser(displayName ?? ''),
                                 style: const TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.w900,
@@ -211,8 +212,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                 ),
                               );
                             },
-                            loading: () => const Text(
-                              'Merhaba Veli 👋',
+                            loading: () => Text(AppLocalizations.of(context)!.greeting(AppLocalizations.of(context)!.homeGreetingParent),
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w900,
@@ -220,8 +220,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                 letterSpacing: -0.5,
                               ),
                             ),
-                            error: (_, __) => const Text(
-                              'Merhaba Veli 👋',
+                            error: (_, __) => Text(AppLocalizations.of(context)!.greeting(AppLocalizations.of(context)!.homeGreetingParent),
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w900,
@@ -231,8 +230,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                             ),
                           ),
                       const SizedBox(height: 4),
-                      const Text(
-                        'Çocuğunuzun bugünkü zeka ve gelişim yolculuğuna hoş geldiniz.',
+                      Text(AppLocalizations.of(context)!.welcomeSubtitle,
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
@@ -249,10 +247,10 @@ class _HomePageState extends ConsumerState<HomePage> {
               ),
 
               // CATEGORY 1: 🧠 Zeka ve Gelişim (Zeka & Learning)
-              const SliverToBoxAdapter(
+              SliverToBoxAdapter(
                 child: _SectionHeader(
-                  title: 'Zeka ve Gelişim',
-                  subtitle: 'Eğitici oyunlar, taklit becerileri ve kelime dağarcığı',
+                  title: AppLocalizations.of(context)!.catZeka,
+                  subtitle: AppLocalizations.of(context)!.catZekaSub,
                   icon: Icons.psychology_rounded,
                   iconColor: Color(0xFF8B5CF6),
                 ),
@@ -266,28 +264,28 @@ class _HomePageState extends ConsumerState<HomePage> {
                     physics: const BouncingScrollPhysics(),
                     children: [
                       _ModuleCarouselTile(
-                        title: 'Nesneleri Tanıyalım',
+                        title: AppLocalizations.of(context)!.modObjects,
                         keyName: 'objects',
                         icon: Icons.category,
                         gradientColors: const [Color(0xFFEC4899), Color(0xFFF472B6)],
                         onTap: () => _navigateToModule('objects'),
                       ),
                       _ModuleCarouselTile(
-                        title: 'Taklit Oyunu',
+                        title: AppLocalizations.of(context)!.modImitation,
                         keyName: 'imitation',
                         icon: Icons.accessibility_new_rounded,
                         gradientColors: const [Color(0xFF10B981), Color(0xFF34D399)],
                         onTap: () => _navigateToModule('imitation'),
                       ),
                       _ModuleCarouselTile(
-                        title: 'Cümle Kur & Sesler',
+                        title: AppLocalizations.of(context)!.modSentence,
                         keyName: 'sentence_sounds',
                         icon: Icons.record_voice_over,
                         gradientColors: const [Color(0xFF8B5CF6), Color(0xFFA78BFA)],
                         onTap: () => _navigateToModule('sentence_sounds'),
                       ),
                       _ModuleCarouselTile(
-                        title: 'Eğitim Hatırlatıcı',
+                        title: AppLocalizations.of(context)!.modEduReminder,
                         keyName: 'education_reminder',
                         icon: Icons.alarm,
                         gradientColors: const [Color(0xFF047857), Color(0xFF059669)],
@@ -301,10 +299,10 @@ class _HomePageState extends ConsumerState<HomePage> {
               const SliverToBoxAdapter(child: SizedBox(height: 20)),
 
               // CATEGORY 2: 🎮 Terapi ve Oyun (Therapy & Games)
-              const SliverToBoxAdapter(
+              SliverToBoxAdapter(
                 child: _SectionHeader(
-                  title: 'Terapi ve Oyun',
-                  subtitle: 'Müzik terapisi, duyusal odalar ve sosyal hikayeler',
+                  title: AppLocalizations.of(context)!.catTherapy,
+                  subtitle: AppLocalizations.of(context)!.catTherapySub,
                   icon: Icons.sports_esports_rounded,
                   iconColor: Color(0xFF0284C7),
                 ),
@@ -318,35 +316,35 @@ class _HomePageState extends ConsumerState<HomePage> {
                     physics: const BouncingScrollPhysics(),
                     children: [
                       _ModuleCarouselTile(
-                        title: 'Eğitici Oyunlar',
+                        title: AppLocalizations.of(context)!.modEduGames,
                         keyName: 'games',
                         icon: Icons.sports_esports,
                         gradientColors: const [Color(0xFF0284C7), Color(0xFF38BDF8)],
                         onTap: () => _navigateToModule('games'),
                       ),
                       _ModuleCarouselTile(
-                        title: 'Duyusal Oda',
+                        title: AppLocalizations.of(context)!.modSensory,
                         keyName: 'sensory',
                         icon: Icons.waves,
                         gradientColors: const [Color(0xFF06B6D4), Color(0xFF22D3EE)],
                         onTap: () => _navigateToModule('sensory'),
                       ),
                       _ModuleCarouselTile(
-                        title: 'Müzik ve Ses',
+                        title: AppLocalizations.of(context)!.modMusic,
                         keyName: 'music',
                         icon: Icons.music_note,
                         gradientColors: const [Color(0xFF4F46E5), Color(0xFF818CF8)],
                         onTap: () => _navigateToModule('music'),
                       ),
                       _ModuleCarouselTile(
-                        title: 'Sosyal Öyküler',
+                        title: AppLocalizations.of(context)!.modStories,
                         keyName: 'stories',
                         icon: Icons.auto_stories,
                         gradientColors: const [Color(0xFF059669), Color(0xFF10B981)],
                         onTap: () => _navigateToModule('stories'),
                       ),
                       _ModuleCarouselTile(
-                        title: 'Duygularım',
+                        title: AppLocalizations.of(context)!.modEmotions,
                         keyName: 'emotions',
                         icon: Icons.favorite,
                         gradientColors: const [Color(0xFFE11D48), Color(0xFFFB7185)],
@@ -360,10 +358,10 @@ class _HomePageState extends ConsumerState<HomePage> {
               const SliverToBoxAdapter(child: SizedBox(height: 20)),
 
               // CATEGORY 3: 📚 Rehberlik ve Takip (Guidance & Track)
-              const SliverToBoxAdapter(
+              SliverToBoxAdapter(
                 child: _SectionHeader(
-                  title: 'Rehberlik ve Takip',
-                  subtitle: 'Otizm hakkında bilgi, takvim ve tıbbi araştırmalar',
+                  title: AppLocalizations.of(context)!.catGuidance,
+                  subtitle: AppLocalizations.of(context)!.catGuidanceSub,
                   icon: Icons.menu_book_rounded,
                   iconColor: Color(0xFFEA580C),
                 ),
@@ -380,51 +378,45 @@ class _HomePageState extends ConsumerState<HomePage> {
                   delegate: SliverChildListDelegate(
                     [
                       _ModuleGridTile(
-                        title: 'İletişim Kartları',
+                        title: AppLocalizations.of(context)!.modAcc,
                         keyName: 'acc',
                         icon: Icons.chat,
-                        color: const Color(0xFFFFFBEB),
-                        iconColor: const Color(0xFFD97706),
+                        gradientColors: const [Color(0xFFD97706), Color(0xFFFBBF24)],
                         onTap: () => _navigateToModule('acc'),
                       ),
                       _ModuleGridTile(
-                        title: 'Takvim ve Program',
+                        title: AppLocalizations.of(context)!.modCalendar,
                         keyName: 'calendar',
                         icon: Icons.calendar_month,
-                        color: const Color(0xFFFFF7ED),
-                        iconColor: const Color(0xFFEA580C),
+                        gradientColors: const [Color(0xFFEA580C), Color(0xFFF97316)],
                         onTap: () => _navigateToModule('calendar'),
                       ),
                       _ModuleGridTile(
-                        title: 'Otizm Bilgilendirme',
+                        title: AppLocalizations.of(context)!.modInfo,
                         keyName: 'info',
                         icon: Icons.info,
-                        color: const Color(0xFFEFF6FF),
-                        iconColor: const Color(0xFF2563EB),
+                        gradientColors: const [Color(0xFF2563EB), Color(0xFF60A5FA)],
                         onTap: () => _navigateToModule('info'),
                       ),
                       _ModuleGridTile(
-                        title: 'OSB Tanısı Nedir?',
+                        title: AppLocalizations.of(context)!.modOsb,
                         keyName: 'osb',
                         icon: Icons.help,
-                        color: const Color(0xFFECFEFF),
-                        iconColor: const Color(0xFF0891B2),
+                        gradientColors: const [Color(0xFF0891B2), Color(0xFF22D3EE)],
                         onTap: () => _navigateToModule('osb'),
                       ),
                       _ModuleGridTile(
-                        title: 'Eğitim Rehberi',
+                        title: AppLocalizations.of(context)!.modEduGuide,
                         keyName: 'education',
                         icon: Icons.menu_book,
-                        color: const Color(0xFFF5F3FF),
-                        iconColor: const Color(0xFF7C3AED),
+                        gradientColors: const [Color(0xFF7C3AED), Color(0xFFA78BFA)],
                         onTap: () => _navigateToModule('education'),
                       ),
                       _ModuleGridTile(
-                        title: 'OSB Araştırmaları',
+                        title: AppLocalizations.of(context)!.modResearch,
                         keyName: 'osb_research',
                         icon: Icons.public,
-                        color: const Color(0xFFF0FDF4),
-                        iconColor: const Color(0xFF0D9488),
+                        gradientColors: const [Color(0xFF0D9488), Color(0xFF2DD4BF)],
                         onTap: () => _navigateToModule('osb_research'),
                       ),
                     ],
@@ -437,7 +429,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, st) => Center(child: Text('Hata: $e')),
+        error: (e, st) => Center(child: Text(AppLocalizations.of(context)!.homeErrorPrefix(e.toString()))),
       ),
       bottomNavigationBar: _isAdLoaded
           ? SafeArea(
@@ -460,7 +452,7 @@ class _SectionHeader extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
 
-  const _SectionHeader({
+  _SectionHeader({
     required this.title,
     required this.subtitle,
     required this.icon,
@@ -549,16 +541,16 @@ class _ProfileSummary extends ConsumerWidget {
     return null;
   }
 
-  String _calculateAge(String birthDateStr) {
-    if (birthDateStr.isEmpty) return 'Yaş: -';
+  String _calculateAge(String birthDateStr, BuildContext context) {
+    if (birthDateStr.isEmpty) return AppLocalizations.of(context)!.homeAgeLabel;
     try {
       final birthDate = _parseFlexibleDate(birthDateStr);
       if (birthDate == null) {
-        return 'Yaş: -';
+        return AppLocalizations.of(context)!.homeAgeLabel;
       }
       final now = DateTime.now();
       if (birthDate.isAfter(now)) {
-        return 'Yeni doğan';
+        return AppLocalizations.of(context)!.homeAgeNewborn;
       }
 
       int years = now.year - birthDate.year;
@@ -577,19 +569,20 @@ class _ProfileSummary extends ConsumerWidget {
       }
 
       final List<String> parts = [];
+      final loc = AppLocalizations.of(context)!;
       if (years > 0) {
-        parts.add('$years yaş');
+        parts.add(loc.homeAgeYears(years));
       }
       if (months > 0) {
-        parts.add('$months ay');
+        parts.add(loc.homeAgeMonths(months));
       }
       if (days > 0 || parts.isEmpty) {
-        parts.add('$days gün');
+        parts.add(loc.homeAgeDays(days));
       }
 
       return parts.join(' ');
     } catch (e) {
-      return 'Yaş: -';
+      return AppLocalizations.of(context)!.homeAgeLabel;
     }
   }
 
@@ -691,7 +684,7 @@ class _ProfileSummary extends ConsumerWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            _calculateAge(profile.birthDate),
+                            _calculateAge(profile.birthDate, context),
                             style: const TextStyle(
                               fontWeight: FontWeight.w800,
                               color: Colors.white70,
@@ -708,12 +701,12 @@ class _ProfileSummary extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(color: Colors.white12, width: 1),
                       ),
-                      child: const Row(
+                      child: Row(
                         children: [
-                          Icon(Icons.stars_rounded, color: Color(0xFFFBBF24), size: 16),
-                          SizedBox(width: 4),
+                          const Icon(Icons.stars_rounded, color: Color(0xFFFBBF24), size: 16),
+                          const SizedBox(width: 4),
                           Text(
-                            'AKTİF PROFiL',
+                            AppLocalizations.of(context)!.activeProfile,
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 9,
@@ -735,7 +728,7 @@ class _ProfileSummary extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${profile.name.split(' ').first} İçin Günlük İlerleme'.toUpperCase(),
+                      AppLocalizations.of(context)!.dailyProgressTitle(profile.name.split(' ').first).toUpperCase(),
                       style: const TextStyle(
                         color: Colors.white60,
                         fontSize: 10,
@@ -743,8 +736,7 @@ class _ProfileSummary extends ConsumerWidget {
                         letterSpacing: 1.0,
                       ),
                     ),
-                    const Text(
-                      '8 / 12 MODÜL',
+                    Text(AppLocalizations.of(context)!.moduleProgress(8, 12),
                       style: TextStyle(
                         color: Color(0xFF00E5FF), // Glowing cyan
                         fontSize: 11,
@@ -807,7 +799,7 @@ class _ModuleCarouselTile extends StatelessWidget {
   final List<Color> gradientColors;
   final VoidCallback onTap;
 
-  const _ModuleCarouselTile({
+  _ModuleCarouselTile({
     required this.title,
     required this.keyName,
     required this.icon,
@@ -882,16 +874,14 @@ class _ModuleGridTile extends StatelessWidget {
   final String title;
   final String keyName;
   final IconData icon;
-  final Color color;
-  final Color iconColor;
+  final List<Color> gradientColors;
   final VoidCallback onTap;
 
   const _ModuleGridTile({
     required this.title,
     required this.keyName,
     required this.icon,
-    required this.color,
-    required this.iconColor,
+    required this.gradientColors,
     required this.onTap,
   });
 
@@ -900,15 +890,28 @@ class _ModuleGridTile extends StatelessWidget {
     return Card(
       margin: EdgeInsets.zero,
       elevation: 0,
-      color: color,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
-        side: BorderSide(color: Colors.white.withOpacity(0.6), width: 1.5),
       ),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(24),
-        child: Padding(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: gradientColors,
+            ),
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: gradientColors.first.withOpacity(0.15),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -917,18 +920,18 @@ class _ModuleGridTile extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.6),
+                  color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(icon, color: iconColor, size: 22),
+                child: Icon(icon, color: Colors.white, size: 22),
               ),
               Text(
                 title,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.w900,
-                  color: iconColor.withOpacity(0.9),
+                  color: Colors.white,
                   fontSize: 13.5,
                   height: 1.1,
                 ),

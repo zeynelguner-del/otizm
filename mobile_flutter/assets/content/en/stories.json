@@ -1,0 +1,214 @@
+[
+  {
+    "id": "hand-washing",
+    "title": "Washing My Hands",
+    "description": "How do we wash our hands for cleanliness and health?",
+    "steps": [
+      {
+        "emoji": "🚰",
+        "text": "I turn on the tap and wet my hands."
+      },
+      {
+        "emoji": "🧼",
+        "text": "I take soap and lather my hands."
+      },
+      {
+        "emoji": "🙌",
+        "text": "I rub all parts of my hands thoroughly."
+      },
+      {
+        "emoji": "💦",
+        "text": "I rinse off the soap with water."
+      },
+      {
+        "emoji": "🧣",
+        "text": "I dry my hands with my towel."
+      }
+    ]
+  },
+  {
+    "id": "greeting",
+    "title": "Saying Hello",
+    "description": "What do we do when meeting new people?",
+    "steps": [
+      {
+        "emoji": "👀",
+        "text": "I look into the eyes of the person in front of me."
+      },
+      {
+        "emoji": "😊",
+        "text": "I put a small smile on my face."
+      },
+      {
+        "emoji": "👋",
+        "text": "I gently say \"Hello\"."
+      },
+      {
+        "emoji": "👂",
+        "text": "I wait for my turn and listen to them."
+      }
+    ]
+  },
+  {
+    "id": "waiting-turn",
+    "title": "Waiting in Line",
+    "description": "How does waiting in line work?",
+    "steps": [
+      {
+        "emoji": "📍",
+        "text": "I find where I need to line up."
+      },
+      {
+        "emoji": "🚶",
+        "text": "I get in the back of the line."
+      },
+      {
+        "emoji": "↔️",
+        "text": "I wait without getting too close to the person in front of me."
+      },
+      {
+        "emoji": "👐",
+        "text": "I keep my hands calm while waiting."
+      },
+      {
+        "emoji": "✅",
+        "text": "When it's my turn, I gently go forward."
+      }
+    ]
+  },
+  {
+    "id": "sharing-toys",
+    "title": "Sharing My Toy",
+    "description": "I learn to share with my friends.",
+    "steps": [
+      {
+        "emoji": "👂",
+        "text": "I listen to my friend and understand what they want."
+      },
+      {
+        "emoji": "⏳",
+        "text": "I can say \"In a moment\" if I want."
+      },
+      {
+        "emoji": "🧸",
+        "text": "When my turn is over, I offer the toy."
+      },
+      {
+        "emoji": "🙂",
+        "text": "I wait while my friend plays."
+      },
+      {
+        "emoji": "🔁",
+        "text": "When it's my turn, I take the toy back."
+      }
+    ]
+  },
+  {
+    "id": "going-to-school",
+    "title": "Getting Ready for School",
+    "description": "What do I do when going to school?",
+    "steps": [
+      {
+        "emoji": "👕",
+        "text": "I put on my clothes."
+      },
+      {
+        "emoji": "🎒",
+        "text": "I put the necessary items in my bag."
+      },
+      {
+        "emoji": "👟",
+        "text": "I put on my shoes."
+      },
+      {
+        "emoji": "🚻",
+        "text": "I can go to the toilet before leaving."
+      },
+      {
+        "emoji": "🚦",
+        "text": "I walk safely on the way to school."
+      }
+    ]
+  },
+  {
+    "id": "doctor-visit",
+    "title": "Going to the Doctor",
+    "description": "What happens during a doctor's checkup?",
+    "steps": [
+      {
+        "emoji": "👋",
+        "text": "I greet the doctor."
+      },
+      {
+        "emoji": "🩺",
+        "text": "The doctor listens to me and asks questions."
+      },
+      {
+        "emoji": "🌡️",
+        "text": "If necessary, measurements are taken (fever, height, weight)."
+      },
+      {
+        "emoji": "💬",
+        "text": "I can also say how I feel."
+      },
+      {
+        "emoji": "🙏",
+        "text": "When our work is done, I say thank you and leave."
+      }
+    ]
+  },
+  {
+    "id": "market-shopping",
+    "title": "Shopping at the Market",
+    "description": "I learn to stay calm at the market.",
+    "steps": [
+      {
+        "emoji": "📝",
+        "text": "We choose the things we will buy together."
+      },
+      {
+        "emoji": "🛒",
+        "text": "I look at the shelves and point to what I want."
+      },
+      {
+        "emoji": "🎧",
+        "text": "If there is too much noise, I can protect my ears."
+      },
+      {
+        "emoji": "🏷️",
+        "text": "I wait in line at the register."
+      },
+      {
+        "emoji": "🏠",
+        "text": "When we are done, we return home."
+      }
+    ]
+  },
+  {
+    "id": "feelings-words",
+    "title": "Expressing My Emotion",
+    "description": "I express my emotions with words.",
+    "steps": [
+      {
+        "emoji": "🫀",
+        "text": "I listen to my body (is my heart fast, does my stomach hurt?)."
+      },
+      {
+        "emoji": "🤔",
+        "text": "I think about what emotion it feels like."
+      },
+      {
+        "emoji": "💬",
+        "text": "I say a short sentence: like \"I'm sad\", \"I'm angry\"."
+      },
+      {
+        "emoji": "🆘",
+        "text": "I ask for help if needed."
+      },
+      {
+        "emoji": "🌿",
+        "text": "I can speak again once I calm down."
+      }
+    ]
+  }
+]

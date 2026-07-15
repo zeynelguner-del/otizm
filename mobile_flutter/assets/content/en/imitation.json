@@ -1,0 +1,50 @@
+[
+  {
+    "title": "Raise Arms",
+    "voice": "Raise your arms!",
+    "action": "raiseArms",
+    "imageAsset": "assets/imitation_raise_arms.png"
+  },
+  {
+    "title": "Cross Arms",
+    "voice": "Cross your arms!",
+    "action": "crossArms",
+    "imageAsset": "assets/imitation_cross_arms.png"
+  },
+  {
+    "title": "Raise Hands",
+    "voice": "Raise your hands!",
+    "action": "raiseHands",
+    "imageAsset": "assets/imitation_raise_hands.png"
+  },
+  {
+    "title": "Show Ear",
+    "voice": "Show your right ear with your right hand!",
+    "action": "showEar",
+    "imageAsset": "assets/imitation_show_ear.png"
+  },
+  {
+    "title": "Close Eyes",
+    "voice": "Close your eyes!",
+    "action": "closeEyes",
+    "imageAsset": "assets/imitation_close_eyes.png"
+  },
+  {
+    "title": "Show Nose",
+    "voice": "Show your nose with your right hand!",
+    "action": "showNose",
+    "imageAsset": "assets/imitation_show_nose.png"
+  },
+  {
+    "title": "Clap Hands",
+    "voice": "Clap your hands quickly!",
+    "action": "clap",
+    "imageAsset": "assets/imitation_clap.png"
+  },
+  {
+    "title": "Jump",
+    "voice": "Jump up!",
+    "action": "jump",
+    "imageAsset": "assets/imitation_jump.png"
+  }
+]

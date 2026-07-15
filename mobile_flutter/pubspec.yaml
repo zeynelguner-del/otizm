@@ -26,6 +26,9 @@ dependencies:
   url_launcher: ^6.3.0
   google_mobile_ads: ^5.1.0
   app_tracking_transparency: ^2.0.6
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:
@@ -39,10 +42,13 @@ flutter_launcher_icons:
   image_path: "assets/otizeka-logo.png"
 
 flutter:
+  generate: true
   config:
     enable-swift-package-manager: false
   uses-material-design: true
   assets:
+    - assets/content/tr/
+    - assets/content/en/
     - assets/loogo.png
     - assets/otizeka-logo.png
     - assets/splash_logo.png

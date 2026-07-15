@@ -1,0 +1,672 @@
+[
+  {
+    "title": "Meyveler",
+    "emoji": "🍎",
+    "color": "0xFFFEE2E2",
+    "items": [
+      {
+        "name": "Elma",
+        "emoji": "🍎"
+      },
+      {
+        "name": "Armut",
+        "emoji": "🍐"
+      },
+      {
+        "name": "Muz",
+        "emoji": "🍌"
+      },
+      {
+        "name": "Çilek",
+        "emoji": "🍓"
+      },
+      {
+        "name": "Portakal",
+        "emoji": "🍊"
+      },
+      {
+        "name": "Karpuz",
+        "emoji": "🍉"
+      },
+      {
+        "name": "Üzüm",
+        "emoji": "🍇"
+      },
+      {
+        "name": "Kiraz",
+        "emoji": "🍒"
+      },
+      {
+        "name": "Ananas",
+        "emoji": "🍍"
+      },
+      {
+        "name": "Limon",
+        "emoji": "🍋"
+      }
+    ]
+  },
+  {
+    "title": "Sebzeler",
+    "emoji": "🥕",
+    "color": "0xFFFEF3C7",
+    "items": [
+      {
+        "name": "Havuç",
+        "emoji": "🥕"
+      },
+      {
+        "name": "Domates",
+        "emoji": "🍅"
+      },
+      {
+        "name": "Patates",
+        "emoji": "🥔"
+      },
+      {
+        "name": "Mısır",
+        "emoji": "🌽"
+      },
+      {
+        "name": "Biber",
+        "emoji": "🌶️"
+      },
+      {
+        "name": "Patlıcan",
+        "emoji": "🍆"
+      },
+      {
+        "name": "Brokoli",
+        "emoji": "🥦"
+      },
+      {
+        "name": "Salatalık",
+        "emoji": "🥒"
+      },
+      {
+        "name": "Soğan",
+        "emoji": "🧅"
+      },
+      {
+        "name": "Sarımsak",
+        "emoji": "🧄"
+      }
+    ]
+  },
+  {
+    "title": "İçecekler",
+    "emoji": "🥛",
+    "color": "0xFFE0F2FE",
+    "items": [
+      {
+        "name": "Süt",
+        "emoji": "🥛"
+      },
+      {
+        "name": "Su",
+        "emoji": "💧"
+      },
+      {
+        "name": "Meyve Suyu",
+        "emoji": "🍹"
+      },
+      {
+        "name": "Çay",
+        "emoji": "🍵"
+      },
+      {
+        "name": "Kahve",
+        "emoji": "☕"
+      },
+      {
+        "name": "Limonata",
+        "emoji": "🍋"
+      }
+    ]
+  },
+  {
+    "title": "Ev Eşyaları",
+    "emoji": "🛋️",
+    "color": "0xFFEDE9FE",
+    "items": [
+      {
+        "name": "Koltuk",
+        "emoji": "🛋️"
+      },
+      {
+        "name": "Yatak",
+        "emoji": "🛏️"
+      },
+      {
+        "name": "Lamba",
+        "emoji": "💡"
+      },
+      {
+        "name": "Televizyon",
+        "emoji": "📺"
+      },
+      {
+        "name": "Kapı",
+        "emoji": "🚪"
+      },
+      {
+        "name": "Saat",
+        "emoji": "⏰"
+      },
+      {
+        "name": "Ayna",
+        "emoji": "🪞"
+      },
+      {
+        "name": "Sandalye",
+        "emoji": "🪑"
+      }
+    ]
+  },
+  {
+    "title": "Oyuncaklar",
+    "emoji": "🧸",
+    "color": "0xFFFCE7F3",
+    "items": [
+      {
+        "name": "Oyuncak Ayı",
+        "emoji": "🧸"
+      },
+      {
+        "name": "Balon",
+        "emoji": "🎈"
+      },
+      {
+        "name": "Uçurtma",
+        "emoji": "🪁"
+      },
+      {
+        "name": "Oyuncak Araba",
+        "emoji": "🚗"
+      },
+      {
+        "name": "Yapboz",
+        "emoji": "🧩"
+      },
+      {
+        "name": "Top",
+        "emoji": "⚽"
+      },
+      {
+        "name": "Oyun Konsolu",
+        "emoji": "🎮"
+      }
+    ]
+  },
+  {
+    "title": "Giysiler",
+    "emoji": "👕",
+    "color": "0xFFE0F2FE",
+    "items": [
+      {
+        "name": "Tişört",
+        "emoji": "👕"
+      },
+      {
+        "name": "Pantolon",
+        "emoji": "👖"
+      },
+      {
+        "name": "Mont",
+        "emoji": "🧥"
+      },
+      {
+        "name": "Çorap",
+        "emoji": "🧦"
+      },
+      {
+        "name": "Elbise",
+        "emoji": "👗"
+      },
+      {
+        "name": "Şapka",
+        "emoji": "🧢"
+      },
+      {
+        "name": "Ayakkabı",
+        "emoji": "👟"
+      }
+    ]
+  },
+  {
+    "title": "Aksesuarlar",
+    "emoji": "🕶️",
+    "color": "0xFFF5F5F4",
+    "items": [
+      {
+        "name": "Gözlük",
+        "emoji": "🕶️"
+      },
+      {
+        "name": "Çanta",
+        "emoji": "🎒"
+      },
+      {
+        "name": "Şemsiye",
+        "emoji": "☂️"
+      },
+      {
+        "name": "Kol Saati",
+        "emoji": "⌚"
+      },
+      {
+        "name": "Yüzük",
+        "emoji": "💍"
+      },
+      {
+        "name": "Atkı",
+        "emoji": "🧣"
+      }
+    ]
+  },
+  {
+    "title": "Mutfak Gereçleri",
+    "emoji": "🍴",
+    "color": "0xFFFEF3C7",
+    "items": [
+      {
+        "name": "Çatal",
+        "emoji": "🍴"
+      },
+      {
+        "name": "Kaşık",
+        "emoji": "🥄"
+      },
+      {
+        "name": "Tabak",
+        "emoji": "🍽️"
+      },
+      {
+        "name": "Bardak",
+        "emoji": "🥛"
+      },
+      {
+        "name": "Tencere",
+        "emoji": "🍲"
+      },
+      {
+        "name": "Bıçak",
+        "emoji": "🔪"
+      },
+      {
+        "name": "Fincan",
+        "emoji": "☕"
+      }
+    ]
+  },
+  {
+    "title": "Taşıtlar",
+    "emoji": "🚗",
+    "color": "0xFFFFEDD5",
+    "items": [
+      {
+        "name": "Araba",
+        "emoji": "🚗"
+      },
+      {
+        "name": "Bisiklet",
+        "emoji": "🚲"
+      },
+      {
+        "name": "Otobüs",
+        "emoji": "🚌"
+      },
+      {
+        "name": "Tren",
+        "emoji": "🚂"
+      },
+      {
+        "name": "Uçak",
+        "emoji": "✈️"
+      },
+      {
+        "name": "Gemi",
+        "emoji": "🚢"
+      },
+      {
+        "name": "İtfaiye",
+        "emoji": "🚒"
+      },
+      {
+        "name": "Ambulans",
+        "emoji": "🚑"
+      },
+      {
+        "name": "Helikopter",
+        "emoji": "🚁"
+      }
+    ]
+  },
+  {
+    "title": "Hayvanlar",
+    "emoji": "🐱",
+    "color": "0xFFDCFCE7",
+    "items": [
+      {
+        "name": "Kedi",
+        "emoji": "🐱"
+      },
+      {
+        "name": "Köpek",
+        "emoji": "🐶"
+      },
+      {
+        "name": "Aslan",
+        "emoji": "🦁"
+      },
+      {
+        "name": "Kuş",
+        "emoji": "🐦"
+      },
+      {
+        "name": "Balık",
+        "emoji": "🐟"
+      },
+      {
+        "name": "Tavşan",
+        "emoji": "🐰"
+      },
+      {
+        "name": "Fil",
+        "emoji": "🐘"
+      },
+      {
+        "name": "Maymun",
+        "emoji": "🐵"
+      },
+      {
+        "name": "Ayı",
+        "emoji": "🐻"
+      },
+      {
+        "name": "Kurbağa",
+        "emoji": "🐸"
+      }
+    ]
+  },
+  {
+    "title": "Aile Üyeleri",
+    "emoji": "👩",
+    "color": "0xFFF3E8FF",
+    "items": [
+      {
+        "name": "Anne",
+        "emoji": "👩"
+      },
+      {
+        "name": "Baba",
+        "emoji": "🧔"
+      },
+      {
+        "name": "Bebek",
+        "emoji": "👶"
+      },
+      {
+        "name": "Dede",
+        "emoji": "👴"
+      },
+      {
+        "name": "Anneanne",
+        "emoji": "👵"
+      },
+      {
+        "name": "Kız Kardeş",
+        "emoji": "👧"
+      },
+      {
+        "name": "Erkek Kardeş",
+        "emoji": "👦"
+      }
+    ]
+  },
+  {
+    "title": "Bitkiler",
+    "emoji": "🌸",
+    "color": "0xFFE8F5E9",
+    "items": [
+      {
+        "name": "Çiçek",
+        "emoji": "🌸"
+      },
+      {
+        "name": "Ağaç",
+        "emoji": "🌳"
+      },
+      {
+        "name": "Kaktüs",
+        "emoji": "🌵"
+      },
+      {
+        "name": "Gül",
+        "emoji": "🌹"
+      },
+      {
+        "name": "Yaprak",
+        "emoji": "🍃"
+      },
+      {
+        "name": "Mantar",
+        "emoji": "🍄"
+      }
+    ]
+  },
+  {
+    "title": "Okul ve Ofis Gereçleri",
+    "emoji": "📚",
+    "color": "0xFFE0F2FE",
+    "items": [
+      {
+        "name": "Kitap",
+        "emoji": "📚"
+      },
+      {
+        "name": "Kalem",
+        "emoji": "✏️"
+      },
+      {
+        "name": "Defter",
+        "emoji": "📓"
+      },
+      {
+        "name": "Makas",
+        "emoji": "✂️"
+      },
+      {
+        "name": "Cetvel",
+        "emoji": "📏"
+      },
+      {
+        "name": "Okul Çantası",
+        "emoji": "🎒"
+      },
+      {
+        "name": "Bilgisayar",
+        "emoji": "💻"
+      }
+    ]
+  },
+  {
+    "title": "Vücudun Bölümleri",
+    "emoji": "👁️",
+    "color": "0xFFFFE4E6",
+    "items": [
+      {
+        "name": "Göz",
+        "emoji": "👁️"
+      },
+      {
+        "name": "Kulak",
+        "emoji": "👂"
+      },
+      {
+        "name": "El",
+        "emoji": "✋"
+      },
+      {
+        "name": "Ayak",
+        "emoji": "👣"
+      },
+      {
+        "name": "Burun",
+        "emoji": "👃"
+      },
+      {
+        "name": "Diş",
+        "emoji": "🦷"
+      },
+      {
+        "name": "Ağız",
+        "emoji": "👄"
+      },
+      {
+        "name": "Saç",
+        "emoji": "💇"
+      }
+    ]
+  },
+  {
+    "title": "Meslekler",
+    "emoji": "👨‍⚕️",
+    "color": "0xFFF1F5F9",
+    "items": [
+      {
+        "name": "Doktor",
+        "emoji": "👨‍⚕️"
+      },
+      {
+        "name": "Öğretmen",
+        "emoji": "👩‍🏫"
+      },
+      {
+        "name": "Polis",
+        "emoji": "👮"
+      },
+      {
+        "name": "İtfaiyeci",
+        "emoji": "👨‍🚒"
+      },
+      {
+        "name": "Şef",
+        "emoji": "👨‍🍳"
+      },
+      {
+        "name": "Astronot",
+        "emoji": "👨‍🚀"
+      },
+      {
+        "name": "Pilot",
+        "emoji": "👨‍✈️"
+      }
+    ]
+  },
+  {
+    "title": "Mekanlar ve Odalar",
+    "emoji": "🏠",
+    "color": "0xFFECFDF5",
+    "items": [
+      {
+        "name": "Ev",
+        "emoji": "🏠"
+      },
+      {
+        "name": "Okul",
+        "emoji": "🏫"
+      },
+      {
+        "name": "Park",
+        "emoji": "🏞️"
+      },
+      {
+        "name": "Hastane",
+        "emoji": "🏥"
+      },
+      {
+        "name": "Yatak Odası",
+        "emoji": "🛏️"
+      },
+      {
+        "name": "Mutfak",
+        "emoji": "🍳"
+      },
+      {
+        "name": "Orman",
+        "emoji": "🌲"
+      }
+    ]
+  },
+  {
+    "title": "Doğal Yapılar ve Uzay",
+    "emoji": "☀️",
+    "color": "0xFFFFF7ED",
+    "items": [
+      {
+        "name": "Güneş",
+        "emoji": "☀️"
+      },
+      {
+        "name": "Ay",
+        "emoji": "🌙"
+      },
+      {
+        "name": "Yıldız",
+        "emoji": "⭐"
+      },
+      {
+        "name": "Bulut",
+        "emoji": "☁️"
+      },
+      {
+        "name": "Dağ",
+        "emoji": "🏔️"
+      },
+      {
+        "name": "Dünya",
+        "emoji": "🌍"
+      },
+      {
+        "name": "Roket",
+        "emoji": "🚀"
+      }
+    ]
+  },
+  {
+    "title": "Aletler ve Müzik Aletleri",
+    "emoji": "🔨",
+    "color": "0xFFF3F4F6",
+    "items": [
+      {
+        "name": "Çekiç",
+        "emoji": "🔨"
+      },
+      {
+        "name": "Tornavida",
+        "emoji": "🪛"
+      },
+      {
+        "name": "Gitar",
+        "emoji": "🎸"
+      },
+      {
+        "name": "Piyano",
+        "emoji": "🎹"
+      },
+      {
+        "name": "Davul",
+        "emoji": "🥁"
+      },
+      {
+        "name": "Trompet",
+        "emoji": "🎺"
+      },
+      {
+        "name": "Testere",
+        "emoji": "🪚"
+      }
+    ]
+  }
+]

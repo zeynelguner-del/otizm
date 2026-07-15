@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:otizm_destek_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -88,16 +89,16 @@ class _AuthPageState extends ConsumerState<AuthPage> with SingleTickerProviderSt
       final password = _password.text;
       final isRegister = _tab.index == 1;
       if (email.isEmpty || !email.contains('@')) {
-        throw Exception('Geçerli bir e-posta girin.');
+        throw Exception(AppLocalizations.of(context)!.authEmailErr);
       }
       if (password.length < 8) {
-        throw Exception('Şifre en az 8 karakter olmalı.');
+        throw Exception(AppLocalizations.of(context)!.authPwdErr);
       }
       if (isRegister && password != _password2.text) {
-        throw Exception('Şifreler eşleşmiyor.');
+        throw Exception(AppLocalizations.of(context)!.authPwdMatchErr);
       }
       if (!_kvkkAcceptedLocal) {
-        throw Exception('Devam etmek için KVKK onayı gerekli.');
+        throw Exception(AppLocalizations.of(context)!.authErrKvkkRequired);
       }
 
       if (isRegister) {
@@ -133,15 +134,41 @@ class _AuthPageState extends ConsumerState<AuthPage> with SingleTickerProviderSt
     );
   }
 
+  Future<void> _loginAsGuest() async {
+    setState(() {
+      _error = null;
+      _busy = true;
+    });
+    try {
+      final api = await ref.read(apiClientProvider.future);
+      await api.enableGuestMode();
+      setState(() {
+        _kvkkAcceptedLocal = true;
+      });
+      await ref.read(sessionControllerProvider.notifier).refresh();
+    } catch (e) {
+      setState(() {
+        _error = e.toString().replaceFirst('Exception: ', '');
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _busy = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              const SizedBox(height: 8),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const SizedBox(height: 8),
               Row(
                 children: [
                   Container(
@@ -166,19 +193,19 @@ class _AuthPageState extends ConsumerState<AuthPage> with SingleTickerProviderSt
                     ),
                   ),
                   const SizedBox(width: 12),
-                  const Expanded(
+                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
+                        const Text(
                           'OtiZeka',
                           style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
                         ),
-                        SizedBox(height: 2),
+                        const SizedBox(height: 2),
                         Text(
-                          'Otizm Farkındalık',
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.grey),
+                          AppLocalizations.of(context)!.authSubtitleAwareness,
+                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.grey),
                         ),
                       ],
                     ),
@@ -188,7 +215,7 @@ class _AuthPageState extends ConsumerState<AuthPage> with SingleTickerProviderSt
               const SizedBox(height: 16),
               TabBar(
                 controller: _tab,
-                tabs: const [Tab(text: 'Giriş'), Tab(text: 'Kayıt Ol')],
+                tabs: [Tab(text: AppLocalizations.of(context)!.authLogin), Tab(text: AppLocalizations.of(context)!.authRegister)],
               ),
               const SizedBox(height: 16),
               if (_error != null)
@@ -208,18 +235,18 @@ class _AuthPageState extends ConsumerState<AuthPage> with SingleTickerProviderSt
               TextField(
                 controller: _email,
                 keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  labelText: 'E-posta',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.authEmailLabel,
+                  border: const OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: _password,
                 obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: 'Şifre',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.authPwdLabel,
+                  border: const OutlineInputBorder(),
                 ),
               ),
               AnimatedBuilder(
@@ -232,9 +259,9 @@ class _AuthPageState extends ConsumerState<AuthPage> with SingleTickerProviderSt
                       padding: const EdgeInsets.only(top: 4),
                       child: TextButton(
                         onPressed: _showForgotPasswordDialog,
-                        child: const Text(
-                          'Şifremi Unuttum',
-                          style: TextStyle(fontWeight: FontWeight.w700),
+                        child: Text(
+                          AppLocalizations.of(context)!.authForgotPassword,
+                          style: const TextStyle(fontWeight: FontWeight.w700),
                         ),
                       ),
                     ),
@@ -251,9 +278,9 @@ class _AuthPageState extends ConsumerState<AuthPage> with SingleTickerProviderSt
                       TextField(
                         controller: _password2,
                         obscureText: true,
-                        decoration: const InputDecoration(
-                          labelText: 'Şifre (Tekrar)',
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.authPwd2Label,
+                          border: const OutlineInputBorder(),
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -271,7 +298,7 @@ class _AuthPageState extends ConsumerState<AuthPage> with SingleTickerProviderSt
                     children: [
                       Expanded(
                         child: Text(
-                          'Devam ederek KVKK Açık Rıza metnini kabul etmiş olursunuz.',
+                          AppLocalizations.of(context)!.authTextKvkk,
                           style: TextStyle(color: Colors.grey.shade800, fontWeight: FontWeight.w600),
                         ),
                       ),
@@ -283,21 +310,38 @@ class _AuthPageState extends ConsumerState<AuthPage> with SingleTickerProviderSt
                   ),
                 ),
               ),
-              const Spacer(),
+              const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
                 height: 52,
                 child: FilledButton(
                   onPressed: _busy ? null : _submit,
-                  child: Text(_busy ? 'Lütfen bekleyin...' : (_tab.index == 1 ? 'Kayıt Ol' : 'Giriş Yap')),
+                  child: Text(_busy ? AppLocalizations.of(context)!.authWait : (_tab.index == 1 ? AppLocalizations.of(context)!.authBtnRegister : AppLocalizations.of(context)!.authBtnLogin)),
+                ),
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: OutlinedButton(
+                  onPressed: _busy ? null : _loginAsGuest,
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Color(0xFF10B981), width: 1.5),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  ),
+                  child: Text(
+                    AppLocalizations.of(context)!.authContinueAsGuest,
+                    style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF10B981)),
+                  ),
                 ),
               ),
             ],
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
 
 class _ForgotPasswordDialog extends ConsumerStatefulWidget {
@@ -330,7 +374,7 @@ class _ForgotPasswordDialogState extends ConsumerState<_ForgotPasswordDialog> {
   Future<void> _sendCode() async {
     final email = _emailController.text.trim();
     if (email.isEmpty || !email.contains('@')) {
-      setState(() => _error = 'Geçerli bir e-posta adresi girin.');
+      setState(() => _error = AppLocalizations.of(context)!.authEmailErr);
       return;
     }
 
@@ -361,15 +405,15 @@ class _ForgotPasswordDialogState extends ConsumerState<_ForgotPasswordDialog> {
     final newPass2 = _newPasswordController2.text;
 
     if (code.length != 6) {
-      setState(() => _error = '6 haneli doğrulama kodunu girin.');
+      setState(() => _error = AppLocalizations.of(context)!.authErrVerificationCodeInvalid);
       return;
     }
     if (newPass.length < 8) {
-      setState(() => _error = 'Şifre en az 8 karakter olmalıdır.');
+      setState(() => _error = AppLocalizations.of(context)!.authPwdMinLengthErr);
       return;
     }
     if (newPass != newPass2) {
-      setState(() => _error = 'Şifreler eşleşmiyor.');
+      setState(() => _error = AppLocalizations.of(context)!.authPwdMatchErr);
       return;
     }
 
@@ -382,7 +426,7 @@ class _ForgotPasswordDialogState extends ConsumerState<_ForgotPasswordDialog> {
       final api = await ref.read(apiClientProvider.future);
       await api.resetPassword(email: email, code: code, newPassword: newPass);
       setState(() {
-        _successMessage = 'Şifreniz başarıyla sıfırlandı. Giriş yapabilirsiniz.';
+        _successMessage = AppLocalizations.of(context)!.authResetSuccess;
         _busy = false;
       });
       await Future.delayed(const Duration(seconds: 2));
@@ -406,7 +450,7 @@ class _ForgotPasswordDialogState extends ConsumerState<_ForgotPasswordDialog> {
           const Icon(Icons.lock_reset, color: Color(0xFF0D9488), size: 28),
           const SizedBox(width: 10),
           Text(
-            _step == 1 ? 'Şifremi Unuttum' : 'Şifreyi Sıfırla',
+            _step == 1 ? AppLocalizations.of(context)!.authForgotPassword : AppLocalizations.of(context)!.authResetPassword,
             style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
           ),
         ],
@@ -451,24 +495,24 @@ class _ForgotPasswordDialogState extends ConsumerState<_ForgotPasswordDialog> {
               ],
               if (_successMessage == null) ...[
                 if (_step == 1) ...[
-                  const Text(
-                    'Hesabınıza kayıtlı e-posta adresini girin. Size 6 haneli bir doğrulama kodu göndereceğiz.',
-                    style: TextStyle(fontWeight: FontWeight.w600, color: Colors.grey),
+                  Text(
+                    AppLocalizations.of(context)!.authForgotPasswordInstructions,
+                    style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.grey),
                   ),
                   const SizedBox(height: 16),
                   TextField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     enabled: !_busy,
-                    decoration: const InputDecoration(
-                      labelText: 'E-posta Adresi',
-                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-                      prefixIcon: Icon(Icons.email_outlined),
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.authEmailAddressLabel,
+                      border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+                      prefixIcon: const Icon(Icons.email_outlined),
                     ),
                   ),
                 ] else ...[
                   Text(
-                    '${_emailController.text} adresine gönderilen 6 haneli kodu ve yeni şifrenizi girin.',
+                    AppLocalizations.of(context)!.authResetPasswordInstructions(_emailController.text),
                     style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.grey),
                   ),
                   const SizedBox(height: 16),
@@ -477,11 +521,11 @@ class _ForgotPasswordDialogState extends ConsumerState<_ForgotPasswordDialog> {
                     keyboardType: TextInputType.number,
                     enabled: !_busy,
                     maxLength: 6,
-                    decoration: const InputDecoration(
-                      labelText: 'Doğrulama Kodu',
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.authVerificationCodeLabel,
                       counterText: '',
-                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-                      prefixIcon: Icon(Icons.vpn_key_outlined),
+                      border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+                      prefixIcon: const Icon(Icons.vpn_key_outlined),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -489,10 +533,10 @@ class _ForgotPasswordDialogState extends ConsumerState<_ForgotPasswordDialog> {
                     controller: _newPasswordController,
                     obscureText: true,
                     enabled: !_busy,
-                    decoration: const InputDecoration(
-                      labelText: 'Yeni Şifre',
-                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-                      prefixIcon: Icon(Icons.lock_outline),
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.authNewPasswordLabel,
+                      border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+                      prefixIcon: const Icon(Icons.lock_outline),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -500,10 +544,10 @@ class _ForgotPasswordDialogState extends ConsumerState<_ForgotPasswordDialog> {
                     controller: _newPasswordController2,
                     obscureText: true,
                     enabled: !_busy,
-                    decoration: const InputDecoration(
-                      labelText: 'Yeni Şifre (Tekrar)',
-                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-                      prefixIcon: Icon(Icons.lock_outline),
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.authNewPassword2Label,
+                      border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+                      prefixIcon: const Icon(Icons.lock_outline),
                     ),
                   ),
                 ],
@@ -517,7 +561,7 @@ class _ForgotPasswordDialogState extends ConsumerState<_ForgotPasswordDialog> {
         if (_successMessage == null) ...[
           TextButton(
             onPressed: _busy ? null : () => Navigator.pop(context),
-            child: const Text('İptal', style: TextStyle(fontWeight: FontWeight.w700)),
+            child: Text(AppLocalizations.of(context)!.btnCancel, style: const TextStyle(fontWeight: FontWeight.w700)),
           ),
           ElevatedButton(
             onPressed: _busy ? null : (_step == 1 ? _sendCode : _resetPassword),
@@ -534,7 +578,7 @@ class _ForgotPasswordDialogState extends ConsumerState<_ForgotPasswordDialog> {
                     child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white),
                   )
                 : Text(
-                    _step == 1 ? 'Kod Gönder' : 'Şifreyi Güncelle',
+                    _step == 1 ? AppLocalizations.of(context)!.authBtnSendCode : AppLocalizations.of(context)!.authBtnUpdatePassword,
                     style: const TextStyle(fontWeight: FontWeight.w800),
                   ),
           ),
