@@ -88,6 +88,16 @@ class _AuthPageState extends ConsumerState<AuthPage> with SingleTickerProviderSt
       final email = _email.text.trim();
       final password = _password.text;
       final isRegister = _tab.index == 1;
+
+      // Auto-accept KVKK consent for the Google/Apple review test account
+      var kvkkAccepted = _kvkkAcceptedLocal;
+      if (email.toLowerCase() == 'testuser@otizeka.com') {
+        kvkkAccepted = true;
+        setState(() {
+          _kvkkAcceptedLocal = true;
+        });
+      }
+
       if (email.isEmpty || !email.contains('@')) {
         throw Exception(AppLocalizations.of(context)!.authEmailErr);
       }
@@ -97,7 +107,7 @@ class _AuthPageState extends ConsumerState<AuthPage> with SingleTickerProviderSt
       if (isRegister && password != _password2.text) {
         throw Exception(AppLocalizations.of(context)!.authPwdMatchErr);
       }
-      if (!_kvkkAcceptedLocal) {
+      if (!kvkkAccepted) {
         throw Exception(AppLocalizations.of(context)!.authErrKvkkRequired);
       }
 
