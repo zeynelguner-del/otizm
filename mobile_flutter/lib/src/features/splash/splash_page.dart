@@ -117,12 +117,15 @@ class _SplashPageState extends ConsumerState<SplashPage> with SingleTickerProvid
 
   bool _isVersionOlder(String current, String minimum) {
     try {
-      List<int> currentParts = current.split('.').map(int.parse).toList();
-      List<int> minParts = minimum.split('.').map(int.parse).toList();
+      final currentClean = current.split('+').first.trim();
+      final minClean = minimum.split('+').first.trim();
+      List<int> currentParts = currentClean.split('.').map(int.parse).toList();
+      List<int> minParts = minClean.split('.').map(int.parse).toList();
       
-      for (int i = 0; i < minParts.length; i++) {
+      final maxLen = currentParts.length > minParts.length ? currentParts.length : minParts.length;
+      for (int i = 0; i < maxLen; i++) {
         int currentPart = i < currentParts.length ? currentParts[i] : 0;
-        int minPart = minParts[i];
+        int minPart = i < minParts.length ? minParts[i] : 0;
         if (currentPart < minPart) return true;
         if (currentPart > minPart) return false;
       }
