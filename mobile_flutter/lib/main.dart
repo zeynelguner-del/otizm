@@ -30,6 +30,12 @@ Future<void> main() async {
 
   try {
     await MobileAds.instance.initialize();
+    final RequestConfiguration requestConfiguration = RequestConfiguration(
+      tagForChildDirectedTreatment: TagForChildDirectedTreatment.yes,
+      tagForUnderAgeOfConsent: TagForUnderAgeOfConsent.yes,
+      maxAdContentRating: MaxAdContentRating.g,
+    );
+    await MobileAds.instance.updateRequestConfiguration(requestConfiguration);
   } catch (e) {
     debugPrint('MobileAds initialization error: $e');
   }
