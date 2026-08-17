@@ -234,7 +234,7 @@ export default function PrivacyPage() {
           >
             {lang === "tr" ? "Bize Ulaşın" : "Contact Us"}
           </a>
-        </section>
+        </footer>
       </main>
     </div>
   );

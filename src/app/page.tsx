@@ -400,6 +400,13 @@ export default function Home() {
 
   const guidanceModules = [
     {
+      title: "Otizm & Eğitim Rehberi",
+      description: "8 kapsamlı bilimsel rehber ve aile makaleleri",
+      icon: BookOpen,
+      href: "/rehber",
+      color: "bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900/30 hover:bg-emerald-100/50",
+    },
+    {
       title: "İletişim Kartları",
       description: "Görsel ve sesli iletişim kartları (ACC)",
       icon: MessageSquare,
@@ -1474,18 +1481,28 @@ export default function Home() {
       </div>
 
       {/* Footer */}
-      <footer className="w-full border-t border-zinc-200/50 dark:border-zinc-800/50 bg-white/30 dark:bg-zinc-950/30 py-8 mt-12">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-zinc-400 text-xs font-bold uppercase tracking-widest">
-          <div className="flex items-center gap-2">
-            <img src="/otizeka-logo.png" alt="OtiZeka" className="h-4 w-auto grayscale opacity-50" />
-            <span>© 2026 OtiZeka</span>
+      <footer className="w-full border-t border-zinc-200/50 dark:border-zinc-800/50 bg-white/30 dark:bg-zinc-950/30 py-10 mt-12">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6 text-zinc-500 text-xs font-bold">
+          <div className="flex items-center gap-3">
+            <img src="/otizeka-logo.png" alt="OtiZeka" className="h-6 w-auto object-contain" />
+            <span className="text-zinc-700 dark:text-zinc-300">© 2026 OtiZeka Platformu. Tüm Hakları Saklıdır.</span>
           </div>
-          <div className="flex items-center gap-4">
-            <Link href="/gizlilik" className="hover:text-emerald-500 underline transition-colors normal-case">
+          <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-zinc-600 dark:text-zinc-400">
+            <Link href="/rehber" className="hover:text-emerald-500 transition-colors">
+              Rehber
+            </Link>
+            <Link href="/hakkimizda" className="hover:text-emerald-500 transition-colors">
+              Hakkımızda
+            </Link>
+            <Link href="/iletisim" className="hover:text-emerald-500 transition-colors">
+              İletişim
+            </Link>
+            <Link href="/gizlilik" className="hover:text-emerald-500 transition-colors">
               Gizlilik Politikası
             </Link>
-            <span className="hidden sm:inline text-zinc-700">|</span>
-            <p>Tüm Hakları Saklıdır</p>
+            <Link href="/kullanim-kosullari" className="hover:text-emerald-500 transition-colors">
+              Kullanım Koşulları
+            </Link>
           </div>
         </div>
       </footer>
