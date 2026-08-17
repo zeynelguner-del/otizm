@@ -1,13 +1,55 @@
-import { Metadata } from "next";
-import Link from "next/link";
-import { ArrowLeft, Sparkles, Mail, MessageSquare, MapPin, Clock, Send, HelpCircle } from "lucide-react";
+"use client";
 
-export const metadata: Metadata = {
-  title: "İletişim ve Destek | OtiZeka",
-  description: "OtiZeka ekibiyle iletişime geçin, sorularınızı, önerilerinizi veya teknik destek taleplerinizi iletin.",
-};
+import { useState } from "react";
+import Link from "next/link";
+import { ArrowLeft, Sparkles, Mail, MessageSquare, MapPin, Clock, Send, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 
 export default function ContactPage() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setSuccess(null);
+
+    if (!name.trim() || !email.trim() || !subject.trim() || !message.trim()) {
+      setError("Lütfen tüm alanları eksiksiz doldurunuz.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, subject, message }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Mesaj gönderilirken bir sorun oluştu.");
+        return;
+      }
+
+      setSuccess("Mesajınız başarıyla iletildi! Ekibimiz en kısa sürede sizinle iletişime geçecektir.");
+      setName("");
+      setEmail("");
+      setSubject("");
+      setMessage("");
+    } catch (err) {
+      setError("Sunucuya bağlanılamadı. Lütfen internet bağlantınızı kontrol edin veya doğrudan otizeka@gmail.com adresine yazın.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col">
       {/* Top Navbar */}
@@ -96,75 +138,111 @@ export default function ContactPage() {
           </div>
         </div>
 
-        {/* Contact Form Container (Actionable & Client-friendly) */}
+        {/* Dynamic Contact Form */}
         <section className="bg-white dark:bg-zinc-900 p-8 sm:p-10 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-lg space-y-6">
           <div className="space-y-2">
             <h2 className="text-2xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">
               Bize Mesaj Gönderin
             </h2>
             <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">
-              Aşağıdaki formu kullanarak bize hızlıca mesajınızı iletebilirsiniz.
+              Aşağıdaki formu doldurarak bize doğrudan mesaj iletebilirsiniz. Harici bir e-posta programı açılması gerekmez.
             </p>
           </div>
 
-          <form
-            action="mailto:otizeka@gmail.com"
-            method="post"
-            encType="text/plain"
-            className="space-y-5"
-          >
+          {/* Alert notifications */}
+          {success && (
+            <div className="p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 flex items-start gap-3 text-sm font-bold">
+              <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+              <span>{success}</span>
+            </div>
+          )}
+
+          {error && (
+            <div className="p-5 rounded-2xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-200 flex items-start gap-3 text-sm font-bold">
+              <AlertCircle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
+              <span>{error}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase">Adınız Soyadınız</label>
+                <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider">
+                  Adınız Soyadınız
+                </label>
                 <input
                   type="text"
-                  name="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  disabled={loading}
                   required
                   placeholder="Örn: Ahmet Yılmaz"
-                  className="w-full px-4 py-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
+                  className="w-full px-4 py-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium disabled:opacity-60 transition"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase">E-Posta Adresiniz</label>
+                <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider">
+                  E-Posta Adresiniz
+                </label>
                 <input
                   type="email"
-                  name="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={loading}
                   required
                   placeholder="Örn: ahmet@example.com"
-                  className="w-full px-4 py-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
+                  className="w-full px-4 py-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium disabled:opacity-60 transition"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase">Konu</label>
+              <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider">
+                Konu
+              </label>
               <input
                 type="text"
-                name="subject"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                disabled={loading}
                 required
                 placeholder="Örn: Uygulama hakkında öneri / Destek talebi"
-                className="w-full px-4 py-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
+                className="w-full px-4 py-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium disabled:opacity-60 transition"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase">Mesajınız</label>
+              <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider">
+                Mesajınız
+              </label>
               <textarea
-                name="message"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                disabled={loading}
                 rows={5}
                 required
                 placeholder="Mesajınızı buraya yazabilirsiniz..."
-                className="w-full px-4 py-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium resize-none"
+                className="w-full px-4 py-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium resize-none disabled:opacity-60 transition"
               ></textarea>
             </div>
 
             <button
               type="submit"
-              className="px-8 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95 transition"
+              disabled={loading}
+              className="px-8 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95 transition cursor-pointer"
             >
-              <Send size={18} />
-              <span>Mesajı Gönder</span>
+              {loading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>Gönderiliyor...</span>
+                </>
+              ) : (
+                <>
+                  <Send size={18} />
+                  <span>Mesajı Gönder</span>
+                </>
+              )}
             </button>
           </form>
         </section>
