@@ -26,10 +26,21 @@ import {
   Tv,
   Brain,
   Award,
-  TrendingUp
+  TrendingUp,
+  Clock,
+  Tag,
+  ArrowRight,
+  CheckCircle2,
+  ChevronRight,
+  GraduationCap,
+  ShieldCheck,
+  Smartphone,
+  Menu,
+  X
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { GUIDE_ARTICLES } from "@/data/guides";
 
 
 type Session = {
@@ -147,6 +158,7 @@ export default function Home() {
   const [authError, setAuthError] = useState<string | null>(null);
   const [kvkkAccepted, setKvkkAccepted] = useState(() => getLocalStorageValue("kvkkAcceptedV1", "0") === "1");
   const [serverError, setServerError] = useState<string | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const [showForgotModal, setShowForgotModal] = useState(false);
   const [forgotStep, setForgotStep] = useState(1);
@@ -625,7 +637,8 @@ export default function Home() {
   if (!session) {
     const showKvkkOverlay = typeof window !== "undefined" && !kvkkAccepted;
     return (
-      <div className="min-h-screen lg:h-screen lg:overflow-hidden bg-zinc-50 dark:bg-zinc-950 flex flex-col lg:flex-row relative" suppressHydrationWarning>
+      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col selection:bg-emerald-500 selection:text-white" suppressHydrationWarning>
+        {/* Structured Data / SEO */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -646,279 +659,649 @@ export default function Home() {
               "@type": "Organization",
               "name": "OtiZeka",
               "url": "https://www.otizeka.com",
-              "logo": "https://www.otizeka.com/otizeka-logo.png"
+              "logo": "https://www.otizeka.com/otizeka-logo.png",
+              "sameAs": [
+                "https://apps.apple.com/tr/app/otizeka/id6779704594",
+                "https://play.google.com/store/apps/details?id=com.otizmdestekapp.otizmfarkindalik"
+              ]
             })
           }}
         />
-        {showKvkkOverlay && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-zinc-950/80 backdrop-blur-md">
-            <div className="bg-white dark:bg-zinc-900 w-full max-w-xl rounded-[2.5rem] shadow-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800">
-              <div className="p-8 border-b border-zinc-100 dark:border-zinc-800">
-                <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">KVKK Açık Rıza</h2>
-                <p className="text-zinc-600 dark:text-zinc-300 font-bold mt-3 leading-relaxed">
-                  Uygulama; rutin, duygu günlüğü ve profil gibi bilgileri kaydedebilmek için veri işlemesi yapar. Devam ederek bu
-                  işlemleri kabul etmiş olursunuz.
+
+        {/* 1. Global Header Navigation (Sticky Navbar) */}
+        <header className="sticky top-0 z-40 w-full border-b border-zinc-200/80 dark:border-zinc-800/80 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-3 group select-none">
+              <div className="bg-white p-2 rounded-2xl shadow-sm border border-zinc-100 dark:border-zinc-800 transition-transform group-hover:scale-105">
+                <img src="/otizeka-logo.png" alt="OtiZeka" className="h-8 w-auto object-contain" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xl font-black tracking-tight text-zinc-900 dark:text-zinc-50 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                  OtiZeka
+                </span>
+                <span className="text-[9px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">
+                  Özel Eğitim & Rehberlik
+                </span>
+              </div>
+            </Link>
+
+            {/* Desktop Nav Links */}
+            <nav className="hidden md:flex items-center gap-6 lg:gap-8 text-sm font-bold">
+              <Link href="/rehber" className="text-zinc-700 dark:text-zinc-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors flex items-center gap-1.5">
+                <BookOpen size={16} className="text-emerald-500" />
+                <span>Rehber & Makaleler</span>
+              </Link>
+              <Link href="/osb" className="text-zinc-700 dark:text-zinc-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+                Otizm Nedir?
+              </Link>
+              <Link href="/education" className="text-zinc-700 dark:text-zinc-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+                Özel Eğitim Metotları
+              </Link>
+              <Link href="/hakkimizda" className="text-zinc-700 dark:text-zinc-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+                Hakkımızda
+              </Link>
+              <Link href="/iletisim" className="text-zinc-700 dark:text-zinc-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+                İletişim
+              </Link>
+            </nav>
+
+            {/* Action Buttons */}
+            <div className="hidden sm:flex items-center gap-3">
+              <a
+                href="#giris-yap"
+                className="px-5 py-2.5 rounded-xl text-sm font-black bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-emerald-600 dark:hover:bg-emerald-500 hover:text-white dark:hover:text-white shadow-sm transition-all flex items-center gap-2"
+              >
+                <span>Giriş Yap / Kayıt</span>
+              </a>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300"
+              aria-label="Menüyü Aç/Kapat"
+            >
+              {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
+
+          {/* Mobile Dropdown Menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-5 space-y-4">
+              <Link
+                href="/rehber"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-sm font-bold text-zinc-800 dark:text-zinc-200 py-1"
+              >
+                📚 Rehber & Makaleler
+              </Link>
+              <Link
+                href="/osb"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-sm font-bold text-zinc-800 dark:text-zinc-200 py-1"
+              >
+                Otizm Spektrum Bozukluğu
+              </Link>
+              <Link
+                href="/education"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-sm font-bold text-zinc-800 dark:text-zinc-200 py-1"
+              >
+                Özel Eğitim Metotları
+              </Link>
+              <Link
+                href="/hakkimizda"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-sm font-bold text-zinc-800 dark:text-zinc-200 py-1"
+              >
+                Hakkımızda
+              </Link>
+              <Link
+                href="/iletisim"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-sm font-bold text-zinc-800 dark:text-zinc-200 py-1"
+              >
+                İletişim
+              </Link>
+              <a
+                href="#giris-yap"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-center py-3 bg-emerald-600 text-white rounded-xl font-black text-sm uppercase tracking-wider mt-2"
+              >
+                Giriş Yap / Kayıt Ol
+              </a>
+            </div>
+          )}
+        </header>
+
+        {/* 2. Hero Section */}
+        <section className="relative overflow-hidden bg-gradient-to-b from-emerald-500/10 via-teal-500/5 to-transparent pt-12 pb-16 lg:pt-16 lg:pb-24 border-b border-zinc-200/70 dark:border-zinc-800/70">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+              {/* Sol Metin Alanı */}
+              <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-xs font-black tracking-wide uppercase">
+                  <GraduationCap className="w-4 h-4" />
+                  <span>Bilimsel & Pedagojik Çocuk Gelişim Platformu</span>
+                </div>
+
+                <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-zinc-900 dark:text-zinc-50 leading-[1.15]">
+                  Çocuklarımızın <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 dark:from-emerald-400 dark:via-teal-400 dark:to-cyan-400">
+                    Gelişim Yolculuğunda
+                  </span> <br />
+                  Bilimsel & Güvenilir Destek.
+                </h1>
+
+                <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-300 font-medium max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                  OtiZeka; otizm spektrumundaki çocuklarımızın iletişim (AAC), sosyal etkileşim, duyusal düzenleme ve bilişsel gelişimlerini kanıta dayalı yöntemlerle destekleyen, aileler ve özel eğitimciler için hazırlanmış kapsamlı bir dijital yardımcıdır.
+                </p>
+
+                {/* Butonlar */}
+                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+                  <Link
+                    href="/rehber"
+                    className="px-8 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-sm uppercase tracking-wider shadow-lg shadow-emerald-600/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
+                  >
+                    <span>Bilimsel Rehberleri Oku</span>
+                    <ArrowRight size={18} />
+                  </Link>
+                  <a
+                    href="#giris-yap"
+                    className="px-8 py-4 rounded-2xl bg-white dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-800 font-black text-sm uppercase tracking-wider shadow-sm hover:scale-105 active:scale-95 transition-all"
+                  >
+                    Portal Girişi
+                  </a>
+                </div>
+
+                {/* Mobil Uygulama İndirme Rozetleri */}
+                <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800/80">
+                  <p className="text-xs font-black text-zinc-400 uppercase tracking-widest mb-3">
+                    Mobil Uygulamalarımızı Ücretsiz İndirin
+                  </p>
+                  <div className="flex items-center justify-center lg:justify-start gap-4">
+                    <a
+                      href="https://apps.apple.com/tr/app/otizeka/id6779704594"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:opacity-85 transition-opacity"
+                    >
+                      <img src="/badges/app-store-badge.svg" alt="App Store'dan İndir" className="h-10 w-auto" />
+                    </a>
+                    <a
+                      href="https://play.google.com/store/apps/details?id=com.otizmdestekapp.otizmfarkindalik"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:opacity-85 transition-opacity"
+                    >
+                      <img src="/badges/google-play-badge.svg" alt="Google Play'den İndir" className="h-10 w-auto" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              {/* Sağ Video Alanı */}
+              <div className="lg:col-span-5 flex flex-col items-center">
+                <div className="w-full max-w-md bg-white dark:bg-zinc-900 p-3 sm:p-4 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-2xl relative overflow-hidden">
+                  <div className="rounded-[2rem] overflow-hidden bg-zinc-950 relative aspect-video flex items-center justify-center">
+                    <video
+                      src="/otizeka_promo.mp4"
+                      poster="/otizeka-banner.jpg?v=3"
+                      controls
+                      playsInline
+                      className="w-full h-full object-cover block"
+                    />
+                  </div>
+                  <div className="p-4 text-center">
+                    <span className="text-xs font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block">
+                      OtiZeka Nasıl Çalışır?
+                    </span>
+                    <p className="text-xs text-zinc-500 font-bold mt-1">
+                      Özel eğitim araçları ve aile takip sisteminin kısa tanıtım videosu
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 3. Öne Çıkan Bilimsel Rehber Makaleleri Vitrini (Google AdSense En Kritik Alanı) */}
+        <section className="py-16 sm:py-20 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-800 pb-8">
+              <div className="space-y-3">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 text-xs font-black tracking-wide uppercase">
+                  <BookOpen className="w-3.5 h-3.5" />
+                  <span>Bilimsel İçerik Merkezi</span>
+                </div>
+                <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
+                  Otizm ve Özel Eğitim Rehberi
+                </h2>
+                <p className="text-zinc-600 dark:text-zinc-400 font-medium max-w-2xl text-sm sm:text-base">
+                  Aileler ve uzmanlar için hazırlanan, uluslararası tanı sistemleri (DSM-5) ve kanıta dayalı pedagojik yaklaşımlarla hazırlanmış kapsamlı makalelerimiz.
                 </p>
               </div>
-              <div className="p-8 flex justify-end">
-                <button
-                  type="button"
-                  onClick={() => {
-                    try {
-                      localStorage.setItem("kvkkAcceptedV1", "1");
-                    } catch {}
-                    setKvkkAccepted(true);
-                  }}
-                  className="px-8 py-4 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-2xl font-black uppercase tracking-widest text-sm hover:opacity-90 transition-all"
+
+              <Link
+                href="/rehber"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-zinc-800 dark:text-zinc-200 hover:text-emerald-600 dark:hover:text-emerald-400 font-black text-xs uppercase tracking-wider transition-colors shrink-0"
+              >
+                <span>Tüm Rehberleri İncele ({GUIDE_ARTICLES.length} Makale)</span>
+                <ChevronRight size={16} />
+              </Link>
+            </div>
+
+            {/* 8 Rehber Makalesi Kartları */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {GUIDE_ARTICLES.map((article) => (
+                <article
+                  key={article.slug}
+                  className="bg-zinc-50 dark:bg-zinc-950/60 rounded-3xl border border-zinc-200 dark:border-zinc-800 p-6 flex flex-col justify-between hover:border-emerald-500/50 hover:shadow-xl transition-all duration-300 group"
                 >
-                  Kabul Ediyorum
-                </button>
+                  <div className="space-y-3.5">
+                    <div className="flex items-center justify-between gap-2 text-xs">
+                      <span className="px-2.5 py-1 rounded-lg bg-emerald-100/80 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 font-bold">
+                        {article.category}
+                      </span>
+                      <span className="text-zinc-400 font-medium flex items-center gap-1">
+                        <Clock size={12} />
+                        {article.readTime}
+                      </span>
+                    </div>
+
+                    <h3 className="text-lg font-black text-zinc-900 dark:text-zinc-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition tracking-tight line-clamp-2">
+                      <Link href={`/rehber/${article.slug}`}>
+                        {article.title}
+                      </Link>
+                    </h3>
+
+                    <p className="text-xs text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed line-clamp-3">
+                      {article.summary}
+                    </p>
+                  </div>
+
+                  <Link
+                    href={`/rehber/${article.slug}`}
+                    className="mt-5 pt-4 border-t border-zinc-200/80 dark:border-zinc-800/80 text-emerald-600 dark:text-emerald-400 font-black text-xs uppercase tracking-wider flex items-center gap-1 group-hover:gap-2 transition-all"
+                  >
+                    <span>Makaleyi Oku</span>
+                    <ArrowRight size={14} />
+                  </Link>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* 4. Eğitsel Modüller ve Yetenekler */}
+        <section className="py-16 sm:py-20 bg-zinc-50 dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-800">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+            <div className="text-center max-w-3xl mx-auto space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 text-xs font-black tracking-wide uppercase">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Pedagojik Modüller</span>
               </div>
-            </div>
-          </div>
-        )}
-
-        {/* Sol Kolon - Tanıtım & Markalama */}
-        <div className="hidden lg:flex lg:w-[45%] xl:w-[40%] bg-gradient-to-br from-zinc-900 via-slate-900 to-indigo-950 text-white p-8 xl:p-10 flex-col justify-between relative overflow-hidden">
-          {/* Arka Plan Desenleri */}
-          <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
-          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-emerald-500 rounded-full blur-[120px] opacity-20 pointer-events-none" />
-          <div className="absolute -top-40 -right-40 w-96 h-96 bg-indigo-500 rounded-full blur-[120px] opacity-20 pointer-events-none" />
-
-          {/* Tanıtım Videosu */}
-          <div className="relative z-10 flex flex-col items-center justify-center w-full mt-2 mb-6">
-            <div className="overflow-hidden rounded-[1.8rem] border border-white/15 shadow-2xl w-full max-w-[320px] bg-indigo-950/40 backdrop-blur-sm relative">
-              <video
-                src="/otizeka_promo.mp4"
-                poster="/otizeka-banner.jpg?v=3"
-                controls
-                playsInline
-                className="w-full h-auto block"
-              />
-            </div>
-            <span className="text-[10px] font-black text-white/50 uppercase tracking-widest mt-2">
-              Uygulama Tanıtım Videosu
-            </span>
-          </div>
-
-          {/* Vizyon Metinleri & Tanıtım */}
-          <div className="relative z-10 my-auto space-y-5 lg:space-y-6">
-            <div className="space-y-2">
-              <span className="px-4 py-1 rounded-full bg-white/10 text-emerald-400 text-xs font-black uppercase tracking-widest inline-block">
-                Otizm Destek Portalı
-              </span>
-              <h1 className="text-3xl xl:text-4xl font-black tracking-tight leading-tight">
-                Çocuklarımızın <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Gelişim Yolculuğu</span> <br />
-                Burada Başlıyor.
-              </h1>
-              <p className="text-zinc-400 font-medium text-sm xl:text-base leading-relaxed max-w-md">
-                OtiZeka; otizm spektrumundaki çocuklarımızın eğitim, sosyal beceri, duygu takibi ve iletişim gelişimlerini modern yöntemlerle destekleyen kapsamlı bir dijital yardımcıdır.
+              <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
+                Gelişimi Çok Yönlü Destekleyen Araçlar
+              </h2>
+              <p className="text-zinc-600 dark:text-zinc-400 font-medium text-sm sm:text-base">
+                Otizmli çocukların bireysel öğrenme hızlarına göre uyarlanmış, günlük yaşam becerilerini artıran dijital materyaller.
               </p>
             </div>
 
-            {/* Özellikler */}
-            <div className="grid grid-cols-1 gap-3">
-              <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
-                <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400">
-                  <Gamepad2 size={20} />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {/* Modül 1 */}
+              <div className="bg-white dark:bg-zinc-900 p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-4">
+                <div className="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-950/40 text-amber-600 flex items-center justify-center">
+                  <MessageSquare size={24} />
                 </div>
-                <div>
-                  <h4 className="font-bold text-xs xl:text-sm">Eğitici & Geliştirici Oyunlar</h4>
-                  <p className="text-zinc-400 text-[11px] xl:text-xs mt-0.5">Eğlenirken öğrenmeyi destekleyen interaktif aktiviteler.</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
-                <div className="p-2 rounded-xl bg-rose-500/10 text-rose-400">
-                  <Heart size={20} />
-                </div>
-                <div>
-                  <h4 className="font-bold text-xs xl:text-sm">Duygu & Rutin Takibi</h4>
-                  <p className="text-zinc-400 text-[11px] xl:text-xs mt-0.5">Çocuğunuzun günlük duygu durumunu ve eğitim rutinlerini izleyin.</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
-                <div className="p-2 rounded-xl bg-amber-500/10 text-amber-400">
-                  <MessageSquare size={20} />
-                </div>
-                <div>
-                  <h4 className="font-bold text-xs xl:text-sm">İletişim Kartları (AAC)</h4>
-                  <p className="text-zinc-400 text-[11px] xl:text-xs mt-0.5">Dil ve konuşma becerilerini destekleyen görsel iletişim sistemi.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Alt Bilgi */}
-          <div className="relative z-10 text-xs font-bold text-zinc-500 uppercase tracking-widest flex flex-wrap items-center gap-3">
-            <span>© 2026 OtiZeka - Tüm Hakları Saklıdır</span>
-            <span className="hidden sm:inline text-zinc-700">|</span>
-            <Link href="/gizlilik" className="text-zinc-400 hover:text-emerald-400 underline transition-colors normal-case">
-              Gizlilik Politikası
-            </Link>
-          </div>
-        </div>
-
-        {/* Sağ Kolon - Giriş / Kayıt Formu */}
-        <div className="flex-1 flex flex-col justify-center items-center p-6 lg:p-12 bg-zinc-50 dark:bg-zinc-950 relative overflow-hidden">
-          <div className="w-full max-w-md bg-white dark:bg-zinc-900 p-6 md:p-8 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden relative">
-
-
-            <div className="relative z-10">
-              {/* Card Header Branding */}
-              <div className="flex flex-col items-center justify-center mb-5 text-center select-none">
-                <div className="bg-zinc-50 dark:bg-zinc-950 p-2.5 rounded-[1.5rem] shadow-inner border border-zinc-100 dark:border-zinc-800 inline-block mb-2 hover:scale-105 transition-transform duration-300">
-                  <img src="/otizeka-logo.png" alt="OtiZeka" className="h-9 w-auto object-contain" />
-                </div>
-                <h2 className="text-xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
-                  OtiZeka
-                </h2>
-                <p className="text-zinc-400 dark:text-zinc-500 text-xs font-bold uppercase tracking-widest mt-1">
-                  Otizm Destek Uygulaması
+                <h3 className="text-xl font-black text-zinc-900 dark:text-zinc-100">Alternatif İletişim (AAC)</h3>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed">
+                  Konuşma güçlüğü çeken çocuklarımızın isteklerini, duygularını ve temel ihtiyaçlarını sesli ve görsel kartlarla ifade edebilmesini sağlayan destekleyici sistem.
                 </p>
               </div>
-              <div className="grid grid-cols-2 gap-2 bg-zinc-100 dark:bg-zinc-800 p-1.5 rounded-2xl mb-5">
-                <button
-                  onClick={() => {
-                    setAuthMode("login");
-                    setAuthError(null);
-                  }}
-                  className={cn(
-                    "py-3 rounded-xl font-black transition-all text-sm uppercase tracking-wider",
-                    authMode === "login" ? "bg-white dark:bg-zinc-900 shadow text-zinc-900 dark:text-zinc-50" : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
-                  )}
-                >
-                  Giriş
-                </button>
-                <button
-                  onClick={() => {
-                    setAuthMode("register");
-                    setAuthError(null);
-                  }}
-                  className={cn(
-                    "py-3 rounded-xl font-black transition-all text-sm uppercase tracking-wider",
-                    authMode === "register"
-                      ? "bg-white dark:bg-zinc-900 shadow text-zinc-900 dark:text-zinc-50"
-                      : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
-                  )}
-                >
-                  Kayıt Ol
-                </button>
+
+              {/* Modül 2 */}
+              <div className="bg-white dark:bg-zinc-900 p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-4">
+                <div className="w-12 h-12 rounded-2xl bg-rose-100 dark:bg-rose-950/40 text-rose-600 flex items-center justify-center">
+                  <Heart size={24} />
+                </div>
+                <h3 className="text-xl font-black text-zinc-900 dark:text-zinc-100">Duygu & Rutin Takibi</h3>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed">
+                  Günlük duygu durumlarını, kriz tetikleyicilerini ve sakinleşme sürelerini kaydedin. Rutin çizelgeleriyle çocuğunuzun gününü yapılandırın.
+                </p>
               </div>
 
-              <div className="space-y-4">
-                {serverError && (
-                  <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-900/30 text-amber-800 dark:text-amber-100 font-bold text-sm">
-                    {serverError}
-                  </div>
-                )}
-                
-                <div className="space-y-1">
-                  <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">E-posta</label>
-                  <input
-                    type="email"
-                    value={authEmail}
-                    onChange={(e) => setAuthEmail(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key !== "Enter") return;
-                      (authMode === "login" ? handleLogin : handleRegister)();
-                    }}
-                    className="w-full p-3 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 dark:focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100"
-                    placeholder="ornek@mail.com"
-                    autoComplete="email"
-                  />
+              {/* Modül 3 */}
+              <div className="bg-white dark:bg-zinc-900 p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-4">
+                <div className="w-12 h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-600 flex items-center justify-center">
+                  <Waves size={24} />
                 </div>
+                <h3 className="text-xl font-black text-zinc-900 dark:text-zinc-100">Duyusal Oda & Rahatlama</h3>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed">
+                  Duyusal aşırı yüklenmelerde sakinleşmeyi kolaylaştıran özel ses frekansları, ritimler ve görsel duyusal animasyonlarla sakin güvenli alan.
+                </p>
+              </div>
 
-                 <div className="space-y-1">
-                  <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Şifre</label>
-                  <input
-                    type="password"
-                    value={authPassword}
-                    onChange={(e) => setAuthPassword(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key !== "Enter") return;
-                      (authMode === "login" ? handleLogin : handleRegister)();
-                    }}
-                    className="w-full p-3 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 dark:focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100"
-                    placeholder="••••••"
-                    autoComplete={authMode === "login" ? "current-password" : "new-password"}
-                  />
-                  {authMode === "login" && (
-                    <div className="text-right">
-                      <button
-                        onClick={() => {
-                          setForgotError(null);
-                          setForgotSuccess(null);
-                          setForgotStep(1);
-                          setForgotEmail(authEmail);
-                          setShowForgotModal(true);
-                        }}
-                        className="text-xs font-bold text-zinc-400 hover:text-emerald-500 transition-colors"
-                      >
-                        Şifremi Unuttum
-                      </button>
-                    </div>
-                  )}
+              {/* Modül 4 */}
+              <div className="bg-white dark:bg-zinc-900 p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-4">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 flex items-center justify-center">
+                  <BookOpen size={24} />
                 </div>
+                <h3 className="text-xl font-black text-zinc-900 dark:text-zinc-100">Sosyal Hikayeler</h3>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed">
+                  Market ziyareti, diş hekimi randevusu veya arkadaş edinme gibi sosyal durumları somutlaştıran adım adım resimli davranış rehberleri.
+                </p>
+              </div>
 
-                {authMode === "register" && (
-                  <div className="space-y-1">
-                    <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Şifre (Tekrar)</label>
-                    <input
-                      type="password"
-                      value={authPassword2}
-                      onChange={(e) => setAuthPassword2(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key !== "Enter") return;
-                        handleRegister();
-                      }}
-                      className="w-full p-3 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 dark:focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100"
-                      placeholder="••••••"
-                      autoComplete="new-password"
-                    />
-                  </div>
-                )}
-
-                {authError && (
-                  <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-900/30 text-rose-700 dark:text-rose-200 font-bold text-sm">
-                    {authError}
-                  </div>
-                )}
-
-                <button
-                  disabled={authBusy || !kvkkAccepted}
-                  onClick={authMode === "login" ? handleLogin : handleRegister}
-                  className={cn(
-                    "w-full px-6 py-3.5 rounded-2xl font-black uppercase tracking-widest text-sm transition-all shadow-md active:scale-95",
-                    authBusy || !kvkkAccepted
-                      ? "bg-zinc-200 dark:bg-zinc-800 text-zinc-500 cursor-not-allowed"
-                      : "bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/15"
-                  )}
-                >
-                  {!kvkkAccepted ? "KVKK Onayı Gerekli" : authMode === "login" ? "Giriş Yap" : "Kayıt Ol"}
-                </button>
-                <h3 className="text-sm font-bold text-center mt-3">Uygulamamızı İndirin</h3>
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-2">
-                  <a href="https://apps.apple.com/tr/app/otizeka/id6779704594" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
-                    <img src="/badges/app-store-badge.svg" alt="App Store'dan İndir" className="h-10 w-auto" />
-                  </a>
-                  <a href="https://play.google.com/store/apps/details?id=com.otizmdestekapp.otizmfarkindalik" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
-                    <img src="/badges/google-play-badge.svg" alt="Google Play'den İndir" className="h-10 w-auto animate-pulse-subtle" />
-                  </a>
+              {/* Modül 5 */}
+              <div className="bg-white dark:bg-zinc-900 p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-4">
+                <div className="w-12 h-12 rounded-2xl bg-purple-100 dark:bg-purple-950/40 text-purple-600 flex items-center justify-center">
+                  <Gamepad2 size={24} />
                 </div>
-                {!kvkkAccepted && (
-                  <div className="text-xs font-bold text-zinc-500 leading-normal">
-                    Devam etmek için KVKK Açık Rıza ekranında “Kabul Ediyorum” butonuna basın.
-                  </div>
-                )}
+                <h3 className="text-xl font-black text-zinc-900 dark:text-zinc-100">Zeka & Gelişim Oyunları</h3>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed">
+                  Görsel eşleme, nesne kategorilendirme, taklit ve hafıza egzersizleriyle dikkat süresini ve problem çözme becerisini geliştiren aktiviteler.
+                </p>
+              </div>
+
+              {/* Modül 6 */}
+              <div className="bg-white dark:bg-zinc-900 p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-4">
+                <div className="w-12 h-12 rounded-2xl bg-cyan-100 dark:bg-cyan-950/40 text-cyan-600 flex items-center justify-center">
+                  <ShieldCheck size={24} />
+                </div>
+                <h3 className="text-xl font-black text-zinc-900 dark:text-zinc-100">Aile & Veli Rehberliği</h3>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed">
+                  RAM değerlendirmeleri, ÇÖZGER süreçleri ve yasal haklar konusunda ailelere yol gösteren güncel pedagojik rehberlik kılavuzu.
+                </p>
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Şifremi Unuttum Modal */}
+        {/* 5. Giriş ve Kayıt Bölümü (id="giris-yap") */}
+        <section id="giris-yap" className="py-16 sm:py-24 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="bg-gradient-to-br from-zinc-900 via-slate-900 to-indigo-950 text-white rounded-[3rem] p-8 sm:p-12 lg:p-16 shadow-2xl relative overflow-hidden">
+              <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
+              <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-emerald-500 rounded-full blur-[120px] opacity-20 pointer-events-none" />
+
+              <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                {/* Sol Bilgilendirme */}
+                <div className="lg:col-span-6 space-y-6">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-emerald-400 text-xs font-black tracking-wide uppercase">
+                    <LayoutDashboard className="w-3.5 h-3.5" />
+                    <span>Aile Yönetim Portalı</span>
+                  </div>
+
+                  <h2 className="text-3xl sm:text-4xl font-black tracking-tight leading-tight">
+                    Mevcut Hesabınıza Giriş Yapın veya Ücretsiz Kayıt Olun
+                  </h2>
+
+                  <p className="text-zinc-300 font-medium text-sm sm:text-base leading-relaxed">
+                    OtiZeka web portalı üzerinden çocuğunuzun gelişim hedeflerini izleyebilir, mobil uygulamanızla verilerinizi anlık senkronize edebilir ve özel eğitim araçlarına her cihazdan erişebilirsiniz.
+                  </p>
+
+                  <div className="space-y-3 pt-2">
+                    <div className="flex items-center gap-3 text-sm font-bold text-zinc-200">
+                      <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                      <span>Mobil ve Web Arasında Otomatik Veri Senkronizasyonu</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm font-bold text-zinc-200">
+                      <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                      <span>Günlük Gelişim ve Duygu Durum Raporları</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm font-bold text-zinc-200">
+                      <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                      <span>Tüm Aile Bireyleri İçin Tamamen Ücretsiz Erişim</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Sağ Form Alanı */}
+                <div className="lg:col-span-6">
+                  <div className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 p-6 sm:p-8 rounded-[2.5rem] shadow-2xl border border-white/10">
+                    <div className="flex flex-col items-center justify-center mb-5 text-center select-none">
+                      <div className="bg-zinc-50 dark:bg-zinc-950 p-2.5 rounded-[1.5rem] shadow-inner border border-zinc-100 dark:border-zinc-800 inline-block mb-2">
+                        <img src="/otizeka-logo.png" alt="OtiZeka" className="h-9 w-auto object-contain" />
+                      </div>
+                      <h3 className="text-xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
+                        OtiZeka Giriş
+                      </h3>
+                      <p className="text-zinc-400 text-xs font-bold uppercase tracking-widest mt-1">
+                        Aile & Veli Portalı
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 bg-zinc-100 dark:bg-zinc-800 p-1.5 rounded-2xl mb-5">
+                      <button
+                        onClick={() => {
+                          setAuthMode("login");
+                          setAuthError(null);
+                        }}
+                        className={cn(
+                          "py-3 rounded-xl font-black transition-all text-sm uppercase tracking-wider",
+                          authMode === "login"
+                            ? "bg-white dark:bg-zinc-900 shadow text-zinc-900 dark:text-zinc-50"
+                            : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                        )}
+                      >
+                        Giriş
+                      </button>
+                      <button
+                        onClick={() => {
+                          setAuthMode("register");
+                          setAuthError(null);
+                        }}
+                        className={cn(
+                          "py-3 rounded-xl font-black transition-all text-sm uppercase tracking-wider",
+                          authMode === "register"
+                            ? "bg-white dark:bg-zinc-900 shadow text-zinc-900 dark:text-zinc-50"
+                            : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                        )}
+                      >
+                        Kayıt Ol
+                      </button>
+                    </div>
+
+                    <div className="space-y-4">
+                      {serverError && (
+                        <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-900/30 text-amber-800 dark:text-amber-100 font-bold text-sm">
+                          {serverError}
+                        </div>
+                      )}
+
+                      <div className="space-y-1">
+                        <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">E-posta</label>
+                        <input
+                          type="email"
+                          value={authEmail}
+                          onChange={(e) => setAuthEmail(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key !== "Enter") return;
+                            (authMode === "login" ? handleLogin : handleRegister)();
+                          }}
+                          className="w-full p-3.5 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100 text-sm"
+                          placeholder="ornek@mail.com"
+                          autoComplete="email"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Şifre</label>
+                        <input
+                          type="password"
+                          value={authPassword}
+                          onChange={(e) => setAuthPassword(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key !== "Enter") return;
+                            (authMode === "login" ? handleLogin : handleRegister)();
+                          }}
+                          className="w-full p-3.5 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100 text-sm"
+                          placeholder="••••••"
+                          autoComplete={authMode === "login" ? "current-password" : "new-password"}
+                        />
+                        {authMode === "login" && (
+                          <div className="text-right pt-1">
+                            <button
+                              onClick={() => {
+                                setForgotError(null);
+                                setForgotSuccess(null);
+                                setForgotStep(1);
+                                setForgotEmail(authEmail);
+                                setShowForgotModal(true);
+                              }}
+                              className="text-xs font-bold text-zinc-400 hover:text-emerald-500 transition-colors"
+                            >
+                              Şifremi Unuttum
+                            </button>
+                          </div>
+                        )}
+                      </div>
+
+                      {authMode === "register" && (
+                        <div className="space-y-1">
+                          <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Şifre (Tekrar)</label>
+                          <input
+                            type="password"
+                            value={authPassword2}
+                            onChange={(e) => setAuthPassword2(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key !== "Enter") return;
+                              handleRegister();
+                            }}
+                            className="w-full p-3.5 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100 text-sm"
+                            placeholder="••••••"
+                            autoComplete="new-password"
+                          />
+                        </div>
+                      )}
+
+                      {authError && (
+                        <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-900/30 text-rose-700 dark:text-rose-200 font-bold text-sm">
+                          {authError}
+                        </div>
+                      )}
+
+                      <button
+                        disabled={authBusy}
+                        onClick={() => {
+                          if (!kvkkAccepted) {
+                            try {
+                              localStorage.setItem("kvkkAcceptedV1", "1");
+                            } catch {}
+                            setKvkkAccepted(true);
+                          }
+                          (authMode === "login" ? handleLogin : handleRegister)();
+                        }}
+                        className={cn(
+                          "w-full px-6 py-4 rounded-2xl font-black uppercase tracking-widest text-sm transition-all shadow-md active:scale-95",
+                          authBusy
+                            ? "bg-zinc-200 dark:bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                            : "bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/20"
+                        )}
+                      >
+                        {authBusy ? "İşleniyor..." : authMode === "login" ? "Giriş Yap" : "Kayıt Ol"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 6. Kapsamlı Footer */}
+        <footer className="w-full border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 py-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {/* Sütun 1: Marka */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <img src="/otizeka-logo.png" alt="OtiZeka" className="h-8 w-auto object-contain" />
+                  <span className="font-black text-xl text-zinc-900 dark:text-zinc-50">OtiZeka</span>
+                </div>
+                <p className="text-xs text-zinc-500 font-medium leading-relaxed">
+                  Otizm spektrumundaki çocukların pedagojik gelişim süreçlerini, iletişim becerilerini ve duygu dünyalarını destekleyen dijital gelişim ve rehberlik platformu.
+                </p>
+                <div className="text-xs text-zinc-400 font-semibold">
+                  © 2026 OtiZeka. Tüm hakları saklıdır.
+                </div>
+              </div>
+
+              {/* Sütun 2: Bilimsel Rehberler */}
+              <div className="space-y-3">
+                <h4 className="font-black text-xs uppercase tracking-widest text-zinc-400">Rehber & Makaleler</h4>
+                <ul className="space-y-2 text-xs font-bold text-zinc-600 dark:text-zinc-400">
+                  <li>
+                    <Link href="/rehber" className="hover:text-emerald-600 transition">Tüm Rehber Makaleleri</Link>
+                  </li>
+                  <li>
+                    <Link href="/osb" className="hover:text-emerald-600 transition">Otizm Spektrum Bozukluğu (OSB)</Link>
+                  </li>
+                  <li>
+                    <Link href="/education" className="hover:text-emerald-600 transition">Özel Eğitim Teknikleri (ABA, PECS)</Link>
+                  </li>
+                  <li>
+                    <Link href="/stories" className="hover:text-emerald-600 transition">Sosyal Hikayeler Rehberi</Link>
+                  </li>
+                  <li>
+                    <Link href="/info" className="hover:text-emerald-600 transition">Aile Bilgilendirme ve Yasal Haklar</Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Sütun 3: Kurumsal & Yasal */}
+              <div className="space-y-3">
+                <h4 className="font-black text-xs uppercase tracking-widest text-zinc-400">Kurumsal & Yasal</h4>
+                <ul className="space-y-2 text-xs font-bold text-zinc-600 dark:text-zinc-400">
+                  <li>
+                    <Link href="/hakkimizda" className="hover:text-emerald-600 transition">Hakkımızda & Misyonumuz</Link>
+                  </li>
+                  <li>
+                    <Link href="/iletisim" className="hover:text-emerald-600 transition">İletişim & Destek</Link>
+                  </li>
+                  <li>
+                    <Link href="/kullanim-kosullari" className="hover:text-emerald-600 transition">Kullanım Koşulları</Link>
+                  </li>
+                  <li>
+                    <Link href="/gizlilik" className="hover:text-emerald-600 transition">Gizlilik ve KVKK Politikası</Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Sütun 4: Mobil Uygulamalar */}
+              <div className="space-y-3">
+                <h4 className="font-black text-xs uppercase tracking-widest text-zinc-400">Mobil Uygulamalar</h4>
+                <p className="text-xs text-zinc-500 font-medium">
+                  iOS ve Android cihazlarınız için OtiZeka uygulamasını hemen indirin:
+                </p>
+                <div className="flex flex-col gap-2.5 pt-1">
+                  <a
+                    href="https://apps.apple.com/tr/app/otizeka/id6779704594"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:opacity-85 transition-opacity"
+                  >
+                    <img src="/badges/app-store-badge.svg" alt="App Store'dan İndir" className="h-9 w-auto" />
+                  </a>
+                  <a
+                    href="https://play.google.com/store/apps/details?id=com.otizmdestekapp.otizmfarkindalik"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:opacity-85 transition-opacity"
+                  >
+                    <img src="/badges/google-play-badge.svg" alt="Google Play'den İndir" className="h-9 w-auto" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </footer>
+
+        {/* 7. Şifremi Unuttum Modal */}
         {showForgotModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
             <div className="bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-[2.5rem] p-8 max-w-md w-full shadow-2xl space-y-6 relative">
@@ -935,11 +1318,11 @@ export default function Home() {
               </button>
               <div className="flex items-center gap-3">
                 <div className="p-3 bg-emerald-500/10 text-emerald-500 rounded-2xl">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  <ShieldCheck size={24} />
                 </div>
-                <h2 className="text-xl font-black text-zinc-800 dark:text-zinc-100 tracking-tight">
+                <h3 className="text-xl font-black text-zinc-800 dark:text-zinc-100 tracking-tight">
                   {forgotStep === 1 ? "Şifremi Unuttum" : "Şifreyi Sıfırla"}
-                </h2>
+                </h3>
               </div>
 
               {forgotError && (
@@ -954,79 +1337,103 @@ export default function Home() {
                 </div>
               )}
 
-              {!forgotSuccess && (
+              {forgotStep === 1 ? (
                 <div className="space-y-4">
-                  {forgotStep === 1 ? (
-                    <>
-                      <p className="text-sm font-bold text-zinc-500 dark:text-zinc-400 leading-relaxed">
-                        Hesabınıza kayıtlı e-posta adresini girin. Size 6 haneli bir doğrulama kodu göndereceğiz.
-                      </p>
-                      <div className="space-y-1">
-                        <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">E-posta</label>
-                        <input
-                          type="email"
-                          value={forgotEmail}
-                          onChange={(e) => setForgotEmail(e.target.value)}
-                          className="w-full p-3 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 dark:focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100"
-                          placeholder="ornek@mail.com"
-                        />
-                      </div>
-                      <button
-                        onClick={handleForgotSendCode}
-                        disabled={forgotBusy}
-                        className="w-full px-6 py-3.5 bg-emerald-500 hover:bg-emerald-600 disabled:bg-zinc-200 disabled:dark:bg-zinc-800 text-white rounded-2xl font-black uppercase tracking-widest text-sm transition-all shadow-md shadow-emerald-500/15 active:scale-95 cursor-pointer"
-                      >
-                        {forgotBusy ? "Gönderiliyor..." : "Kod Gönder"}
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <p className="text-sm font-bold text-zinc-500 dark:text-zinc-400 leading-relaxed">
-                        {forgotEmail} adresine gönderilen 6 haneli doğrulama kodunu ve yeni şifrenizi girin.
-                      </p>
-                      <div className="space-y-1">
-                        <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Doğrulama Kodu</label>
-                        <input
-                          type="text"
-                          maxLength={6}
-                          value={forgotCode}
-                          onChange={(e) => setForgotCode(e.target.value)}
-                          className="w-full p-3 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 dark:focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100 text-center tracking-[0.5em] text-lg"
-                          placeholder="000000"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Yeni Şifre</label>
-                        <input
-                          type="password"
-                          value={forgotNewPassword}
-                          onChange={(e) => setForgotNewPassword(e.target.value)}
-                          className="w-full p-3 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 dark:focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100"
-                          placeholder="••••••••"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Yeni Şifre (Tekrar)</label>
-                        <input
-                          type="password"
-                          value={forgotNewPassword2}
-                          onChange={(e) => setForgotNewPassword2(e.target.value)}
-                          className="w-full p-3 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 dark:focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100"
-                          placeholder="••••••••"
-                        />
-                      </div>
-                      <button
-                        onClick={handleForgotResetPassword}
-                        disabled={forgotBusy}
-                        className="w-full px-6 py-3.5 bg-emerald-500 hover:bg-emerald-600 disabled:bg-zinc-200 disabled:dark:bg-zinc-800 text-white rounded-2xl font-black uppercase tracking-widest text-sm transition-all shadow-md shadow-emerald-500/15 active:scale-95 cursor-pointer"
-                      >
-                        {forgotBusy ? "Güncelleniyor..." : "Şifreyi Güncelle"}
-                      </button>
-                    </>
-                  )}
+                  <div className="space-y-1">
+                    <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Kayıtlı E-posta</label>
+                    <input
+                      type="email"
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                      className="w-full p-3.5 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100 text-sm"
+                      placeholder="ornek@mail.com"
+                    />
+                  </div>
+                  <button
+                    onClick={handleForgotSendCode}
+                    disabled={forgotBusy}
+                    className="w-full px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 disabled:bg-zinc-200 disabled:dark:bg-zinc-800 text-white rounded-2xl font-black uppercase tracking-widest text-sm transition-all shadow-md active:scale-95"
+                  >
+                    {forgotBusy ? "Gönderiliyor..." : "Sıfırlama Kodu Gönder"}
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <p className="text-sm font-bold text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                    {forgotEmail} adresine gönderilen 6 haneli doğrulama kodunu ve yeni şifrenizi girin.
+                  </p>
+                  <div className="space-y-1">
+                    <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Doğrulama Kodu</label>
+                    <input
+                      type="text"
+                      maxLength={6}
+                      value={forgotCode}
+                      onChange={(e) => setForgotCode(e.target.value)}
+                      className="w-full p-3 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100 text-center tracking-[0.5em] text-lg"
+                      placeholder="000000"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Yeni Şifre</label>
+                    <input
+                      type="password"
+                      value={forgotNewPassword}
+                      onChange={(e) => setForgotNewPassword(e.target.value)}
+                      className="w-full p-3 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100 text-sm"
+                      placeholder="••••••••"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Yeni Şifre (Tekrar)</label>
+                    <input
+                      type="password"
+                      value={forgotNewPassword2}
+                      onChange={(e) => setForgotNewPassword2(e.target.value)}
+                      className="w-full p-3 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-bold focus:border-emerald-500 transition-all outline-none text-zinc-800 dark:text-zinc-100 text-sm"
+                      placeholder="••••••••"
+                    />
+                  </div>
+                  <button
+                    onClick={handleForgotResetPassword}
+                    disabled={forgotBusy}
+                    className="w-full px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 disabled:bg-zinc-200 text-white rounded-2xl font-black uppercase tracking-widest text-sm transition-all shadow-md active:scale-95"
+                  >
+                    {forgotBusy ? "Güncelleniyor..." : "Şifreyi Güncelle"}
+                  </button>
                 </div>
               )}
             </div>
+          </div>
+        )}
+
+        {/* 8. Engellemesiz KVKK ve Çerez Alt Bildirim Çubuğu (Non-blocking Bottom Banner) */}
+        {showKvkkOverlay && (
+          <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-8 md:max-w-xl z-50 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md p-5 sm:p-6 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <h4 className="font-black text-sm text-zinc-900 dark:text-zinc-50 flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                <span>KVKK ve Çerez Bilgilendirmesi</span>
+              </h4>
+              <p className="text-xs font-bold text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                Platformumuzda kullanıcı deneyimini iyileştirmek, eğitim rutinlerini kaydetmek ve yasal mevzuata uyum için çerezler kullanılmaktadır. Detaylar için{" "}
+                <Link href="/gizlilik" className="underline text-emerald-600 dark:text-emerald-400 hover:opacity-80">
+                  Gizlilik Politikamızı
+                </Link>{" "}
+                inceleyebilirsiniz.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                try {
+                  localStorage.setItem("kvkkAcceptedV1", "1");
+                } catch {}
+                setKvkkAccepted(true);
+              }}
+              className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black text-xs uppercase tracking-wider whitespace-nowrap shadow-md hover:scale-105 active:scale-95 transition-all self-end sm:self-center shrink-0"
+            >
+              Kabul Ediyorum
+            </button>
           </div>
         )}
       </div>
