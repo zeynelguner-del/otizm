@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import AdSenseScript from "@/components/AdSenseScript";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -71,11 +72,7 @@ export default function RootLayout({
               "(function(){try{var t=localStorage.getItem('themeV1');var r=document.documentElement;r.classList.remove('dark','light');if(t==='dark'){r.classList.add('dark');}else if(t==='light'){r.classList.add('light');}else{if(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches){r.classList.add('dark');}}}catch(e){}})();",
           }}
         />
-        <script
-          async
-          crossOrigin="anonymous"
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6555296619233151"
-        />
+        <AdSenseScript />
       </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

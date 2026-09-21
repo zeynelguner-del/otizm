@@ -272,29 +272,79 @@ export default function StoriesPage() {
               </div>
             </div>
 
-            <h2 className="text-xs font-black text-zinc-400 uppercase tracking-[0.2em] pl-1 pt-2">Öykü Listesi</h2>
+            <div className="grid grid-cols-1 gap-4">
+              {STORIES.map((story) => (
+                <div
+                  key={story.id}
+                  className={cn(
+                    "w-full p-6 rounded-3xl border-2 transition-all space-y-4",
+                    story.color
+                  )}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h2 className="text-xl font-black">{story.title}</h2>
+                      <p className="opacity-90 text-sm font-medium mt-0.5">{story.description}</p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setSelectedStory(story);
+                        setCurrentStep(0);
+                        setQuizChoice(null);
+                        stopSpeaking();
+                      }}
+                      className="px-5 py-2.5 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-xs font-black uppercase tracking-wider hover:opacity-90 transition flex items-center gap-1.5 shrink-0"
+                    >
+                      <span>İnteraktif Oku</span>
+                      <ChevronRight size={14} />
+                    </button>
+                  </div>
 
-            {STORIES.map((story) => (
-              <button
-                key={story.id}
-                onClick={() => {
-                  setSelectedStory(story);
-                  setCurrentStep(0);
-                  setQuizChoice(null);
-                  stopSpeaking();
-                }}
-                className={cn(
-                  "w-full text-left p-6 rounded-3xl border-2 transition-all active:scale-98 flex items-center justify-between group",
-                  story.color
-                )}
-              >
-                <div>
-                  <h2 className="text-xl font-bold mb-1">{story.title}</h2>
-                  <p className="opacity-80 text-sm">{story.description}</p>
+                  {/* Crawlable Full Story Content for Search Engines & Quick Reading */}
+                  <div className="pt-3 border-t border-black/10 dark:border-white/10 space-y-2">
+                    <h3 className="text-xs font-black uppercase tracking-wider opacity-70">Öykü Adımları:</h3>
+                    <ol className="list-decimal pl-5 space-y-1.5 text-sm font-medium">
+                      {story.steps.map((step, sIdx) => (
+                        <li key={sIdx}>
+                          <span className="mr-1.5">{step.emoji}</span>
+                          <span>{step.text}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
                 </div>
-                <ChevronRight className="group-hover:translate-x-1 transition-transform" />
-              </button>
-            ))}
+              ))}
+            </div>
+
+            {/* Pedagojik Sosyal Öykü Kılavuzu */}
+            <div className="bg-white dark:bg-zinc-900 p-6 sm:p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-4 mt-8">
+              <h2 className="text-lg font-black text-zinc-900 dark:text-zinc-50">
+                Sosyal Öykü Yazım ve Uygulama Kuralları (Carol Gray Modeli)
+              </h2>
+              <div className="space-y-3 text-sm text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed">
+                <p>
+                  Sosyal öyküler, 1991 yılında Carol Gray tarafından geliştirilmiş olup, otizmli bireylerin sosyal durumları doğru yorumlamasını ve belirsizlikten kaynaklanan yoğun kaygıyı azaltmasını sağlayan yapılandırılmış kısa metinlerdir.
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                  <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 space-y-1">
+                    <h4 className="font-bold text-xs uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Betimleyici Cümleler</h4>
+                    <p className="text-xs text-zinc-500">Durumun nerede ve ne zaman gerçekleştiğini, kimlerin orada olduğunu tarafsızca anlatır (örn: 'Bazen okulda zil çalar').</p>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 space-y-1">
+                    <h4 className="font-bold text-xs uppercase tracking-wider text-blue-600 dark:text-blue-400">Perspektif Cümleleri</h4>
+                    <p className="text-xs text-zinc-500">Diğer insanların o anki duygu ve düşüncelerini açıklar (örn: 'Öğretmenim sessiz olduğumuzda mutlu hisseder').</p>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 space-y-1">
+                    <h4 className="font-bold text-xs uppercase tracking-wider text-amber-600 dark:text-amber-400">Yönlendirici Cümleler</h4>
+                    <p className="text-xs text-zinc-500">Çocuğa beklenen davranışı nazik ve olumlu bir dille önerir (örn: 'Sıramı beklemeyi deneyebilirim').</p>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 space-y-1">
+                    <h4 className="font-bold text-xs uppercase tracking-wider text-purple-600 dark:text-purple-400">Olumlu Dil Kuralı</h4>
+                    <p className="text-xs text-zinc-500">Sosyal öykülerde asla emir kipi veya cezalandırıcı, olumsuz ('yapma', 'bağırma') ifadeler kullanılmaz.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="space-y-8">

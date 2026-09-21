@@ -1,183 +1,368 @@
-"use client";
-
-import { useState } from "react";
+import { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, BookOpen, Heart, HelpCircle, Shield, Star, X, type LucideIcon } from "lucide-react";
+import { 
+  ArrowLeft, 
+  BookOpen, 
+  Heart, 
+  HelpCircle, 
+  Shield, 
+  Star, 
+  ChevronRight, 
+  Sparkles, 
+  CheckCircle2, 
+  ExternalLink,
+  GraduationCap
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type Section = {
-  title: string;
-  description: string;
-  content: string;
-  icon: LucideIcon;
-  color: string;
+export const metadata: Metadata = {
+  title: "Otizm Spektrum Bozukluğu (OSB) Nedir? Belirtileri ve Tanı Kriterleri | OtiZeka",
+  description: "Otizm Spektrum Bozukluğu (OSB) nedir? DSM-5 tanı kriterleri, erken belirtiler, spektrum kavramının anlamı, nedenleri ve erken müdahale yöntemleri üzerine kapsamlı rehber.",
+  keywords: ["otizm nedir", "otizm spektrum bozukluğu", "dsm-5 otizm kriterleri", "otizm belirtileri", "otizm nedenleri", "erken tanı otizm", "özel eğitim"],
+  openGraph: {
+    title: "Otizm Spektrum Bozukluğu (OSB) Nedir? | OtiZeka",
+    description: "Otizm Spektrum Bozukluğu belirtileri, gelişimsel farklılıklar, tanı ve erken müdahale hakkında kapsamlı bilimsel rehber.",
+    url: "https://www.otizeka.com/osb",
+    siteName: "OtiZeka",
+    locale: "tr_TR",
+    type: "article",
+  },
 };
 
+interface OsbTopic {
+  id: string;
+  title: string;
+  badge: string;
+  summary: string;
+  paragraphs: string[];
+  keyPointsTitle: string;
+  keyPoints: string[];
+  clinicalNote?: string;
+  color: string;
+}
+
+const OSB_TOPICS: OsbTopic[] = [
+  {
+    id: "osb-nedir",
+    title: "Otizm Spektrum Bozukluğu Nedir ve Neden Bir 'Spektrum'dur?",
+    badge: "Temel Tanım & Kavram",
+    color: "bg-cyan-100 dark:bg-cyan-950/40 text-cyan-700 dark:text-cyan-300",
+    summary: "Otizm Spektrum Bozukluğu (OSB), erken çocukluk döneminde başlayan ve bireyin dünyayı algılama, sosyal etkileşimde bulunma ve iletişim kurma biçimini etkileyen nöro-gelişimsel bir farklılıktır.",
+    paragraphs: [
+      "Otizm Spektrum Bozukluğu (OSB), beynin gelişimi ve nörolojik işleyişiyle ilişkili ömür boyu süren bir durumdur. 'Spektrum' (yelpaze) kavramı, bu durumun her bireyde son derece farklı yoğunlukta ve profilde ortaya çıktığını vurgular. Spektrum içinde yer alan kimi bireyler yüksek zihinsel becerilere sahip olup bağımsız bir yaşam sürdürebilirken; kimi bireyler konuşma dili, öz bakım ve günlük yaşam aktivitelerinde yoğun ve sürekli özel eğitim desteğine ihtiyaç duyabilir.",
+      "OSB'li bireylerin algı dünyası tipik gelişim gösterenlerden farklı çalışır. Beyin, çevreden gelen duyusal bilgileri (sesler, ışıklar, dokunma duyusu, kokular) filtrelemekte zorlanabilir veya bu uyaranları çok daha yoğun biçimde deneyimleyebilir. Bu nedenle otizm, bir 'eksiklik' veya 'hastalık' değil; bilgiyi işleme ve dünyayı anlamlandırma biçimindeki nörobiyolojik bir çeşitliliktir."
+    ],
+    keyPointsTitle: "Spektrum Kavramının 4 Temel Özelliği",
+    keyPoints: [
+      "Bireysellik: 'Bir otizmli birey tanıdıysanız, yalnızca bir otizmli birey tanımışsınızdır.' Her çocuğun profili kendine özgüdür.",
+      "Destek İhtiyacının Değişkenliği: İhtiyaç duyulan destek düzeyi zamana, çevreye ve alınan eğitimin niteliğine göre evrilebilir.",
+      "Güçlü Yönler: Birçok OSB'li çocuk üstün görsel hafıza, detaylara odaklanma, matematik veya müzik gibi alanlarda güçlü kabiliyetlere sahiptir.",
+      "Duyusal Zenginlik: Çevresel uyaranların farklı algılanması, sakin ve yapılandırılmış ortam ihtiyacını doğurur."
+    ],
+    clinicalNote: "Otizm tıbbi bir hastalık değildir; dolayısıyla 'iyileştirilmesi' gereken bir kusur olarak ele alınamaz. Çağdaş pedagojik yaklaşımın temel gayesi; çocuğun iletişim kanallarını açmak, duyusal stresini hafifletmek ve potansiyelini bağımsız bir hayata dönüştürmektir."
+  },
+  {
+    id: "dsm5-siniflandirma",
+    title: "Otizm Nasıl Sınıflandırılır? DSM-5 Tanı Kriterleri ve Destek Düzeyleri",
+    badge: "Klinik Tanı & Düzeyler",
+    color: "bg-blue-100 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300",
+    summary: "Amerikan Psikiyatri Birliği'nin güncel DSM-5 tanı sistemine göre otizm tek bir spektrum çatısında toplanmış olup, bireyin ihtiyaç duyduğu destek düzeyine göre derecelendirilir.",
+    paragraphs: [
+      "Eski sınıflandırma sistemlerinde (DSM-IV) Asperger Sendromu, Atipik Otizm, Yaygın Gelişimsel Bozukluk (PDD-NOS) gibi ayrı alt kategoriler bulunmaktaydı. Ancak 2013 yılında yayınlanan DSM-5 ve Dünya Sağlık Örgütü'nün ICD-11 kılavuzları ile bu ayrımlar kaldırılarak tüm alt kategoriler 'Otizm Spektrum Bozukluğu' adı altında birleştirilmiştir.",
+      "DSM-5'e göre resmi bir tanı konulabilmesi için iki temel çekirdek alanda kalıcı güçlüklerin varlığı aranır: Birincisi 'Sosyal İletişim ve Sosyal Etkileşimde Kalıcı Güçlükler', ikincisi ise 'Sınırlı, Tekrarlayıcı Davranış Örüntüleri, İlgiler veya Etkinlikler'dir. Ayrıca bu belirtilerin erken gelişim evrelerinde başlamış olması ve günlük işlevselliği belirgin biçimde kısıtlaması şartı aranır."
+    ],
+    keyPointsTitle: "DSM-5 Destek Düzeyleri",
+    keyPoints: [
+      "Düzey 1 (Destek Gerektirir): Sosyal iletişim başlatmakta zorlanır, rutin değişikliklerinde kaygı yaşar ancak destekle bağımsız işlevsellik gösterebilir.",
+      "Düzey 2 (Belirgin Destek Gerektirir): Sözel ve sözel olmayan iletişimde belirgin yetersizlikler vardır, rutin değişikliklerine yoğun tepki verir, günlük yaşamda sürekli rehberlik gerekir.",
+      "Düzey 3 (Çok Yoğun Destek Gerektirir): Çok sınırlı sözel iletişim veya tamamen sözel olmayan profil, aşırı tekrarlayıcı davranışlar ve tüm günlük öz bakım süreçlerinde doğrudan desteğe muhtaçlık."
+    ],
+    clinicalNote: "Tanı sırasında eşlik eden zihinsel yetersizlik, dil gelişim bozukluğu, DEHB, anksiyete veya epilepsi gibi ek durumların mevcudiyeti de hekimler tarafından kapsamlı şekilde raporlanır."
+  },
+  {
+    id: "osb-nedenleri",
+    title: "Otizm Spektrum Bozukluğunun Nedenleri: Genetik ve Çevresel Faktörler",
+    badge: "Etiyoloji ve Bilimsel Bulgular",
+    color: "bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300",
+    summary: "Otizmin ortaya çıkışında tek bir neden bulunmamaktadır; çoklu genetik yatkınlıklar ile çevresel faktörlerin erken beyin gelişimindeki karmaşık etkileşimi rol oynamaktadır.",
+    paragraphs: [
+      "Bilimsel araştırmalar, otizmin çok faktörlü (multifaktöriyel) bir etiyolojiye sahip olduğunu ortaya koymaktadır. İkiz ve aile çalışmaları, otizmde genetik faktörlerin rolünün yaklaşık %60 ila %80 oranında belirleyici olduğunu göstermektedir. Sinir hücreleri arasındaki bağlantıları (sinapsları) ve nöral iletimi düzenleyen yüzlerce farklı genin varyasyonları otizm riskiyle ilişkili bulunmuştur.",
+      "Genetik faktörlerin yanı sıra doğum öncesi ve doğum sırasındaki bazı biyolojik etkenler de risk profilini etkileyebilir. İleri anne ve baba yaşı, gebelikte geçirilen bazı viral enfeksiyonlar, aşırı erken doğum (prematürite), düşük doğum ağırlığı ve doğum anında yaşanan oksijensiz kalma durumları risk faktörleri arasında incelenmektedir."
+    ],
+    keyPointsTitle: "Bilimsel Olarak Kesinleşmiş Gerçekler",
+    keyPoints: [
+      "Aşılar Otizme Neden Olmaz: Dünya Sağlık Örgütü (WHO), CDC ve sayısız bağımsız araştırma aşıların (özellikle KKK aşısının) otizme yol açmadığını kesin kanıtlarla ortaya koymuştur.",
+      "Ebeveyn Tutumları Otizm Yapmaz: Geçmişte öne sürülen 'buzdolabı anne' teorisi tamamen çürütülmüştür; otizm sevgi eksikliğinden veya hatalı anne-baba tutumlarından kaynaklanmaz.",
+      "Biyolojik Bir Tablodur: Otizm, döllenme anından doğum sonrası ilk kritik aylara kadar süren beyin gelişim mimarisindeki nörobiyolojik farklılıkların sonucudur."
+    ]
+  },
+  {
+    id: "osb-belirtileri",
+    title: "Otizmin Temel Belirtileri: Erken Dönem İpuçları ve Davranış Kalıpları",
+    badge: "Gelişimsel Sinyaller",
+    color: "bg-rose-100 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300",
+    summary: "Sosyal gülümsemenin olmaması, isme tepki vermeme, göz temasından kaçınma ve tekrarlayıcı hareketler otizmin en sık rastlanan erken belirtileridir.",
+    paragraphs: [
+      "Otizm belirtileri çoğu çocukta 12 ila 24 ay arasında belirginleşmeye başlar; ancak bazı vakalarda 6-9 aylıkken dahi ilk ipuçları gözlemlenebilir. Belirtiler genel olarak sosyal iletişim alanı ve motor/davranışsal alan olmak üzere ikiye ayrılır.",
+      "Sosyal alanda en sık karşılaşılan gösterge 'ortak dikkat' (joint attention) eksikliğidir. Tipik bir bebek ilgisini çeken bir nesneyi parmağıyla göstererek ebeveyninin de ona bakmasını isterken, otizmli çocuk genellikle nesneye işaret etmez veya ebeveyninin işaret ettiği yere dönüp bakmaz. İsmi söylendiğinde sanki işitmiyormuş gibi davranması (ancak sevdiği bir çizgi film müziğine anında tepki vermesi) da çok tipik bir göstergedir."
+    ],
+    keyPointsTitle: "Yaş Gruplarına Göre Kritik Kırmızı Bayraklar",
+    keyPoints: [
+      "6-9 Ay: Karşılıklı sosyal gülümsemenin olmaması, ebeveynle ses alışverişi (babıldama) yapmama, göz temasının zayıf olması.",
+      "12 Ay: İsmiyle çağrıldığında dönüp bakmama, bay-bay yapmama, parmakla işaret etmeme ve nesneleri ebeveyne uzatarak paylaşmama.",
+      "18-24 Ay: Tek bir anlamlı kelimenin dahi çıkmaması, oyuncakları amacına uygun oynamak yerine tekerleklerini döndürme veya sıraya dizme.",
+      "Davranışsal Sinyaller: Kendi etrafında dönme, parmak ucunda yürüme, el çırpma (kanat çırpma), sallanma ve rutin bozulduğunda aşırı öfke krizleri."
+    ]
+  },
+  {
+    id: "erken-tani-onemi",
+    title: "Erken Tanı ve Erken Müdahalenin Hayati Önemi: Beyin Plastisitesi",
+    badge: "Eğitim ve Gelişim",
+    color: "bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300",
+    summary: "0-3 yaş dönemi insan beyninin en yüksek nöroplastisiteye sahip olduğu kritik evredir; bu evrede başlayan yoğun özel eğitim çocuğun gelişim seyrini kökten değiştirebilir.",
+    paragraphs: [
+      "Erken tanı, çocuğun 'otizmli' olarak etiketlenmesi için değil; kaybedilmemesi gereken en değerli gelişim penceresinde doğru özel eğitim ve terapilere acilen başlanabilmesi için hayati önem taşır. İnsan beyni yaşamın ilk yıllarında sinirsel bağlantıları olağanüstü bir hızla yapılandırır (nöroplastisite). Erken dönemde sağlanan yapılandırılmış uyarılar, beynin alternatif iletişim ve sosyal öğrenme yollarını inşa etmesine olanak tanır.",
+      "Bilimsel araştırmalar, 2-3 yaş civarında yoğun ve nitelikli erken çocukluk özel eğitimine başlayan çocukların büyük bir kısmının okul çağına geldiklerinde akranlarıyla birlikte genel eğitim sınıflarına (kaynaştırma/bütünleştirme) devam edebildiğini ve bağımsızlık oranlarının katlanarak arttığını kanıtlamaktadır."
+    ],
+    keyPointsTitle: "Erken Müdahalenin Sağladığı Somut Kazanımlar",
+    keyPoints: [
+      "İletişim Becerilerinin Açılması: Sözel dil öncesi jestler, işaretler ve alternatif iletişim sistemleri (PECS/AAC) erken başlatıldığında konuşma gelişimi tetiklenir.",
+      "Davranış Problemlerinin Önlenmesi: İsteklerini ifade edemediği için öfke krizi geçiren çocuk, alternatif iletişim öğrendiğinde krizler kendiliğinden azalır.",
+      "Duyusal Regülasyon: Duyu bütünleme terapisi ile duyusal hassasiyetler erkenden kontrol altına alınır ve çocuğun çevreye uyumu kolaylaşır.",
+      "Aile Güçlenmesi: Aile, çocuğuyla nasıl iletişim kuracağını ve ev ortamını nasıl yapılandıracağını öğrenerek tükenmişlikten kurtulur."
+    ],
+    clinicalNote: "Şüphe duyduğunuz anda 'büyüyünce konuşur' veya 'babası da geç konuşmuştu' şeklindeki çevresel söylemleri bir kenara bırakarak derhal bir Çocuk ve Ergen Ruh Sağlığı ve Hastalıkları (Çocuk Psikiyatrisi) uzmanına başvurunuz."
+  }
+];
+
 export default function OsbPage() {
-  const [selected, setSelected] = useState<Section | null>(null);
-
-  const sections: Section[] = [
-    {
-      title: "Otizm Spektrum Bozukluğu Nedir?",
-      description: "OSB’nin ne olduğu, neden “spektrum” dendiği ve temel özellikleri.",
-      icon: HelpCircle,
-      color: "bg-cyan-100 text-cyan-700",
-      content:
-        "Otizm Spektrum Bozukluğu (OSB), beynin gelişimiyle ilişkili nörogelişimsel bir durumdur. OSB’de sosyal iletişim ve sosyal etkileşimde kalıcı güçlükler ile birlikte, sınırlı/tekrarlayıcı davranışlar ve ilgi alanları görülebilir.\n\nNeden “spektrum” denir?\n- Belirtilerin şiddeti, görünümü ve kişinin destek ihtiyacı çok değişkendir.\n- Bazı bireyler günlük yaşamda daha az destekle bağımsız olabilirken, bazıları daha yoğun ve yapılandırılmış desteğe ihtiyaç duyabilir.\n\nOSB aynı zamanda duyusal farklılıklarla da görülebilir:\n- Ses, ışık, dokunma, koku gibi uyaranlara aşırı veya az duyarlılık olabilir.\n\nNot: OSB bir “kişilik” ya da “tercih” değildir; kişinin gelişimsel profiline ilişkin bir durumdur. Amaç; iletişimi, öğrenmeyi, bağımsızlığı ve yaşam kalitesini desteklemektir.",
-    },
-    {
-      title: "Otizm Spektrum Bozukluğu Nasıl Sınıflandırılır?",
-      description: "Tanı kriterleri ve destek ihtiyacına göre derecelendirme (DSM-5 yaklaşımı).",
-      icon: BookOpen,
-      color: "bg-blue-100 text-blue-600",
-      content:
-        "Güncel klinik sınıflandırmada OSB, tek bir “spektrum” tanısı altında değerlendirilir. Tanı; çocuğun/bireyin gelişimi, davranışları ve işlevselliği üzerinden uzman gözlemi ve bakım veren bilgisiyle konur.\n\nDSM-5’e göre OSB tanısında iki ana alan öne çıkar:\n1) Sosyal iletişim ve etkileşimde kalıcı güçlükler\n2) Sınırlı, tekrarlayıcı davranışlar/ilgi alanları ve rutinlere aşırı bağlılık gibi örüntüler (duyusal tepkiler dahil)\n\nDestek ihtiyacına göre “şiddet/düzey” belirtimi yapılabilir:\n- Düzey 1: Destek gerektirir\n- Düzey 2: Belirgin (substantial) destek gerektirir\n- Düzey 3: Çok yoğun (very substantial) destek gerektirir\n\nAyrıca şu eşlik eden durumlar ayrıca belirtilir:\n- Dil gelişimi (eşlik eden dil güçlüğü var/yok)\n- Zihinsel gelişim (eşlik eden zihinsel yetersizlik var/yok)\n- Bilinen tıbbi/genetik durumlar ve eş tanılar (örn. DEHB, kaygı, epilepsi gibi)\n\nNot: Eskiden ayrı isimlerle anılan bazı alt tanılar (örn. Asperger vb.) artık OSB spektrumu içinde ele alınır.",
-    },
-    {
-      title: "Otizm Spektrum Bozukluğunun Nedenleri Nedir?",
-      description: "Tek bir neden yoktur; genetik ve çevresel etkenler birlikte rol oynar.",
-      icon: Shield,
-      color: "bg-emerald-100 text-emerald-600",
-      content:
-        "OSB’nin tek bir kanıtlanmış nedeni yoktur. Bilimsel kanıtlar; genetik etkenlerin ve bazı çevresel/biyolojik etkenlerin birlikte, erken beyin gelişimini etkileyerek OSB riskini artırabildiğini gösterir.\n\nBilinen genel çerçeve:\n- Genetik etkenler: Ailede OSB öyküsü ve bazı genetik sendromlar riskle ilişkili olabilir.\n- Çevresel/biyolojik etkenler: Bazı gebelik ve doğumla ilişkili faktörler (örn. ileri ebeveyn yaşı, prematürite, bazı doğum komplikasyonları gibi) riskle ilişkilendirilmiştir.\n\nÖnemli bilgi:\n- Aşıların OSB’ye neden olduğuna dair güvenilir bilimsel kanıt yoktur.\n\nNot: “Risk faktörü” bir şeyin OSB’ye kesin neden olduğu anlamına gelmez; sadece olasılıkla ilişkili bulunmuş olabilir. Her çocuk ve aile için nedenler aynı değildir.",
-    },
-    {
-      title: "Otizm Spektrum Bozukluğunun Belirtileri Nelerdir?",
-      description: "Sosyal iletişim ve tekrarlayıcı davranış örüntüleri; duyusal farklılıklar.",
-      icon: Heart,
-      color: "bg-rose-100 text-rose-600",
-      content:
-        "Belirtiler kişiden kişiye değişir; ancak OSB’de genellikle iki ana alanda farklılıklar görülür.\n\n1) Sosyal iletişim ve sosyal etkileşimde zorlanmalar\n- Karşılıklı iletişimi başlatma ve sürdürmede güçlük\n- Göz teması, jest/mimik gibi sözel olmayan ipuçlarını kullanmada veya anlamada zorlanma\n- Akran ilişkileri kurma ve sürdürmede güçlük\n\n2) Sınırlı ve tekrarlayıcı davranışlar / ilgi alanları\n- Tekrarlayıcı hareketler veya oyun biçimleri (örn. sallanma, dizme)\n- Rutinlere aşırı bağlılık, değişikliklerde yoğun zorlanma\n- Yoğun ve sınırlı ilgi alanları\n- Duyusal tepkilerde farklılık (ses/ışık/dokunma gibi uyaranlara aşırı veya az tepki)\n\nBazı çocuklarda gelişimde duraksama veya gerileme (özellikle iletişim becerilerinde) görülebilir. Bu tür değişimler fark edilirse bir uzmana başvurmak önemlidir.",
-    },
-    {
-      title: "Erken Tanı ve Erken Eğitimin Önemi",
-      description: "Erken müdahale; iletişim, sosyal beceriler ve günlük yaşamda belirgin fayda sağlayabilir.",
-      icon: Star,
-      color: "bg-amber-100 text-amber-600",
-      content:
-        "Erken tanı; çocuğun gelişimsel ihtiyaçlarının daha erken anlaşılmasını ve doğru desteklerin daha erken başlamasını sağlar.\n\nNeden önemlidir?\n- Erken müdahale hizmetleri (özellikle okul öncesi dönemde) çocuğun iletişim, sosyal etkileşim ve öğrenme becerilerini geliştirmede etkili olabilir.\n- Aileye rehberlik ve ev içi düzenlemeler (görsel destekler, rutin planlama, iletişim fırsatları oluşturma) günlük yaşamı daha sürdürülebilir hale getirir.\n- Eşlik eden güçlükler (uyku, beslenme, kaygı, dikkat vb.) daha erken fark edilip uygun yönlendirmeler yapılabilir.\n\nPratik adımlar\n- Gelişimsel dönüm noktalarını takip etme ve şüphede değerlendirme isteme\n- Çocuk gelişimi / çocuk ve ergen psikiyatrisi / çocuk nörolojisi gibi alanlarda değerlendirme\n- Özel eğitim ve dil-konuşma desteği gibi hizmetlerde bireyselleştirilmiş hedeflerle düzenli çalışma\n\nNot: En iyi program; çocuğun güçlü yönlerine ve ihtiyaçlarına göre bireyselleştirilmiş olandır.",
-    },
-  ];
-
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-6 md:p-12">
-      <header className="max-w-4xl mx-auto mb-12 flex items-center gap-6">
-        <Link
-          href="/"
-          className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 shadow-sm hover:bg-zinc-50 transition-all"
-        >
-          <ArrowLeft size={28} />
-        </Link>
-        <div>
-          <h1 className="text-3xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">Otizm Spektrum Bozukluğu</h1>
-          <p className="text-zinc-500 font-medium">Temel bilgiler, sınıflandırma, belirtiler ve erken müdahale</p>
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col selection:bg-emerald-500 selection:text-white">
+      {/* Top Navbar */}
+      <header className="border-b border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur sticky top-0 z-50">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link
+              href="/"
+              className="p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 transition"
+              title="Ana Sayfaya Dön"
+            >
+              <ArrowLeft size={20} />
+            </Link>
+            <Link href="/" className="flex items-center gap-2 font-black text-lg tracking-tight text-emerald-600 dark:text-emerald-400">
+              <Sparkles className="w-5 h-5" />
+              <span>OtiZeka</span>
+            </Link>
+          </div>
+
+          <nav className="flex items-center gap-4 text-sm font-bold">
+            <Link href="/rehber" className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition">
+              Rehber
+            </Link>
+            <Link href="/education" className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition">
+              Özel Eğitim
+            </Link>
+            <Link href="/info" className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition">
+              Aile Portalı
+            </Link>
+          </nav>
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto space-y-8">
-        <section className="bg-white dark:bg-zinc-900 p-10 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-xl">
-          <h2 className="text-3xl font-black text-zinc-900 dark:text-zinc-50 mb-4 tracking-tight">Kısa Özet</h2>
-          <p className="text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed text-lg">
-            Bu bölüm; OSB’nin ne olduğunu, nasıl değerlendirildiğini, sık görülen belirtileri ve erken tanı/eğitimin neden önemli
-            olduğunu anlaşılır bir dille özetler. Tanı ve tedavi yerine geçmez; şüphede uzman değerlendirmesi gerekir.
+      {/* Breadcrumbs */}
+      <div className="border-b border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-100/50 dark:bg-zinc-900/30">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-2 text-xs font-semibold text-zinc-500 dark:text-zinc-400 overflow-x-auto">
+          <Link href="/" className="hover:text-emerald-600 transition">Ana Sayfa</Link>
+          <ChevronRight size={14} />
+          <span className="text-zinc-800 dark:text-zinc-200">Otizm Spektrum Bozukluğu (OSB)</span>
+        </div>
+      </div>
+
+      {/* Hero Header */}
+      <section className="bg-gradient-to-b from-cyan-500/10 via-blue-500/5 to-transparent py-12 sm:py-16 border-b border-zinc-200 dark:border-zinc-800">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center space-y-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-100 dark:bg-cyan-950/60 text-cyan-800 dark:text-cyan-300 text-xs font-black tracking-wide uppercase">
+            <GraduationCap className="w-4 h-4" />
+            <span>Kapsamlı Bilimsel Bilgi Merkezi</span>
+          </div>
+          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-zinc-900 dark:text-zinc-50 leading-tight">
+            Otizm Spektrum Bozukluğu (OSB) Nedir?
+          </h1>
+          <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-300 font-medium max-w-3xl mx-auto leading-relaxed">
+            DSM-5 tanı ölçütleri, spektrum kavramının nörobiyolojik temelleri, erken çocukluk belirtileri ve kanıta dayalı erken müdahalenin gücüne dair eksiksiz başvuru kılavuzu.
           </p>
+
+          {/* Hızlı Atlama Linkleri */}
+          <div className="pt-4 flex flex-wrap justify-center gap-2">
+            {OSB_TOPICS.map((topic) => (
+              <a
+                key={topic.id}
+                href={`#${topic.id}`}
+                className="px-3.5 py-1.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-bold text-zinc-700 dark:text-zinc-300 hover:border-cyan-500 hover:text-cyan-600 transition shadow-sm"
+              >
+                {topic.badge}
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Main Content Articles Stream */}
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16 space-y-16 flex-1 w-full">
+        {OSB_TOPICS.map((topic, index) => (
+          <article
+            key={topic.id}
+            id={topic.id}
+            className="bg-white dark:bg-zinc-900 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 p-8 sm:p-12 shadow-sm hover:shadow-md transition-shadow space-y-8"
+          >
+            {/* Topic Header */}
+            <div className="space-y-4 border-b border-zinc-100 dark:border-zinc-800/80 pb-6">
+              <div className="flex items-center gap-3">
+                <span className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 font-black text-xs flex items-center justify-center">
+                  0{index + 1}
+                </span>
+                <span className={cn("px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wider", topic.color)}>
+                  {topic.badge}
+                </span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight leading-snug">
+                {topic.title}
+              </h2>
+              <p className="text-base sm:text-lg font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 p-4 rounded-2xl border border-emerald-100 dark:border-emerald-900/30">
+                {topic.summary}
+              </p>
+            </div>
+
+            {/* Paragraphs */}
+            <div className="space-y-5 text-base sm:text-lg text-zinc-700 dark:text-zinc-300 leading-relaxed font-normal">
+              {topic.paragraphs.map((p, pIdx) => (
+                <p key={pIdx}>{p}</p>
+              ))}
+            </div>
+
+            {/* Key Points Box */}
+            <div className="p-6 sm:p-8 rounded-3xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 space-y-4">
+              <h3 className="text-lg font-black text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                <span>{topic.keyPointsTitle}</span>
+              </h3>
+              <ul className="space-y-3 pl-1 sm:pl-2">
+                {topic.keyPoints.map((point, kIdx) => (
+                  <li key={kIdx} className="flex items-start gap-3 text-sm sm:text-base text-zinc-700 dark:text-zinc-300">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 mt-2 shrink-0" />
+                    <span>{point}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Clinical Note if exists */}
+            {topic.clinicalNote && (
+              <div className="p-6 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/40 text-amber-900 dark:text-amber-200 space-y-2">
+                <div className="font-black text-xs uppercase tracking-wider flex items-center gap-2">
+                  <Star className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                  <span>Uzman Klinik Notu</span>
+                </div>
+                <p className="text-sm sm:text-base font-medium leading-relaxed">
+                  {topic.clinicalNote}
+                </p>
+              </div>
+            )}
+          </article>
+        ))}
+
+        {/* Bilimsel Kaynaklar Bölümü */}
+        <section className="bg-white dark:bg-zinc-900 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 p-8 sm:p-12 shadow-sm space-y-6">
+          <h2 className="text-2xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight flex items-center gap-2">
+            <BookOpen className="w-6 h-6 text-cyan-600 dark:text-cyan-400" />
+            <span>Uluslararası Tıbbi ve Bilimsel Kaynaklar</span>
+          </h2>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400 font-medium">
+            Bu rehberde yer alan tüm bilgiler, dünyaca kabul görmüş sağlık otoritelerinin güncel klinik protokollerine ve kanıta dayalı bilimsel literatüre dayanmaktadır:
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <a
+              href="https://www.who.int/news-room/fact-sheets/detail/autism-spectrum-disorders"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 hover:border-cyan-500 transition flex items-center justify-between group"
+            >
+              <div>
+                <h4 className="font-bold text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-cyan-600 transition">Dünya Sağlık Örgütü (WHO)</h4>
+                <p className="text-xs text-zinc-500">Autism Spectrum Disorders Fact Sheet</p>
+              </div>
+              <ExternalLink size={16} className="text-zinc-400 group-hover:text-cyan-500 transition shrink-0" />
+            </a>
+            <a
+              href="https://www.cdc.gov/autism/about/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 hover:border-cyan-500 transition flex items-center justify-between group"
+            >
+              <div>
+                <h4 className="font-bold text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-cyan-600 transition">CDC (Hastalık Kontrol Merkezi)</h4>
+                <p className="text-xs text-zinc-500">About Autism Spectrum Disorder (ASD)</p>
+              </div>
+              <ExternalLink size={16} className="text-zinc-400 group-hover:text-cyan-500 transition shrink-0" />
+            </a>
+            <a
+              href="https://www.cdc.gov/autism/hcp/diagnosis/index.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 hover:border-cyan-500 transition flex items-center justify-between group"
+            >
+              <div>
+                <h4 className="font-bold text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-cyan-600 transition">CDC Clinical Guidelines</h4>
+                <p className="text-xs text-zinc-500">DSM-5 Diagnostic Criteria for Autism</p>
+              </div>
+              <ExternalLink size={16} className="text-zinc-400 group-hover:text-cyan-500 transition shrink-0" />
+            </a>
+            <a
+              href="https://www.nichd.nih.gov/health/topics/autism/conditioninfo/symptoms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 hover:border-cyan-500 transition flex items-center justify-between group"
+            >
+              <div>
+                <h4 className="font-bold text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-cyan-600 transition">NICHD (Ulusal Çocuk Sağlığı Enstitüsü)</h4>
+                <p className="text-xs text-zinc-500">What Are the Symptoms of Autism?</p>
+              </div>
+              <ExternalLink size={16} className="text-zinc-400 group-hover:text-cyan-500 transition shrink-0" />
+            </a>
+          </div>
         </section>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {sections.map((s) => (
-            <section
-              key={s.title}
-              className="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-lg hover:shadow-xl transition-all group"
-            >
-              <div className={cn("w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform", s.color)}>
-                <s.icon className="w-8 h-8" />
-              </div>
-              <h3 className="text-2xl font-black text-zinc-800 dark:text-zinc-100 mb-4 tracking-tight">{s.title}</h3>
-              <p className="text-zinc-500 dark:text-zinc-400 font-bold leading-relaxed">{s.description}</p>
-              <button
-                onClick={() => setSelected(s)}
-                className="mt-6 text-blue-600 font-black flex items-center gap-2 group-hover:gap-4 transition-all uppercase tracking-widest text-sm"
-              >
-                Devamını Oku <ArrowLeft className="rotate-180" size={18} />
-              </button>
-            </section>
-          ))}
-        </div>
-
-        <section className="bg-white dark:bg-zinc-900 p-10 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-xl">
-          <h2 className="text-2xl font-black text-zinc-900 dark:text-zinc-50 mb-4 tracking-tight">Kaynaklar</h2>
-          <div className="text-zinc-600 dark:text-zinc-300 font-medium leading-relaxed">
-            <ul className="list-disc pl-6 space-y-2">
-              <li>
-                <a
-                  className="text-blue-600 dark:text-blue-400 font-bold underline underline-offset-4"
-                  href="https://www.who.int/news-room/fact-sheets/detail/autism-spectrum-disorders"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Dünya Sağlık Örgütü (WHO): Autism spectrum disorders
-                </a>
-              </li>
-              <li>
-                <a
-                  className="text-blue-600 dark:text-blue-400 font-bold underline underline-offset-4"
-                  href="https://www.cdc.gov/autism/about/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  CDC: About Autism Spectrum Disorder (ASD)
-                </a>
-              </li>
-              <li>
-                <a
-                  className="text-blue-600 dark:text-blue-400 font-bold underline underline-offset-4"
-                  href="https://www.cdc.gov/autism/hcp/diagnosis/index.html"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  CDC: Clinical Testing and Diagnosis (DSM-5 kriter özeti)
-                </a>
-              </li>
-              <li>
-                <a
-                  className="text-blue-600 dark:text-blue-400 font-bold underline underline-offset-4"
-                  href="https://www.nichd.nih.gov/health/topics/autism/conditioninfo/symptoms"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  NICHD: What are the symptoms of autism?
-                </a>
-              </li>
-            </ul>
+        {/* İlgili Rehber Makaleleri Çağrısı */}
+        <section className="bg-gradient-to-r from-emerald-600 to-teal-700 text-white rounded-[2.5rem] p-8 sm:p-12 shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="space-y-3 text-center md:text-left">
+            <h3 className="text-2xl sm:text-3xl font-black tracking-tight">Daha Fazla Pedagojik Rehber Keşfedin</h3>
+            <p className="text-emerald-100 text-sm sm:text-base max-w-xl font-medium leading-relaxed">
+              Özel eğitim teknikleri, ABA, TEACCH, duyu bütünleme, sosyal öyküler ve aile kılavuzlarıyla ilgili zengin makale arşivimizi inceleyin.
+            </p>
           </div>
+          <Link
+            href="/rehber"
+            className="px-8 py-4 rounded-2xl bg-white text-emerald-900 font-black text-sm uppercase tracking-wider hover:bg-emerald-50 transition shadow-lg shrink-0"
+          >
+            Tüm Rehberleri Oku
+          </Link>
         </section>
       </main>
 
-      {selected && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-zinc-950/80 backdrop-blur-md">
-          <div className="bg-white dark:bg-zinc-900 w-full max-w-2xl max-h-[80vh] rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col border border-zinc-200 dark:border-zinc-800">
-            <div className="p-8 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center", selected.color)}>
-                  <selected.icon className="w-6 h-6" />
-                </div>
-                <h2 className="text-2xl font-black tracking-tight">{selected.title}</h2>
-              </div>
-              <button
-                onClick={() => setSelected(null)}
-                className="p-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 transition-all"
-              >
-                <X size={24} />
-              </button>
-            </div>
-            <div className="p-8 overflow-y-auto flex-1 min-h-0">
-              <div className="text-zinc-600 dark:text-zinc-300 font-medium leading-loose whitespace-pre-wrap text-lg">
-                {selected.content}
-              </div>
-            </div>
+      {/* Footer */}
+      <footer className="border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 py-10 px-4 text-center text-xs text-zinc-500 font-medium">
+        <div className="max-w-4xl mx-auto space-y-4">
+          <div className="flex flex-wrap justify-center gap-6 font-bold text-zinc-700 dark:text-zinc-300">
+            <Link href="/" className="hover:text-emerald-600 transition">Ana Sayfa</Link>
+            <Link href="/rehber" className="hover:text-emerald-600 transition">Rehber & Makaleler</Link>
+            <Link href="/education" className="hover:text-emerald-600 transition">Özel Eğitim Metotları</Link>
+            <Link href="/hakkimizda" className="hover:text-emerald-600 transition">Hakkımızda</Link>
+            <Link href="/iletisim" className="hover:text-emerald-600 transition">İletişim</Link>
+            <Link href="/gizlilik" className="hover:text-emerald-600 transition">Gizlilik Politikası</Link>
           </div>
+          <p>© 2026 OtiZeka Platformu. Tüm hakları saklıdır. Bu içerikler yalnızca bilgilendirme amaçlıdır; tıbbi tanı ve tedavi yerine geçmez.</p>
         </div>
-      )}
+      </footer>
     </div>
   );
 }

@@ -1,213 +1,339 @@
-"use client";
-import { ArrowLeft, BookOpen, Heart, Shield, HelpCircle, Star, X, type LucideIcon } from "lucide-react";
+import { Metadata } from "next";
 import Link from "next/link";
-import { useState } from "react";
+import { 
+  ArrowLeft, 
+  BookOpen, 
+  Heart, 
+  Shield, 
+  HelpCircle, 
+  Star, 
+  ChevronRight, 
+  Sparkles, 
+  CheckCircle2, 
+  FileText,
+  Building,
+  GraduationCap
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type InfoContent = { title: string; content: string; icon: LucideIcon; color: string };
+export const metadata: Metadata = {
+  title: "Otizmde Aile Rehberi, İlk Adımlar ve Yasal Haklar (RAM & ÇÖZGER) | OtiZeka",
+  description: "Yeni tanı alan aileler için ilk adımlar, duygusal kabullenme süreci, ÇÖZGER sağlık raporu, RAM değerlendirmesi, ücretsiz destek eğitim hakları ve yasal güvenceler rehberi.",
+  keywords: ["otizm yasal haklar", "çözger raporu otizm", "ram raporu nasıl alınır", "otizm destek eğitimi", "yeni tanı alan aileler", "özel eğitim hakları"],
+  openGraph: {
+    title: "Otizmde Aile Rehberi ve Yasal Haklar | OtiZeka",
+    description: "Yeni tanı alan aileler için kapsamlı yol haritası: ÇÖZGER, RAM, ücretsiz destek eğitim hakları ve yasal süreçler.",
+    url: "https://www.otizeka.com/info",
+    siteName: "OtiZeka",
+    locale: "tr_TR",
+    type: "article",
+  },
+};
+
+interface InfoSection {
+  id: string;
+  title: string;
+  badge: string;
+  color: string;
+  lead: string;
+  steps: {
+    title: string;
+    description: string;
+  }[];
+  importantNote?: string;
+}
+
+const INFO_SECTIONS: InfoSection[] = [
+  {
+    id: "ilk-adimlar",
+    title: "Yeni Otizm Tanısı Alan Aileler İçin İlk Adımlar ve Duygusal Yol Haritası",
+    badge: "Tanı Sonrası Süreç",
+    color: "bg-blue-100 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300",
+    lead: "Otizm tanısı almak aileler için derin duygusal dalgalanmaların, kaygıların ve soru işaretlerinin yaşandığı zorlu bir eşiktir. Bu süreçte yalnız değilsiniz; doğru bir yol haritasıyla çocuğunuzun potansiyelini en üst düzeye çıkarabilirsiniz.",
+    steps: [
+      {
+        title: "1. Kabullenme ve Duygusal İyileşme",
+        description: "Kendinize ve ailenize zaman tanıyın. İnkar, öfke, pazarlık ve üzüntü evreleri son derece doğaldır. Ancak unutmayın ki tanı, çocuğunuzun kim olduğunu değiştirmez; yalnızca onun ihtiyaç duyduğu özel dili ve eğitim yolunu gösterir. Gerekirse aile danışmanlığı veya psikolojik destek almaktan çekinmeyin."
+      },
+      {
+        title: "2. Zaman Kaybetmeden Erken Özel Eğitime Başlama",
+        description: "Otizmde en değerli sermaye zamandır. 'Biraz büyüsün', 'kreşe gitsin açılır' gibi telkinlerle ayları kaybetmeyin. 0-6 yaş arası beynin nöroplastisitesi en yüksek seviyededir. Tanı şüphesi doğduğu andan itibaren haftalık en az 8-12 saatlik nitelikli özel eğitim programına başlanmalıdır."
+      },
+      {
+        title: "3. Ev Ortamını Duyusal ve Görsel Olarak Düzenleme",
+        description: "Evinizi çocuğun duyusal ihtiyaçlarına göre sadeleştirin. Karmaşık ve gürültülü uyaranları azaltın. Çocuğun gününü öngörebilmesi için buzdolabı kapağına veya çalışma alanına resimli günlük rutin çizelgesi asın."
+      },
+      {
+        title: "4. Aile İçi ve Sosyal Çevre Bilgilendirmesi",
+        description: "Çocuğun durumunu akrabalara ve yakın çevreye açık ve suçluluk duymadan anlatın. Doğru bir sosyal destek ağı kurmak hem anne ve babanın tükenmişliğini önler hem de çocuğun toplumsal hayata katılımını kolaylaştırır."
+      }
+    ],
+    importantNote: "Çocuğunuzun geleceğine dair felaket senaryoları kurmak yerine bugüne ve atılacak küçük adımlara odaklanın. Erken ve düzenli eğitimle gelişim kaydeden yüz binlerce çocuk bulunmaktadır."
+  },
+  {
+    id: "saglik-ve-cozger",
+    title: "ÇÖZGER (Çocuklar İçin Özel Gereksinim Raporu) Süreci",
+    badge: "Sağlık ve Raporlama",
+    color: "bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300",
+    lead: "Türkiye'de özel eğitim ve sosyal haklardan yararlanabilmenin ilk ve en temel yasal adımı, yetkili tam teşekküllü devlet/üniversite hastanesinden ÇÖZGER raporu almaktır.",
+    steps: [
+      {
+        title: "1. Hastane Randevusu Alma",
+        description: "MHRS veya 182 üzerinden ÇÖZGER yetkisi bulunan bir devlet ya da üniversite hastanesinin Çocuk ve Ergen Ruh Sağlığı (Çocuk Psikiyatrisi) polikliniğinden sağlık kurulu randevusu alınır."
+      },
+      {
+        title: "2. Sağlık Kurulu Muayeneleri",
+        description: "Çocuk psikiyatrisi uzmanı başta olmak üzere, kurulun belirlediği hekimler (çocuk nörolojisi, göz, kbb vb.) çocuğu gelişimsel testler ve klinik gözlemle değerlendirir."
+      },
+      {
+        title: "3. Kurul Kararı ve Gereksinim Derecesi",
+        description: "ÇÖZGER raporunda eski sistemdeki gibi 'yüzde oranı' yazmaz; bunun yerine 'Özel Gereksinimi Vardır (ÖGV)', 'Hafif', 'Orta', 'İleri', 'Çok İleri Düzeyde ÖGV' gibi gereksinim düzeyleri belirtilir."
+      },
+      {
+        title: "4. E-Devlet Üzerinden Rapor Teslimi",
+        description: "Rapor onaylandıktan sonra e-Devlet ve e-Nabız sistemlerine işlenir. Bu raporla birlikte doğrudan Rehberlik ve Araştırma Merkezi (RAM) sürecine geçilir."
+      }
+    ],
+    importantNote: "ÇÖZGER raporu çocuğunuzun geleceğini olumsuz etkileyen bir 'sicil' değildir. Yalnızca devletin sağladığı ücretsiz özel eğitim, vergi muafiyetleri ve sosyal desteklerden faydalanmasını sağlayan yasal bir haktır."
+  },
+  {
+    id: "ram-ve-egitim-hakki",
+    title: "RAM (Rehberlik ve Araştırma Merkezi) ve Ücretsiz Destek Eğitim",
+    badge: "Eğitim Hakları",
+    color: "bg-purple-100 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300",
+    lead: "Milli Eğitim Bakanlığı'na bağlı RAM, çocuğun eğitsel değerlendirmesini yaparak her ay devlet destekli ücretsiz özel eğitim ve rehabilitasyon hizmeti almasını sağlar.",
+    steps: [
+      {
+        title: "1. RAM Randevusu ve Başvuru",
+        description: "İkamet ettiğiniz ilçedeki RAM'dan MEBBİS / e-Devlet veya telefonla randevu alınır. Başvuruda ÇÖZGER raporu, kimlik belgeleri ve varsa okul gözlem formları teslim edilir."
+      },
+      {
+        title: "2. Eğitsel Değerlendirme ve Kurul Kararı",
+        description: "RAM'daki özel eğitim uzmanları çocukla bireysel performans değerlendirmesi yapar. Çocuğun dil, motor, sosyal ve bilişsel gelişimine göre 'Özel Eğitim Değerlendirme Kurulu Raporu' düzenlenir."
+      },
+      {
+        title: "3. Aylık Ücretsiz Destek Eğitim Saatleri",
+        description: "Bu rapor ile MEB onaylı özel eğitim ve rehabilitasyon merkezlerinde ayda 8 seans bireysel eğitim (ve uygun görülürse 4 seans grup eğitimi) devlet tarafından tamamen ücretsiz olarak karşılanır."
+      },
+      {
+        title: "4. Okul Yerleştirme ve Kaynaştırma (Bütünleştirme) Kararı",
+        description: "Okul çağına gelen çocuklar için RAM; Tam Zamanlı Kaynaştırma, Özel Eğitim Sınıfı veya Özel Eğitim Uygulama Okulu yönlendirme kararını resmi olarak verir."
+      }
+    ],
+    importantNote: "RAM raporları genellikle 1 yıllık verilir ve süresi dolmadan önce yenilenmesi gerekir. Yenileme sürecini aksatmamak için randevuyu rapor bitiş tarihinden en az 1-2 ay önce oluşturunuz."
+  },
+  {
+    id: "diger-yasal-haklar",
+    title: "Sosyal Güvenceler, Vergi İndirimleri ve Diğer Yasal Kolaylıklar",
+    badge: "Sosyal ve Yasal Haklar",
+    color: "bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300",
+    lead: "Türkiye Cumhuriyeti mevzuatına göre özel gereksinimli bireyler ve aileleri için sağlık, istihdam, ulaşım ve maliye alanlarında geniş kapsamlı pozitif haklar tanınmıştır.",
+    steps: [
+      {
+        title: "Destek Eğitim Odası Hakkı",
+        description: "Kaynaştırma öğrencisi olarak genel eğitim sınıflarına devam eden otizmli çocuklar; okullarında açılan 'Destek Eğitim Odası'nda haftalık ders saatinin %40'ına kadar birebir öğretmen desteği alma hakkına sahiptir."
+      },
+      {
+        title: "Engelli Evde Bakım ve Çocuk Aylığı",
+        description: "Aile ve Sosyal Hizmetler Bakanlığı tarafından, hane geliri kriterlerine ve ÇÖZGER raporundaki bağımlılık derecesine göre ebeveyne her ay düzenli evde bakım aylığı ödenir."
+      },
+      {
+        title: "ÖTV Muafiyeti ve Vergi İndirimleri",
+        description: "ÇÖZGER raporunda 'Özel Koşul Gereksinimi Vardır (ÖKGV)' ibaresi bulunan çocukların ebeveynleri, 5 yılda bir sıfır araç alımında Özel Tüketim Vergisi (ÖTV) muafiyetinden yararlanabilir. Ayrıca çalışan ebeveyn için gelir vergisi indirimi uygulanır."
+      },
+      {
+        title: "Ücretsiz Şehir İçi ve İndirimli Şehirler Arası Ulaşım",
+        description: "Engelli kimlik kartı ile tüm şehir içi toplu taşıma araçları (belediye otobüsleri, metro, tramvay, vapur) ücretsiz; TCDD trenleri ücretsiz; THY iç hat uçuşları ise refakatçi dahil indirimli olarak kullanılır."
+      }
+    ],
+    importantNote: "Tüm resmi işlemleriniz için çocuğunuzun ÇÖZGER raporu, RAM kararı ve nüfus cüzdanı fotokopilerini içeren özel bir 'Gelişim ve Hukuk Klasörü' hazırlamanız işlerinizi çok hızlandıracaktır."
+  }
+];
 
 export default function InfoPage() {
-  const [selectedContent, setSelectedContent] = useState<InfoContent | null>(null);
-
-  const featuredGuide = {
-    title: "Yeni Tanı Alan Aileler İçin İlk Adımlar",
-    icon: BookOpen,
-    color: "bg-blue-600 text-white",
-    content: `Tanı sonrası süreç, aileler için hem duygusal hem de bilgilendirici bir yolculuğun başlangıcıdır. İşte ilk adımlar:
-
-1. Kabullenme ve Duygusal Destek: Kendinize zaman tanıyın. Bu sürecin bir yas süreci gibi hissettirmesi normaldir. Uzman bir psikologdan destek almak, ailenin direncini artırır.
-
-2. Özel Eğitim Planlaması: Erken müdahale en kritik adımdır. Çocuğunuzun bireysel ihtiyaçlarına uygun bir eğitim programı (BEP) hazırlanması için uzmanlarla iş birliği yapın.
-
-3. Sağlık ve Raporlama: RAM (Rehberlik Araştırma Merkezi) ve hastane süreçlerini tamamlayarak çocuğunuzun yasal haklarından (destek eğitimi, rehabilitasyon vb.) yararlanmasını sağlayın.
-
-4. Ev Ortamı Düzenlemesi: Çocuğunuzun duyusal ihtiyaçlarına göre evi sadeleştirin. Görsel çizelgeler kullanarak günlük rutini anlamasına yardımcı olun.
-
-5. Sosyal Çevre Bilgilendirmesi: Yakın çevrenizi ve akrabalarınızı durum hakkında bilgilendirerek doğru bir destek ağı oluşturun.`
-  };
-
-  const categories = [
-    { 
-      title: "Otizm Nedir?", 
-      icon: HelpCircle, 
-      color: "bg-blue-100 text-blue-600",
-      description:
-        "Otizm Spektrum Bozukluğu’nun ne olduğu, nasıl göründüğü ve neden “spektrum” dendiğine dair anlaşılır bir özet.",
-      content:
-        "Otizm Spektrum Bozukluğu (OSB), gelişimin erken dönemlerinden itibaren sosyal iletişim, davranış ve öğrenme biçiminde farklılıklarla kendini gösterebilen bir nöro-gelişimsel durumdur.\n\nNeden “spektrum” denir?\n- Çünkü belirtiler ve destek ihtiyaçları kişiden kişiye çok değişebilir.\n- Bazı bireyler günlük yaşamda daha az destekle bağımsız olabilirken, bazıları daha yoğun yapılandırılmış destek gerektirebilir.\n\nSık görülen alanlar\n- Sosyal iletişim: karşılıklı sohbet başlatma/sürdürme, jest-mimikleri anlama, ortak dikkat kurma.\n- Davranış örüntüleri: rutin ihtiyacı, tekrar eden davranışlar, sınırlı ilgi alanları.\n- Duyusal farklılıklar: ses, ışık, dokunma, koku gibi uyaranlara aşırı/az duyarlılık.\n\nÖnemli notlar\n- Otizm tek bir “kalıp” değildir; aynı tanıyı alan iki çocuğun güçlü yönleri ve zorlandığı alanlar farklı olabilir.\n- Erken ve düzenli destek (özel eğitim, dil-konuşma, ergoterapi/duyu bütünleme gibi) çocuğun gelişimini ve günlük yaşam becerilerini güçlendirebilir.\n- Amaç “otizmi yok etmek” değil; iletişimi artırmak, bağımsızlığı desteklemek, zorlanmaları azaltmak ve aile yaşamını sürdürülebilir hale getirmektir."
-    },
-    { 
-      title: "Otizmde Eğitim", 
-      icon: BookOpen, 
-      color: "bg-indigo-100 text-indigo-600",
-      description:
-        "Erken müdahale, sınıf içi uyarlamalar ve bireyselleştirilmiş hedeflerle eğitim planlaması.",
-      content:
-        "Otizmde eğitim; çocuğun iletişim, sosyal etkileşim, oyun/öğrenme ve günlük yaşam becerilerini desteklemek için yapılandırılmış ve bireyselleştirilmiş bir planla yürütülür.\n\nTemel ilkeler\n- Bireyselleştirme: Hedefler çocuğun gelişim düzeyi, güçlü yönleri ve ihtiyaçlarına göre belirlenir.\n- Tutarlılık: Ev-okul-özel eğitim arasında ortak hedef dili ve benzer yöntemler.\n- Görsel destekler: Günlük rutin çizelgeleri, adım adım yönerge kartları, “önce-sonra” panosu.\n- Yapılandırılmış öğrenme: Net başlangıç/bitiş, kısa ve anlaşılır yönergeler, tekrar ve genelleme.\n\nSık kullanılan eğitim yaklaşımları (genel çerçeve)\n- Davranışsal yaklaşımlar: İstenilen becerileri öğretme ve problem davranışları azaltma (örn. ABA temelli teknikler).\n- Gelişimsel yaklaşımlar: Oyun ve etkileşim üzerinden sosyal-iletişim becerilerini güçlendirme.\n- Sınıf temelli düzenlemeler: Görsel ipuçları, görevleri küçük adımlara bölme, duyusal düzenleme, geçişleri kolaylaştırma.\n\nPratik kontrol listesi\n- Ölçülebilir hedef belirle (örn. “istek bildirme”, “sıra alma”, “tuvalet rutini”).\n- Hedefleri günlük rutine yerleştir (evde ve okulda kısa tekrarlar).\n- İlerlemeyi basit kayıtla takip et (hangi ipucu ile başardı?).\n\nKaynaklar\n- CDC: https://www.cdc.gov/autism/treatment/\n- WHO: https://www.who.int/news-room/fact-sheets/detail/autism-spectrum-disorders"
-    },
-    { 
-      title: "Sosyal İletişim", 
-      icon: Heart, 
-      color: "bg-rose-100 text-rose-600",
-      description:
-        "Göz teması, ortak dikkat, sırayla oynama ve duygu ifade etme gibi becerileri günlük hayatta desteklemek için pratik öneriler.",
-      content:
-        "Sosyal iletişim; yalnızca konuşmak değil, karşılıklı etkileşim kurmak, sıra almak, ipuçlarını okumak ve duygu paylaşmak gibi birçok becerinin birleşimidir. Otizmli çocuklarda bu beceriler farklı hızlarda gelişebilir.\n\nGünlük hayatta işe yarayan yaklaşımlar\n- Ortak dikkat: Çocuğun ilgisini çeken şeyi birlikte “paylaşma” hedeflenir (ör. oyuncağa bak → sen de bak → kısa bir kelime/işaret). Bu, iletişimin temelidir.\n- Göz teması: Zorlamadan; oyun, şarkı, baloncuk, sevdiği nesne gibi motivasyon veren anlarda çok kısa ve doğal temaslar hedeflenir.\n- İstek belirtme: “İstemek” iletişimi artırır. Çocuğun bir şeyi istemesi için küçük fırsatlar oluştur (ör. bisküviyi kutuda tut, yardım istemesi için bekle).\n- Duygu farkındalığı: Resimler, aynada mimik çalışmaları, kısa videolar ve basit duygu kartları ile “mutlu/üzgün/kızgın/şaşkın” gibi kavramlar pekiştirilebilir.\n- Sıra alma ve paylaşma: “Sıra bende / sıra sende” oyunları (top atma, blok dizme, kart çekme) sosyal etkileşimi güçlendirir.\n\nİletişimi kolaylaştıran destekler\n- Görsel destek: Resimli rutin, adım adım yönerge kartları, “önce-sonra” panosu.\n- Basit ve tutarlı dil: Kısa cümle, net yönerge, aynı kelimeleri tekrar eden rutin ifadeler.\n- Sosyal öyküler: Zor sosyal durumları (market, misafir, oyun parkı) kısa ve somut cümlelerle anlatır; beklenen davranışı netleştirir.\n\nHedef: Çocuğun kendi ihtiyacını anlatabilmesi, zorlandığında destek isteyebilmesi ve küçük ama sürdürülebilir sosyal etkileşimler kurabilmesidir."
-    },
-    { 
-      title: "Otizmde Terapi", 
-      icon: Star, 
-      color: "bg-fuchsia-100 text-fuchsia-700",
-      description:
-        "Dil-konuşma, ergoterapi, davranışsal ve gelişimsel müdahalelerle beceri geliştirme.",
-      content:
-        "Otizmde terapi; “tek bir yöntem” değil, çocuğun ihtiyaçlarına göre seçilen birden fazla desteğin (iletişim, duyusal düzenleme, davranış, günlük yaşam becerileri) birlikte planlanmasıdır.\n\nSık kullanılan terapi alanları\n- Dil ve konuşma terapisi: Anlama/ifade, karşılıklı iletişim, alternatif iletişim yöntemleri (işaret, resim, cihaz) dahil.\n- Ergoterapi: Günlük yaşam becerileri (giyinme, yemek, öz bakım) ve duyusal düzenleme ihtiyaçları.\n- Davranışsal ve gelişimsel müdahaleler: Beceri öğretimi, problem davranışların işlevine göre desteklenmesi, oyun ve sosyal etkileşimin güçlendirilmesi.\n- Sosyal beceri çalışmaları: Yapılandırılmış grup veya bireysel çalışmalar.\n- Psikolojik destek: Kaygı, duygu düzenleme gibi eşlik eden alanlarda (özellikle daha büyük çocuk/ergenlerde) uyarlanmış terapi yaklaşımları.\n\nİyi bir terapi planı nasıl görünür?\n- Hedefler nettir ve günlük yaşama bağlanır (örn. “istek bildirme”, “geçişlerde zorlanmayı azaltma”).\n- Aileye ev uygulaması verilir (kısa, sürdürülebilir).\n- İlerleme veriyle takip edilir ve hedefler güncellenir.\n\nKaynaklar\n- CDC: https://www.cdc.gov/autism/treatment/\n- WHO: https://www.who.int/news-room/fact-sheets/detail/autism-spectrum-disorders"
-    },
-    { 
-      title: "Duyu Bütünleme", 
-      icon: Star, 
-      color: "bg-amber-100 text-amber-600",
-      description:
-        "Ses, ışık, dokunma ve hareket gibi duyularda hassasiyet olduğunda evde ve dışarıda uygulanabilecek basit düzenlemeler.",
-      content:
-        "Duyu bütünleme, çevreden gelen duyusal bilgilerin (ses, ışık, dokunma, koku, hareket, denge) beyin tarafından organize edilmesidir. Otizmli çocuklarda duyular bazen “fazla” (aşırı hassas) bazen “az” (az duyarlı) çalışabilir.\n\nSık görülen örnekler\n- Ses: Süpürge, kalabalık, zil gibi seslere aşırı tepki veya tam tersi çok yüksek ses arama.\n- Dokunma: Etiket, dikiş, saç kesimi, tırnak kesimi gibi temaslara hassasiyet.\n- Görsel: Parlak ışıklar, kalabalık görüntü, ekran hassasiyeti.\n- Hareket/denge: Sürekli sallanma/zıplama ihtiyacı veya bazı hareketlerden kaçınma.\n\nEvde uygulanabilecek küçük düzenlemeler\n- “Sakin köşe”: Gürültüyü azaltan, loş ışıklı, yumuşak minderli bir alan.\n- Önceden hazırlık: Yeni bir ortama gitmeden önce kısa açıklama + görsel (nereye, ne kadar, ne olacak).\n- Kademeli alıştırma: Rahatsız eden uyaranla kısa süre + ödül, süreyi yavaş yavaş artırma.\n\nDışarıda pratik çözümler\n- Gürültü engelleyici kulaklık veya kulak tıkacı.\n- Kalabalık saatlerden kaçınma (market/AVM için sakin saatleri seçme).\n- Kıyafet seçiminde etiketsiz/rahat kumaş tercih etme.\n\nBeslenme ve doku seçiciliği\n- “Tek seferde büyük değişim” yerine çok küçük adımlarla ilerlemek daha sürdürülebilirdir (dokunma-koklama-yalama-tatma gibi basamaklar).\n\nDuyusal destekler bireyseldir. En iyi yaklaşım; çocuğun hangi uyaranlarda zorlandığını gözlemlemek, tetikleyicileri azaltmak ve düzenli bir rutinle güvenli alanlar oluşturmaktır."
-    },
-    { 
-      title: "Otizmde Tedavi", 
-      icon: Shield, 
-      color: "bg-emerald-100 text-emerald-600",
-      description:
-        "Otizmde “tedavi” yaklaşımı: çekirdek özellikler için eğitim/terapi, eşlik eden durumlar için tıbbi destek.",
-      content:
-        "Otizm yaşam boyu sürebilen bir nörogelişimsel durumdur. Bu nedenle “tek bir tedaviyle tamamen ortadan kaldırma” şeklinde bir yaklaşım bilimsel olarak doğru değildir.\n\nGüncel, bilimsel yaklaşım\n- Çekirdek alanlarda destek: İletişim, sosyal etkileşim, uyum becerileri ve günlük yaşam için eğitim ve terapiler (davranışsal, gelişimsel, eğitimsel ve sosyal-ilişkisel yaklaşımlar).\n- Eşlik eden durumların değerlendirilmesi: Uyku sorunları, anksiyete, DEHB belirtileri, epilepsi, gastrointestinal sorunlar gibi alanlarda hekim değerlendirmesi.\n- İlaçlar hakkında önemli bilgi: Otizmin çekirdek özelliklerini “tedavi eden” bir ilaç yoktur; ancak bazı ilaçlar eşlik eden belirtileri azaltıp işlevselliği artırmaya yardımcı olabilir. İlaç kararı mutlaka hekim tarafından, yarar-zarar dengesiyle verilir.\n\nDikkat edilmesi gerekenler\n- “Mucize tedavi” iddialarına temkinli yaklaşın.\n- Kanıtı zayıf veya riskli uygulamalar için (yüksek maliyetli, zarar potansiyeli olan) mutlaka uzman görüşü alın.\n\nKaynaklar\n- CDC: https://www.cdc.gov/autism/treatment/\n- WHO: https://www.who.int/news-room/fact-sheets/detail/autism-spectrum-disorders"
-    },
-    { 
-      title: "Yasal Haklar", 
-      icon: Shield, 
-      color: "bg-emerald-100 text-emerald-600",
-      description:
-        "RAM, ÇÖZGER ve rehabilitasyon süreçlerinde hangi haklara başvurulabileceğini ve hangi adımlarla ilerlenebileceğini anlatan pratik rehber.",
-      content:
-        "Türkiye’de otizmli çocuklar ve aileleri için eğitim, sağlık ve sosyal destek alanlarında çeşitli haklar bulunur. Başvuru süreçleri şehirden şehire değişebilse de temel yol haritası benzerdir.\n\nSık kullanılan rapor ve kurumlar\n- ÇÖZGER: Çocuklar için özel gereksinim raporu; birçok başvuruda temel belgedir.\n- RAM (Rehberlik ve Araştırma Merkezi): Eğitim değerlendirmesi ve yönlendirme süreçlerini yürütür.\n\nEğitimle ilgili haklar (genel çerçeve)\n- Kaynaştırma/bütünleştirme uygulamaları ve uygun destekler.\n- Özel eğitim hizmetlerinden yararlanma ve uygun planlamalar.\n- Okulda uyarlama: sınıf içi düzenlemeler, görsel destekler, bireyselleştirilmiş hedefler.\n\nDestek eğitim (rehabilitasyon)\n- Raporlara bağlı olarak belirli süre/saatlerde destek eğitim hizmeti.\n- Eğitim programının çocuğun ihtiyacına göre şekillenmesi (iletişim, sosyal beceri, davranış, akademik öncül beceriler).\n\nSağlık ve sosyal destekler\n- Bazı durumlarda hastanelerde öncelik uygulamaları.\n- Sosyal destekler/yardımlar (gelir kriterlerine göre değişebilir).\n\nPratik öneri\n- Belgeleri tek bir klasörde topla (rapor, sevk, randevu çıktıları, okul yazışmaları).\n- Süreçte en çok ihtiyaç duyulan şey “takip”tir: randevu, rapor yenileme, okul/merkez görüşmeleri.\n\nNot: Hakların kapsamı ve koşulları zamanla değişebilir; en güncel bilgi için bulunduğun il/ilçedeki RAM ve ilgili kamu kurumlarından doğrulama yapmak en güvenlisidir."
-    }
-  ];
-
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-6 md:p-12">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "MedicalWebPage",
-              "name": "Otizm Bilgilendirme ve Aile Rehberi",
-              "description": "Otizm nedir, erken tanı belirtileri, eğitim yöntemleri ve yasal haklar hakkında uzman onaylı pratik rehber.",
-              "url": "https://www.otizeka.com/info",
-              "aspect": [
-                "definition",
-                "symptoms",
-                "treatments",
-                "education"
-              ]
-            })
-          }}
-        />
-      <header className="max-w-4xl mx-auto mb-12 flex items-center gap-6">
-        <Link
-          href="/"
-          className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 shadow-sm hover:bg-zinc-50 transition-all"
-        >
-          <ArrowLeft size={28} />
-        </Link>
-        <div>
-          <h1 className="text-3xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">Otizm Bilgilendirme</h1>
-          <p className="text-zinc-500 font-medium">Faydalı Bilgiler ve Rehberler</p>
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col selection:bg-emerald-500 selection:text-white">
+      {/* Top Navbar */}
+      <header className="border-b border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur sticky top-0 z-50">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link
+              href="/"
+              className="p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 transition"
+              title="Ana Sayfaya Dön"
+            >
+              <ArrowLeft size={20} />
+            </Link>
+            <Link href="/" className="flex items-center gap-2 font-black text-lg tracking-tight text-emerald-600 dark:text-emerald-400">
+              <Sparkles className="w-5 h-5" />
+              <span>OtiZeka</span>
+            </Link>
+          </div>
+
+          <nav className="flex items-center gap-4 text-sm font-bold">
+            <Link href="/rehber" className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition">
+              Rehber
+            </Link>
+            <Link href="/osb" className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition">
+              Otizm Nedir?
+            </Link>
+            <Link href="/education" className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition">
+              Özel Eğitim
+            </Link>
+          </nav>
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto space-y-8">
-        {/* Featured Guide */}
-        <section className="bg-white dark:bg-zinc-900 p-10 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-xl relative overflow-hidden">
-          {/* Arka Plan Renkli Radyal Işıma Görseli */}
-          <div className="absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-blue-500/5 via-transparent to-transparent" />
-          
-          <div className="relative z-10 max-w-2xl">
-            <span className="px-4 py-1.5 bg-blue-600 text-white rounded-full text-xs font-black uppercase tracking-widest mb-6 inline-block">
-              Öne Çıkan Rehber
-            </span>
-            <h2 className="text-4xl font-black text-zinc-900 dark:text-zinc-50 mb-6 tracking-tight">{featuredGuide.title}</h2>
-            <p className="text-xl text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed mb-8">
-              Tanı sonrası süreçte “nereden başlamalıyım?” sorusuna adım adım yanıt verir: duygusal destek, özel eğitim planlaması,
-              rapor ve başvuru süreçleri, ev rutini ve yakın çevreyle iletişim gibi konularda anlaşılır bir başlangıç kılavuzu.
-            </p>
-            <button 
-              onClick={() => setSelectedContent({ ...featuredGuide, color: "bg-blue-100 text-blue-600" })}
-              className="px-10 py-5 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-[1.5rem] font-black text-lg shadow-xl hover:scale-105 active:scale-95 transition-all"
-            >
-              Rehberi Oku
-            </button>
+      {/* Breadcrumbs */}
+      <div className="border-b border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-100/50 dark:bg-zinc-900/30">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-2 text-xs font-semibold text-zinc-500 dark:text-zinc-400 overflow-x-auto">
+          <Link href="/" className="hover:text-emerald-600 transition">Ana Sayfa</Link>
+          <ChevronRight size={14} />
+          <span className="text-zinc-800 dark:text-zinc-200">Aile Rehberi ve Yasal Haklar</span>
+        </div>
+      </div>
+
+      {/* Hero Header */}
+      <section className="bg-gradient-to-b from-blue-500/10 via-emerald-500/5 to-transparent py-12 sm:py-16 border-b border-zinc-200 dark:border-zinc-800">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center space-y-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 text-xs font-black tracking-wide uppercase">
+            <Shield className="w-4 h-4" />
+            <span>Aile Bilgilendirme ve Hukuk Rehberi</span>
+          </div>
+          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-zinc-900 dark:text-zinc-50 leading-tight">
+            Otizmde Aile Yol Haritası ve Yasal Haklar
+          </h1>
+          <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-300 font-medium max-w-3xl mx-auto leading-relaxed">
+            Tanı sonrası yapılması gereken ilk adımlar, ÇÖZGER sağlık kurulu raporu, RAM eğitsel değerlendirmesi, ücretsiz rehabilitasyon ve devlet destekleri üzerine eksiksiz kılavuz.
+          </p>
+
+          {/* Hızlı Atlama Butonları */}
+          <div className="pt-4 flex flex-wrap justify-center gap-2">
+            {INFO_SECTIONS.map((s) => (
+              <a
+                key={s.id}
+                href={`#${s.id}`}
+                className="px-3.5 py-1.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-bold text-zinc-700 dark:text-zinc-300 hover:border-blue-500 hover:text-blue-600 transition shadow-sm"
+              >
+                {s.badge}
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Main Stream */}
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16 space-y-16 flex-1 w-full">
+        {INFO_SECTIONS.map((section, index) => (
+          <article
+            key={section.id}
+            id={section.id}
+            className="bg-white dark:bg-zinc-900 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 p-8 sm:p-12 shadow-sm hover:shadow-md transition-shadow space-y-8"
+          >
+            {/* Header */}
+            <div className="space-y-4 border-b border-zinc-100 dark:border-zinc-800/80 pb-6">
+              <div className="flex items-center gap-3">
+                <span className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 font-black text-xs flex items-center justify-center">
+                  0{index + 1}
+                </span>
+                <span className={cn("px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wider", section.color)}>
+                  {section.badge}
+                </span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight leading-snug">
+                {section.title}
+              </h2>
+              <p className="text-base sm:text-lg font-semibold text-blue-800 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/30 p-4 rounded-2xl border border-blue-100 dark:border-blue-900/30">
+                {section.lead}
+              </p>
+            </div>
+
+            {/* Steps List */}
+            <div className="space-y-6">
+              {section.steps.map((step, sIdx) => (
+                <div key={sIdx} className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 space-y-2">
+                  <h3 className="text-lg font-black text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                    <span>{step.title}</span>
+                  </h3>
+                  <p className="text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed font-normal pl-7">
+                    {step.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* Important Note */}
+            {section.importantNote && (
+              <div className="p-6 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/40 text-amber-900 dark:text-amber-200 space-y-2">
+                <div className="font-black text-xs uppercase tracking-wider flex items-center gap-2">
+                  <Star className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                  <span>Önemli Hukuki ve Pedagojik Hatırlatma</span>
+                </div>
+                <p className="text-sm sm:text-base font-medium leading-relaxed">
+                  {section.importantNote}
+                </p>
+              </div>
+            )}
+          </article>
+        ))}
+
+        {/* Kurum İletişim Rehberi */}
+        <section className="bg-white dark:bg-zinc-900 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 p-8 sm:p-12 shadow-sm space-y-6">
+          <h2 className="text-2xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight flex items-center gap-2">
+            <Building className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            <span>Başvuru Yapılacak Resmi Kurumlar ve İletişim Hatları</span>
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-2">
+            <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 space-y-2">
+              <span className="px-2.5 py-1 rounded bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 text-xs font-black">ALO 182 / MHRS</span>
+              <h4 className="font-black text-base text-zinc-900 dark:text-zinc-100">Hastane ve ÇÖZGER</h4>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">Çocuk Psikiyatrisi ve Sağlık Kurulu randevuları için Sağlık Bakanlığı hattı.</p>
+            </div>
+            <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 space-y-2">
+              <span className="px-2.5 py-1 rounded bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 text-xs font-black">MEB RAM</span>
+              <h4 className="font-black text-base text-zinc-900 dark:text-zinc-100">Rehberlik Araştırma Merkezi</h4>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">İlçe MEM bünyesindeki eğitsel değerlendirme ve özel eğitim kurul raporu.</p>
+            </div>
+            <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 space-y-2">
+              <span className="px-2.5 py-1 rounded bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 text-xs font-black">ALO 183</span>
+              <h4 className="font-black text-base text-zinc-900 dark:text-zinc-100">Sosyal Hizmetler Danışma</h4>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">Evde bakım maaşı, engelli kimlik kartı ve sosyal yardım başvuruları.</p>
+            </div>
           </div>
         </section>
 
-        {/* Grid Categories */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {categories.map((cat, i) => (
-            <section key={i} className="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-lg hover:shadow-xl transition-all group">
-              <div className={cn("w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform", cat.color)}>
-                <cat.icon className="w-8 h-8" />
-              </div>
-              <h3 className="text-2xl font-black text-zinc-800 dark:text-zinc-100 mb-4 tracking-tight">{cat.title}</h3>
-              <p className="text-zinc-500 dark:text-zinc-400 font-bold leading-relaxed">
-                {cat.description}
-              </p>
-              <button 
-                onClick={() => setSelectedContent(cat)}
-                className="mt-6 text-blue-600 font-black flex items-center gap-2 group-hover:gap-4 transition-all uppercase tracking-widest text-sm"
-              >
-                Devamını Oku <ArrowLeft className="rotate-180" size={18} />
-              </button>
-            </section>
-          ))}
-        </div>
-
-        {/* Support Card */}
-        <section className="bg-zinc-900 dark:bg-zinc-800 p-10 rounded-[2.5rem] text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl">
-          <div className="text-center md:text-left">
-            <h4 className="text-2xl font-black mb-2 tracking-tight">Bir Sorunuz mu Var?</h4>
-            <p className="text-zinc-400 font-bold">Uzmanlarımıza danışmak ve destek almak için bize ulaşın.</p>
+        {/* Rehber Kütüphanesi Çağrısı */}
+        <section className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-[2.5rem] p-8 sm:p-12 shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="space-y-3 text-center md:text-left">
+            <h3 className="text-2xl sm:text-3xl font-black tracking-tight">Yeni Tanı Alan Aileler İçin Makaleler</h3>
+            <p className="text-blue-100 text-sm sm:text-base max-w-xl font-medium leading-relaxed">
+              Duyusal regülasyon, evde beslenme ve uyku düzeni, dil gelişimi ve özel eğitim metotları hakkında derinlemesine makalelerimizi inceleyin.
+            </p>
           </div>
-          <button className="px-10 py-5 bg-white text-zinc-900 rounded-[1.5rem] font-black text-lg shadow-xl hover:bg-zinc-100 transition-all whitespace-nowrap">
-            İletişime Geç
-          </button>
+          <Link
+            href="/rehber"
+            className="px-8 py-4 rounded-2xl bg-white text-blue-900 font-black text-sm uppercase tracking-wider hover:bg-blue-50 transition shadow-lg shrink-0"
+          >
+            Rehber Arşivini İncele
+          </Link>
         </section>
       </main>
 
-      {/* Content Modal Overlay */}
-      {selectedContent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-zinc-950/80 backdrop-blur-md">
-          <div className="bg-white dark:bg-zinc-900 w-full max-w-2xl max-h-[80vh] rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col border border-zinc-200 dark:border-zinc-800">
-            <div className="p-8 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center", selectedContent.color)}>
-                  <selectedContent.icon className="w-6 h-6" />
-                </div>
-                <h2 className="text-2xl font-black tracking-tight">{selectedContent.title}</h2>
-              </div>
-              <button 
-                onClick={() => setSelectedContent(null)}
-                className="p-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 transition-all"
-              >
-                <X size={24} />
-              </button>
-            </div>
-            <div className="p-8 overflow-y-auto flex-1 min-h-0">
-              <div className="text-zinc-600 dark:text-zinc-300 font-medium leading-loose whitespace-pre-wrap text-lg">
-                {selectedContent.content}
-              </div>
-            </div>
+      {/* Footer */}
+      <footer className="border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 py-10 px-4 text-center text-xs text-zinc-500 font-medium">
+        <div className="max-w-4xl mx-auto space-y-4">
+          <div className="flex flex-wrap justify-center gap-6 font-bold text-zinc-700 dark:text-zinc-300">
+            <Link href="/" className="hover:text-emerald-600 transition">Ana Sayfa</Link>
+            <Link href="/rehber" className="hover:text-emerald-600 transition">Rehber & Makaleler</Link>
+            <Link href="/osb" className="hover:text-emerald-600 transition">Otizm Nedir?</Link>
+            <Link href="/education" className="hover:text-emerald-600 transition">Özel Eğitim</Link>
+            <Link href="/hakkimizda" className="hover:text-emerald-600 transition">Hakkımızda</Link>
+            <Link href="/iletisim" className="hover:text-emerald-600 transition">İletişim</Link>
           </div>
+          <p>© 2026 OtiZeka Platformu. Tüm hakları saklıdır. Bu bilgiler genel bilgilendirme amaçlıdır; hukuki ve tıbbi danışmanlık yerine geçmez.</p>
         </div>
-      )}
+      </footer>
     </div>
   );
 }

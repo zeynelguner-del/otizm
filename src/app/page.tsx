@@ -895,7 +895,7 @@ export default function Home() {
 
             {/* 8 Rehber Makalesi Kartları */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {GUIDE_ARTICLES.map((article) => (
+              {GUIDE_ARTICLES.slice(0, 8).map((article) => (
                 <article
                   key={article.slug}
                   className="bg-zinc-50 dark:bg-zinc-950/60 rounded-3xl border border-zinc-200 dark:border-zinc-800 p-6 flex flex-col justify-between hover:border-emerald-500/50 hover:shadow-xl transition-all duration-300 group"
