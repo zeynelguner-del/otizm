@@ -1,0 +1,42 @@
+{
+  "featuredTitle": "Quick Summary",
+  "featuredContent": "This section summarizes what ASD is, how it's evaluated, common symptoms, 0–18 month red flags, and why early diagnosis/education is important in an understandable language. It is not a substitute for diagnosis and treatment; expert evaluation is required if suspected.",
+  "sections": [
+    {
+      "title": "What is Autism Spectrum Disorder?",
+      "description": "What ASD is, why it's called a “spectrum”, and its key features.",
+      "content": "Autism Spectrum Disorder (ASD) is a neurodevelopmental condition related to brain development. In ASD, persistent difficulties in social communication and social interaction can be seen, along with restricted/repetitive behaviors and interests.\n\nWhy is it called a “spectrum”?\n- The severity, appearance of symptoms, and the person's need for support vary greatly.\n- Some individuals may be independent with less support in daily life, while others may require more intensive and structured support.\n\nASD can also be seen with sensory differences:\n- There may be over- or under-sensitivity to stimuli such as sound, light, touch, smell.\n\nGolden Rule:\n- “If you have met one child with autism, you have met only one child with autism.” Every child's developmental profile, strengths, and learning pace are completely unique.\n- ASD is not a “personality” or “choice”; the goal is to support communication, learning, independence, and quality of life."
+    },
+    {
+      "title": "How is Autism Spectrum Disorder Classified?",
+      "description": "Diagnostic criteria and grading based on support needs (DSM-5 approach).",
+      "content": "In current clinical classification, ASD is evaluated under a single “spectrum” diagnosis. Diagnoses previously known by separate names (Classic Autism, Asperger's Syndrome, PDD-NOS) are now unified under Autism Spectrum Disorder in DSM-5.\n\nAccording to DSM-5, two main areas stand out in the diagnosis of ASD:\n1) Persistent difficulties in social communication and interaction\n2) Restricted, repetitive patterns of behavior/interests and excessive adherence to routines (including sensory responses)\n\nSupport Levels According to DSM-5:\n- Level 1 (Requires Support): Can generally communicate in sentences, but struggles with initiating social interaction, turn-taking, and adapting to routine changes.\n- Level 2 (Requires Substantial Support): Marked verbal and nonverbal social communication challenges; repetitive behaviors and distress over changes are noticeable in daily life.\n- Level 3 (Requires Very Substantial Support): Spoken language may be absent or limited to a few words; requires intensive, structured daily support.\n\nAdditionally, clinicians specify:\n- Language development (with/without accompanying language impairment)\n- Intellectual development (with/without accompanying intellectual disability)\n- Known medical/genetic conditions and co-diagnoses (e.g., ADHD, anxiety, epilepsy)"
+    },
+    {
+      "title": "0–18 Month Critical Developmental Stages & Red Flags",
+      "description": "Early infancy signs by month, the science of neuroplasticity, and why 'wait and see' is risky.",
+      "content": "The first three years of life represent a critical neuroplasticity window during which the brain forms over one million new neural connections every second. Catching early signs allows intervention when the brain is most flexible.\n\nRed Flags by Developmental Stage:\n- By 6 Months: Limited eye contact, rare warm/joyful facial expressions, and lack of reciprocal social smiling.\n- By 9 Months: Lack of back-and-forth sharing of sounds, smiles, or facial expressions; not responding to familiar voices.\n- By 12 Months: Not looking consistently when called by name (despite normal hearing, such as hearing a candy wrapper), absence of babbling ('ba-ba', 'da-da'), and lack of social gestures (pointing, waving 'bye-bye').\n- By 16–18 Months: No meaningful single words, not pointing with the index finger to share interest (joint attention), and not imitating simple everyday actions.\n- At Any Age: Any loss (regression) of previously acquired speech, babbling, or social skills.\n\nAvoid the 'Wait and See' Trap:\n- Phrases like 'Boys talk late' or 'Wait until age 4' cost families precious time. Seeking a specialist evaluation never harms a child—waiting does."
+    },
+    {
+      "title": "What Are the Causes of Autism Spectrum Disorder?",
+      "description": "Genetic and neurobiological factors vs. common myths (vaccines, screens, parenting).",
+      "content": "There is no single proven cause of ASD. Scientific evidence shows that multiple genetic variations (over 100 synaptic communication genes) and early biological factors together affect early brain development.\n\nKnown general framework:\n- Genetic factors: Family history of ASD and specific genetic variations play a primary role.\n- Environmental/biological factors: Certain prenatal and perinatal factors (e.g., advanced parental age, extreme prematurity) have been statistically associated with risk.\n\nDispelling Common Myths:\n- Vaccines do NOT cause autism: Global epidemiological studies on millions of children have conclusively proven there is zero link between childhood vaccines and autism.\n- Parenting style or screen exposure does NOT cause autism: Autism is an innate neurobiological condition, not caused by emotional neglect."
+    },
+    {
+      "title": "What Are the Symptoms of Autism Spectrum Disorder?",
+      "description": "Social communication and repetitive behavior patterns; sensory differences.",
+      "content": "Symptoms vary from person to person; however, differences in two main areas are typically seen in ASD.\n\n1) Difficulties in social communication and social interaction\n- Difficulty initiating and sustaining reciprocal communication\n- Difficulty using or understanding nonverbal cues such as eye contact, gestures/facial expressions\n- Difficulty making and maintaining peer relationships\n\n2) Restricted and repetitive behaviors / interests\n- Repetitive movements or play patterns (e.g., hand-flapping, rocking, lining up objects, spinning wheels)\n- Excessive adherence to routines, intense difficulty with transitions\n- Intense and restricted interests\n- Differences in sensory responses (over- or under-reacting to stimuli such as sound/light/touch)\n\nSome children may experience a plateau or regression in development (especially in communication skills between 12 and 24 months). It is important to consult a specialist immediately if such changes are noticed."
+    },
+    {
+      "title": "The Importance of Early Diagnosis and Early Education",
+      "description": "How neuroplasticity and home-integrated early intervention transform outcomes.",
+      "content": "Early diagnosis allows the child's developmental needs to be understood earlier and evidence-based supports to begin during peak brain neuroplasticity.\n\nWhy is it important?\n- Early intervention services (before age 3) significantly boost expressive language, joint attention, peer play, and school readiness.\n- Family guidance and home modifications (visual supports, floor play at eye level, creating communication temptations) turn everyday routines into learning opportunities.\n- Co-occurring difficulties (sleep, selective eating, sensory overload, anxiety) can be addressed early.\n\nPractical steps at home:\n- Get down to your child's eye level during play and daily routines.\n- Follow your child's lead and narrate what they are looking at with simple, clear words.\n- Do not wait for a formal medical report to begin enriching face-to-face play and consulting specialists."
+    }
+  ],
+  "sources": "World Health Organization (WHO): https://www.who.int/news-room/fact-sheets/detail/autism-spectrum-disorders\nCDC: https://www.cdc.gov/autism/about/\nCDC: Clinical Testing and Diagnosis (DSM-5 criteria summary): https://www.cdc.gov/autism/hcp/diagnosis/index.html\nNICHD: What are the symptoms of autism?: https://www.nichd.nih.gov/health/topics/autism/conditioninfo/symptoms",
+  "labels": {
+    "sections": "Topics",
+    "sources": "References",
+    "sourcesDesc": "Informational links (you can copy and open them in a browser)."
+  }
+}

@@ -1,0 +1,47 @@
+workflows:
+  ios-app-store:
+    name: Autintellect iOS Build
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    working_directory: mobile_flutter
+    integrations:
+      app_store_connect: App Store Connect
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Set up Keychain
+        script: |
+          keychain initialize
+      - name: Fetch and Create Signing Files
+        script: |
+          RAW_OUT=$(app-store-connect certificates list --type DISTRIBUTION IOS_DISTRIBUTION --json --log-stream stderr || true)
+          OLD_CERT_ID=$(echo "$RAW_OUT" | python3 -c "import sys, json; s=sys.stdin.read(); idx=s.find('['); data=json.loads(s[idx:]) if idx!=-1 else []; print(data[0]['id'] if data else '')")
+          echo "Found old certificate ID to revoke: $OLD_CERT_ID"
+          if [ -n "$OLD_CERT_ID" ]; then
+            app-store-connect certificates delete "$OLD_CERT_ID" || true
+          fi
+          openssl genrsa -out /tmp/cert_key.pem 2048
+          app-store-connect fetch-signing-files "com.autintellect.app" --type IOS_APP_STORE --create --certificate-key=@file:/tmp/cert_key.pem
+      - name: Add certificates to Keychain
+        script: |
+          keychain add-certificates
+      - name: Use Developer Profiles
+        script: |
+          xcode-project use-profiles
+      - name: Install dependencies
+        script: |
+          flutter packages pub get
+      - name: Generate App Icons
+        script: |
+          dart run flutter_launcher_icons
+      - name: Build IPA
+        script: |
+          flutter build ipa --release --build-number=2 --export-options-plist=$HOME/export_options.plist
+    artifacts:
+      - build/ios/ipa/*.ipa
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true

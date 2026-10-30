@@ -1,0 +1,187 @@
+import 'dart:io';
+
+import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio/dio.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
+
+import '../config.dart';
+import '../storage/local_store.dart';
+import 'api_models.dart';
+
+class ApiClient {
+  final Dio _dio;
+
+  ApiClient._(this._dio);
+
+  static bool isGuestMode = false;
+
+  static Future<ApiClient> create() async {
+    final dio = Dio(
+      BaseOptions(
+        baseUrl: appBaseUrl,
+        headers: {
+          HttpHeaders.acceptHeader: 'application/json',
+          HttpHeaders.contentTypeHeader: 'application/json',
+        },
+      ),
+    );
+    final dir = await getApplicationDocumentsDirectory();
+
+    // Check if guest session file exists
+    final guestSessionFile = File(p.join(dir.path, 'otizm_destek', 'guest_session.json'));
+    isGuestMode = guestSessionFile.existsSync();
+
+    final cookieDir = Directory(p.join(dir.path, 'cookies'));
+    if (!cookieDir.existsSync()) cookieDir.createSync(recursive: true);
+    final jar = PersistCookieJar(storage: FileStorage(cookieDir.path));
+    dio.interceptors.add(CookieManager(jar));
+    return ApiClient._(dio);
+  }
+
+  Future<void> enableGuestMode() async {
+    isGuestMode = true;
+    final dir = await getApplicationDocumentsDirectory();
+    final guestSessionFile = File(p.join(dir.path, 'otizm_destek', 'guest_session.json'));
+    if (!guestSessionFile.parent.existsSync()) {
+      guestSessionFile.parent.createSync(recursive: true);
+    }
+    await guestSessionFile.writeAsString('{"guest": true}');
+  }
+
+  Future<SessionInfo> me() async {
+    if (isGuestMode) {
+      return const SessionInfo(email: 'guest@autintellect.com', kvkkAccepted: true);
+    }
+    final res = await _dio.get('/api/auth/me', options: Options(responseType: ResponseType.json));
+    final data = _asJsonMap(res.data);
+    return SessionInfo.fromJson(data);
+  }
+
+  Future<void> login({required String email, required String password}) async {
+    final res = await _dio.post('/api/auth/login', data: {'email': email, 'password': password});
+    _ensureOk(res);
+  }
+
+  Future<void> register({required String email, required String password}) async {
+    final res = await _dio.post('/api/auth/register', data: {'email': email, 'password': password});
+    _ensureOk(res);
+  }
+
+  Future<void> logout() async {
+    if (isGuestMode) {
+      isGuestMode = false;
+      final dir = await getApplicationDocumentsDirectory();
+      final guestSessionFile = File(p.join(dir.path, 'otizm_destek', 'guest_session.json'));
+      if (guestSessionFile.existsSync()) {
+        guestSessionFile.deleteSync();
+      }
+      return;
+    }
+    await _dio.post('/api/auth/logout');
+  }
+
+  Future<void> kvkkConsent({required int version}) async {
+    final res = await _dio.post('/api/privacy/consent', data: {'version': version});
+    _ensureOk(res);
+  }
+
+  Future<ProfileEnvelope?> getProfile() async {
+    if (isGuestMode) {
+      final raw = await LocalStore.instance.readJson('guest_profile.json');
+      if (raw is Map<String, dynamic>) {
+        return ProfileEnvelope.fromJson(raw);
+      }
+      return null;
+    }
+    final res = await _dio.get('/api/profile');
+    final map = _asJsonMap(res.data);
+    final profile = map['profile'];
+    if (profile is Map<String, dynamic>) {
+      return ProfileEnvelope.fromJson(profile);
+    }
+    return null;
+  }
+
+  Future<void> saveProfile(ProfileEnvelope envelope) async {
+    if (isGuestMode) {
+      await LocalStore.instance.writeJson('guest_profile.json', envelope.toJson());
+      return;
+    }
+    final res = await _dio.post('/api/profile', data: envelope.toJson());
+    _ensureOk(res);
+  }
+
+  Future<UserMeta?> getUserMeta() async {
+    if (isGuestMode) {
+      final raw = await LocalStore.instance.readJson('guest_user_meta.json');
+      if (raw is Map<String, dynamic>) {
+        return UserMeta.fromJson(raw);
+      }
+      return null;
+    }
+    final res = await _dio.get('/api/user-meta');
+    final map = _asJsonMap(res.data);
+    final meta = map['meta'];
+    if (meta is Map<String, dynamic>) {
+      return UserMeta.fromJson(meta);
+    }
+    return null;
+  }
+
+  Future<void> saveUserMeta(UserMeta meta) async {
+    if (isGuestMode) {
+      await LocalStore.instance.writeJson('guest_user_meta.json', meta.toJson());
+      return;
+    }
+    final res = await _dio.post('/api/user-meta', data: meta.toJson());
+    _ensureOk(res);
+  }
+
+  Future<void> deleteAccount({required String password}) async {
+    final res = await _dio.post('/api/privacy/delete', data: {'confirm': 'SIL', 'password': password});
+    _ensureOk(res);
+  }
+
+  Future<void> forgotPassword({required String email}) async {
+    final res = await _dio.post('/api/auth/forgot-password', data: {'email': email});
+    _ensureOk(res);
+  }
+
+  Future<void> resetPassword({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) async {
+    final res = await _dio.post('/api/auth/reset-password', data: {
+      'email': email,
+      'code': code,
+      'newPassword': newPassword,
+    });
+    _ensureOk(res);
+  }
+
+  Future<AdminStats> adminStats() async {
+    final res = await _dio.get('/api/admin/stats');
+    final map = _asJsonMap(res.data);
+    return AdminStats.fromJson(map);
+  }
+
+  Future<Map<String, dynamic>> getAppVersion() async {
+    final res = await _dio.get('/api/app-version');
+    return _asJsonMap(res.data);
+  }
+
+  Map<String, dynamic> _asJsonMap(dynamic v) {
+    if (v is Map<String, dynamic>) return v;
+    if (v is Map) return v.cast<String, dynamic>();
+    throw const ApiException('Could not read server response.');
+  }
+
+  void _ensureOk(Response res) {
+    if (res.statusCode != null && res.statusCode! >= 200 && res.statusCode! < 300) return;
+    throw const ApiException('Request failed.');
+  }
+}
+

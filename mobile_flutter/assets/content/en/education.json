@@ -1,0 +1,39 @@
+{
+  "featuredTitle": "Evidence-Based Special Education & Therapy Guide",
+  "featuredContent": "This section explains the evidence-based education and therapy models frequently used in ASD—including ABA, TEACCH, PECS (6 phases), ESDM, DIR/Floortime, Occupational Therapy, and Speech Therapy—within a scientific framework.",
+  "sections": [
+    {
+      "title": "ABA, TEACCH, PECS & ESDM (Evidence-Based Models)",
+      "description": "Detailed comparison of the 4 core scientifically proven special education methods in autism.",
+      "content": "Understanding how evidence-based special education models work helps families collaborate effectively with specialists:\n\n1) Applied Behavior Analysis (ABA)\n- Breaks complex skills (communication, self-care, academics) into small, achievable steps using positive reinforcement.\n- Uses ABC (Antecedent – Behavior – Consequence) analysis to understand the function of challenging behaviors and Natural Environment Teaching (NET) to practice skills in daily life.\n\n2) TEACCH (Structured Teaching)\n- Designed around the strong visual processing skills of autistic children.\n- Organizes the physical space and visual schedule so the child always knows: 'What work will I do?', 'How much work is there?', 'When am I finished?', and 'What happens next?'—dramatically reducing transition anxiety.\n\n3) PECS (Picture Exchange Communication System – 6 Phases)\n- Teaches non-speaking or minimally speaking children to initiate communication actively by handing a picture card to a partner:\n  • Phase 1: Exchanging a single picture for a desired item.\n  • Phase 2: Distance and persistence across the room.\n  • Phase 3: Discriminating between multiple pictures.\n  • Phase 4: Building sentences with an 'I want + [item]' strip.\n  • Phase 5: Answering 'What do you want?'\n  • Phase 6: Commenting ('I see...', 'I hear...', 'I feel...').\n\n4) ESDM (Early Start Denver Model)\n- Designed for toddlers aged 12–48 months, blending joyful, relationship-based floor play with systematic ABA data tracking to build joint attention, imitation, and language."
+    },
+    {
+      "title": "Movement Education",
+      "description": "Support with gross motor skills, balance, coordination, and physical activity.",
+      "content": "Movement education is planned physical activities aiming to support the child's motor areas such as balance, coordination, strength, endurance, and body awareness. Since motor planning, coordination, and postural control difficulties can often be seen in ASD, regular movement exercises can strengthen skills that can be transferred to daily life.\n\nScientific framework\n- Regular physical activity can have positive effects on sleep, emotion regulation, attention, and general health.\n- Motor skill exercises are more effective when linked to functional goals such as climbing stairs, catching/throwing a ball, cycling, or participating in playground activities.\n\nGoal in practice\n- Short and frequent repetitions (5–15 mins distributed throughout the day).\n- Clear start/finish, visual cues, and step-by-step instructions.\n- Play-based activities suited to the child's motivation.\n\nNote: If there is pain, toe-walking, an orthopedic problem, or significant motor delay, a physiotherapist/orthopedic evaluation is recommended."
+    },
+    {
+      "title": "Occupational Therapy & Sensory Integration",
+      "description": "Daily living skills, vestibular/proprioceptive regulation, fine motor skills, and home sensory diets.",
+      "content": "Occupational therapy (OT) aims to increase the child's independent participation in daily living activities (dressing, eating, toileting, play, school activities) and regulate sensory processing differences.\n\n7 Sensory Systems & Regulation\n- In addition to the 5 senses, OT addresses the Vestibular sense (inner ear balance/movement) and Proprioceptive sense (muscle/joint deep pressure).\n- Sensory strategies are individualized: deep pressure ('pillow sandwich'), heavy work (pushing a weighted laundry basket), tactile bins (rice/kinetic sand), and a quiet calm-down corner help regulate the nervous system.\n\nFrequent target areas\n- Fine motor: holding a pencil, cutting with scissors, buttoning/zipping.\n- Self-care: washing hands, brushing teeth, dressing, feeding.\n- Sensory regulation: coping strategies for sound/light/touch sensitivities and preventing sensory meltdowns."
+    },
+    {
+      "title": "Special Education",
+      "description": "Individualized Education Program (IEP) goals, structured teaching, and generalization to home life.",
+      "content": "Special education is a structured teaching process carried out with individualized goals (IEP) according to the child's developmental level. Since communication, social interaction, play, academic prerequisite skills, and daily living skills can develop at different rates in ASD, it is important that the goals are measurable and functional.\n\nScientific framework\n- Early intervention and regular, structured teaching support substantial progress in communication and adaptive skills.\n- Effective programs include data-tracked goals, systematic repetition, prompting with gradual fading, and a home generalization plan.\n\nCommonly used techniques\n- Visual supports: daily routine schedule, “first-then” boards, step-by-step cards.\n- Behavioral teaching principles: positive reinforcement, task analysis, teaching in small steps.\n- Natural environment teaching: catching opportunities to teach within daily life."
+    },
+    {
+      "title": "Speech & Language Therapy (and AAC)",
+      "description": "Comprehension/expression, pre-verbal skills, echolalia, and Augmentative & Alternative Communication (AAC).",
+      "content": "Speech and language therapy aims to develop the child's receptive (comprehension) and expressive language skills, speech intelligibility, and social communication (pragmatic language).\n\nScientific framework\n- Pre-verbal foundations come first: joint attention, motor/vocal imitation, turn-taking, and cause-and-effect understanding.\n- AAC Does NOT Delay Speech: Clinical research proves that using visual communication cards (PECS or digital AAC boards like Autintellect AAC) reduces frustration and actively accelerates spoken word production.\n- Echolalia (repeating words/phrases) is recognized as Gestalt Language Processing and a meaningful bridge to self-generated sentences.\n\nFrequent target areas\n- Requesting, pointing, and joint attention.\n- Expanding single words ('One Word Up' rule) and forming functional sentences.\n- Social communication: greeting, turn-taking, and expressing emotions."
+    },
+    {
+      "title": "DIR / Floortime",
+      "description": "Supporting social-communication milestones and emotional regulation through relationship-based floor play.",
+      "content": "DIR/Floortime aims to support the child's developmental milestones (emotion regulation, shared attention, reciprocal interaction, creative problem-solving) with a relationship-based and play-focused approach. The goal is for the parent/practitioner to follow the child's natural interest, join their play at eye level, and expand 'circles of communication.'\n\nScientific framework\n- Relationship-based approaches target intrinsic social motivation and emotional connection.\n- Effectiveness increases with regular daily floor play sessions (20-minute uninterrupted play blocks) and active family involvement.\n\nBasic principles in practice\n- Follow the child's interest and join their game rather than directing from above.\n- Sustain back-and-forth interaction with playful surprises instead of a 'barrage of testing questions.'"
+    }
+  ],
+  "labels": {
+    "sections": "Topics"
+  }
+}

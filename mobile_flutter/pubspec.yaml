@@ -1,0 +1,66 @@
+name: otizm_destek_app
+description: Autintellect - Autism Support & Development App (Flutter)
+publish_to: "none"
+version: 1.0.0+2
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  dio: ^5.7.0
+  cookie_jar: ^4.0.8
+  dio_cookie_manager: ^3.1.1
+  path_provider: ^2.1.4
+  path: ^1.9.0
+  flutter_riverpod: ^2.6.1
+  go_router: ^14.6.2
+  flutter_local_notifications: ^17.0.0
+  timezone: ^0.9.4
+  flutter_timezone: ^5.1.0
+  image_picker: ^1.1.2
+  audioplayers: ^6.6.0
+  flutter_tts: ^4.2.5
+  url_launcher: ^6.3.0
+  google_mobile_ads: ^5.1.0
+  app_tracking_transparency: ^2.0.6
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/autintellect-logo.png"
+
+flutter:
+  generate: true
+  config:
+    enable-swift-package-manager: false
+  uses-material-design: true
+  assets:
+    - assets/content/en/
+    - assets/loogo.png
+    - assets/otizeka-logo.png
+    - assets/autintellect-logo.png
+    - assets/splash_logo.png
+    - assets/splash_text.png
+    - assets/splash_banner.png
+    - assets/imitation_idle.png
+    - assets/imitation_raise_arms.png
+    - assets/imitation_cross_arms.png
+    - assets/imitation_raise_hands.png
+    - assets/imitation_show_ear.png
+    - assets/imitation_close_eyes.png
+    - assets/imitation_show_nose.png
+    - assets/imitation_clap.png
+    - assets/imitation_jump.png
