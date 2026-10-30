@@ -16,14 +16,17 @@ workflows:
           keychain initialize
       - name: Fetch and Create Signing Files
         script: |
-          RAW_OUT=$(app-store-connect certificates list --type DISTRIBUTION IOS_DISTRIBUTION --json --log-stream stderr || true)
-          OLD_CERT_ID=$(echo "$RAW_OUT" | python3 -c "import sys, json; s=sys.stdin.read(); idx=s.find('['); data=json.loads(s[idx:]) if idx!=-1 else []; print(data[0]['id'] if data else '')")
-          echo "Found old certificate ID to revoke: $OLD_CERT_ID"
-          if [ -n "$OLD_CERT_ID" ]; then
-            app-store-connect certificates delete "$OLD_CERT_ID" || true
+          KEY_PATH="$CM_BUILD_DIR/ios_dist_key.pem"
+          chmod 600 "$KEY_PATH"
+          if ! app-store-connect fetch-signing-files "com.autintellect.app" --type IOS_APP_STORE --create --certificate-key=@file:"$KEY_PATH"; then
+            echo "Certificate limit reached; freeing 1 old slot once..."
+            RAW_OUT=$(app-store-connect certificates list --type DISTRIBUTION IOS_DISTRIBUTION --json --log-stream stderr || true)
+            OLD_CERT_ID=$(echo "$RAW_OUT" | python3 -c "import sys, json; s=sys.stdin.read(); idx=s.find('['); data=json.loads(s[idx:]) if idx!=-1 else []; print(data[0]['id'] if data else '')")
+            if [ -n "$OLD_CERT_ID" ]; then
+              app-store-connect certificates delete "$OLD_CERT_ID" || true
+            fi
+            app-store-connect fetch-signing-files "com.autintellect.app" --type IOS_APP_STORE --create --certificate-key=@file:"$KEY_PATH"
           fi
-          openssl genrsa -out /tmp/cert_key.pem 2048
-          app-store-connect fetch-signing-files "com.autintellect.app" --type IOS_APP_STORE --create --certificate-key=@file:/tmp/cert_key.pem
       - name: Add certificates to Keychain
         script: |
           keychain add-certificates
