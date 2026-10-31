@@ -1,4 +1,5 @@
 import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -85,30 +86,33 @@ class _SplashPageState extends ConsumerState<SplashPage> with SingleTickerProvid
     if (!mounted) return;
 
     try {
-      final api = await ref.read(apiClientProvider.future);
-      final versionData = await api.getAppVersion();
-      
-      final minAndroid = versionData['minAndroidVersion'] as String? ?? '1.0.0';
-      final minIos = versionData['minIosVersion'] as String? ?? '1.0.0';
-      final androidUrl = versionData['androidUrl'] as String? ?? '';
-      final iosUrl = versionData['iosUrl'] as String? ?? '';
+      if (!kIsWeb) {
+        final api = await ref.read(apiClientProvider.future);
+        final versionData = await api.getAppVersion();
+        
+        final minAndroid = versionData['minAndroidVersion'] as String? ?? '1.0.0';
+        final minIos = versionData['minIosVersion'] as String? ?? '1.0.0';
+        final androidUrl = versionData['androidUrl'] as String? ?? '';
+        final iosUrl = versionData['iosUrl'] as String? ?? '';
 
-      final isAndroid = Platform.isAndroid;
-      final minVersion = isAndroid ? minAndroid : minIos;
-      final storeUrl = isAndroid ? androidUrl : iosUrl;
+        final isAndroid = Platform.isAndroid;
+        final minVersion = isAndroid ? minAndroid : minIos;
+        final storeUrl = isAndroid ? androidUrl : iosUrl;
 
-      if (_isVersionOlder(appVersion, minVersion)) {
-        if (!mounted) return;
-        _showUpdateDialog(storeUrl);
-        return; // Stop execution to force the update
+        if (_isVersionOlder(appVersion, minVersion)) {
+          if (!mounted) return;
+          _showUpdateDialog(storeUrl);
+          return; // Stop execution to force the update
+        }
       }
     } catch (e) {
       debugPrint('Version check failed: $e');
     }
 
     if (!mounted) return;
-    final isLoggedIn = ref.read(sessionControllerProvider).valueOrNull?.email != null;
-    if (isLoggedIn) {
+    final session = await ref.read(sessionControllerProvider.future);
+    if (!mounted) return;
+    if (session.email != null) {
       context.go('/home');
     } else {
       context.go('/auth');

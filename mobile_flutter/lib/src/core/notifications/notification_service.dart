@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest.dart' as tzdata;
@@ -24,28 +25,50 @@ class NotificationService {
       tz.setLocalLocation(tz.getLocation('UTC'));
     }
 
+    // Use @mipmap/launcher_icon matching AndroidManifest.xml
     const settings = InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-      iOS: DarwinInitializationSettings(),
+      android: AndroidInitializationSettings('@mipmap/launcher_icon'),
+      iOS: DarwinInitializationSettings(
+        requestAlertPermission: true,
+        requestBadgePermission: true,
+        requestSoundPermission: true,
+      ),
     );
 
-    await _plugin.initialize(settings);
-    _initialized = true;
+    try {
+      await _plugin.initialize(settings);
+      _initialized = true;
+    } catch (e) {
+      debugPrint('NotificationService init error: $e');
+    }
   }
 
   Future<bool> requestPermissionIfNeeded() async {
     if (!_initialized) await init();
 
     if (Platform.isAndroid) {
-      final android = _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
-      final granted = await android?.requestNotificationsPermission();
-      return granted ?? true;
+      try {
+        final android = _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+        final granted = await android?.requestNotificationsPermission();
+        try {
+          await android?.requestExactAlarmsPermission();
+        } catch (_) {}
+        return granted ?? true;
+      } catch (e) {
+        debugPrint('Android notification permission error: $e');
+        return true;
+      }
     }
 
     if (Platform.isIOS) {
-      final ios = _plugin.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
-      final granted = await ios?.requestPermissions(alert: true, badge: true, sound: true);
-      return granted ?? true;
+      try {
+        final ios = _plugin.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+        final granted = await ios?.requestPermissions(alert: true, badge: true, sound: true);
+        return granted ?? true;
+      } catch (e) {
+        debugPrint('iOS notification permission error: $e');
+        return true;
+      }
     }
 
     return true;
@@ -53,7 +76,45 @@ class NotificationService {
 
   Future<void> cancel(int id) async {
     if (!_initialized) await init();
-    await _plugin.cancel(id);
+    try {
+      await _plugin.cancel(id);
+    } catch (e) {
+      debugPrint('Notification cancel error: $e');
+    }
+  }
+
+  Future<void> showInstant({
+    required int id,
+    required String title,
+    required String body,
+  }) async {
+    if (!_initialized) await init();
+
+    const androidDetails = AndroidNotificationDetails(
+      'education_reminder_channel',
+      'Eğitim Hatırlatıcıları',
+      channelDescription: 'Günlük ve haftalık özel eğitim hatırlatıcıları',
+      icon: '@mipmap/launcher_icon',
+      importance: Importance.max,
+      priority: Priority.high,
+      playSound: true,
+      enableVibration: true,
+    );
+
+    const details = NotificationDetails(
+      android: androidDetails,
+      iOS: DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      ),
+    );
+
+    try {
+      await _plugin.show(id, title, body, details);
+    } catch (e) {
+      debugPrint('showInstant notification error: $e');
+    }
   }
 
   Future<void> scheduleWeekly({
@@ -69,16 +130,23 @@ class NotificationService {
     final scheduled = _nextInstanceOfWeekdayTime(weekday, hour, minute);
 
     const androidDetails = AndroidNotificationDetails(
-      'education_reminder',
-      'Eğitim Hatırlatıcı',
-      channelDescription: 'Eğitim hatırlatıcıları',
+      'education_reminder_channel',
+      'Eğitim Hatırlatıcıları',
+      channelDescription: 'Günlük ve haftalık özel eğitim hatırlatıcıları',
+      icon: '@mipmap/launcher_icon',
       importance: Importance.max,
       priority: Priority.high,
+      playSound: true,
+      enableVibration: true,
     );
 
     const details = NotificationDetails(
       android: androidDetails,
-      iOS: DarwinNotificationDetails(),
+      iOS: DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      ),
     );
 
     try {
@@ -88,7 +156,7 @@ class NotificationService {
         body,
         scheduled,
         details,
-        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
         matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
       );
@@ -100,11 +168,26 @@ class NotificationService {
           body,
           scheduled,
           details,
-          androidScheduleMode: AndroidScheduleMode.inexact,
+          androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
           uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
           matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
         );
-      } catch (_) {}
+      } catch (_) {
+        try {
+          await _plugin.zonedSchedule(
+            id,
+            title,
+            body,
+            scheduled,
+            details,
+            androidScheduleMode: AndroidScheduleMode.inexact,
+            uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+            matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+          );
+        } catch (e) {
+          debugPrint('scheduleWeekly error: $e');
+        }
+      }
     }
   }
 

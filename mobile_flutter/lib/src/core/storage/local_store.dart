@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -8,6 +9,7 @@ class LocalStore {
   static final LocalStore instance = LocalStore._();
   LocalStore._();
 
+  final Map<String, Object?> _webMemoryStore = {};
   Future<Directory>? _baseDirFuture;
   Future<void> _writeLock = Future.value();
 
@@ -31,6 +33,11 @@ class LocalStore {
   }
 
   Future<Object?> readJson(String name) async {
+    if (kIsWeb) {
+      final v = _webMemoryStore[name];
+      if (v == null) return null;
+      return jsonDecode(jsonEncode(v));
+    }
     try {
       final f = await _file(name);
       if (!await f.exists()) return null;
@@ -43,6 +50,10 @@ class LocalStore {
   }
 
   Future<void> writeJson(String name, Object? value) {
+    if (kIsWeb) {
+      _webMemoryStore[name] = jsonDecode(jsonEncode(value));
+      return Future.value();
+    }
     _writeLock = _writeLock.then((_) async {
       final f = await _file(name);
       final raw = const JsonEncoder.withIndent('  ').convert(value);
@@ -51,4 +62,3 @@ class LocalStore {
     return _writeLock;
   }
 }
-

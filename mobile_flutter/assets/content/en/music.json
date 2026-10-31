@@ -5,23 +5,23 @@
     "category": "Music",
     "categoryKey": "music",
     "description": "A peaceful neoclassical ambient piano melody that rests the mind, providing calming and relaxation.",
-    "url": "https://upload.wikimedia.org/wikipedia/commons/9/95/Scott_Buckley_%E2%80%93_The_Long_Dark_%28Ambient_Neoclassical_Piano%29.ogg"
+    "url": "audio/calming_melody.wav"
   },
   {
     "title": "Focus Rhythm",
-    "duration": "2:10",
+    "duration": "3:30",
     "category": "Music",
     "categoryKey": "music",
     "description": "Rhythmic classical focus music accompanied by Bach's famous cello suite prelude that gathers attention and provides mental focus.",
-    "url": "https://upload.wikimedia.org/wikipedia/commons/4/43/JOHN_MICHEL_CELLO-J_S_BACH_CELLO_SUITE_1_in_G_Prelude.ogg"
+    "url": "audio/focus_rhythm.wav"
   },
   {
     "title": "Joyful Child Melody",
-    "duration": "0:24",
+    "duration": "3:00",
     "category": "Music",
     "categoryKey": "music",
     "description": "A joyful, sweet, and lively classical \"Twinkle Twinkle Little Star\" child melody.",
-    "url": "https://upload.wikimedia.org/wikipedia/commons/b/bd/Twinkle_Twinkle_Little_Star_plain.ogg"
+    "url": "audio/joyful_melody.wav"
   },
   {
     "title": "Sea and Wave Sounds",
@@ -29,7 +29,7 @@
     "category": "Sleep",
     "categoryKey": "sleep",
     "description": "Calming natural shore and wave sounds before deep sleep.",
-    "url": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Waves.ogg"
+    "url": "audio/waves.wav"
   },
   {
     "title": "Gentle Rain Sounds",
@@ -37,15 +37,15 @@
     "category": "Calming",
     "categoryKey": "calming",
     "description": "A relaxing, stress-reducing natural forest rain sound.",
-    "url": "https://upload.wikimedia.org/wikipedia/commons/3/3d/Rain.ogg"
+    "url": "audio/rain.wav"
   },
   {
     "title": "Wind Breeze",
-    "duration": "1:00",
+    "duration": "5:00",
     "category": "Calming",
     "categoryKey": "calming",
     "description": "Natural relaxing, light and peaceful valley winds from within a pine forest.",
-    "url": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Wind_in_Swedish_pine_forest_at_25_mps.ogg"
+    "url": "audio/wind.wav"
   },
   {
     "title": "White Noise",
@@ -53,7 +53,7 @@
     "category": "Focus",
     "categoryKey": "focus",
     "description": "Constant white noise that supports sleep and masks background noises.",
-    "url": "https://upload.wikimedia.org/wikipedia/commons/a/aa/White_noise.ogg"
+    "url": "audio/white_noise.wav"
   },
   {
     "title": "Pink Noise",
@@ -61,7 +61,7 @@
     "category": "Focus",
     "categoryKey": "focus",
     "description": "A more balanced, gentle noise profile for mental focus and calming.",
-    "url": "https://upload.wikimedia.org/wikipedia/commons/6/6c/Pink_noise.ogg"
+    "url": "audio/pink_noise.wav"
   },
   {
     "title": "Brown Noise",
@@ -69,6 +69,6 @@
     "category": "Sleep",
     "categoryKey": "sleep",
     "description": "Deep bass frequency sleep noise that completely calms the mind.",
-    "url": "https://upload.wikimedia.org/wikipedia/commons/4/48/Brown_noise.ogg"
+    "url": "audio/brown_noise.wav"
   }
 ]

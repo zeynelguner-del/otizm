@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -21,12 +22,21 @@ class ApiClient {
     final dio = Dio(
       BaseOptions(
         baseUrl: appBaseUrl,
-        headers: {
-          HttpHeaders.acceptHeader: 'application/json',
-          HttpHeaders.contentTypeHeader: 'application/json',
-        },
+        headers: kIsWeb
+            ? {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+              }
+            : {
+                HttpHeaders.acceptHeader: 'application/json',
+                HttpHeaders.contentTypeHeader: 'application/json',
+              },
       ),
     );
+    if (kIsWeb) {
+      isGuestMode = true;
+      return ApiClient._(dio);
+    }
     final dir = await getApplicationDocumentsDirectory();
 
     // Check if guest session file exists
@@ -42,6 +52,7 @@ class ApiClient {
 
   Future<void> enableGuestMode() async {
     isGuestMode = true;
+    if (kIsWeb) return;
     final dir = await getApplicationDocumentsDirectory();
     final guestSessionFile = File(p.join(dir.path, 'otizm_destek', 'guest_session.json'));
     if (!guestSessionFile.parent.existsSync()) {
@@ -72,6 +83,7 @@ class ApiClient {
   Future<void> logout() async {
     if (isGuestMode) {
       isGuestMode = false;
+      if (kIsWeb) return;
       final dir = await getApplicationDocumentsDirectory();
       final guestSessionFile = File(p.join(dir.path, 'otizm_destek', 'guest_session.json'));
       if (guestSessionFile.existsSync()) {
@@ -184,4 +196,3 @@ class ApiClient {
     throw const ApiException('İstek başarısız.');
   }
 }
-
