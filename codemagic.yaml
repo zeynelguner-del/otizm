@@ -3,13 +3,11 @@ workflows:
   ios-app-store:
     name: OtiZeka iOS Build
     max_build_duration: 60
-    instance_type: mac_mini_m1
+    instance_type: mac_mini_m2
     working_directory: mobile_flutter
     integrations:
       app_store_connect: App Store Connect
     environment:
-      groups:
-        - apple_credentials
       flutter: stable
       xcode: latest
       cocoapods: default
@@ -17,18 +15,22 @@ workflows:
       events:
         - push
       branch_patterns:
-        - pattern: '*'
+        - pattern: 'main'
           include: true
     scripts:
       - name: Set up Keychain
         script: |
           keychain initialize
-      - name: Fetch signing files (automatic code signing)
+      - name: Fetch and Create Signing Files
         script: |
-          # Requires App Store Connect integration configured in Codemagic,
-          # or APP_STORE_CONNECT_PRIVATE_KEY, APP_STORE_CONNECT_KEY_IDENTIFIER,
-          # and APP_STORE_CONNECT_ISSUER_ID environment variables set in Codemagic.
-          app-store-connect fetch-signing-files "com.otizmdestekapp.otizmDestekApp" --type IOS_APP_STORE --create
+          RAW_OUT=$(app-store-connect certificates list --type DISTRIBUTION IOS_DISTRIBUTION --json --log-stream stderr || true)
+          OLD_CERT_ID=$(echo "$RAW_OUT" | python3 -c "import sys, json; s=sys.stdin.read(); idx=s.find('['); data=json.loads(s[idx:]) if idx!=-1 else []; print(data[0]['id'] if data else '')")
+          echo "Found old certificate ID to revoke: $OLD_CERT_ID"
+          if [ -n "$OLD_CERT_ID" ]; then
+            app-store-connect certificates delete "$OLD_CERT_ID" || true
+          fi
+          openssl genrsa -out /tmp/cert_key.pem 2048
+          app-store-connect fetch-signing-files "com.otizmdestekapp.otizmDestekApp" --type IOS_APP_STORE --create --certificate-key=@file:/tmp/cert_key.pem
       - name: Add certificates to Keychain
         script: |
           keychain add-certificates
