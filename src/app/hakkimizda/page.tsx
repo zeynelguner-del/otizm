@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, Sparkles, Heart, Target, Users, Award, BookOpen, ShieldCheck } from "lucide-react";
+import { ArrowLeft, Sparkles, Heart, Target, Users, Award, BookOpen, ShieldCheck, HeartHandshake } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Hakkımızda | OtiZeka Otizm ve Özel Eğitim Platformu",
@@ -30,6 +30,9 @@ export default function AboutPage() {
           <nav className="flex items-center gap-4 text-sm font-bold">
             <Link href="/rehber" className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition">
               Rehber
+            </Link>
+            <Link href="/is-birligi" className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition">
+              Kurumsal İş Birliği
             </Link>
             <Link href="/hakkimizda" className="text-emerald-600 dark:text-emerald-400">
               Hakkımızda
@@ -116,6 +119,28 @@ export default function AboutPage() {
             </div>
           </div>
         </section>
+
+        {/* Corporate Partnership Callout */}
+        <section className="p-8 rounded-3xl bg-emerald-600 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-lg">
+          <div className="space-y-2 max-w-xl">
+            <div className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-emerald-100">
+              <HeartHandshake className="w-4 h-4" />
+              <span>Kurumsal İş Birliği & Sosyal Sorumluluk</span>
+            </div>
+            <h3 className="text-xl sm:text-2xl font-black">
+              Belediye, Dernek, Özel Eğitim Kurumu veya Kurumsal Sponsor musunuz?
+            </h3>
+            <p className="text-xs sm:text-sm text-emerald-50 font-medium leading-relaxed">
+              OtiZeka platformunu kurumunuzun sosyal sorumluluk ve özel eğitim projelerinde çözüm ortağı olarak konumlandırmak için iş birliği modellerimizi inceleyin.
+            </p>
+          </div>
+          <Link
+            href="/is-birligi"
+            className="px-6 py-3.5 rounded-2xl bg-white text-emerald-700 font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-emerald-50 transition shrink-0 shadow"
+          >
+            İş Birliği Modelleri
+          </Link>
+        </section>
       </main>
 
       {/* Footer */}
@@ -123,12 +148,13 @@ export default function AboutPage() {
         <div className="max-w-4xl mx-auto space-y-4">
           <div className="flex flex-wrap justify-center gap-6 font-bold text-zinc-700 dark:text-zinc-300">
             <Link href="/rehber" className="hover:text-emerald-600 transition">Rehber</Link>
+            <Link href="/is-birligi" className="hover:text-emerald-600 transition">Kurumsal İş Birliği</Link>
             <Link href="/hakkimizda" className="hover:text-emerald-600 transition">Hakkımızda</Link>
             <Link href="/iletisim" className="hover:text-emerald-600 transition">İletişim</Link>
             <Link href="/gizlilik" className="hover:text-emerald-600 transition">Gizlilik Politikası</Link>
             <Link href="/kullanim-kosullari" className="hover:text-emerald-600 transition">Kullanım Koşulları</Link>
           </div>
-          <p>© 2026 OtiZeka Platformu. Tüm hakları saklıdır.</p>
+          <p>© 2026 OtiZeka Destek Platformu. Tüm hakları saklıdır.</p>
         </div>
       </footer>
     </div>

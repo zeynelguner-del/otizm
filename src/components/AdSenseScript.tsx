@@ -30,6 +30,7 @@ const BLOCKED_APP_PREFIXES = [
   "/acc",
   "/gizlilik",
   "/kullanim-kosullari",
+  "/is-birligi",
 ];
 
 export default function AdSenseScript() {

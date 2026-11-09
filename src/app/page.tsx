@@ -698,6 +698,7 @@ export default function Home() {
               <Link href="/education" className="text-zinc-700 dark:text-zinc-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
                 Özel Eğitim Metotları
               </Link>
+              <Link href="/is-birligi" className="text-zinc-700 dark:text-zinc-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Kurumsal İş Birliği</Link>
               <Link href="/hakkimizda" className="text-zinc-700 dark:text-zinc-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
                 Hakkımızda
               </Link>
@@ -729,6 +730,13 @@ export default function Home() {
           {/* Mobile Dropdown Menu */}
           {mobileMenuOpen && (
             <div className="md:hidden border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-5 space-y-4">
+              <Link
+                href="/is-birligi"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-sm font-bold text-emerald-600 dark:text-emerald-400 py-1"
+              >
+                🤝 Kurumsal İş Birliği & Sponsorluk
+              </Link>
               <Link
                 href="/rehber"
                 onClick={() => setMobileMenuOpen(false)}
@@ -1257,6 +1265,9 @@ export default function Home() {
               <div className="space-y-3">
                 <h4 className="font-black text-xs uppercase tracking-widest text-zinc-400">Kurumsal & Yasal</h4>
                 <ul className="space-y-2 text-xs font-bold text-zinc-600 dark:text-zinc-400">
+                  <li>
+                    <Link href="/is-birligi" className="hover:text-emerald-600 transition">Kurumsal İş Birliği & Sponsorluk</Link>
+                  </li>
                   <li>
                     <Link href="/hakkimizda" className="hover:text-emerald-600 transition">Hakkımızda & Misyonumuz</Link>
                   </li>
